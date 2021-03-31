@@ -1,4 +1,4 @@
-export type User = {
+export type MyBbUser = {
   uid: number
   username: string
   password: string
