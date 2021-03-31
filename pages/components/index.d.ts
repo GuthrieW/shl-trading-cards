@@ -12,6 +12,18 @@ export type MyBbUser = {
   avatartype: string
 }
 
+export type TradingCardUser = {
+  uid: number
+}
+
 export type Card = {
   id: number
+  playerName: string
+  playerTeam: string
+  rarity: string
+  imageUrl: string
+  cardCreator: string
+  submissionDate: Date
+  approved: boolean
+  currentRotation: boolean
 }
