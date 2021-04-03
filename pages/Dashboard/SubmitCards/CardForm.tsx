@@ -5,9 +5,15 @@ import {
   Button,
   Select,
   MenuItem,
+  InputLabel,
 } from '@material-ui/core'
 import Router from 'next/router'
-import { Teams, Rarities, Positions } from '../../../utils/constants'
+import {
+  Teams,
+  Rarities,
+  Positions,
+  Attributes,
+} from '../../../utils/constants'
 
 const CardForm = () => {
   const [cardData, setCardData] = useState(null)
@@ -63,9 +69,9 @@ const CardForm = () => {
           })
         }}
       />
+      <InputLabel id={'team-label'}>Team</InputLabel>{' '}
       <Select
-        placeholder={'Team'}
-        label={'Team'}
+        labelId={'team-label'}
         value={cardData?.team || ''}
         onChange={(event) => {
           setCardData({
@@ -83,9 +89,9 @@ const CardForm = () => {
           </MenuItem>
         ))}
       </Select>
+      <InputLabel id={'rarity-label'}>Rarity</InputLabel>{' '}
       <Select
-        placeholder={'Rarity'}
-        label={'Rarity'}
+        labelId={'rarity-label'}
         value={cardData?.rarity || ''}
         onChange={(event) => {
           setCardData({
@@ -100,9 +106,9 @@ const CardForm = () => {
           </MenuItem>
         ))}
       </Select>
+      <InputLabel id={'position-label'}>Position</InputLabel>{' '}
       <Select
-        placeholder={'Position'}
-        label={'Position'}
+        labelId={'position-label'}
         value={cardData?.position || ''}
         onChange={(event) => {
           setCardData({
@@ -121,7 +127,9 @@ const CardForm = () => {
         ))}
       </Select>
       <TextField
-        label={'Overall'}
+        type={'number'}
+        InputProps={{ inputProps: { min: 0, max: 99 } }}
+        label={Attributes.Overall}
         value={cardData?.overall || ''}
         onChange={(event) => {
           setCardData({
@@ -131,7 +139,11 @@ const CardForm = () => {
         }}
       />
       <TextField
-        label={isSkater ? 'Skating' : 'High Shots'}
+        type={'number'}
+        InputProps={{ inputProps: { min: 0, max: 20 } }}
+        label={
+          isSkater ? Attributes.Skater.Skating : Attributes.Goalie.HighShots
+        }
         value={(isSkater ? cardData?.skating : cardData?.highShots) || ''}
         onChange={(event) => {
           isSkater
@@ -146,7 +158,11 @@ const CardForm = () => {
         }}
       />
       <TextField
-        label={isSkater ? 'Shooting' : 'Low Shots'}
+        type={'number'}
+        InputProps={{ inputProps: { min: 0, max: 20 } }}
+        label={
+          isSkater ? Attributes.Skater.Shooting : Attributes.Goalie.LowShots
+        }
         value={(isSkater ? cardData?.shooting : cardData?.lowShots) || ''}
         onChange={(event) => {
           isSkater
@@ -161,7 +177,9 @@ const CardForm = () => {
         }}
       />
       <TextField
-        label={isSkater ? 'Hands' : 'Quickness'}
+        type={'number'}
+        InputProps={{ inputProps: { min: 0, max: 20 } }}
+        label={isSkater ? Attributes.Skater.Hands : Attributes.Goalie.Quickness}
         value={(isSkater ? cardData?.hands : cardData?.quickness) || ''}
         onChange={(event) => {
           isSkater
@@ -176,7 +194,11 @@ const CardForm = () => {
         }}
       />
       <TextField
-        label={isSkater ? 'Checking' : 'Control'}
+        type={'number'}
+        InputProps={{ inputProps: { min: 0, max: 20 } }}
+        label={
+          isSkater ? Attributes.Skater.Checking : Attributes.Goalie.Control
+        }
         value={(isSkater ? cardData?.checking : cardData?.control) || ''}
         onChange={(event) => {
           isSkater
@@ -191,7 +213,11 @@ const CardForm = () => {
         }}
       />
       <TextField
-        label={isSkater ? 'Defense' : 'Conditioning'}
+        type={'number'}
+        InputProps={{ inputProps: { min: 0, max: 20 } }}
+        label={
+          isSkater ? Attributes.Skater.Defense : Attributes.Goalie.Conditioning
+        }
         value={(isSkater ? cardData?.defense : cardData?.conditioning) || ''}
         onChange={(event) => {
           isSkater
@@ -205,13 +231,17 @@ const CardForm = () => {
               })
         }}
       />
-      <Button variant="contained" component="label">
+      <Button
+        variant="contained"
+        component="label"
+        style={{ alignSelf: 'center' }}
+      >
         Upload Card Image
         <input type="file" hidden />
       </Button>
       <Button
         disabled={!canSubmit}
-        style={{ verticalAlign: 'center', width: '60%' }}
+        style={{ alignSelf: 'center' }}
         variant="contained"
         color="primary"
         onClick={handleSubmit}

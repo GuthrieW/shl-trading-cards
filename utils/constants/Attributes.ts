@@ -1,6 +1,6 @@
 const Attributes = {
+  Overall: 'Overall',
   Skater: {
-    Overall: 'Overall',
     Skating: 'Skating',
     Shooting: 'Shooting',
     Hands: 'Hands',
@@ -8,7 +8,6 @@ const Attributes = {
     Defense: 'Defense',
   },
   Goalie: {
-    Overall: 'Overall',
     HighShots: 'High Shots',
     LowShots: 'Low Shots',
     Quickness: 'Quickness',
