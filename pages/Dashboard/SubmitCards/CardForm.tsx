@@ -6,6 +6,8 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  Grid,
+  Box,
 } from '@material-ui/core'
 import Router from 'next/router'
 import {
@@ -69,7 +71,7 @@ const CardForm = () => {
           })
         }}
       />
-      <InputLabel id={'team-label'}>Team</InputLabel>{' '}
+      <InputLabel id={'team-label'}>Team</InputLabel>
       <Select
         labelId={'team-label'}
         value={cardData?.team || ''}
@@ -89,7 +91,7 @@ const CardForm = () => {
           </MenuItem>
         ))}
       </Select>
-      <InputLabel id={'rarity-label'}>Rarity</InputLabel>{' '}
+      <InputLabel id={'rarity-label'}>Rarity</InputLabel>
       <Select
         labelId={'rarity-label'}
         value={cardData?.rarity || ''}
@@ -106,7 +108,7 @@ const CardForm = () => {
           </MenuItem>
         ))}
       </Select>
-      <InputLabel id={'position-label'}>Position</InputLabel>{' '}
+      <InputLabel id={'position-label'}>Position</InputLabel>
       <Select
         labelId={'position-label'}
         value={cardData?.position || ''}
@@ -231,23 +233,25 @@ const CardForm = () => {
               })
         }}
       />
-      <Button
-        variant="contained"
-        component="label"
-        style={{ alignSelf: 'center' }}
-      >
-        Upload Card Image
-        <input type="file" hidden />
-      </Button>
-      <Button
-        disabled={!canSubmit}
-        style={{ alignSelf: 'center' }}
-        variant="contained"
-        color="primary"
-        onClick={handleSubmit}
-      >
-        Submit Card
-      </Button>
+      <Box m={2}>
+        <Button
+          variant="contained"
+          component="label"
+          style={{ alignSelf: 'center', marginRight: '10px' }}
+        >
+          Upload Card Image
+          <input type="file" hidden />
+        </Button>
+        <Button
+          disabled={!canSubmit}
+          style={{ alignSelf: 'center' }}
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+        >
+          Submit Card
+        </Button>
+      </Box>
     </FormGroup>
   )
 }
