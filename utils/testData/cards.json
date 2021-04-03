@@ -1,0 +1,116 @@
+{
+  "data": [
+    {
+      "playerName": "Eric Hudson",
+      "teamCity": "Texas",
+      "teamName": "Renegades",
+      "rarity": "Bronze",
+      "position": "LW",
+      "attributes": {
+        "overall": "76",
+        "skating": "15",
+        "shooting": "14",
+        "hands": "16",
+        "checking": "13",
+        "defense": "16"
+      },
+      "imageUrl": "https://cdn.discordapp.com/attachments/806611083791826944/824372215268376586/erichudsoncard.png"
+    },
+    {
+      "playerName": "Alexander Selich",
+      "teamCity": "Buffalo",
+      "teamName": "Stampede",
+      "rarity": "Silver",
+      "position": "RD",
+      "attributes": {
+        "overall": "87",
+        "skating": "17",
+        "shooting": "17",
+        "hands": "18",
+        "checking": "16",
+        "defense": "16"
+      },
+      "imageUrl": "https://cdn.discordapp.com/attachments/806611083791826944/823697605568626688/Selich.png"
+    },
+    {
+      "playerName": "Robert Phelps",
+      "teamCity": "Hamilton",
+      "teamName": "Steelhawks",
+      "rarity": "Diamond",
+      "position": "C",
+      "attributes": {
+        "overall": "84",
+        "skating": "16",
+        "shooting": "16",
+        "hands": "16",
+        "checking": "16",
+        "defense": "16"
+      },
+      "imageUrl": "https://cdn.discordapp.com/attachments/806601618702336003/823765802971824180/Phelps.png"
+    },
+    {
+      "playerName": "Aleister Cain",
+      "teamCity": "New Orleans",
+      "teamName": "Spectors",
+      "rarity": "Ruby",
+      "position": "G",
+      "attributes": {
+        "overall": "99",
+        "highShots": "18",
+        "lowShots": "18",
+        "quickness": "18",
+        "control": "18",
+        "conditioning": "18"
+      },
+      "imageUrl": "https://media.discordapp.net/attachments/682634593492402207/724437175344824442/cain.png"
+    },
+    {
+      "playerName": "Sarmad Khan",
+      "teamCity": "Calgary",
+      "teamName": "Dragons",
+      "rarity": "Holographic",
+      "position": "LW",
+      "attributes": {
+        "overall": "99",
+        "skating": "16",
+        "shooting": "16",
+        "hands": "16",
+        "checking": "16",
+        "defense": "16"
+      },
+      "imageUrl": "https://cdn.discordapp.com/attachments/806601618702336003/823678158967668816/unknown.png"
+    },
+    {
+      "playerName": "Jax Aittokallio",
+      "teamCity": "Manhattan",
+      "teamName": "Rage",
+      "rarity": "Gold",
+      "position": "C",
+      "attributes": {
+        "overall": "84",
+        "skating": "17",
+        "shooting": "17",
+        "hands": "16",
+        "checking": "16",
+        "defense": "16"
+      },
+      "imageUrl": "https://cdn.discordapp.com/attachments/806611083791826944/819403354694352917/ICELEVELaittokallio.png"
+    },
+    {
+      "playerName": "Abel Skinner",
+      "teamCity": "Chicago",
+      "teamName": "Syndicate",
+      "rarity": "Bronze",
+      "position": "LD",
+      "attributes": {
+        "overall": "79",
+        "skating": "15",
+        "shooting": "15",
+        "hands": "16",
+        "checking": "14",
+        "defense": "15"
+      },
+      "imageUrl": "https://cdn.discordapp.com/attachments/806601618702336003/824089552724820008/AbelSkinner.png"
+    }
+  ]
+}

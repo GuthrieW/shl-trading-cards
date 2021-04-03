@@ -1,7 +1,9 @@
-export const StorageKeys = {
+const StorageKeys = {
   LocalStorage: {},
   SessionStorage: {},
   Cookies: {
     TheShlMyBbUser: 'theshlmybbuser',
   },
 }
+
+export default StorageKeys

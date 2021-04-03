@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import cookie from 'react-cookies'
-import { StorageKeys } from '../../utils/constants'
+import { StorageKeys } from '../utils/constants'
 
 const Example = () => {
   const handleButtonClick = async () => {

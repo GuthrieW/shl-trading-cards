@@ -1,0 +1,36 @@
+{
+  "data": [
+    {
+      "username": "caltroit_red_flames",
+      "isAdmin": true,
+      "isProcessor": true,
+      "isSubmitter": true,
+      "ownedRegularPacks": 0,
+      "ownedChallengeCupPacks": 0
+    },
+    {
+      "username": "luketd",
+      "isAdmin": true,
+      "isProcessor": false,
+      "isSubmitter": false,
+      "ownedRegularPacks": 0,
+      "ownedChallengeCupPacks": 0
+    },
+    {
+      "username": "slashACM",
+      "isAdmin": false,
+      "isProcessor": false,
+      "isSubmitter": true,
+      "ownedRegularPacks": 0,
+      "ownedChallengeCupPacks": 0
+    },
+    {
+      "username": "Hotdog",
+      "isAdmin": false,
+      "isProcessor": false,
+      "isSubmitter": false,
+      "ownedRegularPacks": 0,
+      "ownedChallengeCupPacks": 0
+    }
+  ]
+}
