@@ -1,10 +1,7 @@
-import React, { useState } from 'react'
-import SkaterForm from './SkaterForm'
-import GoalieForm from './GoalieForm'
+import React from 'react'
+import CardForm from './CardForm'
 
 const SubmitCards = () => {
-  const [isSkater, setIsSkater] = useState(true)
-
   return (
     <div
       style={{
@@ -14,11 +11,7 @@ const SubmitCards = () => {
         width: '50%',
       }}
     >
-      {isSkater ? (
-        <SkaterForm setIsSkater={setIsSkater} />
-      ) : (
-        <GoalieForm setIsSkater={setIsSkater} />
-      )}
+      <CardForm />
     </div>
   )
 }

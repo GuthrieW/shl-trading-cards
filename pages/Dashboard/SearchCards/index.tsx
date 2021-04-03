@@ -1,8 +1,8 @@
 import React from 'react'
 import testCards from '../../../utils/testData/cards.json'
 import DataTable from '../../../components/Tables/DataTable'
-
-const columns = ['playerName', 'teamCity', 'teamName', 'position', 'rarity']
+import { GoalieColumns } from './GoalieColumns'
+import { SkaterColumns } from './SkaterColumns'
 
 const options = {
   filterType: 'dropdown',
@@ -12,16 +12,32 @@ const options = {
   onRowClick: (rowData) => {
     return
   },
+  responsive: 'simple',
 }
 
 const SearchCards = () => {
+  const skaterCards = testCards.data.filter((card) => {
+    return card.position !== 'G'
+  })
+  const goalieCards = testCards.data.filter((card) => {
+    return card.position === 'G'
+  })
+
   return (
-    <DataTable
-      title={'Search for Cards'}
-      data={testCards.data}
-      columns={columns}
-      options={options}
-    />
+    <>
+      <DataTable
+        title={'Search for Skaters'}
+        data={skaterCards}
+        columns={SkaterColumns}
+        options={options}
+      />
+      <DataTable
+        title={'Search for Goaltenders'}
+        data={goalieCards}
+        columns={GoalieColumns}
+        options={options}
+      />
+    </>
   )
 }
 

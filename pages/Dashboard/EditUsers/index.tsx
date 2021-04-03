@@ -96,7 +96,6 @@ const EditUsers = () => {
             <Switch
               checked={selectedUser?.isSubmitter ?? false}
               onChange={() => {
-                const newData = { isSubmitter: !selectedUser.isSubmitter }
                 setSelectedUser({
                   ...selectedUser,
                   ...{ isSubmitter: !selectedUser.isSubmitter },

@@ -31,6 +31,62 @@
       "isSubmitter": false,
       "ownedRegularPacks": 0,
       "ownedChallengeCupPacks": 0
+    },
+    {
+      "username": "Blastmeaway",
+      "isAdmin": true,
+      "isProcessor": false,
+      "isSubmitter": false,
+      "ownedRegularPacks": 0,
+      "ownedChallengeCupPacks": 0
+    },
+    {
+      "username": "jeffie43",
+      "isAdmin": true,
+      "isProcessor": false,
+      "isSubmitter": false,
+      "ownedRegularPacks": 0,
+      "ownedChallengeCupPacks": 0
+    },
+    {
+      "username": "Lime",
+      "isAdmin": false,
+      "isProcessor": false,
+      "isSubmitter": true,
+      "ownedRegularPacks": 0,
+      "ownedChallengeCupPacks": 0
+    },
+    {
+      "username": "Nour",
+      "isAdmin": true,
+      "isProcessor": false,
+      "isSubmitter": false,
+      "ownedRegularPacks": 0,
+      "ownedChallengeCupPacks": 0
+    },
+    {
+      "username": "Nokazoa",
+      "isAdmin": false,
+      "isProcessor": false,
+      "isSubmitter": false,
+      "ownedRegularPacks": 0,
+      "ownedChallengeCupPacks": 0
+    },
+    {
+      "username": "39alaska39",
+      "isAdmin": false,
+      "isProcessor": false,
+      "isSubmitter": true,
+      "ownedRegularPacks": 0,
+      "ownedChallengeCupPacks": 0
+    },
+    {
+      "username": "DrunkenTeddy",
+      "isAdmin": true,
+      "isProcessor": false,
+      "isSubmitter": false,
+      "ownedRegularPacks": 0,
+      "ownedChallengeCupPacks": 0
     }
   ]
 }
