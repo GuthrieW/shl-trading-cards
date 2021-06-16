@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { useAuthentication } from '../../utils/authentication'
 import { Container } from '@material-ui/core'
 import InfoCard from '../../components/info-card'
+import { groupNumberToLabel, groups } from '../../utils/user-groups'
 
 const DummyPermissions = {
   isAdmin: true,
@@ -9,44 +11,76 @@ const DummyPermissions = {
 }
 
 const Dashboard = () => {
+  const [isLoading, username, userGroups] = useAuthentication() as [
+    boolean,
+    string,
+    Array<Number>
+  ]
+
+  const getUserGroups = (groupNumbers) => {
+    let groupsDisplay = ''
+    let firstGroup = true
+    groupNumbers.map((groupNumber) => {
+      const label = groupNumberToLabel[groupNumber]
+      if (label) {
+        if (firstGroup) {
+          firstGroup = false
+        } else {
+          groupsDisplay += `, `
+        }
+        groupsDisplay += `${label}`
+      }
+    })
+    return groupsDisplay
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
   return (
     <Container>
-      {DummyPermissions.isAdmin && (
+      <h1>{`Username: ${username}`}</h1>
+      <h2>{`Groups: ${getUserGroups(userGroups)}`}</h2>
+      {userGroups.includes(groups['Trading Card Management'].id) && (
         <InfoCard
           title={'Edit Users'}
           body={
             'Modify user data including subscription status and permissions'
           }
-          href={'/Dashboard/EditUsers'}
+          href={'/Dashboard/edit-users'}
         />
       )}
-      {(DummyPermissions.isAdmin || DummyPermissions.isProcessor) && (
+      {(userGroups.includes(groups['Trading Card Management'].id) ||
+        userGroups.includes(groups.Approver.id)) && (
         <InfoCard
           title={'Edit Cards'}
           body={
             'Modify card information including approval and current rotation'
           }
-          href={'/Dashboard/EditCards'}
+          href={'/dashboard/edit-cards'}
         />
       )}
-      {(DummyPermissions.isAdmin || DummyPermissions.isProcessor) && (
+      {(userGroups.includes(groups['Trading Card Management'].id) ||
+        userGroups.includes(groups.Approver.id)) && (
         <InfoCard
           title={'Process Cards'}
           body={'Approve or delete cards in the processing queue'}
-          href={'/Dashboard/ProcessCards'}
+          href={'/dashboard/process-cards'}
         />
       )}
-      {(DummyPermissions.isAdmin || DummyPermissions.isProcessor) && (
+      {(userGroups.includes(groups['Trading Card Management'].id) ||
+        userGroups.includes(groups.Submitter.id)) && (
         <InfoCard
           title={'Submit Cards'}
           body={'Submit cards for approval'}
-          href={'/Dashboard/SubmitCards'}
+          href={'/dashboard/submit-cards'}
         />
       )}
       <InfoCard
         title={'Search Cards'}
         body={'Search for cards based on their meta data'}
-        href={'/Dashboard/SearchCards'}
+        href={'/dashboard/search-cards'}
       />
     </Container>
   )

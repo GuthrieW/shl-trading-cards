@@ -6,7 +6,7 @@ const SplashScreen = () => {
   return (
     <div className={classes.splashScreenWrapper}>
       <Box className={classes.overlayContainer}>
-        <img className={classes.dottsLogo} src="/images/" />
+        <img className={classes.dottsLogo} src="#" />
         <p className={classes.subtitle}>Welcome to SHL Trading Cards!</p>
         <Box className={classes.buttonContainer}>
           <ButtonGroup
@@ -16,7 +16,7 @@ const SplashScreen = () => {
             aria-label="small outlined button group"
           >
             <Box m={2}>
-              <Link href="/Authentication/Login">
+              <Link href="#">
                 <Button variant="contained" color="primary" fullWidth>
                   Login
                 </Button>

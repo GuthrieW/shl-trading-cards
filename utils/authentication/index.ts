@@ -1,1 +1,1 @@
-export { default as authenticateUser } from './authenticate-user'
+export { default as useAuthentication } from './use-authentication'
