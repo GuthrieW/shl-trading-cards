@@ -1,4 +1,6 @@
-export const GoalieColumns = [
+import { Button } from '@material-ui/core'
+
+export const goalieColumns = [
   {
     label: 'Name',
     name: 'playerName',
@@ -41,6 +43,32 @@ export const GoalieColumns = [
     options: {
       filter: false,
       sort: false,
+    },
+  },
+  {
+    name: 'Accept Card',
+    options: {
+      filter: false,
+      sort: false,
+      empty: true,
+      customBodyRenderLite: (dataIndex) => (
+        <div style={{ textAlign: 'center' }}>
+          <Button>Accept</Button>
+        </div>
+      ),
+    },
+  },
+  {
+    name: 'Deny Card',
+    options: {
+      filter: false,
+      sort: false,
+      empty: true,
+      customBodyRenderLite: (dataIndex) => (
+        <div style={{ textAlign: 'center' }}>
+          <Button>Deny</Button>
+        </div>
+      ),
     },
   },
 ]

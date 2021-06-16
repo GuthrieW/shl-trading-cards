@@ -1,6 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import Collection from '../Collection'
+import Collection from '../collection'
 
 const CommunityMemberPage = () => {
   const router = useRouter()

@@ -1,5 +1,5 @@
 import React from 'react'
-import CardForm from './CardForm'
+import CardForm from './card-form'
 
 const SubmitCards = () => {
   return (

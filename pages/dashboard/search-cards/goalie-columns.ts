@@ -1,4 +1,4 @@
-export const GoalieColumns = [
+export const goalieColumns = [
   {
     label: 'Name',
     name: 'playerName',

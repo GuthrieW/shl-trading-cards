@@ -1,13 +1,13 @@
 import React from 'react'
 import axios from 'axios'
 import cookie from 'react-cookies'
-import { StorageKeys } from '../utils/constants'
+import { storageKeys } from '../utils/constants'
 
 const Example = () => {
   const handleButtonClick = async () => {
     const cookies = document.cookie
     console.log(cookies)
-    const shlCookie = cookie.load(StorageKeys.Cookies.TheShlMyBbUser)
+    const shlCookie = cookie.load(storageKeys.Cookies.TheShlMyBbUser)
     if (shlCookie) {
       shlCookie.split('_')
       const userId = shlCookie[0]

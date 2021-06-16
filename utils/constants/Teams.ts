@@ -1,4 +1,4 @@
-const Teams = {
+const teams = {
   Atlanta: {
     City: 'Atlanta',
     Team: 'Inferno',
@@ -211,4 +211,4 @@ const Teams = {
   },
 }
 
-export default Teams
+export default teams

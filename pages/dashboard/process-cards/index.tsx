@@ -1,8 +1,8 @@
 import React from 'react'
-import DataTable from '../../../components/Tables/DataTable'
-import testCards from '../../../utils/testData/cards.json'
-import { GoalieColumns } from './GoalieColumns'
-import { SkaterColumns } from './SkaterColumns'
+import DataTable from '../../../components/tables/data-table'
+import testCards from '../../../utils/test-data/cards.json'
+import { goalieColumns } from './goalie-columns'
+import { skaterColumns } from './skater-columns'
 
 const options = {
   filterType: 'dropdown',
@@ -28,13 +28,13 @@ const ProcessCards = () => {
       <DataTable
         title={'Process Skaters'}
         data={skaterCards}
-        columns={SkaterColumns}
+        columns={skaterColumns}
         options={options}
       />
       <DataTable
         title={'Process Goaltenders'}
         data={goalieCards}
-        columns={GoalieColumns}
+        columns={goalieColumns}
         options={options}
       />
     </>

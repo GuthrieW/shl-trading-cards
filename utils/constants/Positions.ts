@@ -1,4 +1,4 @@
-const Positions = {
+const positions = {
   Center: {
     label: 'Center',
     abbreviation: 'C',
@@ -25,4 +25,4 @@ const Positions = {
   },
 }
 
-export default Positions
+export default positions

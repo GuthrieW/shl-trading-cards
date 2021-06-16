@@ -1,6 +1,4 @@
-import { Button } from '@material-ui/core'
-
-export const SkaterColumns = [
+export const skaterColumns = [
   {
     label: 'Name',
     name: 'playerName',
@@ -36,5 +34,13 @@ export const SkaterColumns = [
   {
     label: 'Defense',
     name: 'defense',
+  },
+  {
+    label: 'Image URL',
+    name: 'imageUrl',
+    options: {
+      filter: false,
+      sort: false,
+    },
   },
 ]

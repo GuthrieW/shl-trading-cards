@@ -9,7 +9,7 @@ import {
   TableBody,
 } from '@material-ui/core'
 import Router from 'next/router'
-import testUsers from '../../utils/testData/user.json'
+import testUsers from '../../utils/test-data/user.json'
 
 const columns = [
   { id: 'username', label: 'Name', minWidth: 170 },

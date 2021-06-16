@@ -1,4 +1,4 @@
-const CardData = {
+const cardData = {
   PlayerName: 'playerName',
   Team: 'team',
   Rarity: 'rarity',
@@ -17,4 +17,4 @@ const CardData = {
   ImageUrl: 'imageUrl',
 }
 
-export default CardData
+export default cardData

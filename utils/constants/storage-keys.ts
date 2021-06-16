@@ -1,4 +1,4 @@
-const StorageKeys = {
+const storageKeys = {
   LocalStorage: {},
   SessionStorage: {},
   Cookies: {
@@ -6,4 +6,4 @@ const StorageKeys = {
   },
 }
 
-export default StorageKeys
+export default storageKeys

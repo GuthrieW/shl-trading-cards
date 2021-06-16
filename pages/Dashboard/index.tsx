@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Container } from '@material-ui/core'
-import InfoCard from '../../components/InfoCard'
+import InfoCard from '../../components/info-card'
 
 const DummyPermissions = {
   isAdmin: true,

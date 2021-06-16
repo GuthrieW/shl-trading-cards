@@ -1,4 +1,4 @@
-const Attributes = {
+const attributes = {
   Overall: 'Overall',
   Skater: {
     Skating: 'Skating',
@@ -16,4 +16,4 @@ const Attributes = {
   },
 }
 
-export default Attributes
+export default attributes

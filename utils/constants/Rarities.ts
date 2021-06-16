@@ -1,4 +1,4 @@
-const Rarities = {
+const rarities = {
   Bronze: 'Bronze',
   Silver: 'Silver',
   Gold: 'Gold',
@@ -6,4 +6,4 @@ const Rarities = {
   Diamond: 'Diamond',
 }
 
-export default Rarities
+export default rarities

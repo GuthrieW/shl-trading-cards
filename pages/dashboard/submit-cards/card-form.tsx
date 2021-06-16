@@ -11,10 +11,10 @@ import {
 } from '@material-ui/core'
 import Router from 'next/router'
 import {
-  Teams,
-  Rarities,
-  Positions,
-  Attributes,
+  teams,
+  rarities,
+  positions,
+  attributes,
 } from '../../../utils/constants'
 
 const CardForm = () => {
@@ -82,7 +82,7 @@ const CardForm = () => {
           })
         }}
       >
-        {Object.entries(Teams).map((team) => (
+        {Object.entries(teams).map((team) => (
           <MenuItem
             key={`${team[1].City} ${team[1].Team}`}
             value={`${team[1].City} ${team[1].Team}`}
@@ -102,7 +102,7 @@ const CardForm = () => {
           })
         }}
       >
-        {Object.entries(Rarities).map((rarity) => (
+        {Object.entries(rarities).map((rarity) => (
           <MenuItem key={rarity[1]} value={rarity[1]}>
             {rarity[1]}
           </MenuItem>
@@ -119,7 +119,7 @@ const CardForm = () => {
           })
         }}
       >
-        {Object.entries(Positions).map((position) => (
+        {Object.entries(positions).map((position) => (
           <MenuItem
             key={`${position[1].label}`}
             value={`${position[1].abbreviation}`}
@@ -131,7 +131,7 @@ const CardForm = () => {
       <TextField
         type={'number'}
         InputProps={{ inputProps: { min: 0, max: 99 } }}
-        label={Attributes.Overall}
+        label={attributes.Overall}
         value={cardData?.overall || ''}
         onChange={(event) => {
           setCardData({
@@ -144,7 +144,7 @@ const CardForm = () => {
         type={'number'}
         InputProps={{ inputProps: { min: 0, max: 20 } }}
         label={
-          isSkater ? Attributes.Skater.Skating : Attributes.Goalie.HighShots
+          isSkater ? attributes.Skater.Skating : attributes.Goalie.HighShots
         }
         value={(isSkater ? cardData?.skating : cardData?.highShots) || ''}
         onChange={(event) => {
@@ -163,7 +163,7 @@ const CardForm = () => {
         type={'number'}
         InputProps={{ inputProps: { min: 0, max: 20 } }}
         label={
-          isSkater ? Attributes.Skater.Shooting : Attributes.Goalie.LowShots
+          isSkater ? attributes.Skater.Shooting : attributes.Goalie.LowShots
         }
         value={(isSkater ? cardData?.shooting : cardData?.lowShots) || ''}
         onChange={(event) => {
@@ -181,7 +181,7 @@ const CardForm = () => {
       <TextField
         type={'number'}
         InputProps={{ inputProps: { min: 0, max: 20 } }}
-        label={isSkater ? Attributes.Skater.Hands : Attributes.Goalie.Quickness}
+        label={isSkater ? attributes.Skater.Hands : attributes.Goalie.Quickness}
         value={(isSkater ? cardData?.hands : cardData?.quickness) || ''}
         onChange={(event) => {
           isSkater
@@ -199,7 +199,7 @@ const CardForm = () => {
         type={'number'}
         InputProps={{ inputProps: { min: 0, max: 20 } }}
         label={
-          isSkater ? Attributes.Skater.Checking : Attributes.Goalie.Control
+          isSkater ? attributes.Skater.Checking : attributes.Goalie.Control
         }
         value={(isSkater ? cardData?.checking : cardData?.control) || ''}
         onChange={(event) => {
@@ -218,7 +218,7 @@ const CardForm = () => {
         type={'number'}
         InputProps={{ inputProps: { min: 0, max: 20 } }}
         label={
-          isSkater ? Attributes.Skater.Defense : Attributes.Goalie.Conditioning
+          isSkater ? attributes.Skater.Defense : attributes.Goalie.Conditioning
         }
         value={(isSkater ? cardData?.defense : cardData?.conditioning) || ''}
         onChange={(event) => {

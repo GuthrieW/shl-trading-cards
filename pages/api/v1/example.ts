@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '../Database/database'
+import { queryDatabase } from '../database/database'
 
 const index = async (request: NextApiRequest, response: NextApiResponse) => {
   const results = await queryDatabase(
