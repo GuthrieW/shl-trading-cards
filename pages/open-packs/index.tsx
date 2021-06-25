@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core'
 import useStyles from './index.styles'
 import Loading from '@components/loading'
-import packs from '@utils/constants/packs'
+import packsMap from '@utils/constants/packs-map'
 import OpenPacksIcon from '@public/icons/open-packs-icon'
 
 const OpenPacks = () => {
@@ -46,7 +46,7 @@ const OpenPacks = () => {
         cellHeight={400}
         cols={2}
       >
-        {packs.map((pack) => {
+        {packsMap.map((pack) => {
           const { key, label, imageUrl } = pack
           return (
             <GridListTile className={classes.cardContainer} key={key}>

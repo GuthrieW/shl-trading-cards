@@ -19,6 +19,7 @@
     "mui-datatables": "^3.7.6",
     "next": "10.0.7",
     "react": "17.0.1",
+    "react-content-loader": "^6.0.3",
     "react-cookie": "^4.0.3",
     "react-cookies": "^0.1.1",
     "react-dom": "17.0.1",
