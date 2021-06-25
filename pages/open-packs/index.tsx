@@ -12,17 +12,24 @@ import useStyles from './index.styles'
 import Loading from '@components/loading'
 import packsMap from '@utils/constants/packs-map'
 import OpenPacksIcon from '@public/icons/open-packs-icon'
+import { useAuthentication } from '@hooks/useAuthentication'
 
 const OpenPacks = () => {
   const theme = useTheme()
   const classes = useStyles()
 
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, username, userGroups] = useAuthentication() as [
+    boolean,
+    string,
+    Array<Number>
+  ]
+  const [isFetching, setIsFetching] = useState(false)
   const [isRedirect, setIsRedirect] = useState(false)
 
   useEffect(() => {
+    setIsFetching(true)
     const fetchData = async () => {
-      setIsLoading(false)
+      setIsFetching(false)
     }
 
     fetchData()

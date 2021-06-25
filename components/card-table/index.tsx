@@ -1,9 +1,8 @@
 import React from 'react'
 import MaterialTable, { Icons, Action, Column } from 'material-table'
-import { Card } from '../index'
 
 export type TableProps = {
-  columns: Column<Card>[]
+  columns: Column<any>[]
   data: any[]
   title: string
   actions: Action<any>[]
