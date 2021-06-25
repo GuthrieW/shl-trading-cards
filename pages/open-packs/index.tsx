@@ -12,7 +12,7 @@ import useStyles from './index.styles'
 import Loading from '@components/loading'
 import packsMap from '@utils/constants/packs-map'
 import OpenPacksIcon from '@public/icons/open-packs-icon'
-import { useAuthentication } from '@hooks/useAuthentication'
+import { useAuthentication } from '@hooks/index'
 
 const OpenPacks = () => {
   const theme = useTheme()

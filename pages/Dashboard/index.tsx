@@ -1,5 +1,5 @@
 import React from 'react'
-import { useAuthentication } from '@hooks/useAuthentication'
+import { useAuthentication } from '@hooks/index'
 import { Container } from '@material-ui/core'
 import InfoCard from '@components/info-card'
 import { groupNumberToLabel, groups } from '@utils/user-groups'
