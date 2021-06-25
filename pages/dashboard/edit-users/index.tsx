@@ -7,7 +7,7 @@ import {
   Button,
 } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
-import testUsers from '../../../utils/test-data/user.json'
+import testUsers from '@utils/test-data/user.json'
 import Router from 'next/router'
 
 const EditUsers = () => {

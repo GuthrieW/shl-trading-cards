@@ -1,4 +1,4 @@
-import Example from '../components/example'
+import Example from '@components/example'
 
 const index = () => {
   return (

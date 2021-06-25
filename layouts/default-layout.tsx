@@ -11,7 +11,7 @@ import {
   useTheme,
 } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
-import SplashScreen from '../pages/splash-screen'
+import SplashScreen from '@pages/splash-screen'
 import Link from 'next/link'
 import Router from 'next/router'
 import axios from 'axios'

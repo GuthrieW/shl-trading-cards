@@ -10,12 +10,7 @@ import {
   Box,
 } from '@material-ui/core'
 import Router from 'next/router'
-import {
-  teams,
-  rarities,
-  positions,
-  attributes,
-} from '../../../utils/constants'
+import { teams, rarities, positions, attributes } from '@utils/constants'
 
 const CardForm = () => {
   const [cardData, setCardData] = useState(null)

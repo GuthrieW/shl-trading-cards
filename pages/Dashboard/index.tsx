@@ -1,8 +1,8 @@
 import React from 'react'
-import { useAuthentication } from '../../utils/authentication'
+import { useAuthentication } from '@utils/authentication'
 import { Container } from '@material-ui/core'
-import InfoCard from '../../components/info-card'
-import { groupNumberToLabel, groups } from '../../utils/user-groups'
+import InfoCard from '@components/info-card'
+import { groupNumberToLabel, groups } from '@utils/user-groups'
 
 const DummyPermissions = {
   isAdmin: true,

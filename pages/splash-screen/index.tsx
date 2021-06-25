@@ -1,12 +1,14 @@
 import React from 'react'
 import { Box, ButtonGroup, Button, Link } from '@material-ui/core'
-import classes from '*.module.css'
+import useStyles from './index.styles'
 
 const SplashScreen = () => {
+  const classes = useStyles()
+
   return (
     <div className={classes.splashScreenWrapper}>
       <Box className={classes.overlayContainer}>
-        <img className={classes.dottsLogo} src="#" />
+        <img className={classes.tradingCardsLogo} src="#" />
         <p className={classes.subtitle}>Welcome to SHL Trading Cards!</p>
         <Box className={classes.buttonContainer}>
           <ButtonGroup
