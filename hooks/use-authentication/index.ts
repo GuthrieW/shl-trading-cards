@@ -8,7 +8,7 @@ const useAuthentication = () => {
 
   useEffect(() => {
     const authenticate = async () => {
-      const url =
+      const authenticationUrl =
         process.env.NODE_ENV === 'production'
           ? 'https://simulationhockey.com/userinfo.php'
           : 'https://dev.simulationhockey.com/userinfo.php'
@@ -23,7 +23,7 @@ const useAuthentication = () => {
 
       // const result = await axios({
       //   method: 'GET',
-      //   url: url,
+      //   url: authenticationUrl,
       // })
 
       setUsername(result.data.username)
