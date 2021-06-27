@@ -5,7 +5,13 @@ const useStyles = makeStyles((theme) => ({
   appBar: {},
   headerLogoContainer: {},
   headerLogo: {},
-  footer: {},
+  footer: {
+    marginTop: '5px',
+    width: '100%',
+    position: 'fixed',
+    bottom: 0,
+    zIndex: 1,
+  },
 }))
 
 export default useStyles

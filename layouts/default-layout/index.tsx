@@ -128,6 +128,6 @@ const DefaultLayout = ({ children }) => {
   )
 }
 
-export const getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>
+// export const getLayout = (page) => <DefaultLayout>{page}</DefaultLayout>
 
 export default DefaultLayout

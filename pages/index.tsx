@@ -1,12 +1,9 @@
-import Example from '@components/example'
 import Loading from '@components/loading'
 
-const index = () => {
+const index = (props) => {
   return (
     <>
-      <h1>SHL Trading Cards</h1>
       <Loading />
-      <h2>Test</h2>
     </>
   )
 }

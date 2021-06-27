@@ -6,7 +6,8 @@
         "@utils/*": ["utils/*"],
         "@pages/*": ["pages/*"],
         "@public/*": ["public/*"],
-        "@hooks/*": ["hooks/*"]
+        "@hooks/*": ["hooks/*"],
+        "@layouts/*": ["layouts/*"]
       },
       "target": "es5",
       "lib": ["dom", "dom.iterable", "esnext"],
