@@ -3,6 +3,7 @@ import { useAuthentication } from '@hooks/index'
 import { Container } from '@material-ui/core'
 import InfoCard from '@components/info-card'
 import { groupNumberToLabel, groups } from '@utils/user-groups'
+import Loading from '@components/loading'
 
 const DummyPermissions = {
   isAdmin: true,
@@ -35,54 +36,56 @@ const Dashboard = () => {
   }
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <Loading />
   }
 
   return (
-    <Container>
-      <h1>{`Username: ${username}`}</h1>
-      <h2>{`Groups: ${getUserGroups(userGroups)}`}</h2>
-      {userGroups.includes(groups['Trading Card Management'].id) && (
+    <>
+      <Container>
+        <h1>{`Username: ${username}`}</h1>
+        <h2>{`Groups: ${getUserGroups(userGroups)}`}</h2>
+        {userGroups.includes(groups['Trading Card Management'].id) && (
+          <InfoCard
+            title={'Edit Users'}
+            body={
+              'Modify user data including subscription status and permissions'
+            }
+            href={'/Dashboard/edit-users'}
+          />
+        )}
+        {(userGroups.includes(groups['Trading Card Management'].id) ||
+          userGroups.includes(groups.Approver.id)) && (
+          <InfoCard
+            title={'Edit Cards'}
+            body={
+              'Modify card information including approval and current rotation'
+            }
+            href={'/dashboard/edit-cards'}
+          />
+        )}
+        {(userGroups.includes(groups['Trading Card Management'].id) ||
+          userGroups.includes(groups.Approver.id)) && (
+          <InfoCard
+            title={'Process Cards'}
+            body={'Approve or delete cards in the processing queue'}
+            href={'/dashboard/process-cards'}
+          />
+        )}
+        {(userGroups.includes(groups['Trading Card Management'].id) ||
+          userGroups.includes(groups.Submitter.id)) && (
+          <InfoCard
+            title={'Submit Cards'}
+            body={'Submit cards for approval'}
+            href={'/dashboard/submit-cards'}
+          />
+        )}
         <InfoCard
-          title={'Edit Users'}
-          body={
-            'Modify user data including subscription status and permissions'
-          }
-          href={'/Dashboard/edit-users'}
+          title={'Search Cards'}
+          body={'Search for cards based on their meta data'}
+          href={'/dashboard/search-cards'}
         />
-      )}
-      {(userGroups.includes(groups['Trading Card Management'].id) ||
-        userGroups.includes(groups.Approver.id)) && (
-        <InfoCard
-          title={'Edit Cards'}
-          body={
-            'Modify card information including approval and current rotation'
-          }
-          href={'/dashboard/edit-cards'}
-        />
-      )}
-      {(userGroups.includes(groups['Trading Card Management'].id) ||
-        userGroups.includes(groups.Approver.id)) && (
-        <InfoCard
-          title={'Process Cards'}
-          body={'Approve or delete cards in the processing queue'}
-          href={'/dashboard/process-cards'}
-        />
-      )}
-      {(userGroups.includes(groups['Trading Card Management'].id) ||
-        userGroups.includes(groups.Submitter.id)) && (
-        <InfoCard
-          title={'Submit Cards'}
-          body={'Submit cards for approval'}
-          href={'/dashboard/submit-cards'}
-        />
-      )}
-      <InfoCard
-        title={'Search Cards'}
-        body={'Search for cards based on their meta data'}
-        href={'/dashboard/search-cards'}
-      />
-    </Container>
+      </Container>
+    </>
   )
 }
 

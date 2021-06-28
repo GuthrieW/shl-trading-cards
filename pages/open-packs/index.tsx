@@ -43,9 +43,12 @@ const OpenPacks = () => {
     console.log(`The type is ${packType}`)
   }
 
+  if (isLoading) {
+    return <Loading />
+  }
+
   return (
     <>
-      {isLoading && <Loading />}
       {isRedirect && <h1>Redirecting</h1>}
       <GridList
         className={classes.packsGrid}

@@ -48,7 +48,7 @@ const DefaultLayout = ({ children }) => {
 
   const handleSignOut = () => {
     Router.push({
-      pathname: '/Authentication/Login',
+      pathname: '/splash-screen',
     })
   }
   const updateNavigationDisplay = (newNavigationValue) => {
@@ -102,19 +102,19 @@ const DefaultLayout = ({ children }) => {
                 >
                   <BottomNavigationAction
                     component={BottomNavigationActionLink}
-                    href={'/MyCards'}
+                    href={`/collection/${username}`}
                     label="My Cards"
                     icon={<MyCardsIcon />}
                   />
                   <BottomNavigationAction
                     component={BottomNavigationActionLink}
-                    href={'/OpenPacks'}
+                    href={'/open-packs'}
                     label="Open Packs"
                     icon={<OpenPacksIcon />}
                   />
                   <BottomNavigationAction
                     component={BottomNavigationActionLink}
-                    href={'/Community'}
+                    href={'/community'}
                     label="Community"
                     icon={<CommunityIcon />}
                   />

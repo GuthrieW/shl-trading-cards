@@ -10,13 +10,20 @@ import {
 } from '@material-ui/core'
 import Router from 'next/router'
 import testUsers from '@utils/test-data/user.json'
+import Loading from '@components/loading'
+import { useAuthentication } from '@hooks/index'
 
 const columns = [
   { id: 'username', label: 'Name', minWidth: 170 },
   { id: 'cards', label: 'Number of Cards', minWidth: 100 },
 ]
 
-const Community = (shlUsername) => {
+const Community = () => {
+  const [isLoading, username, userGroups] = useAuthentication() as [
+    boolean,
+    string,
+    Array<Number>
+  ]
   const [communityAccounts, setCommunityAccounts] = useState([])
 
   useEffect(() => {
@@ -25,9 +32,12 @@ const Community = (shlUsername) => {
 
   const handleOnClick = (username) => {
     Router.push({
-      // pathname: `Community`,
-      pathname: `Community/${username}`,
+      pathname: `community/${username}`,
     })
+  }
+
+  if (isLoading) {
+    return <Loading />
   }
 
   return (
