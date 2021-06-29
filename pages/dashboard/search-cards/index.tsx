@@ -1,6 +1,6 @@
 import React from 'react'
 import testCards from '@utils/test-data/cards.json'
-import DataTable from '@components/tables/data-table'
+import DataTable from '@components/data-table'
 import { goalieColumns } from './goalie-columns'
 import { skaterColumns } from './skater-columns'
 

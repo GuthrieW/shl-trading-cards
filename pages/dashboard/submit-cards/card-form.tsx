@@ -26,8 +26,6 @@ const CardForm = () => {
   const onFileChange = (event) => {
     const file = URL.createObjectURL(event.target.files[0])
     setSelectedFile(file)
-
-    console.log(event.target.files)
   }
 
   const handleSubmit = () => {

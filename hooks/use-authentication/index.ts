@@ -21,11 +21,6 @@ const useAuthentication = () => {
         },
       }
 
-      // const result = await axios({
-      //   method: 'GET',
-      //   url: authenticationUrl,
-      // })
-
       setUsername(result.data.username)
       setUserGroups(result.data.usergroups)
       setLoading(false)
