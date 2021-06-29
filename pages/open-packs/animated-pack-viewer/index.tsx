@@ -32,6 +32,7 @@ const AnimatedPackViewer = ({ cards }) => {
   }))
 
   const bind = useGesture(
+    // @ts-ignore
     ({
       args: [index],
       down,

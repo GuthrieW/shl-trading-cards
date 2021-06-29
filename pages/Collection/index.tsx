@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import useAuthentication from '@hooks/use-authentication'
 import Loading from '@components/loading'
 
-const Collection = (props) => {
+export const Collection = (props) => {
   const { shlUsername } = props
   const [isLoading, username, userGroups] = useAuthentication() as [
     boolean,

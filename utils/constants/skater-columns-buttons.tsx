@@ -1,6 +1,7 @@
 import { Button } from '@material-ui/core'
+import React from 'react'
 
-export const skaterColumns = [
+const skaterColumns = [
   {
     label: 'Name',
     name: 'playerName',
@@ -72,3 +73,5 @@ export const skaterColumns = [
     },
   },
 ]
+
+export default skaterColumns

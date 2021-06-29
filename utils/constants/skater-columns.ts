@@ -1,4 +1,4 @@
-export const skaterColumns = [
+const skaterColumns = [
   {
     label: 'Name',
     name: 'playerName',
@@ -36,3 +36,5 @@ export const skaterColumns = [
     name: 'defense',
   },
 ]
+
+export default skaterColumns

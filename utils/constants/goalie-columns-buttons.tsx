@@ -1,6 +1,6 @@
 import { Button } from '@material-ui/core'
 
-export const goalieColumns = [
+const goalieColumns = [
   {
     label: 'Name',
     name: 'playerName',
@@ -72,3 +72,5 @@ export const goalieColumns = [
     },
   },
 ]
+
+export default goalieColumns
