@@ -42,7 +42,8 @@ const Dashboard = () => {
   return (
     <>
       <Container>
-        <h1>{`Username: ${username}`}</h1>
+        <h1>Skip header</h1>
+        <h2>{`Username: ${username}`}</h2>
         <h2>{`Groups: ${getUserGroups(userGroups)}`}</h2>
         {userGroups.includes(groups['Trading Card Management'].id) && (
           <InfoCard
