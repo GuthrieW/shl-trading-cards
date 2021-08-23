@@ -8,9 +8,11 @@ import {
 } from '@material-ui/core'
 import Link from 'next/link'
 import navigationOptions from './navigation-options'
+import ToolbarLinkLogo from './toolbar-link-logo'
 
 const SideNavBar = ({ value, updateTabValue }) => (
   <Drawer variant={'permanent'} anchor={'left'}>
+    <ToolbarLinkLogo />
     <List>
       {navigationOptions.map((navigationOption) => (
         <Link href={navigationOption.href}>
