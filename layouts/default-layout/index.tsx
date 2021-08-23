@@ -11,6 +11,7 @@ const [username, groups, isLoading] = ['caltroit_red_flames', [], false]
 
 const DefaultLayout = ({ children }) => {
   const [navigationValue, setNavigationValue] = useState(0)
+
   const { isDesktop } = useWindowDimensions()
 
   if (!username) {
@@ -19,13 +20,15 @@ const DefaultLayout = ({ children }) => {
 
   return (
     <div>
-      <AppBar position="fixed">
+      <HeaderBar position="fixed">
         <Toolbar>
           <Link href="/">
-            <ToolbarLogo src={'../public/images/Dotts-Logo-White.png'} />
+            <ToolbarLogo
+              src={'https://simulationhockey.com/images/darklogo.png'}
+            />
           </Link>
         </Toolbar>
-      </AppBar>
+      </HeaderBar>
       {isDesktop && (
         <SideNavBar
           value={navigationValue}
@@ -47,8 +50,12 @@ const DefaultLayout = ({ children }) => {
 
 const ToolbarLogo = styled.img`
   margin-top: 5px;
-  width: 100%;
   position: fixed;
+  z-index: 2;
+`
+
+const HeaderBar = styled(AppBar)`
+  z-index: 1;
 `
 
 export default DefaultLayout

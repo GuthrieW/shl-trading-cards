@@ -1,38 +1,10 @@
-// import React, { useEffect } from 'react'
-// import { CssBaseline, ThemeProvider } from '@material-ui/core'
-// import DefaultLayout from '@layouts/default-layout'
-// import { theme } from '@components/index'
-
-// const App = ({ Component, pageProps }) => {
-//   useEffect(() => {
-//     // Remove the server-side injected CSS.
-//     const jssStyles = document.querySelector('#jss-server-side')
-//     if (jssStyles) {
-//       jssStyles.parentElement.removeChild(jssStyles)
-//     }
-//   }, [])
-
-//   const getLayout =
-//     Component.layout || ((page) => <DefaultLayout children={page} />)
-
-//   return getLayout(
-//     <ThemeProvider theme={theme}>
-//       <CssBaseline />
-//       <Component {...pageProps} />
-//     </ThemeProvider>
-//   )
-// }
-
-// App.getLayout = App
-
-// export default App
-
 import React from 'react'
 import { DefaultSeo } from 'next-seo'
 import { ThemeProvider } from 'styled-components'
 import { SWRConfig } from 'swr'
 import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
+import DefaultLayout from '@layouts/default-layout'
 
 const theme = {
   colors: {
@@ -52,7 +24,7 @@ const theme = {
   },
 }
 
-const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
+export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <SWRConfig
       value={{
@@ -61,9 +33,10 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
       }}
     >
       <ThemeProvider theme={theme}>
-        <DefaultSeo {...SEO} />
-        <Component {...pageProps} />
-        <style global jsx>{`
+        <DefaultLayout>
+          <DefaultSeo {...SEO} />
+          <Component {...pageProps} />
+          <style global jsx>{`
         body {
           font-family: 'Raleway, sans-serif;
           background-color: ${theme.colors.grey200}
@@ -75,9 +48,8 @@ const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
           box-sizing: border-box;
         }
         `}</style>
+        </DefaultLayout>
       </ThemeProvider>
     </SWRConfig>
   )
 }
-
-export default MyApp

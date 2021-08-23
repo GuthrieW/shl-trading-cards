@@ -31,6 +31,6 @@
       "pages/api/schemas/Card.ts",
       "pages/api/schemas/User.js"
   , "pages/api/database/database.js"  ],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules", ".next"]
   }
   

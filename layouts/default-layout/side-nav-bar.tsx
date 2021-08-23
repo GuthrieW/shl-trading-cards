@@ -13,8 +13,7 @@ const SideNavBar = ({ value, updateTabValue }) => (
   <Drawer variant={'permanent'} anchor={'left'}>
     <List>
       {navigationOptions.map((navigationOption) => (
-        <>
-          <Link href={navigationOption.href}></Link>
+        <Link href={navigationOption.href}>
           <MenuItem
             onClick={() => updateTabValue(navigationOption.tab)}
             selected={value === navigationOption.tab}
@@ -25,7 +24,7 @@ const SideNavBar = ({ value, updateTabValue }) => (
             </ListItemIcon>
             <ListItemText primary={navigationOption.label} />
           </MenuItem>
-        </>
+        </Link>
       ))}
     </List>
   </Drawer>

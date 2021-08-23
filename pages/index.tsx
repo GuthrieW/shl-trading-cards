@@ -1,4 +1,4 @@
-import Loading from '@components/loading'
+import React from 'react'
 
 const index = (props) => {
   return (
