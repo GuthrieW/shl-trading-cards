@@ -12,15 +12,9 @@ import useStyles from './index.styles'
 import MyCardsIcon from '@public/icons/my-cards-icon'
 import OpenPacksIcon from '@public/icons/open-packs-icon'
 import CommunityIcon from '@public/icons/community-icon'
-import useAuthentication from '@hooks/use-authentication'
 
 const SidebarNav = ({ value, updateTabValue }) => {
   const classes = useStyles()
-  const [isLoading, username, userGroups] = useAuthentication() as [
-    boolean,
-    string,
-    Array<Number>
-  ]
 
   return (
     <Drawer className={classes.drawer} variant={'permanent'} anchor={'left'}>
@@ -29,7 +23,8 @@ const SidebarNav = ({ value, updateTabValue }) => {
       </Link>
       <Divider />
       <List>
-        <Link href={`/collection/${username}`}>
+        {/* <Link href={`/collection/${username}`}> */}
+        <Link href={`/collection/`}>
           <MenuItem
             onClick={() => updateTabValue(1)}
             selected={value === 1}

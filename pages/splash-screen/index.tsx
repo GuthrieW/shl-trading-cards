@@ -1,31 +1,14 @@
 import React from 'react'
 import { Box, ButtonGroup, Button, Link } from '@material-ui/core'
 import useStyles from './index.styles'
-import { useAuthentication } from '@hooks/index'
-import Loading from '@components/loading'
 
 const SplashScreen = () => {
   const classes = useStyles()
-  const [isLoading, username, userGroups] = useAuthentication() as [
-    boolean,
-    string,
-    Array<Number>
-  ]
-
-  if (isLoading) {
-    return <Loading />
-  }
 
   return (
     <>
       <div className={classes.splashScreenWrapper}>
         <Box className={classes.overlayContainer}>
-          <img
-            className={classes.tradingCardsLogo}
-            src={
-              'https://www.tailorbrands.com/wp-content/uploads/2020/07/mcdonalds-logo.jpg'
-            }
-          />
           <p className={classes.subtitle}>Welcome to SHL Trading Cards!</p>
           <Box className={classes.buttonContainer}>
             <ButtonGroup

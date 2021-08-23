@@ -10,8 +10,6 @@ import {
 } from '@material-ui/core'
 import Router from 'next/router'
 import testUsers from '@utils/test-data/user.json'
-import Loading from '@components/loading'
-import { useAuthentication } from '@hooks/index'
 
 const columns = [
   { id: 'username', label: 'Name', minWidth: 170 },
@@ -19,11 +17,6 @@ const columns = [
 ]
 
 const Community = () => {
-  const [isLoading, username, userGroups] = useAuthentication() as [
-    boolean,
-    string,
-    Array<Number>
-  ]
   const [communityAccounts, setCommunityAccounts] = useState([])
 
   useEffect(() => {
@@ -34,10 +27,6 @@ const Community = () => {
     Router.push({
       pathname: `community/${username}`,
     })
-  }
-
-  if (isLoading) {
-    return <Loading />
   }
 
   return (

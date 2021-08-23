@@ -9,20 +9,12 @@ import {
   useTheme,
 } from '@material-ui/core'
 import useStyles from './index.styles'
-import Loading from '@components/loading'
 import packsMap from '@utils/constants/packs-map'
 import OpenPacksIcon from '@public/icons/open-packs-icon'
-import { useAuthentication } from '@hooks/index'
 
 const OpenPacks = () => {
   const theme = useTheme()
   const classes = useStyles()
-
-  const [isLoading, username, userGroups] = useAuthentication() as [
-    boolean,
-    string,
-    Array<Number>
-  ]
   const [isFetching, setIsFetching] = useState(false)
   const [isRedirect, setIsRedirect] = useState(false)
 
@@ -41,10 +33,6 @@ const OpenPacks = () => {
 
   const handleOnClick = async (packType) => {
     console.log(`The type is ${packType}`)
-  }
-
-  if (isLoading) {
-    return <Loading />
   }
 
   return (
