@@ -6,10 +6,8 @@ import {
   Select,
   MenuItem,
   InputLabel,
-  Grid,
   Box,
 } from '@material-ui/core'
-import Router from 'next/router'
 import { teams, rarities, positions, attributes } from '@utils/constants'
 
 const CardForm = () => {
@@ -84,12 +82,12 @@ const CardForm = () => {
             })
           }}
         >
-          {Object.entries(teams).map((team) => (
+          {Object.entries(teams).map((team: any) => (
             <MenuItem
-              key={`${team[1].City} ${team[1].Team}`}
-              value={`${team[1].City} ${team[1].Team}`}
+              key={`${team.city} ${team.team}`}
+              value={`${team.city} ${team.team}`}
             >
-              {`${team[1].City} ${team[1].Team}`}
+              {`${team.city} ${team.team}`}
             </MenuItem>
           ))}
         </Select>
