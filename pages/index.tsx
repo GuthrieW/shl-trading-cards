@@ -1,11 +1,17 @@
 import React from 'react'
+import styled from 'styled-components'
 
 const index = (props) => {
   return (
     <>
-      <h1>DONE LOADING</h1>
+      <CenteredHeader>DONE LOADING</CenteredHeader>
     </>
   )
 }
+
+const CenteredHeader = styled.h1`
+  color: red;
+  text-align: center;
+`
 
 export default index

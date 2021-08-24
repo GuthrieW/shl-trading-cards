@@ -25,10 +25,11 @@ const BottomNavigationActionLink = React.forwardRef<
   </Link>
 ))
 
-const BottomNavBar = ({ value, updateTabValue }) => (
-  <BottomNavigation value={value} onChange={updateTabValue} showLabels>
+const BottomNavBar = () => (
+  <BottomNavigation showLabels>
     {navigationOptions.map((navigationOption) => (
       <BottomNavigationAction
+        key={navigationOption.label}
         component={BottomNavigationActionLink}
         href={navigationOption.href}
         label={navigationOption.label}

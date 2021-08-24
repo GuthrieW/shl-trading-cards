@@ -6,9 +6,9 @@ import { SWRConfig } from 'swr'
 import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
 import DefaultLayout from '@layouts/default-layout'
-import { createMuiTheme } from '@material-ui/core'
+import { createTheme } from '@material-ui/core'
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     type: 'dark',
   },
@@ -26,18 +26,6 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
         <DefaultLayout>
           <DefaultSeo {...SEO} />
           <Component {...pageProps} />
-          <style global jsx>{`
-        body {
-          font-family: 'Raleway, sans-serif;
-          background-color: black;
-        }
-
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-        }
-        `}</style>
         </DefaultLayout>
       </ThemeProvider>
     </SWRConfig>

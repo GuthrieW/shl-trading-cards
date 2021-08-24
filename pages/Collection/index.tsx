@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import Loading from '@components/loading'
 
 export const Collection = (props) => {
   const { shlUsername } = props
@@ -8,7 +7,7 @@ export const Collection = (props) => {
 
   return (
     <>
-      <div>{shlUsername}</div>
+      <div>placeholder</div>
     </>
   )
 }
