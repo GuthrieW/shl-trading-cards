@@ -82,7 +82,7 @@ const CardForm = () => {
             })
           }}
         >
-          {Object.entries(teams).map((team: any) => (
+          {Object.values(teams).map((team: any) => (
             <MenuItem
               key={`${team.city} ${team.team}`}
               value={`${team.city} ${team.team}`}
@@ -102,9 +102,9 @@ const CardForm = () => {
             })
           }}
         >
-          {Object.entries(rarities).map((rarity) => (
-            <MenuItem key={rarity[1]} value={rarity[1]}>
-              {rarity[1]}
+          {Object.values(rarities).map((rarity) => (
+            <MenuItem key={rarity} value={rarity}>
+              {rarity}
             </MenuItem>
           ))}
         </Select>
@@ -119,12 +119,12 @@ const CardForm = () => {
             })
           }}
         >
-          {Object.entries(positions).map((position) => (
+          {Object.values(positions).map((position) => (
             <MenuItem
-              key={`${position[1].label}`}
-              value={`${position[1].abbreviation}`}
+              key={`${position.label}`}
+              value={`${position.abbreviation}`}
             >
-              {`${position[1].label}`}
+              {`${position.label}`}
             </MenuItem>
           ))}
         </Select>
