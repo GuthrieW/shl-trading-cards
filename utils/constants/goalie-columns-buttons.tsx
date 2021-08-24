@@ -1,4 +1,5 @@
-import { Button } from '@material-ui/core'
+import { Button, Typography } from '@material-ui/core'
+import styled from 'styled-components'
 
 const goalieColumns = [
   {
@@ -53,7 +54,9 @@ const goalieColumns = [
       empty: true,
       customBodyRenderLite: (dataIndex) => (
         <div style={{ textAlign: 'center' }}>
-          <Button>Accept</Button>
+          <Button color={'default'} variant={'outlined'}>
+            Accept
+          </Button>
         </div>
       ),
     },
@@ -66,7 +69,9 @@ const goalieColumns = [
       empty: true,
       customBodyRenderLite: (dataIndex) => (
         <div style={{ textAlign: 'center' }}>
-          <Button>Deny</Button>
+          <Button color={'secondary'} variant={'outlined'}>
+            Deny
+          </Button>
         </div>
       ),
     },

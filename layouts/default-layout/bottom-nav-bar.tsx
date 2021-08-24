@@ -1,8 +1,5 @@
 import React from 'react'
 import {
-  AppBar,
-  Toolbar,
-  Typography,
   Button,
   BottomNavigation,
   BottomNavigationAction,

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Container } from '@material-ui/core'
+import { Box, Container, Button } from '@material-ui/core'
 import InfoCard from '@components/info-card'
 import { groupNumberToLabel, groups } from '@utils/user-groups'
 import styled from 'styled-components'
@@ -26,7 +26,7 @@ const Dashboard = () => {
     <>
       <HorizontalBox>
         <VerticalBox style={{ width: '50%' }}>
-          <h1>My Header</h1>
+          <h1 style={{ color: 'red' }}>My Header</h1>
         </VerticalBox>
         <VerticalBox style={{ width: '50%' }}>
           {/* <h2>{`Username: ${username}`}</h2> */}

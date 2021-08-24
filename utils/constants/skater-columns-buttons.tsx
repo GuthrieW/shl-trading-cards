@@ -54,7 +54,9 @@ const skaterColumns = [
       empty: true,
       customBodyRenderLite: (dataIndex) => (
         <div style={{ textAlign: 'center' }}>
-          <Button>Accept</Button>
+          <Button color={'default'} variant={'outlined'}>
+            Accept
+          </Button>
         </div>
       ),
     },
@@ -67,7 +69,9 @@ const skaterColumns = [
       empty: true,
       customBodyRenderLite: (dataIndex) => (
         <div style={{ textAlign: 'center' }}>
-          <Button>Deny</Button>
+          <Button color={'secondary'} variant={'outlined'}>
+            Deny
+          </Button>
         </div>
       ),
     },
