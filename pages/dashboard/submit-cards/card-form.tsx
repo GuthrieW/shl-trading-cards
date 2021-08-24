@@ -14,10 +14,10 @@ import {
 //   positions,
 //   attributes,
 // } from '../../../utils/constants'
-import rarities from '@utils/constants/rarities'
-import teams from '@utils/constants/teams'
-import positions from '@utils/constants/positions'
-import attributes from '@utils/constants/attributes'
+import rarities from '../../../utils/constants/rarities'
+import teams from '../../../utils/constants/teams'
+import positions from '../../../utils/constants/positions'
+import attributes from '../../../utils/constants/attributes'
 
 const CardForm = () => {
   const [cardData, setCardData] = useState(null)
