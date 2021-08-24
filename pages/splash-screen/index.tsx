@@ -1,16 +1,13 @@
 import React from 'react'
 import { Box, ButtonGroup, Button, Link } from '@material-ui/core'
-import useStyles from './index.styles'
 
 const SplashScreen = () => {
-  const classes = useStyles()
-
   return (
     <>
-      <div className={classes.splashScreenWrapper}>
-        <Box className={classes.overlayContainer}>
-          <p className={classes.subtitle}>Welcome to SHL Trading Cards!</p>
-          <Box className={classes.buttonContainer}>
+      <div>
+        <Box>
+          <p>Welcome to SHL Trading Cards!</p>
+          <Box>
             <ButtonGroup
               fullWidth
               orientation="vertical"
@@ -31,15 +28,8 @@ const SplashScreen = () => {
           </Box>
         </Box>
         <Box>
-          <div className={classes.gradient}></div>
-          <video
-            className={classes.splashScreenVideo}
-            src=""
-            autoPlay
-            loop
-            playsInline
-            muted
-          ></video>
+          <div></div>
+          <video src="" autoPlay loop playsInline muted></video>
         </Box>
       </div>
     </>

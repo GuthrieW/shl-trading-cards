@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useSprings, animated, interpolate } from 'react-spring'
 import { useGesture } from 'react-use-gesture'
-import useStyles from './index.styles'
 
 const to = (i) => ({
   x: 0,
@@ -23,10 +22,14 @@ const translate = (rotationAmount, scale) =>
     rotationAmount / 10
   }deg) rotateZ(${rotationAmount}deg) scale(${scale})`
 
-const AnimatedPackViewer = ({ cards }) => {
-  const classes = useStyles()
+type StaticPackViewerProps = {
+  cards: [any]
+}
+
+const AnimatedPackViewer = (props: StaticPackViewerProps) => {
+  const { cards = [] } = props
   const [gone] = useState(() => new Set())
-  const [props, set] = useSprings(cards.length, (i) => ({
+  const [cardProps, set] = useSprings(cards.length, (i) => ({
     ...to(i),
     from: from(i),
   }))
@@ -71,9 +74,9 @@ const AnimatedPackViewer = ({ cards }) => {
     }
   )
   return (
-    <div className={null}>
-      <div className={null}>
-        {props.map(({ x, y, rotation, scale }, i) => (
+    <div>
+      <div>
+        {cardProps.map(({ x, y, rotation, scale }, i) => (
           <animated.div
             className={null}
             key={i}
@@ -89,7 +92,7 @@ const AnimatedPackViewer = ({ cards }) => {
               {...bind(i)}
               style={{
                 transform: interpolate([rotation, scale], translate),
-                backgroundImage: `url(${cards[i].imagUrl})`,
+                backgroundImage: `url(${cards[i].imageUrl})`,
               }}
             />
           </animated.div>

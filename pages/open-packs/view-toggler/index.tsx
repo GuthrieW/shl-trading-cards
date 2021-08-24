@@ -1,25 +1,21 @@
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
 import React, { useState, useEffect } from 'react'
-import useStyles from './index.styles'
 import AnimatedPackViewer from '../animated-pack-viewer'
 import StaticPackViewer from '../static-pack-viewer'
 
-const packViewerTypes = {
-  animated: 'animated',
-  static: 'static',
+enum PackViewerTypesEnum {
+  Animated = 'animated',
+  Static = 'static',
 }
 
 const ViewToggler = () => {
-  const classes = useStyles()
-
-  const [cards, setCards] = useState([])
-  const [selectedPackViewer, setSelectedPackViewer] = useState(
-    packViewerTypes.animated
-  )
+  const [cards, setCards] = useState<[any]>([{ imageUrl: '' }])
+  const [selectedPackViewer, setSelectedPackViewer] =
+    useState<PackViewerTypesEnum>(PackViewerTypesEnum.Animated)
 
   useEffect(() => {
     const fetchData = async () => {
-      setCards([])
+      setCards([{ imageUrl: '' }])
     }
 
     fetchData()
@@ -30,29 +26,28 @@ const ViewToggler = () => {
   }
 
   return (
-    <div className={classes.packViewerContainer}>
-      {selectedPackViewer === packViewerTypes.animated && (
+    <div>
+      {selectedPackViewer === PackViewerTypesEnum.Animated && (
         <AnimatedPackViewer cards={cards} />
       )}
-      {selectedPackViewer === packViewerTypes.static && (
+      {selectedPackViewer === PackViewerTypesEnum.Static && (
         <StaticPackViewer cards={cards} />
       )}
       <ToggleButtonGroup
-        className={classes.buttonGroup}
         value={selectedPackViewer}
         exclusive
         onChange={handleOnChange}
         aria-label={'text formatting'}
       >
         <ToggleButton
-          value={packViewerTypes.animated}
-          aria-label={packViewerTypes.animated}
+          value={PackViewerTypesEnum.Animated}
+          aria-label={PackViewerTypesEnum.Animated}
         >
           Animated View
         </ToggleButton>
         <ToggleButton
-          value={packViewerTypes.static}
-          aria-label={packViewerTypes.static}
+          value={PackViewerTypesEnum.Static}
+          aria-label={PackViewerTypesEnum.Static}
         >
           Static View
         </ToggleButton>
