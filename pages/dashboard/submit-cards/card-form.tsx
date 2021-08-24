@@ -102,7 +102,7 @@ const CardForm = () => {
             })
           }}
         >
-          {Object.values(rarities).map((rarity) => (
+          {Object.values(rarities).map((rarity: any) => (
             <MenuItem key={rarity} value={rarity}>
               {rarity}
             </MenuItem>
@@ -119,7 +119,7 @@ const CardForm = () => {
             })
           }}
         >
-          {Object.values(positions).map((position) => (
+          {Object.values(positions).map((position: any) => (
             <MenuItem
               key={`${position.label}`}
               value={`${position.abbreviation}`}
