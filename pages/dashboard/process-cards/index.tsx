@@ -1,8 +1,8 @@
 import React from 'react'
 import DataTable from '@components/data-table'
 import testCards from '@utils/test-data/cards.json'
-import goalieColumns from '@constants/goalie-columns'
-import skaterColumns from '@constants/skater-columns'
+import goalieColumns from 'constants/goalie-columns'
+import skaterColumns from 'constants/skater-columns'
 
 const options = {
   filterType: 'dropdown',
