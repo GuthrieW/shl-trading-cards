@@ -8,7 +8,9 @@ import {
   InputLabel,
   Box,
 } from '@material-ui/core'
-import { teams, positions, attributes } from '@utils/constants/index'
+import teams from '@utils/constants/teams'
+import positions from '@utils/constants/positions'
+import attributes from '@utils/constants/attributes'
 
 const rarities = {
   Bronze: 'Bronze',
