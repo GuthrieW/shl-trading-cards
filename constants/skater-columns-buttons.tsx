@@ -1,6 +1,7 @@
 import { Button } from '@material-ui/core'
+import React from 'react'
 
-const goalieColumns = [
+const skaterColumns = [
   {
     label: 'Name',
     name: 'playerName',
@@ -18,24 +19,24 @@ const goalieColumns = [
     name: 'overall',
   },
   {
-    label: 'High Shots',
-    name: 'highShots',
+    label: 'Skating',
+    name: 'skating',
   },
   {
-    label: 'Low Shots',
-    name: 'lowShots',
+    label: 'Shooting',
+    name: 'shooting',
   },
   {
-    label: 'Quickness',
-    name: 'quickness',
+    label: 'Hands',
+    name: 'hands',
   },
   {
-    label: 'Control',
-    name: 'control',
+    label: 'Checking',
+    name: 'checking',
   },
   {
-    label: 'Conditioning',
-    name: 'conditioning',
+    label: 'Defense',
+    name: 'defense',
   },
   {
     label: 'Image URL',
@@ -53,7 +54,9 @@ const goalieColumns = [
       empty: true,
       customBodyRenderLite: (dataIndex) => (
         <div style={{ textAlign: 'center' }}>
-          <Button>Accept</Button>
+          <Button color={'default'} variant={'outlined'}>
+            Accept
+          </Button>
         </div>
       ),
     },
@@ -66,11 +69,13 @@ const goalieColumns = [
       empty: true,
       customBodyRenderLite: (dataIndex) => (
         <div style={{ textAlign: 'center' }}>
-          <Button>Deny</Button>
+          <Button color={'secondary'} variant={'outlined'}>
+            Deny
+          </Button>
         </div>
       ),
     },
   },
 ]
 
-export default goalieColumns
+export default skaterColumns

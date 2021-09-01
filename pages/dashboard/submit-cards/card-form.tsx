@@ -6,11 +6,12 @@ import {
   Select,
   MenuItem,
   InputLabel,
-  Grid,
   Box,
 } from '@material-ui/core'
-import Router from 'next/router'
-import { teams, rarities, positions, attributes } from '@utils/constants'
+import teams from '@constants/teams'
+import positions from '@constants/positions'
+import attributes from '@constants/attributes'
+import rarities from '@constants/rarities'
 
 const CardForm = () => {
   const [cardData, setCardData] = useState(null)
@@ -84,12 +85,12 @@ const CardForm = () => {
             })
           }}
         >
-          {Object.entries(teams).map((team) => (
+          {Object.values(teams).map((team: any) => (
             <MenuItem
-              key={`${team[1].City} ${team[1].Team}`}
-              value={`${team[1].City} ${team[1].Team}`}
+              key={`${team.city} ${team.team}`}
+              value={`${team.city} ${team.team}`}
             >
-              {`${team[1].City} ${team[1].Team}`}
+              {`${team.city} ${team.team}`}
             </MenuItem>
           ))}
         </Select>
@@ -104,9 +105,9 @@ const CardForm = () => {
             })
           }}
         >
-          {Object.entries(rarities).map((rarity) => (
-            <MenuItem key={rarity[1]} value={rarity[1]}>
-              {rarity[1]}
+          {Object.values(rarities).map((rarity: any) => (
+            <MenuItem key={rarity} value={rarity}>
+              {rarity}
             </MenuItem>
           ))}
         </Select>
@@ -121,12 +122,12 @@ const CardForm = () => {
             })
           }}
         >
-          {Object.entries(positions).map((position) => (
+          {Object.values(positions).map((position: any) => (
             <MenuItem
-              key={`${position[1].label}`}
-              value={`${position[1].abbreviation}`}
+              key={`${position.label}`}
+              value={`${position.abbreviation}`}
             >
-              {`${position[1].label}`}
+              {`${position.label}`}
             </MenuItem>
           ))}
         </Select>

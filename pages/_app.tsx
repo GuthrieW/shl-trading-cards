@@ -1,27 +1,33 @@
-import React, { useEffect } from 'react'
-import { CssBaseline } from '@material-ui/core'
+import React from 'react'
+import { DefaultSeo } from 'next-seo'
+import { ThemeProvider } from '@material-ui/styles'
+// import { ThemeProvider } from 'styled-components'
+import { SWRConfig } from 'swr'
+import SEO from '../next-seo.config'
+import { AppProps } from 'next/app'
 import DefaultLayout from '@layouts/default-layout'
+import { createTheme } from '@material-ui/core'
 
-const App = ({ Component, pageProps }) => {
-  useEffect(() => {
-    // Remove the server-side injected CSS.
-    const jssStyles = document.querySelector('#jss-server-side')
-    if (jssStyles) {
-      jssStyles.parentElement.removeChild(jssStyles)
-    }
-  }, [])
+const theme = createTheme({
+  palette: {
+    type: 'dark',
+  },
+})
 
-  const getLayout =
-    Component.layout || ((page) => <DefaultLayout children={page} />)
-
-  return getLayout(
-    <>
-      <CssBaseline />
-      <Component {...pageProps} />
-    </>
+export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
+  return (
+    <SWRConfig
+      value={{
+        fetcher: (resource, init) =>
+          fetch(resource, init).then((result) => result.json()),
+      }}
+    >
+      <ThemeProvider theme={theme}>
+        <DefaultLayout>
+          <DefaultSeo {...SEO} />
+          <Component {...pageProps} />
+        </DefaultLayout>
+      </ThemeProvider>
+    </SWRConfig>
   )
 }
-
-App.getLayout = App
-
-export default App

@@ -1,23 +1,10 @@
 import React from 'react'
-import { useAuthentication } from '@hooks/index'
-import { Container } from '@material-ui/core'
+import { Box, Container, Button } from '@material-ui/core'
 import InfoCard from '@components/info-card'
 import { groupNumberToLabel, groups } from '@utils/user-groups'
-import Loading from '@components/loading'
-
-const DummyPermissions = {
-  isAdmin: true,
-  isSubmitter: true,
-  isProcessor: true,
-}
+import styled from 'styled-components'
 
 const Dashboard = () => {
-  const [isLoading, username, userGroups] = useAuthentication() as [
-    boolean,
-    string,
-    Array<Number>
-  ]
-
   const getUserGroups = (groupNumbers) => {
     let groupsDisplay = ''
     let firstGroup = true
@@ -35,17 +22,16 @@ const Dashboard = () => {
     return groupsDisplay
   }
 
-  if (isLoading) {
-    return <Loading />
-  }
-
   return (
     <>
-      <Container>
-        <h1>Skip header</h1>
-        <h2>{`Username: ${username}`}</h2>
-        <h2>{`Groups: ${getUserGroups(userGroups)}`}</h2>
-        {userGroups.includes(groups['Trading Card Management'].id) && (
+      <HorizontalBox>
+        <VerticalBox style={{ width: '50%' }}>
+          <h1 style={{ color: 'red' }}>My Header</h1>
+        </VerticalBox>
+        <VerticalBox style={{ width: '50%' }}>
+          {/* <h2>{`Username: ${username}`}</h2> */}
+          {/* <h2>{`Groups: ${getUserGroups(userGroups)}`}</h2> */}
+          {/* {userGroups.includes(groups['Trading Card Management'].id) && ( */}
           <InfoCard
             title={'Edit Users'}
             body={
@@ -53,9 +39,9 @@ const Dashboard = () => {
             }
             href={'/Dashboard/edit-users'}
           />
-        )}
-        {(userGroups.includes(groups['Trading Card Management'].id) ||
-          userGroups.includes(groups.Approver.id)) && (
+          {/* )} */}
+          {/* {(userGroups.includes(groups['Trading Card Management'].id) ||
+          userGroups.includes(groups.Approver.id)) && ( */}
           <InfoCard
             title={'Edit Cards'}
             body={
@@ -63,31 +49,42 @@ const Dashboard = () => {
             }
             href={'/dashboard/edit-cards'}
           />
-        )}
-        {(userGroups.includes(groups['Trading Card Management'].id) ||
-          userGroups.includes(groups.Approver.id)) && (
+          {/* )} */}
+          {/* {(userGroups.includes(groups['Trading Card Management'].id) ||
+          userGroups.includes(groups.Approver.id)) && ( */}
           <InfoCard
             title={'Process Cards'}
             body={'Approve or delete cards in the processing queue'}
             href={'/dashboard/process-cards'}
           />
-        )}
-        {(userGroups.includes(groups['Trading Card Management'].id) ||
-          userGroups.includes(groups.Submitter.id)) && (
+          {/* )} */}
+          {/* {(userGroups.includes(groups['Trading Card Management'].id) ||
+          userGroups.includes(groups.Submitter.id)) && ( */}
           <InfoCard
             title={'Submit Cards'}
             body={'Submit cards for approval'}
             href={'/dashboard/submit-cards'}
           />
-        )}
-        <InfoCard
-          title={'Search Cards'}
-          body={'Search for cards based on their meta data'}
-          href={'/dashboard/search-cards'}
-        />
-      </Container>
+          {/* )} */}
+          <InfoCard
+            title={'Search Cards'}
+            body={'Search for cards based on their meta data'}
+            href={'/dashboard/search-cards'}
+          />
+        </VerticalBox>
+      </HorizontalBox>
     </>
   )
 }
+
+const HorizontalBox = styled(Box)`
+  display: flex;
+  flex-direction: row;
+`
+
+const VerticalBox = styled(Box)`
+  display: flex;
+  flex-direction: column;
+`
 
 export default Dashboard

@@ -1,7 +1,7 @@
-import { Button } from '@material-ui/core'
-import React from 'react'
+import { Button, Typography } from '@material-ui/core'
+import styled from 'styled-components'
 
-const skaterColumns = [
+const goalieColumns = [
   {
     label: 'Name',
     name: 'playerName',
@@ -19,24 +19,24 @@ const skaterColumns = [
     name: 'overall',
   },
   {
-    label: 'Skating',
-    name: 'skating',
+    label: 'High Shots',
+    name: 'highShots',
   },
   {
-    label: 'Shooting',
-    name: 'shooting',
+    label: 'Low Shots',
+    name: 'lowShots',
   },
   {
-    label: 'Hands',
-    name: 'hands',
+    label: 'Quickness',
+    name: 'quickness',
   },
   {
-    label: 'Checking',
-    name: 'checking',
+    label: 'Control',
+    name: 'control',
   },
   {
-    label: 'Defense',
-    name: 'defense',
+    label: 'Conditioning',
+    name: 'conditioning',
   },
   {
     label: 'Image URL',
@@ -54,7 +54,9 @@ const skaterColumns = [
       empty: true,
       customBodyRenderLite: (dataIndex) => (
         <div style={{ textAlign: 'center' }}>
-          <Button>Accept</Button>
+          <Button color={'default'} variant={'outlined'}>
+            Accept
+          </Button>
         </div>
       ),
     },
@@ -67,11 +69,13 @@ const skaterColumns = [
       empty: true,
       customBodyRenderLite: (dataIndex) => (
         <div style={{ textAlign: 'center' }}>
-          <Button>Deny</Button>
+          <Button color={'secondary'} variant={'outlined'}>
+            Deny
+          </Button>
         </div>
       ),
     },
   },
 ]
 
-export default skaterColumns
+export default goalieColumns

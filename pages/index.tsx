@@ -1,24 +1,17 @@
-import Loading from '@components/loading'
-import useAuthentication from '@hooks/use-authentication'
+import React from 'react'
+import styled from 'styled-components'
 
 const index = (props) => {
-  const [isLoading, username, userGroups] = useAuthentication() as [
-    boolean,
-    string,
-    Array<Number>
-  ]
-
-  if (isLoading) {
-    return <Loading />
-  }
-
   return (
     <>
-      <h1>DONE LOADING</h1>
-      <p>Username: {username}</p>
-      <p>User Groups: {userGroups}</p>
+      <CenteredHeader>DONE LOADING</CenteredHeader>
     </>
   )
 }
+
+const CenteredHeader = styled.h1`
+  color: red;
+  text-align: center;
+`
 
 export default index
