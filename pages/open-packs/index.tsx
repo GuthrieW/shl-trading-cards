@@ -8,7 +8,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@material-ui/core'
-import packsMap from '@utils/constants/packs-map'
+import packsMap from '@constants/packs-map'
 import OpenPacksIcon from '@public/icons/open-packs-icon'
 
 const OpenPacks = () => {
