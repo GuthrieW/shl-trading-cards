@@ -1,5 +1,5 @@
 export { default as storageKeys } from './storage-keys'
-export { default as teams } from './teams'
+export { default as teams } from '@utils/constants/teams'
 export { default as attributes } from './attributes'
 export { default as cardData } from './card-data'
 export { default as positions } from './positions'
