@@ -8,8 +8,15 @@ import {
   InputLabel,
   Box,
 } from '@material-ui/core'
-import { teams, rarities, positions, attributes } from '@utils/constants/index'
+import { teams, positions, attributes } from '@utils/constants/index'
 
+const rarities = {
+  Bronze: 'Bronze',
+  Silver: 'Silver',
+  Gold: 'Gold',
+  Ruby: 'Ruby',
+  Diamond: 'Diamond',
+}
 const CardForm = () => {
   const [cardData, setCardData] = useState(null)
   const [canSubmit, setCanSubmit] = useState(false)
