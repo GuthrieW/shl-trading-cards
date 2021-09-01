@@ -1,4 +1,4 @@
-const teams = {
+export const teams = {
   Atlanta: {
     city: 'Atlanta',
     team: 'Inferno',
@@ -210,5 +210,3 @@ const teams = {
     conference: 'SMJHL',
   },
 }
-
-export default teams

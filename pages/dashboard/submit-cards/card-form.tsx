@@ -8,7 +8,7 @@ import {
   InputLabel,
   Box,
 } from '@material-ui/core'
-import teams from '@utils/constants/teams'
+import { teams } from '@utils/constants/teams'
 import positions from '@utils/constants/positions'
 import attributes from '@utils/constants/attributes'
 import rarities from '@utils/constants/rarities'
