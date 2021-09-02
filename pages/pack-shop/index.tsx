@@ -1,9 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import packs from '@utils/test-data/packs.json'
-import { Box, Container, Grid, Tooltip, Typography } from '@material-ui/core'
+import { Box, Container, Typography } from '@material-ui/core'
 import styled from 'styled-components'
 
 export const PackShop = (props) => {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const onPackClick = async (packType) => {
+    if (isLoading) {
+      return
+    }
+
+    setIsLoading(true)
+
+    await sleep(10000)
+
+    setIsLoading(false)
+  }
+
   return (
     <>
       <h1 style={{ color: 'red' }}>placeholder</h1>
@@ -11,7 +25,12 @@ export const PackShop = (props) => {
         <RowBox>
           {packs.data.map((packType) => (
             <CardBox>
-              <StyledImage src={packType.packImage} />
+              <StyledImage
+                key={packType.packType}
+                isLoading={isLoading}
+                onClick={() => onPackClick(packType.packType)}
+                src={packType.packImage}
+              />
               <PackName>{packType.packName}</PackName>
             </CardBox>
           ))}
@@ -21,7 +40,12 @@ export const PackShop = (props) => {
   )
 }
 
+function sleep(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds))
+}
+
 const StyledImage = styled.img`
+  opacity: ${(props) => (props.isLoading ? 0.25 : 1)};
   cursor: pointer;
   transition: all ease 200ms;
   &:hover {
