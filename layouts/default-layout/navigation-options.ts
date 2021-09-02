@@ -4,13 +4,13 @@ import CommunityIcon from '@public/icons/community-icon'
 
 const navigationOptions = [
   {
-    href: '/dashboard/',
+    href: '/dashboard',
     tab: 0,
     label: 'Dashboard',
     icon: CommunityIcon,
   },
   {
-    href: '/collection/',
+    href: '/collection',
     tab: 1,
     label: 'Collection',
     icon: MyCardsIcon,
