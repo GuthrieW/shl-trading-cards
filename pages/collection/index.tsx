@@ -1,11 +1,63 @@
-import React from 'react'
+import React, { useState } from 'react'
+import cards from '@utils/test-data/cards.json'
+import { Avatar, Box, Chip } from '@material-ui/core'
 
-const Collection = () => {
+const Collection = (props) => {
+  const [filterOptions, setFilterOptions] = useState([
+    {
+      rarity: 'Bronze',
+      imageUrl: '',
+      enabled: false,
+    },
+    {
+      rarity: 'Silver',
+      imageUrl: '',
+      enabled: false,
+    },
+    {
+      rarity: 'Gold',
+      imageUrl: '',
+      enabled: false,
+    },
+    {
+      rarity: 'Ruby',
+      imageUrl: '',
+      enabled: false,
+    },
+    {
+      rarity: 'Diamond',
+      imageUrl: '',
+      enabled: false,
+    },
+  ])
+
+  const handleChipClick = (filterOption, index) => {
+    const filterOptionsCopy = [...filterOptions]
+    filterOptionsCopy[index].enabled = !filterOption.enabled
+    setFilterOptions(filterOptionsCopy)
+  }
+
   return (
     <>
-      <h1 style={{ color: 'red' }}>placeholder</h1>
+      <UsernameHeader username={'caltroit_red_flames'} />
+      <Box whiteSpace={'nowrap'} overflow={'auto'}>
+        {filterOptions.map((filterOption, index) => (
+          <Chip
+            key={filterOption.rarity}
+            variant={filterOption.enabled ? 'default' : 'outlined'}
+            label={filterOption.rarity}
+            avatar={<Avatar src={filterOption.imageUrl} />}
+            onClick={() => handleChipClick(filterOption, index)}
+          />
+        ))}
+      </Box>
     </>
   )
+}
+
+const UsernameHeader = ({ username }) => {
+  const displayUsername = username ? `${username}\'s` : 'My'
+  return <h1>{displayUsername} Collection</h1>
 }
 
 export default Collection
