@@ -21,7 +21,7 @@ const Collection = (props) => {
     },
     {
       rarity: 'Ruby',
-      imageUrl: '/images/gold-icon.svg',
+      imageUrl: '/images/ruby-icon.svg',
       enabled: false,
     },
     {
