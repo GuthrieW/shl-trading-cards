@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { DefaultSeo } from 'next-seo'
 import { ThemeProvider } from '@material-ui/styles'
-// import { ThemeProvider } from 'styled-components'
 import { SWRConfig } from 'swr'
 import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
 import DefaultLayout from '@layouts/default-layout'
 import { createTheme } from '@material-ui/core'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { Hydrate } from 'react-query/hydration'
 
 const theme = createTheme({
   palette: {
@@ -15,6 +16,8 @@ const theme = createTheme({
 })
 
 export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
+  const [queryClient] = useState(() => new QueryClient())
+
   return (
     <SWRConfig
       value={{
@@ -23,10 +26,14 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
       }}
     >
       <ThemeProvider theme={theme}>
-        <DefaultLayout>
-          <DefaultSeo {...SEO} />
-          <Component {...pageProps} />
-        </DefaultLayout>
+        <QueryClientProvider client={queryClient}>
+          <Hydrate state={pageProps.dehydratedState}>
+            <DefaultLayout>
+              <DefaultSeo {...SEO} />
+              <Component {...pageProps} />
+            </DefaultLayout>
+          </Hydrate>
+        </QueryClientProvider>
       </ThemeProvider>
     </SWRConfig>
   )

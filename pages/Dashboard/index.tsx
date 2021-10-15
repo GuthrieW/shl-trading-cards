@@ -21,6 +21,8 @@ const Dashboard = () => {
     })
     return groupsDisplay
   }
+  // const username = ''
+  // const userGroups = []
 
   return (
     <>
@@ -40,8 +42,8 @@ const Dashboard = () => {
             href={'/Dashboard/edit-users'}
           />
           {/* )} */}
-          {/* {(userGroups.includes(groups['Trading Card Management'].id) ||
-          userGroups.includes(groups.Approver.id)) && ( */}
+          {/* {(userGroups.includes(groups['Trading Card Management'].id) || */}
+          {/* userGroups.includes(groups.Approver.id)) && ( */}
           <InfoCard
             title={'Edit Cards'}
             body={
@@ -50,16 +52,16 @@ const Dashboard = () => {
             href={'/dashboard/edit-cards'}
           />
           {/* )} */}
-          {/* {(userGroups.includes(groups['Trading Card Management'].id) ||
-          userGroups.includes(groups.Approver.id)) && ( */}
+          {/* {(userGroups.includes(groups['Trading Card Management'].id) || */}
+          {/* userGroups.includes(groups.Approver.id)) && ( */}
           <InfoCard
             title={'Process Cards'}
             body={'Approve or delete cards in the processing queue'}
             href={'/dashboard/process-cards'}
           />
           {/* )} */}
-          {/* {(userGroups.includes(groups['Trading Card Management'].id) ||
-          userGroups.includes(groups.Submitter.id)) && ( */}
+          {/* {(userGroups.includes(groups['Trading Card Management'].id) || */}
+          {/* userGroups.includes(groups.Submitter.id)) && ( */}
           <InfoCard
             title={'Submit Cards'}
             body={'Submit cards for approval'}
