@@ -6,27 +6,27 @@ const Collection = (props) => {
   const [filterOptions, setFilterOptions] = useState([
     {
       rarity: 'Bronze',
-      imageUrl: '',
+      imageUrl: '/images/bronze-icon.svg',
       enabled: false,
     },
     {
       rarity: 'Silver',
-      imageUrl: '',
+      imageUrl: '/images/silver-icon.svg',
       enabled: false,
     },
     {
       rarity: 'Gold',
-      imageUrl: '',
+      imageUrl: '/images/gold-icon.svg',
       enabled: false,
     },
     {
       rarity: 'Ruby',
-      imageUrl: '',
+      imageUrl: '/images/gold-icon.svg',
       enabled: false,
     },
     {
       rarity: 'Diamond',
-      imageUrl: '',
+      imageUrl: '/images/diamond-icon.svg',
       enabled: false,
     },
   ])
