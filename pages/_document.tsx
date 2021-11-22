@@ -45,7 +45,7 @@ export default class MyDocument extends Document {
           {/* change to shl svg */}
           <link href={'public/vercel.svg'} />
         </Head>
-        <body style={{ background: '#303030' }}>
+        <body style={{ margin: '0px' }}>
           <Main />
           <NextScript />
         </body>

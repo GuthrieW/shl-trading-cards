@@ -11,7 +11,7 @@ import { Hydrate } from 'react-query/hydration'
 
 const theme = createTheme({
   palette: {
-    type: 'dark',
+    type: 'light',
   },
 })
 
