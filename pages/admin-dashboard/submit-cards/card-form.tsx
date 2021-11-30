@@ -57,7 +57,6 @@ const CardForm = () => {
           conditioning: cardData.conditioning,
           imageUrl: cardData.imageUrl,
         }
-    console.log(formData)
     // Router.reload()
   }
 

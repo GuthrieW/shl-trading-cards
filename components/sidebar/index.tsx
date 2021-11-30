@@ -9,6 +9,7 @@ import {
   SettingsOutlined,
 } from '@material-ui/icons'
 import { SidebarItem, SidebarIcon, StyledSidebar, SidebarText } from './styled'
+import { useRouter } from 'next/router'
 
 export type SidebarProps = {
   groups: number[]
@@ -54,7 +55,8 @@ const pages = [
 ]
 
 const Sidebar = ({ groups }: SidebarProps) => {
-  const isAdmin = false
+  const isAdmin = true
+  const { asPath } = useRouter()
 
   return (
     <StyledSidebar>
@@ -65,7 +67,13 @@ const Sidebar = ({ groups }: SidebarProps) => {
           }
 
           return (
-            <SidebarItem component="a" button href={page.href} key={page.name}>
+            <SidebarItem
+              component="a"
+              button
+              href={page.href}
+              key={page.name}
+              disabled={asPath.includes(page.href)}
+            >
               <SidebarIcon>{page.icon}</SidebarIcon>
               <SidebarText primary={page.name} />
             </SidebarItem>

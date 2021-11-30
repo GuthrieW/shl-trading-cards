@@ -20,7 +20,6 @@ const EditUsers = () => {
   return (
     <div
       style={{
-        margin: '10px',
         alignItems: 'center',
         position: 'static',
         width: '50%',

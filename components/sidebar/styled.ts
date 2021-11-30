@@ -31,4 +31,5 @@ export const StyledSidebar = styled(Box)`
   }
   border-right: 1px solid rgba(0, 0, 0, 0.12);
   height: 100vh;
+  margin-right: 10px;
 `

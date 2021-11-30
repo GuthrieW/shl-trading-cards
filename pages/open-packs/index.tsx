@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import {
   Badge,
-  GridList,
-  GridListTile,
-  GridListTileBar,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
   IconButton,
-  useMediaQuery,
-  useTheme,
 } from '@material-ui/core'
 import packsMap from 'constants/packs-map'
 import OpenPacksIcon from '@public/icons/open-packs-icon'
+import { ImageItem, OpenPacksScreen } from './styled'
 
 const OpenPacks = () => {
   const [isFetching, setIsFetching] = useState(false)
@@ -33,18 +32,22 @@ const OpenPacks = () => {
   }
 
   return (
-    <>
+    <OpenPacksScreen>
       {isRedirect && <h1>Redirecting</h1>}
-      <GridList spacing={16} cellHeight={400} cols={2}>
+      <ImageList gap={16} rowHeight={400} cols={3}>
         {packsMap.map((pack) => {
           const { key, label, imageUrl } = pack
           return (
-            <GridListTile key={key}>
-              <div>
-                <img src={imageUrl} onClick={() => handleOnClick(key)}></img>
-              </div>
+            <ImageListItem key={key}>
+              <ImageItem>
+                <img
+                  height={'400px'}
+                  src={imageUrl}
+                  onClick={() => handleOnClick(key)}
+                />
+              </ImageItem>
               <div onClick={() => handleOnClick(key)}>
-                <GridListTileBar
+                <ImageListItemBar
                   title={`Open ${label} Pack`}
                   actionIcon={
                     <IconButton aria-label={`Info about ${label}`}>
@@ -60,11 +63,11 @@ const OpenPacks = () => {
                   }
                 />
               </div>
-            </GridListTile>
+            </ImageListItem>
           )
         })}
-      </GridList>
-    </>
+      </ImageList>
+    </OpenPacksScreen>
   )
 }
 

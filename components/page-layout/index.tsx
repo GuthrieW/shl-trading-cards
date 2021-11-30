@@ -1,19 +1,20 @@
 import React from 'react'
 import Sidebar from '@components/sidebar'
+import { ChildrenDiv, SidebarDiv } from './styled'
 
 const [username, groups, isLoading] = ['caltroit_red_flames', [], false]
 
-const DefaultLayout = ({ children }) => {
+const PageLayout = ({ children }) => {
   if (!username) {
     return null
   }
 
   return (
-    <div style={{ display: 'flex', height: '100%' }}>
+    <SidebarDiv>
       <Sidebar groups={groups} />
-      <div style={{ width: '100%' }}>{children}</div>
-    </div>
+      <ChildrenDiv>{children}</ChildrenDiv>
+    </SidebarDiv>
   )
 }
 
-export default DefaultLayout
+export default PageLayout
