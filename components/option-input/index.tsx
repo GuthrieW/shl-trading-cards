@@ -17,20 +17,18 @@ const OptionInput = ({
   getOptionLabel,
   label,
   onInputChange,
-}: OptionInputProps) => {
-  return (
-    <Autocomplete
-      options={options}
-      loading={loading}
-      groupBy={groupBy}
-      getOptionLabel={getOptionLabel}
-      clearOnBlur={false}
-      onInputChange={onInputChange}
-      renderInput={(params) => (
-        <TextField {...params} label={label} variant="outlined" />
-      )}
-    />
-  )
-}
+}: OptionInputProps) => (
+  <Autocomplete
+    options={options}
+    loading={loading}
+    groupBy={groupBy}
+    getOptionLabel={getOptionLabel}
+    clearOnBlur={false}
+    onInputChange={onInputChange}
+    renderInput={(params) => (
+      <TextField {...params} label={label} variant="outlined" />
+    )}
+  />
+)
 
 export default OptionInput

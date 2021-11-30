@@ -2,34 +2,64 @@ import React, { useEffect, useState } from 'react'
 import cards from '@utils/test-data/cards.json'
 import { Avatar, Box, Chip, Grid } from '@material-ui/core'
 import OptionInput from '@components/option-input'
-import FilterOptions from './FilterOptions'
+import filterOptions from './rarity-options'
 import CardGrid from '@components/card-grid'
+import { CollectionPage, GridContainer } from './styled'
 
 type CollectionProps = {
   username: string
 }
 
 const Collection = ({ username }: CollectionProps) => {
+  const [rarityOptions, setRarityOptions] = useState(filterOptions)
   const [searchString, setSearchString] = useState('')
-  const [isOpen, setIsOpen] = useState(false)
-  const [filterOptions, setFilterOptions] = useState(FilterOptions)
   const [cardsLoading, setCardsLoading] = useState(true)
-  const [collectionCards, setCollectionCards] = useState(cards.data)
-  const [currentCard, setCurrentCard] = useState(null)
+  const [collectionCards, setCollectionCards] = useState<any>([])
+  const [filteredCards, setFilteredCards] = useState(collectionCards)
   const [pageNumber, setPageNumber] = useState(1)
+  const [isOpen, setIsOpen] = useState(false)
+  const [currentCard, setCurrentCard] = useState(null)
 
   useEffect(() => {
     setCardsLoading(true)
-
-    // setCollectionCards([])
+    setCollectionCards(cards.data)
     setCardsLoading(false)
   }, [])
 
-  const handleChipClick = (filterOption, index) => {
+  useEffect(() => {
     setPageNumber(1)
-    const filterOptionsCopy = [...filterOptions]
-    filterOptionsCopy[index].enabled = !filterOption.enabled
-    setFilterOptions(filterOptionsCopy)
+
+    const newFilteredCards = []
+    const selectedRarityNames = []
+    let allDisabled = true
+
+    rarityOptions.map((rarityOption) => {
+      if (rarityOption.enabled) {
+        allDisabled = false
+        selectedRarityNames.push(rarityOption.rarity)
+      }
+    })
+
+    for (const card of collectionCards) {
+      // right now this is case sensetive, just need to add .tolowercase() here to fix that
+      if (card.playerName.includes(searchString)) {
+        if (allDisabled || selectedRarityNames.includes(card.rarity)) {
+          newFilteredCards.push(card)
+        }
+      }
+    }
+
+    setFilteredCards(newFilteredCards)
+  }, [searchString, rarityOptions, collectionCards])
+
+  const handleSearchStringUpdate = (newSearchString) => {
+    setSearchString(newSearchString)
+  }
+
+  const handleRarityOptionsUpdate = (rarityOption, index) => {
+    const rarityOptionsCopy = [...rarityOptions]
+    rarityOptionsCopy[index].enabled = !rarityOption.enabled
+    setRarityOptions(rarityOptionsCopy)
   }
 
   const handleClickOpen = (card) => {
@@ -43,33 +73,33 @@ const Collection = ({ username }: CollectionProps) => {
   }
 
   return (
-    <div style={{ margin: '10px' }}>
+    <CollectionPage>
       <UsernameHeader username={username} />
       <Box whiteSpace={'nowrap'} overflow={'auto'}>
-        {filterOptions.map((filterOption, index) => (
+        {rarityOptions.map((rarityOption, index) => (
           <Chip
-            key={filterOption.rarity}
-            variant={filterOption.enabled ? 'default' : 'outlined'}
-            label={filterOption.rarity}
-            avatar={<Avatar src={filterOption.imageUrl} />}
-            onClick={() => handleChipClick(filterOption, index)}
+            key={rarityOption.rarity}
+            variant={rarityOption.enabled ? 'default' : 'outlined'}
+            label={rarityOption.rarity}
+            avatar={<Avatar src={rarityOption.imageUrl} />}
+            onClick={() => handleRarityOptionsUpdate(rarityOption, index)}
           />
         ))}
       </Box>
       <OptionInput
-        options={collectionCards}
+        options={filteredCards}
         loading={cardsLoading}
         groupBy={(option) => (option ? option.rarity : '')}
         getOptionLabel={(option) => (option ? option.playerName : '')}
         label={'Enter player name'}
         onInputChange={(event, newInputValue) => {
-          setSearchString(newInputValue)
+          handleSearchStringUpdate(newInputValue)
         }}
       />
-      <Grid style={{ margin: '0', marginTop: '16' }} container>
-        {collectionCards.length > 0 &&
-          collectionCards.map((card, index) => {
-            const numberOfDuplicates = collectionCards.filter(
+      <GridContainer container>
+        {filteredCards.length > 0 &&
+          filteredCards.map((card, index) => {
+            const numberOfDuplicates = filteredCards.filter(
               (collectionCard) => collectionCard.playerName === card.playerName
             ).length
 
@@ -86,8 +116,8 @@ const Collection = ({ username }: CollectionProps) => {
               />
             ) : null
           })}
-      </Grid>
-    </div>
+      </GridContainer>
+    </CollectionPage>
   )
 }
 
