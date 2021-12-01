@@ -6,6 +6,7 @@ import filterOptions from './rarity-options'
 import CardGrid from '@components/card-grid'
 import { CollectionPage, GridContainer } from './styled'
 import { Pagination } from '@material-ui/lab'
+import sortBy from 'lodash/sortBy'
 
 type CollectionProps = {
   username: string
@@ -50,7 +51,11 @@ const Collection = ({ username }: CollectionProps) => {
       }
     }
 
-    setFilteredCards(newFilteredCards)
+    const sortedCards = sortBy(newFilteredCards, (card) => {
+      return [card.rarity, card.playerName]
+    })
+
+    setFilteredCards(sortedCards)
   }, [searchString, rarityOptions, collectionCards])
 
   const handleSearchStringUpdate = (newSearchString) => {

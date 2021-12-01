@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "imagemin-svgo": "^9.0.0",
+    "lodash": "^4.17.21",
     "material-table": "^1.69.2",
     "mui-datatables": "^3.7.6",
     "next": "10.0.7",
