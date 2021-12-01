@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  AddShoppingCartOutlined,
   AddToPhotosOutlined,
   CompareArrowsOutlined,
   FileCopy,
@@ -28,9 +29,9 @@ const pages = [
     admin: false,
   },
   {
-    name: 'Open Packs',
-    href: '/open-packs',
-    icon: <AddToPhotosOutlined />,
+    name: 'Pack Shop',
+    href: '/pack-shop',
+    icon: <AddShoppingCartOutlined />,
     admin: false,
   },
   {

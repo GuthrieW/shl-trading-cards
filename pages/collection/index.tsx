@@ -6,59 +6,59 @@ import CardGrid from '@components/card-grid'
 import { CollectionPage, GridContainer } from './styled'
 import { Pagination } from '@material-ui/lab'
 import sortBy from 'lodash/sortBy'
-import cards from '@utils/test-data/cards.json'
+import useUserCards from '@hooks/use-user-cards'
+import { stringInCardName } from '@utils/index'
 
 type CollectionProps = {
   username: string
 }
 
+const UsernameHeader = ({ username }) => {
+  const displayUsername = username ? `${username}\'s` : 'My'
+  return <h1>{displayUsername} Collection</h1>
+}
+
 const Collection = ({ username }: CollectionProps) => {
-  const [rarityOptions, setRarityOptions] = useState(filterOptions)
-  const [searchString, setSearchString] = useState('')
-  const [cardsLoading, setCardsLoading] = useState(true)
-  const [collectionCards, setCollectionCards] = useState<any>([])
-  const [filteredCards, setFilteredCards] = useState(collectionCards)
-  const [pageNumber, setPageNumber] = useState(1)
-  const [isOpen, setIsOpen] = useState(false)
-  const [currentCard, setCurrentCard] = useState(null)
+  const [rarityOptions, setRarityOptions] = useState<Rarity[]>(filterOptions)
+  const [searchString, setSearchString] = useState<string>('')
+  const [filteringCards, setFilteringCards] = useState<boolean>(false)
+  const [filteredCards, setFilteredCards] = useState<Card[]>([])
+  const [pageNumber, setPageNumber] = useState<number>(1)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [currentCard, setCurrentCard] = useState<Card>(null)
+
+  const { cards, isLoading, isError } = useUserCards(username)
+
   const cardsPerPage = 12
 
   useEffect(() => {
-    setCardsLoading(true)
-    setCollectionCards(cards.data)
-    setCardsLoading(false)
-  }, [])
-
-  useEffect(() => {
-    setCardsLoading(true)
+    setFilteringCards(true)
     setPageNumber(1)
 
-    const newFilteredCards = []
-    const selectedRarityNames = []
-    let allDisabled = true
+    const selectedRarityNames = rarityOptions
+      .filter((rarityOption) => {
+        return rarityOption.enabled
+      })
+      .map((filteredRarityOption) => {
+        return filteredRarityOption.rarity
+      })
 
-    rarityOptions.map((rarityOption) => {
-      if (rarityOption.enabled) {
-        allDisabled = false
-        selectedRarityNames.push(rarityOption.rarity)
-      }
+    const allDisabled = selectedRarityNames.length === 0
+
+    const newFilteredCards = cards.filter((card) => {
+      return (
+        stringInCardName(card, searchString) &&
+        (allDisabled || selectedRarityNames.includes(card.rarity))
+      )
     })
-
-    for (const card of collectionCards) {
-      if (card.playerName.toLowerCase().includes(searchString.toLowerCase())) {
-        if (allDisabled || selectedRarityNames.includes(card.rarity)) {
-          newFilteredCards.push(card)
-        }
-      }
-    }
 
     const sortedCards = sortBy(newFilteredCards, (card) => {
       return [card.rarity, card.playerName]
     })
 
     setFilteredCards(sortedCards)
-    setCardsLoading(false)
-  }, [searchString, rarityOptions, collectionCards])
+    setFilteringCards(false)
+  }, [searchString, rarityOptions, cards])
 
   const handleSearchStringUpdate = (newSearchString) => {
     setSearchString(newSearchString)
@@ -100,7 +100,7 @@ const Collection = ({ username }: CollectionProps) => {
       </Box>
       <OptionInput
         options={filteredCards}
-        loading={cardsLoading}
+        loading={isLoading}
         groupBy={(option) => (option ? option.rarity : '')}
         getOptionLabel={(option) => (option ? option.playerName : '')}
         label={'Enter player name'}
@@ -139,11 +139,6 @@ const Collection = ({ username }: CollectionProps) => {
       />
     </CollectionPage>
   )
-}
-
-const UsernameHeader = ({ username }) => {
-  const displayUsername = username ? `${username}\'s` : 'My'
-  return <h1>{displayUsername} Collection</h1>
 }
 
 export default Collection

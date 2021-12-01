@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core'
 import Router from 'next/router'
 import testUsers from '@utils/test-data/user.json'
+import makeApiCall from '@pages/api/base'
 
 const columns = [
   { id: 'username', label: 'Name', minWidth: 170 },
@@ -20,6 +21,11 @@ const Community = () => {
   const [communityAccounts, setCommunityAccounts] = useState([])
 
   useEffect(() => {
+    // need to get all of the user accounts
+    const response = makeApiCall({
+      url: '',
+      method: '',
+    })
     setCommunityAccounts(testUsers.data)
   })
 

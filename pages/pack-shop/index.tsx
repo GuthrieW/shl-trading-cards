@@ -1,76 +1,98 @@
-import React, { useState } from 'react'
-import packs from '@utils/test-data/packs.json'
-import { Box, Container, Typography } from '@material-ui/core'
-import styled from 'styled-components'
+import React, { useEffect, useState } from 'react'
+import {
+  Badge,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
+  IconButton,
+} from '@material-ui/core'
+import packsMap from 'constants/packs-map'
+import OpenPacksIcon from '@public/icons/open-packs-icon'
+import {
+  ImageItem,
+  OpenPacksScreen,
+  StyledBarContainer,
+  StyledImage,
+} from './styled'
+import users from '@utils/test-data/user.json'
+import Router from 'next/router'
+import makeApiCall from '@pages/api/base'
 
-export const PackShop = (props) => {
-  const [isLoading, setIsLoading] = useState(false)
+const OpenPacks = () => {
+  const [currentUser, setCurrentUser] = useState(users.data[0])
+  const [userLoading, setUserLoading] = useState(false)
+  const [isRedirect, setIsRedirect] = useState(false)
 
-  const onPackClick = async (packType) => {
-    if (isLoading) {
-      return
+  useEffect(() => {
+    setUserLoading(true)
+    const fetchData = async () => {
+      setUserLoading(false)
     }
 
-    setIsLoading(true)
+    fetchData()
+  }, [])
 
-    await sleep(10000)
+  const getNumberOfPacks = (packType) => {
+    if (packType === 'regular') {
+      return currentUser.ownedRegularPacks
+    } else if (packType === 'challengeCup') {
+      return currentUser.ownedChallengeCupPacks
+    }
+  }
 
-    setIsLoading(false)
+  const handleOpenPack = async (packType) => {
+    const response = makeApiCall({
+      url: '',
+      method: '',
+    })
+
+    // call api the and send it the pack type
+    // if the user can open a pack redirect them to the selected pack type
+    // if the user can't open a pack then don't do anything
+    makeApiCall({
+      url: '',
+      method: '',
+    })
+    Router.push('/pack-shop/pack-viewer')
   }
 
   return (
-    <>
-      <h1 style={{ color: 'red' }}>placeholder</h1>
-      <Container>
-        <RowBox>
-          {packs.data.map((packType) => (
-            <CardBox>
-              <StyledImage
-                key={packType.packType}
-                isLoading={isLoading}
-                onClick={() => onPackClick(packType.packType)}
-                src={packType.packImage}
-              />
-              <PackName>{packType.packName}</PackName>
-            </CardBox>
-          ))}
-        </RowBox>
-      </Container>
-    </>
+    <OpenPacksScreen>
+      <ImageList gap={16} rowHeight={400} cols={3}>
+        {packsMap.map((pack) => {
+          const { key, label, imageUrl } = pack
+          return (
+            <ImageListItem key={key}>
+              <ImageItem>
+                <StyledImage
+                  height={'400px'}
+                  src={imageUrl}
+                  onClick={() => handleOpenPack(key)}
+                />
+              </ImageItem>
+              <StyledBarContainer onClick={() => handleOpenPack(key)}>
+                <ImageListItemBar
+                  title={`Open ${label} Pack`}
+                  actionIcon={
+                    <IconButton aria-label={`Info about ${label}`}>
+                      <Badge
+                        max={999}
+                        color={'secondary'}
+                        badgeContent={getNumberOfPacks(key)}
+                        showZero={true}
+                      >
+                        <OpenPacksIcon />
+                      </Badge>
+                    </IconButton>
+                  }
+                />
+              </StyledBarContainer>
+            </ImageListItem>
+          )
+        })}
+      </ImageList>
+    </OpenPacksScreen>
   )
 }
 
-function sleep(milliseconds) {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds))
-}
-
-const StyledImage = styled.img`
-  opacity: ${(props) => (props.isLoading ? 0.25 : 1)};
-  cursor: pointer;
-  transition: all ease 200ms;
-  &:hover {
-    transform: scale(1.1);
-  }
-  width: 50%;
-`
-
-const RowBox = styled(Box)`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-`
-
-const CardBox = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  width: 30%;
-  align-items: center;
-`
-
-const PackName = styled(Typography)`
-  justify-content: center;
-  padding-top: 15px;
-`
-
-export default PackShop
+export default OpenPacks
