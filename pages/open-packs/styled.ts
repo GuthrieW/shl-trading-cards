@@ -14,3 +14,10 @@ export const ImageItem = styled.div`
   align-items: center;
   justify-content: center;
 `
+export const StyledImage = styled.img`
+  cursor: pointer;
+`
+
+export const StyledBarContainer = styled.div`
+  cursor: pointer;
+`

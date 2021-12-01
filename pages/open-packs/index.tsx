@@ -8,45 +8,59 @@ import {
 } from '@material-ui/core'
 import packsMap from 'constants/packs-map'
 import OpenPacksIcon from '@public/icons/open-packs-icon'
-import { ImageItem, OpenPacksScreen } from './styled'
+import {
+  ImageItem,
+  OpenPacksScreen,
+  StyledBarContainer,
+  StyledImage,
+} from './styled'
+import users from '@utils/test-data/user.json'
+import Router from 'next/router'
 
 const OpenPacks = () => {
-  const [isFetching, setIsFetching] = useState(false)
+  const [currentUser, setCurrentUser] = useState(users.data[0])
+  const [userLoading, setUserLoading] = useState(false)
   const [isRedirect, setIsRedirect] = useState(false)
 
   useEffect(() => {
-    setIsFetching(true)
+    setUserLoading(true)
     const fetchData = async () => {
-      setIsFetching(false)
+      setUserLoading(false)
     }
 
     fetchData()
   }, [])
 
   const getNumberOfPacks = (packType) => {
-    return 0
+    if (packType === 'regular') {
+      return currentUser.ownedRegularPacks
+    } else if (packType === 'challengeCup') {
+      return currentUser.ownedChallengeCupPacks
+    }
   }
 
-  const handleOnClick = async (packType) => {
-    console.log(`The type is ${packType}`)
+  const handleOpenPack = async (packType) => {
+    // call api the and send it the pack type
+    // if the user can open a pack redirect them to the selected pack type
+    // if the user can't open a pack then don't do anything
+    Router.push('/open-packs/pack-viewer')
   }
 
   return (
     <OpenPacksScreen>
-      {isRedirect && <h1>Redirecting</h1>}
       <ImageList gap={16} rowHeight={400} cols={3}>
         {packsMap.map((pack) => {
           const { key, label, imageUrl } = pack
           return (
             <ImageListItem key={key}>
               <ImageItem>
-                <img
+                <StyledImage
                   height={'400px'}
                   src={imageUrl}
-                  onClick={() => handleOnClick(key)}
+                  onClick={() => handleOpenPack(key)}
                 />
               </ImageItem>
-              <div onClick={() => handleOnClick(key)}>
+              <StyledBarContainer onClick={() => handleOpenPack(key)}>
                 <ImageListItemBar
                   title={`Open ${label} Pack`}
                   actionIcon={
@@ -62,7 +76,7 @@ const OpenPacks = () => {
                     </IconButton>
                   }
                 />
-              </div>
+              </StyledBarContainer>
             </ImageListItem>
           )
         })}

@@ -1,7 +1,7 @@
 import { GridList, GridListTile } from '@material-ui/core'
 import React from 'react'
 type StaticPackViewerProps = {
-  cards: [any]
+  cards: any[]
 }
 
 const StaticPackViewer = (props: StaticPackViewerProps) => {

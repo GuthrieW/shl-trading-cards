@@ -33,7 +33,7 @@ const CardGrid = ({
   duplicates,
 }) => {
   return (
-    <Grid key={card.playerName} item xs={6} md={4} lg={3}>
+    <Grid key={card.playerName} item xs={12} sm={6} md={4} lg={3}>
       <Box onClick={() => handleOpenCard(card)}>
         <Badge badgeContent={duplicates ? duplicates : null} color={'primary'}>
           <StyledImage width={300} height={400} src={card.imageUrl} />

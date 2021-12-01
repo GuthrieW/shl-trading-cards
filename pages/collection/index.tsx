@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import cards from '@utils/test-data/cards.json'
-import { Avatar, Box, Chip, Grid } from '@material-ui/core'
+import { Avatar, Box, Chip } from '@material-ui/core'
 import OptionInput from '@components/option-input'
 import filterOptions from './rarity-options'
 import CardGrid from '@components/card-grid'
 import { CollectionPage, GridContainer } from './styled'
 import { Pagination } from '@material-ui/lab'
 import sortBy from 'lodash/sortBy'
+import cards from '@utils/test-data/cards.json'
 
 type CollectionProps = {
   username: string
 }
 
 const Collection = ({ username }: CollectionProps) => {
-  const [cardsPerPage, setCardsPerPage] = useState(12)
   const [rarityOptions, setRarityOptions] = useState(filterOptions)
   const [searchString, setSearchString] = useState('')
   const [cardsLoading, setCardsLoading] = useState(true)
@@ -22,6 +21,7 @@ const Collection = ({ username }: CollectionProps) => {
   const [pageNumber, setPageNumber] = useState(1)
   const [isOpen, setIsOpen] = useState(false)
   const [currentCard, setCurrentCard] = useState(null)
+  const cardsPerPage = 12
 
   useEffect(() => {
     setCardsLoading(true)
@@ -30,6 +30,7 @@ const Collection = ({ username }: CollectionProps) => {
   }, [])
 
   useEffect(() => {
+    setCardsLoading(true)
     setPageNumber(1)
 
     const newFilteredCards = []
@@ -56,6 +57,7 @@ const Collection = ({ username }: CollectionProps) => {
     })
 
     setFilteredCards(sortedCards)
+    setCardsLoading(false)
   }, [searchString, rarityOptions, collectionCards])
 
   const handleSearchStringUpdate = (newSearchString) => {
