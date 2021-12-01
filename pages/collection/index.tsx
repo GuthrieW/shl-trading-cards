@@ -5,12 +5,14 @@ import OptionInput from '@components/option-input'
 import filterOptions from './rarity-options'
 import CardGrid from '@components/card-grid'
 import { CollectionPage, GridContainer } from './styled'
+import { Pagination } from '@material-ui/lab'
 
 type CollectionProps = {
   username: string
 }
 
 const Collection = ({ username }: CollectionProps) => {
+  const [cardsPerPage, setCardsPerPage] = useState(12)
   const [rarityOptions, setRarityOptions] = useState(filterOptions)
   const [searchString, setSearchString] = useState('')
   const [cardsLoading, setCardsLoading] = useState(true)
@@ -41,8 +43,7 @@ const Collection = ({ username }: CollectionProps) => {
     })
 
     for (const card of collectionCards) {
-      // right now this is case sensetive, just need to add .tolowercase() here to fix that
-      if (card.playerName.includes(searchString)) {
+      if (card.playerName.toLowerCase().includes(searchString.toLowerCase())) {
         if (allDisabled || selectedRarityNames.includes(card.rarity)) {
           newFilteredCards.push(card)
         }
@@ -72,6 +73,10 @@ const Collection = ({ username }: CollectionProps) => {
     setIsOpen(false)
   }
 
+  const handlePageChange = (event, value) => {
+    setPageNumber(value)
+  }
+
   return (
     <CollectionPage>
       <UsernameHeader username={username} />
@@ -98,25 +103,33 @@ const Collection = ({ username }: CollectionProps) => {
       />
       <GridContainer container>
         {filteredCards.length > 0 &&
-          filteredCards.map((card, index) => {
-            const numberOfDuplicates = filteredCards.filter(
-              (collectionCard) => collectionCard.playerName === card.playerName
-            ).length
+          filteredCards
+            .slice((pageNumber - 1) * cardsPerPage, pageNumber * cardsPerPage)
+            .map((card, index) => {
+              const numberOfDuplicates = filteredCards.filter(
+                (collectionCard) =>
+                  collectionCard.playerName === card.playerName
+              ).length
 
-            return card ? (
-              <CardGrid
-                card={card}
-                currentCard={currentCard}
-                handleOpenCard={() => {
-                  handleClickOpen(card)
-                }}
-                handleCloseCard={handleClose}
-                open={isOpen}
-                duplicates={numberOfDuplicates}
-              />
-            ) : null
-          })}
+              return card ? (
+                <CardGrid
+                  card={card}
+                  currentCard={currentCard}
+                  handleOpenCard={() => {
+                    handleClickOpen(card)
+                  }}
+                  handleCloseCard={handleClose}
+                  open={isOpen}
+                  duplicates={numberOfDuplicates}
+                />
+              ) : null
+            })}
       </GridContainer>
+      <Pagination
+        count={Math.ceil(filteredCards.length / cardsPerPage)}
+        onChange={handlePageChange}
+        page={pageNumber}
+      />
     </CollectionPage>
   )
 }
