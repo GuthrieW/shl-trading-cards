@@ -5,17 +5,18 @@ import Link from 'next/link'
 export type InfoCardProps = {
   title: string
   body: string
-  href: string
+  onClick: Function
 }
 
-const InfoCard = ({ title, body, href }) => (
-  <Box
-    m={2}
-    style={{
-      cursor: 'pointer',
-    }}
-  >
-    <Link href={href}>
+const InfoCard = ({ title, body, onClick }) => {
+  return (
+    <Box
+      m={2}
+      style={{
+        cursor: 'pointer',
+      }}
+      onClick={onClick}
+    >
       <Card>
         <CardContent>
           <Typography color="textSecondary" gutterBottom>
@@ -26,8 +27,8 @@ const InfoCard = ({ title, body, href }) => (
           </Typography>
         </CardContent>
       </Card>
-    </Link>
-  </Box>
-)
+    </Box>
+  )
+}
 
 export default InfoCard

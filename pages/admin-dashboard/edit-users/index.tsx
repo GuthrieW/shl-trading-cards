@@ -7,10 +7,12 @@ import {
   Button,
 } from '@material-ui/core'
 import { Autocomplete } from '@material-ui/lab'
-import testUsers from '@utils/test-data/user.json'
 import Router from 'next/router'
+import useAllUsers from '@hooks/use-all-users'
+import { ButtonContainer, EditUsersContainer, SaveButton } from './styled'
 
 const EditUsers = () => {
+  const { users, isLoading, isError } = useAllUsers()
   const [selectedUser, setSelectedUser] = useState(null)
 
   const handleSubmit = () => {
@@ -18,16 +20,9 @@ const EditUsers = () => {
   }
 
   return (
-    <div
-      style={{
-        alignItems: 'center',
-        position: 'static',
-        width: '50%',
-      }}
-    >
+    <EditUsersContainer>
       <Autocomplete
-        style={{ width: 300 }}
-        options={testUsers.data}
+        options={users}
         onChange={(event, value) => {
           setSelectedUser(value)
         }}
@@ -118,7 +113,7 @@ const EditUsers = () => {
         <TextField
           disabled={!selectedUser}
           type={'number'}
-          label={'Owned Regular Packs'}
+          label={'Owned Challenge Cup Packs'}
           value={selectedUser?.ownedChallengeCupPacks || 0}
           onChange={(event) => {
             setSelectedUser({
@@ -127,28 +122,19 @@ const EditUsers = () => {
             })
           }}
         />
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Button
+        <ButtonContainer>
+          <SaveButton
             disabled={!selectedUser}
             type={'submit'}
-            style={{
-              width: '60%',
-            }}
             variant={'contained'}
             color={'primary'}
             onClick={handleSubmit}
           >
             Save User
-          </Button>
-        </div>
+          </SaveButton>
+        </ButtonContainer>
       </FormGroup>
-    </div>
+    </EditUsersContainer>
   )
 }
 

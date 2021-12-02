@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
   Paper,
   TableContainer,
@@ -9,8 +9,8 @@ import {
   TableBody,
 } from '@material-ui/core'
 import Router from 'next/router'
-import testUsers from '@utils/test-data/user.json'
-import makeApiCall from '@pages/api/base'
+import useAllUsers from '@hooks/use-all-users'
+import PageHeader from '@components/page-header'
 
 const columns = [
   { id: 'username', label: 'Name', minWidth: 170 },
@@ -18,16 +18,7 @@ const columns = [
 ]
 
 const Community = () => {
-  const [communityAccounts, setCommunityAccounts] = useState([])
-
-  useEffect(() => {
-    // need to get all of the user accounts
-    const response = makeApiCall({
-      url: '',
-      method: '',
-    })
-    setCommunityAccounts(testUsers.data)
-  })
+  const { users, isLoading, isError } = useAllUsers()
 
   const handleOnClick = (username) => {
     Router.push({
@@ -36,54 +27,58 @@ const Community = () => {
   }
 
   return (
-    <Paper>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  style={{ minWidth: column.minWidth, fontWeight: 'bold' }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {communityAccounts.map((row, index) => {
-              if (row.username === '') {
-                return
-              }
-              return (
-                <TableRow
-                  hover
-                  role="checkbox"
-                  tabIndex={-1}
-                  key={`${row.username}-${index}`}
-                >
-                  {columns.map((column, index) => {
-                    const value =
-                      column.id === 'cards'
-                        ? row[column.id].length
-                        : row[column.id]
-                    return (
-                      <TableCell
-                        onClick={() => handleOnClick(row.username)}
-                        key={`${column.id}-${index}`}
-                      >
-                        {value}
-                      </TableCell>
-                    )
-                  })}
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Paper>
+    <>
+      <PageHeader>Community</PageHeader>
+      <Paper>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    style={{ minWidth: column.minWidth, fontWeight: 'bold' }}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users &&
+                users.map((row, index) => {
+                  if (row.username === '') {
+                    return
+                  }
+                  return (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={`${row.username}-${index}`}
+                    >
+                      {columns.map((column, index) => {
+                        const value =
+                          column.id === 'cards'
+                            ? row[column.id].length
+                            : row[column.id]
+                        return (
+                          <TableCell
+                            onClick={() => handleOnClick(row.username)}
+                            key={`${column.id}-${index}`}
+                          >
+                            {value}
+                          </TableCell>
+                        )
+                      })}
+                    </TableRow>
+                  )
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+    </>
   )
 }
 

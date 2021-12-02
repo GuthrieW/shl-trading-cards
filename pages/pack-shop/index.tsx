@@ -14,50 +14,28 @@ import {
   StyledBarContainer,
   StyledImage,
 } from './styled'
-import users from '@utils/test-data/user.json'
 import Router from 'next/router'
-import makeApiCall from '@pages/api/base'
+import useBuyPack from '@hooks/use-buy-pack'
+import useCurrentUser from '@hooks/use-current-user'
+import PageHeader from '@components/page-header'
 
 const OpenPacks = () => {
-  const [currentUser, setCurrentUser] = useState(users.data[0])
-  const [userLoading, setUserLoading] = useState(false)
-  const [isRedirect, setIsRedirect] = useState(false)
-
-  useEffect(() => {
-    setUserLoading(true)
-    const fetchData = async () => {
-      setUserLoading(false)
-    }
-
-    fetchData()
-  }, [])
-
-  const getNumberOfPacks = (packType) => {
-    if (packType === 'regular') {
-      return currentUser.ownedRegularPacks
-    } else if (packType === 'challengeCup') {
-      return currentUser.ownedChallengeCupPacks
-    }
-  }
+  const { currentUser, isLoading, isError } = useCurrentUser()
 
   const handleOpenPack = async (packType) => {
-    const response = makeApiCall({
-      url: '',
-      method: '',
-    })
+    // this probably needs to be re-done, using a hook to make an API call like this feels weird
+    const { result, isLoading, isError } = useBuyPack(currentUser)
 
-    // call api the and send it the pack type
-    // if the user can open a pack redirect them to the selected pack type
-    // if the user can't open a pack then don't do anything
-    makeApiCall({
-      url: '',
-      method: '',
-    })
-    Router.push('/pack-shop/pack-viewer')
+    if (result.packPurchased) {
+      Router.push('/pack-shop/pack-viewer')
+    } else {
+      // tell the user that the pack purchase was unsuccessful
+    }
   }
 
   return (
     <OpenPacksScreen>
+      <PageHeader>Pack Shop</PageHeader>
       <ImageList gap={16} rowHeight={400} cols={3}>
         {packsMap.map((pack) => {
           const { key, label, imageUrl } = pack
@@ -75,12 +53,7 @@ const OpenPacks = () => {
                   title={`Open ${label} Pack`}
                   actionIcon={
                     <IconButton aria-label={`Info about ${label}`}>
-                      <Badge
-                        max={999}
-                        color={'secondary'}
-                        badgeContent={getNumberOfPacks(key)}
-                        showZero={true}
-                      >
+                      <Badge max={999} color={'secondary'} showZero={true}>
                         <OpenPacksIcon />
                       </Badge>
                     </IconButton>

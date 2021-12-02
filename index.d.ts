@@ -5,6 +5,11 @@ type Card = {
 
 type User = {
   userId: number
+  username: string
+  isAdmin: boolean
+  isProcessor: boolean
+  isSubmitter: boolean
+  cards: Card[]
 }
 
 type Rarity = {

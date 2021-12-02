@@ -8,14 +8,10 @@ import { Pagination } from '@material-ui/lab'
 import sortBy from 'lodash/sortBy'
 import useUserCards from '@hooks/use-user-cards'
 import { stringInCardName } from '@utils/index'
+import PageHeader from '@components/page-header'
 
 type CollectionProps = {
   username: string
-}
-
-const UsernameHeader = ({ username }) => {
-  const displayUsername = username ? `${username}\'s` : 'My'
-  return <h1>{displayUsername} Collection</h1>
 }
 
 const Collection = ({ username }: CollectionProps) => {
@@ -30,6 +26,7 @@ const Collection = ({ username }: CollectionProps) => {
   const { cards, isLoading, isError } = useUserCards(username)
 
   const cardsPerPage = 12
+  const displayUsername = username ? `${username}\'s` : 'My'
 
   useEffect(() => {
     setFilteringCards(true)
@@ -86,7 +83,7 @@ const Collection = ({ username }: CollectionProps) => {
 
   return (
     <CollectionPage>
-      <UsernameHeader username={username} />
+      <PageHeader>{`${displayUsername} Collection`}</PageHeader>
       <Box whiteSpace={'nowrap'} overflow={'auto'}>
         {rarityOptions.map((rarityOption, index) => (
           <Chip

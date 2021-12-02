@@ -5,9 +5,10 @@ const SubmitCards = () => {
   return (
     <div
       style={{
+        display: 'flex',
         alignItems: 'center',
         position: 'static',
-        width: '50%',
+        justifyContent: 'center',
       }}
     >
       <CardForm />
