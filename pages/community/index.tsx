@@ -22,7 +22,8 @@ const Community = () => {
 
   const handleOnClick = (username) => {
     Router.push({
-      pathname: `community/${username}`,
+      pathname: `collection`,
+      query: { username: username },
     })
   }
 

@@ -9,21 +9,14 @@ import useUserCards from '@hooks/use-user-cards'
 import { stringInCardName } from '@utils/index'
 import PageHeader from '@components/page-header'
 import styled from 'styled-components'
-
-type CollectionProps = {
-  username: string
-}
-
-const GridContainer = styled(Grid)`
-  margin: 0px;
-  margin-top: 16px;
-`
+import { useRouter } from 'next/router'
+import useCurrentUser from '@hooks/use-current-user'
 
 const CollectionPage = styled.div`
   margin: 10px;
 `
 
-const Collection = ({ username }: CollectionProps) => {
+const Collection = () => {
   const [rarityOptions, setRarityOptions] = useState<Rarity[]>(filterOptions)
   const [searchString, setSearchString] = useState<string>('')
   const [filteringCards, setFilteringCards] = useState<boolean>(false)
@@ -32,10 +25,26 @@ const Collection = ({ username }: CollectionProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [currentCard, setCurrentCard] = useState<Card>(null)
 
-  const { cards, isLoading, isError } = useUserCards(username)
+  const router = useRouter()
+  const { username } = router.query
+
+  const {
+    currentUser,
+    isLoading: currentUserIsLoading,
+    isError: currentUserIsError,
+  } = useCurrentUser()
+
+  const collectionUsername =
+    typeof username === 'string' ? username : currentUser.username
+
+  const {
+    cards,
+    isLoading: userCardsIsLoading,
+    isError: userCardsIsError,
+  } = useUserCards(collectionUsername)
 
   const cardsPerPage = 12
-  const displayUsername = username ? `${username}\'s` : 'My'
+  const headerDisplay = collectionUsername ? `${collectionUsername}\'s` : 'My'
 
   useEffect(() => {
     setFilteringCards(true)
@@ -92,7 +101,7 @@ const Collection = ({ username }: CollectionProps) => {
 
   return (
     <CollectionPage>
-      <PageHeader>{`${displayUsername} Collection`}</PageHeader>
+      <PageHeader>{`${headerDisplay} Collection`}</PageHeader>
       <Box whiteSpace={'nowrap'} overflow={'auto'}>
         {rarityOptions.map((rarityOption, index) => (
           <Chip
@@ -106,7 +115,7 @@ const Collection = ({ username }: CollectionProps) => {
       </Box>
       <OptionInput
         options={filteredCards}
-        loading={isLoading}
+        loading={userCardsIsLoading}
         groupBy={(option) => (option ? option.rarity : '')}
         getOptionLabel={(option) => (option ? option.playerName : '')}
         label={'Enter player name'}

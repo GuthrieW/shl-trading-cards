@@ -1,12 +1,5 @@
 import React from 'react'
-import {
-  Badge,
-  Box,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Grid,
-} from '@material-ui/core'
+import { Badge, Box, Grid } from '@material-ui/core'
 import styled from 'styled-components'
 import CardModal from '@components/card-modal'
 

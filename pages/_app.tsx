@@ -4,7 +4,7 @@ import { ThemeProvider } from '@material-ui/styles'
 import { SWRConfig } from 'swr'
 import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
-import PageLayout from '@components/page-layout'
+import Layout from '@components/layout'
 import { createTheme } from '@material-ui/core'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
@@ -28,10 +28,10 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
           <Hydrate state={pageProps.dehydratedState}>
-            <PageLayout>
+            <Layout>
               <DefaultSeo {...SEO} />
               <Component {...pageProps} />
-            </PageLayout>
+            </Layout>
           </Hydrate>
         </QueryClientProvider>
       </ThemeProvider>
