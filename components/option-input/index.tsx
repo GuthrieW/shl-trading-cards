@@ -1,7 +1,9 @@
+import React from 'react'
+import styled from 'styled-components'
 import { Autocomplete } from '@material-ui/lab'
 import { TextField } from '@material-ui/core'
 
-export type OptionInputProps = {
+type OptionInputProps = {
   options: any[]
   loading: boolean
   groupBy: any
@@ -9,6 +11,10 @@ export type OptionInputProps = {
   label: string
   onInputChange: any
 }
+
+const StyledAutocomplete = styled(Autocomplete)`
+  margin-top: 16px;
+`
 
 const OptionInput = ({
   options,
@@ -18,7 +24,7 @@ const OptionInput = ({
   label,
   onInputChange,
 }: OptionInputProps) => (
-  <Autocomplete
+  <StyledAutocomplete
     options={options}
     loading={loading}
     groupBy={groupBy}

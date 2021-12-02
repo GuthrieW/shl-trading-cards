@@ -1,6 +1,7 @@
 type Card = {
   imageUrl: string
   playerName: string
+  rarity: string
 }
 
 type User = {

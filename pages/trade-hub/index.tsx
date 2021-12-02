@@ -1,8 +1,8 @@
 import OptionInput from '@components/option-input'
 import React, { useEffect, useState } from 'react'
-import cards from '@utils/test-data/cards.json'
 import useAllCards from '@hooks/use-all-cards'
 import { stringInCardName } from '@utils/index'
+import PageHeader from '@components/page-header'
 
 const TradeHub = () => {
   const [searchString, setSearchString] = useState('')
@@ -21,6 +21,7 @@ const TradeHub = () => {
 
   return (
     <div>
+      <PageHeader>Trade Hub</PageHeader>
       <OptionInput
         options={cards}
         loading={isLoading}

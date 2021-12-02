@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { Avatar, Box, Chip, Grid } from '@material-ui/core'
 import OptionInput from '@components/option-input'
 import filterOptions from '@utils/rarity-options'
-import CardGrid from '@components/card-grid'
+import CollectionGrid from '@components/collection-grid'
 import { Pagination } from '@material-ui/lab'
 import sortBy from 'lodash/sortBy'
 import useUserCards from '@hooks/use-user-cards'
 import { stringInCardName } from '@utils/index'
 import PageHeader from '@components/page-header'
 import styled from 'styled-components'
+
+type CollectionProps = {
+  username: string
+}
 
 const GridContainer = styled(Grid)`
   margin: 0px;
@@ -18,10 +22,6 @@ const GridContainer = styled(Grid)`
 const CollectionPage = styled.div`
   margin: 10px;
 `
-
-type CollectionProps = {
-  username: string
-}
 
 const Collection = ({ username }: CollectionProps) => {
   const [rarityOptions, setRarityOptions] = useState<Rarity[]>(filterOptions)
@@ -76,7 +76,7 @@ const Collection = ({ username }: CollectionProps) => {
     setRarityOptions(rarityOptionsCopy)
   }
 
-  const handleClickOpen = (card) => {
+  const handleOpen = (card) => {
     setCurrentCard(card)
     setIsOpen(true)
   }
@@ -114,30 +114,15 @@ const Collection = ({ username }: CollectionProps) => {
           handleSearchStringUpdate(newInputValue)
         }}
       />
-      <GridContainer container>
-        {filteredCards.length > 0 &&
-          filteredCards
-            .slice((pageNumber - 1) * cardsPerPage, pageNumber * cardsPerPage)
-            .map((card, index) => {
-              const numberOfDuplicates = filteredCards.filter(
-                (collectionCard) =>
-                  collectionCard.playerName === card.playerName
-              ).length
-
-              return card ? (
-                <CardGrid
-                  card={card}
-                  currentCard={currentCard}
-                  handleOpenCard={() => {
-                    handleClickOpen(card)
-                  }}
-                  handleCloseCard={handleClose}
-                  open={isOpen}
-                  duplicates={numberOfDuplicates}
-                />
-              ) : null
-            })}
-      </GridContainer>
+      <CollectionGrid
+        filteredCards={filteredCards}
+        pageNumber={pageNumber}
+        cardsPerPage={cardsPerPage}
+        handleOpenCard={handleOpen}
+        handleCloseCard={handleClose}
+        open={isOpen}
+        currentCard={currentCard}
+      />
       <Pagination
         count={Math.ceil(filteredCards.length / cardsPerPage)}
         onChange={handlePageChange}
