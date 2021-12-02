@@ -1,4 +1,4 @@
-import { Grid, GridList, GridListTile } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -35,13 +35,14 @@ const GridItem = ({ children }) => (
 
 const StaticPackViewer = ({ cards }: StaticPackViewerProps) => (
   <GridContainer container>
-    {cards.map((card, index) => {
-      return (
-        <GridItem key={index}>
-          <StyledImage width={300} height={400} src={card.imageUrl} />
-        </GridItem>
-      )
-    })}
+    {cards &&
+      cards.map((card, index) => {
+        return (
+          <GridItem key={index}>
+            <StyledImage width={300} height={400} src={card.imageUrl} />
+          </GridItem>
+        )
+      })}
   </GridContainer>
 )
 
