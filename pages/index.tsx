@@ -1,17 +1,6 @@
 import React from 'react'
-import styled from 'styled-components'
+import Home from '@pages/home'
 
-const index = (props) => {
-  return (
-    <>
-      <CenteredHeader>DONE LOADING</CenteredHeader>
-    </>
-  )
-}
-
-const CenteredHeader = styled.h1`
-  color: red;
-  text-align: center;
-`
+const index = () => <Home />
 
 export default index
