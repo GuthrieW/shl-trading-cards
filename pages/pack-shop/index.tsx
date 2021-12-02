@@ -41,13 +41,13 @@ const OpenPacks = () => {
 
   const handleOpenPack = async (packType) => {
     // this probably needs to be re-done, using a hook to make an API call like this feels weird
-    const { result, isLoading, isError } = useBuyPack(currentUser)
+    // const { result, isLoading, isError } = useBuyPack(currentUser)
 
-    if (result.packPurchased) {
-      Router.push('/pack-shop/pack-viewer')
-    } else {
-      // tell the user that the pack purchase was unsuccessful
-    }
+    // if (result.packPurchased) {
+    Router.push('/pack-shop/pack-viewer')
+    // } else {
+    // tell the user that the pack purchase was unsuccessful
+    // }
   }
 
   return (
