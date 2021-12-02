@@ -2,15 +2,29 @@ import React, { useState } from 'react'
 import InfoCard from '@components/info-card'
 import PageHeader from '@components/page-header'
 import useCurrentUser from '@hooks/use-current-user'
+import { Box } from '@material-ui/core'
 import EditCards from './edit-cards'
 import EditUsers from './edit-users'
 import ProcessCards from './process-cards'
 import SubmitCards from './submit-cards'
-import {
-  HorizontalBox,
-  VerticalContentBox,
-  VerticalSelectionBox,
-} from './styled'
+import styled from 'styled-components'
+
+const HorizontalBox = styled(Box)`
+  display: flex;
+  flex-direction: row;
+`
+
+const VerticalSelectionBox = styled(Box)`
+  width: 15%;
+  display: flex;
+  flex-direction: column;
+`
+
+const VerticalContentBox = styled(Box)`
+  width: 85%;
+  display: flex;
+  flex-direction: column;
+`
 
 type SelectedAdminPage =
   | 'none'

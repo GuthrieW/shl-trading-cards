@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import cards from '@utils/test-data/cards.json'
-import AnimatedPackViewer from '../animated-pack-viewer'
+// import AnimatedPackViewer from '../animated-pack-viewer'
 import StaticPackViewer from '../static-pack-viewer'
 import makeApiCall from '@pages/api/base'
 
@@ -25,11 +25,13 @@ const PackViewer = () => {
 
   console.log(packCards)
 
-  return packViewerType === 'animated' ? (
-    <AnimatedPackViewer cards={packCards} />
-  ) : (
-    <StaticPackViewer cards={packCards} />
-  )
+  return <StaticPackViewer cards={packCards} />
+
+  // return packViewerType === 'static' ? (
+  //   <AnimatedPackViewer cards={packCards} />
+  // ) : (
+  //   <StaticPackViewer cards={packCards} />
+  // )
 }
 
 export default PackViewer

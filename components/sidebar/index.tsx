@@ -5,11 +5,6 @@ import { SidebarItem, SidebarIcon, StyledSidebar, SidebarText } from './styled'
 import { useRouter } from 'next/router'
 import useCurrentUser from '@hooks/use-current-user'
 
-export type SidebarProps = {
-  groups: number[]
-}
-
-// const Sidebar = ({ groups }: SidebarProps) => {
 const Sidebar = () => {
   const { currentUser, isLoading, isError } = useCurrentUser()
   const { asPath } = useRouter()

@@ -1,6 +1,6 @@
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
 import React, { useState, useEffect } from 'react'
-import AnimatedPackViewer from '../animated-pack-viewer'
+// import AnimatedPackViewer from '../animated-pack-viewer'
 import StaticPackViewer from '../static-pack-viewer'
 
 enum PackViewerTypesEnum {
@@ -27,9 +27,9 @@ const ViewToggler = () => {
 
   return (
     <div>
-      {selectedPackViewer === PackViewerTypesEnum.Animated && (
+      {/* {selectedPackViewer === PackViewerTypesEnum.Animated && (
         <AnimatedPackViewer cards={cards} />
-      )}
+      )} */}
       {selectedPackViewer === PackViewerTypesEnum.Static && (
         <StaticPackViewer cards={cards} />
       )}

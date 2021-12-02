@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
+  Grid,
   TextField,
   FormGroup,
   FormControlLabel,
@@ -9,7 +10,22 @@ import {
 import { Autocomplete } from '@material-ui/lab'
 import Router from 'next/router'
 import useAllUsers from '@hooks/use-all-users'
-import { ButtonContainer, EditUsersContainer, SaveButton } from './styled'
+import styled from 'styled-components'
+
+const EditUsersContainer = styled.div`
+  align-self: center;
+  width: 50%;
+`
+
+const SaveButton = styled(Button)`
+  width: 60%;
+`
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
 
 const EditUsers = () => {
   const { users, isLoading, isError } = useAllUsers()

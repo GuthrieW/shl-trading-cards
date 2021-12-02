@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
   Badge,
   ImageList,
@@ -8,16 +8,33 @@ import {
 } from '@material-ui/core'
 import packsMap from 'constants/packs-map'
 import OpenPacksIcon from '@public/icons/open-packs-icon'
-import {
-  ImageItem,
-  OpenPacksScreen,
-  StyledBarContainer,
-  StyledImage,
-} from './styled'
 import Router from 'next/router'
 import useBuyPack from '@hooks/use-buy-pack'
 import useCurrentUser from '@hooks/use-current-user'
 import PageHeader from '@components/page-header'
+import styled from 'styled-components'
+
+const OpenPacksScreen = styled.div`
+  @media only screen and (max-width: 768px) {
+    margin: 10px;
+  }
+
+  @media only screen and (min-width: 768px) {
+    margin: 10px;
+  }
+`
+const ImageItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+const StyledImage = styled.img`
+  cursor: pointer;
+`
+
+const StyledBarContainer = styled.div`
+  cursor: pointer;
+`
 
 const OpenPacks = () => {
   const { currentUser, isLoading, isError } = useCurrentUser()

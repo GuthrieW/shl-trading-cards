@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import { Avatar, Box, Chip } from '@material-ui/core'
+import { Avatar, Box, Chip, Grid } from '@material-ui/core'
 import OptionInput from '@components/option-input'
-import filterOptions from './rarity-options'
+import filterOptions from '@utils/rarity-options'
 import CardGrid from '@components/card-grid'
-import { CollectionPage, GridContainer } from './styled'
 import { Pagination } from '@material-ui/lab'
 import sortBy from 'lodash/sortBy'
 import useUserCards from '@hooks/use-user-cards'
 import { stringInCardName } from '@utils/index'
 import PageHeader from '@components/page-header'
+import styled from 'styled-components'
+
+const GridContainer = styled(Grid)`
+  margin: 0px;
+  margin-top: 16px;
+`
+
+const CollectionPage = styled.div`
+  margin: 10px;
+`
 
 type CollectionProps = {
   username: string
