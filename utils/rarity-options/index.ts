@@ -1,4 +1,4 @@
-export const filterOptions = [
+const rarityOptions = [
   {
     rarity: 'Bronze',
     imageUrl: '/images/bronze-icon.svg',
@@ -26,4 +26,4 @@ export const filterOptions = [
   },
 ]
 
-export default filterOptions
+export default rarityOptions

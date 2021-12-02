@@ -1,5 +1,5 @@
 const groups = {
-  'Trading Card Management': {
+  Admin: {
     id: 157,
     label: 'Trading Card Management',
   },

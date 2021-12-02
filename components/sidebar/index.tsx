@@ -4,6 +4,8 @@ import pages from './pages'
 import { SidebarItem, SidebarIcon, StyledSidebar, SidebarText } from './styled'
 import { useRouter } from 'next/router'
 import useCurrentUser from '@hooks/use-current-user'
+import hasRequiredPermisson from '@utils/has-required-permission'
+import { groups } from '@utils/user-groups'
 
 const Sidebar = () => {
   const { currentUser, isLoading, isError } = useCurrentUser()
@@ -13,7 +15,7 @@ const Sidebar = () => {
     <StyledSidebar>
       <List>
         {pages.map((page) => {
-          if (page.admin && !currentUser.isAdmin) {
+          if (page.admin && hasRequiredPermisson([groups.Admin], currentUser)) {
             return null
           }
 

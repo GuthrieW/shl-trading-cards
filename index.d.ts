@@ -7,9 +7,7 @@ type Card = {
 type User = {
   userId: number
   username: string
-  isAdmin: boolean
-  isProcessor: boolean
-  isSubmitter: boolean
+  permissions: number[]
   cards: Card[]
 }
 

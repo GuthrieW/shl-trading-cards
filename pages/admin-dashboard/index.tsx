@@ -8,6 +8,9 @@ import EditUsers from './edit-users'
 import ProcessCards from './process-cards'
 import SubmitCards from './submit-cards'
 import styled from 'styled-components'
+import { adminPages, hasRequiredPermisson } from '@utils/index'
+import ClaimCardCreation from './claim-card-creation'
+import RequestCardCreation from './request-card-creation'
 
 const HorizontalBox = styled(Box)`
   display: flex;
@@ -26,67 +29,51 @@ const VerticalContentBox = styled(Box)`
   flex-direction: column;
 `
 
-type SelectedAdminPage =
+export type SelectedAdminPage =
   | 'none'
   | 'edit-users'
   | 'edit-cards'
   | 'process-cards'
   | 'submit-cards'
+  | 'claim-card-creation'
+  | 'request-card-creation'
 
 const Dashboard = () => {
   const { currentUser, isLoading, isError } = useCurrentUser()
   const [selectedAdminPage, setSelectedAdminPage] =
     useState<SelectedAdminPage>('none')
 
+  console.log(currentUser)
+
   return (
     <>
       <PageHeader>Admin Dashboard</PageHeader>
       <HorizontalBox>
         <VerticalSelectionBox>
-          {(currentUser.isAdmin || currentUser.isProcessor) && (
-            <InfoCard
-              title={'Edit Cards'}
-              body={'Modify card information including '}
-              onClick={() => {
-                setSelectedAdminPage('edit-cards')
-              }}
-            />
-          )}
-          {currentUser.isAdmin && (
-            <InfoCard
-              title={'Edit Users'}
-              body={
-                'Modify user data including subscription status and permissions'
-              }
-              onClick={() => {
-                setSelectedAdminPage('edit-users')
-              }}
-            />
-          )}
-          {(currentUser.isAdmin || currentUser.isProcessor) && (
-            <InfoCard
-              title={'Process Cards'}
-              body={'Approve or delete cards in the processing queue'}
-              onClick={() => {
-                setSelectedAdminPage('process-cards')
-              }}
-            />
-          )}
-          {(currentUser.isAdmin || currentUser.isSubmitter) && (
-            <InfoCard
-              title={'Submit Cards'}
-              body={'Submit cards for approval'}
-              onClick={() => {
-                setSelectedAdminPage('submit-cards')
-              }}
-            />
-          )}
+          {adminPages.map((page) => {
+            return hasRequiredPermisson(
+              page.requiredPermissions,
+              currentUser
+            ) ? (
+              <InfoCard
+                title={page.title}
+                body={page.body}
+                onClick={() => {
+                  setSelectedAdminPage(page.href)
+                }}
+              />
+            ) : null
+          })}
         </VerticalSelectionBox>
         <VerticalContentBox>
           {selectedAdminPage === 'edit-users' && <EditUsers />}
           {selectedAdminPage === 'edit-cards' && <EditCards />}
           {selectedAdminPage === 'process-cards' && <ProcessCards />}
           {selectedAdminPage === 'submit-cards' && <SubmitCards />}
+          {selectedAdminPage === 'claim-card-creation' && <ClaimCardCreation />}
+          {selectedAdminPage === 'request-card-creation' && (
+            <RequestCardCreation />
+          )}
         </VerticalContentBox>
       </HorizontalBox>
     </>

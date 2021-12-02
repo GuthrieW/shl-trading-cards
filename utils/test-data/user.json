@@ -3,89 +3,67 @@
     {
       "userId": 1,
       "username": "caltroit_red_flames",
-      "isAdmin": true,
-      "isProcessor": true,
-      "isSubmitter": true,
+      "permissions": [157],
       "cards": []
     },
     {
       "userId": 2,
       "username": "luketd",
-      "isAdmin": true,
-      "isProcessor": false,
-      "isSubmitter": false,
+      "permissions": [157],
       "cards": []
     },
     {
       "userId": 3,
       "username": "slashACM",
-      "isAdmin": false,
-      "isProcessor": false,
-      "isSubmitter": true,
+      "permissions": [166],
       "cards": []
     },
     {
       "userId": 4,
       "username": "Hotdog",
-      "isAdmin": false,
-      "isProcessor": false,
-      "isSubmitter": false,
+      "permissions": [],
       "cards": []
     },
     {
       "userId": 5,
       "username": "Blastmeaway",
-      "isAdmin": true,
-      "isProcessor": false,
-      "isSubmitter": false,
+      "permissions": [157],
       "cards": []
     },
     {
       "userId": 6,
       "username": "jeffie43",
-      "isAdmin": true,
-      "isProcessor": false,
-      "isSubmitter": false,
+      "permissions": [157, 165],
       "cards": []
     },
     {
       "userId": 7,
       "username": "Lime",
-      "isAdmin": false,
-      "isProcessor": false,
-      "isSubmitter": true,
+      "permissions": [166],
       "cards": []
     },
     {
       "userId": 8,
       "username": "Nour",
-      "isAdmin": true,
-      "isProcessor": false,
-      "isSubmitter": false,
+      "permissions": [157],
       "cards": []
     },
     {
       "userId": 9,
       "username": "Nokazoa",
-      "isAdmin": false,
-      "isProcessor": false,
-      "isSubmitter": false,
+      "permissions": [166],
       "cards": []
     },
     {
       "userId": 10,
       "username": "39alaska39",
-      "isAdmin": false,
-      "isProcessor": false,
-      "isSubmitter": true,
+      "permissions": [166],
       "cards": []
     },
     {
       "userId": 11,
       "username": "DrunkenTeddy",
-      "isAdmin": true,
-      "isProcessor": false,
-      "isSubmitter": false,
+      "permissions": [157],
       "cards": []
     }
   ]
