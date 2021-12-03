@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { DefaultSeo } from 'next-seo'
 import { ThemeProvider } from '@material-ui/styles'
 import { SWRConfig } from 'swr'
@@ -18,21 +18,15 @@ const theme = createTheme({
 export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   const [queryClient] = useState(() => new QueryClient())
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      console.log('we have a window')
-      window.addEventListener('message', (event) => {
-        console.log('we have a message')
-        if (event.origin === 'https://simulationhockey.com/') {
-          return
-        }
-
-        const { uid } = event.data
-        console.log(event.data)
+  if (typeof window !== 'undefined') {
+    window.addEventListener('message', (event) => {
+      if (event.origin === 'https://simulationhockey.com') {
+        const { uid, username } = event.data
         sessionStorage.setItem('uid', uid)
-      })
-    }
-  }, [])
+        sessionStorage.setItem('username', username)
+      }
+    })
+  }
 
   return (
     <SWRConfig
@@ -45,9 +39,18 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
         <QueryClientProvider client={queryClient}>
           <Hydrate state={pageProps.dehydratedState}>
             <Layout>
+              <iframe
+                src={'https://simulationhockey.com/userinfo.php'}
+                title={'user-info-authentication'}
+                style={{
+                  width: '0px',
+                  height: '0px',
+                  border: '0',
+                  position: 'absolute',
+                }}
+              />
               <DefaultSeo {...SEO} />
               <Component {...pageProps} />
-              <iframe src="https://simulationhockey.com/userinfo.php" />
             </Layout>
           </Hydrate>
         </QueryClientProvider>

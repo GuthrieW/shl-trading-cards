@@ -17,7 +17,7 @@ const HomeContainer = () => (
 const Home = () => {
   return (
     <>
-      <HomeContainer />
+      {/* <HomeContainer /> */}
       {/* <div
         style={{
           zIndex: 1,
