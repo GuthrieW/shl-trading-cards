@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Paper,
   TableContainer,
@@ -11,6 +11,7 @@ import {
 import Router from 'next/router'
 import useAllUsers from '@hooks/use-all-users'
 import PageHeader from '@components/page-header'
+import { Pagination } from '@material-ui/lab'
 
 const columns = [
   { id: 'username', label: 'Name', minWidth: 170 },
@@ -19,6 +20,12 @@ const columns = [
 
 const Community = () => {
   const { users, isLoading, isError } = useAllUsers()
+  const [pageNumber, setPageNumber] = useState(1)
+  const usersPerPage = 10
+
+  const handlePageChange = (event, value) => {
+    setPageNumber(value)
+  }
 
   const handleOnClick = (username) => {
     Router.push({
@@ -47,11 +54,12 @@ const Community = () => {
             </TableHead>
             <TableBody>
               {users &&
-                users.map((row, index) => {
-                  if (row.username === '') {
-                    return
-                  }
-                  return (
+                users
+                  .slice(
+                    (pageNumber - 1) * usersPerPage,
+                    pageNumber * usersPerPage
+                  )
+                  .map((row, index) => (
                     <TableRow
                       hover
                       role="checkbox"
@@ -73,12 +81,16 @@ const Community = () => {
                         )
                       })}
                     </TableRow>
-                  )
-                })}
+                  ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Paper>
+      <Pagination
+        count={Math.ceil(users.length / usersPerPage)}
+        onChange={handlePageChange}
+        page={pageNumber}
+      />
     </>
   )
 }

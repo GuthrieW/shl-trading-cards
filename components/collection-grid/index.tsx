@@ -49,8 +49,6 @@ const CollectionGrid = ({
             (collectionCard) => collectionCard.playerName === card.playerName
           ).length
 
-          console.log('card', card)
-
           return card ? (
             <GridItem>
               <Box onClick={() => handleOpenCard(card)}>

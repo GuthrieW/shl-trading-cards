@@ -1,18 +1,22 @@
 import React from 'react'
 import { List } from '@material-ui/core'
-import { SidebarItem, SidebarIcon, StyledSidebar, SidebarText } from './styled'
-import { useRouter } from 'next/router'
+import {
+  SidebarItem,
+  SidebarIcon,
+  StyledSidebar,
+  SidebarText,
+} from '../sidebar/styled'
 import useCurrentUser from '@hooks/use-current-user'
 import hasRequiredPermisson from '@utils/has-required-permission'
 import { groups } from '@utils/user-groups'
 
 type SidebarProps = {
   pages: any[]
+  onItemClick: any
 }
 
-const Sidebar = ({ pages }: SidebarProps) => {
+const AdminSidebar = ({ pages, onItemClick }: SidebarProps) => {
   const { currentUser, isLoading, isError } = useCurrentUser()
-  const { asPath } = useRouter()
 
   return (
     <StyledSidebar>
@@ -27,11 +31,9 @@ const Sidebar = ({ pages }: SidebarProps) => {
 
           return (
             <SidebarItem
-              component="a"
               button
-              href={page.href}
+              onClick={() => onItemClick(page.href)}
               key={page.name}
-              disabled={asPath.includes(page.href)}
             >
               {page.icon ? <SidebarIcon>{page.icon}</SidebarIcon> : null}
               <SidebarText primary={page.name} />
@@ -43,4 +45,4 @@ const Sidebar = ({ pages }: SidebarProps) => {
   )
 }
 
-export default Sidebar
+export default AdminSidebar

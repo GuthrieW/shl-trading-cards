@@ -3,7 +3,7 @@ import { Box, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
 
 export const SidebarItem = styled(ListItem)`
   height: 48px;
-  width: 32px;
+  min-width: 32px;
 `
 
 export const SidebarIcon = styled(ListItemIcon)`
@@ -30,7 +30,7 @@ export const StyledSidebar = styled(Box)`
   }
 
   @media only screen and (min-width: 768px) {
-    width: 190px;
+    width: 185px;
   }
   border-right: 1px solid rgba(0, 0, 0, 0.12);
   height: 100vh;

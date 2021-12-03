@@ -3,6 +3,11 @@ import React, { useEffect, useState } from 'react'
 import useAllCards from '@hooks/use-all-cards'
 import { stringInCardName } from '@utils/index'
 import PageHeader from '@components/page-header'
+import styled from 'styled-components'
+
+const TradeHubContainer = styled.div`
+  margin-left: 10px;
+`
 
 const TradeHub = () => {
   const [searchString, setSearchString] = useState('')
@@ -20,7 +25,7 @@ const TradeHub = () => {
   }, [cards, searchString])
 
   return (
-    <div>
+    <TradeHubContainer>
       <PageHeader>Trade Hub</PageHeader>
       <OptionInput
         options={cards}
@@ -32,7 +37,7 @@ const TradeHub = () => {
           setSearchString(newInputValue)
         }}
       />
-    </div>
+    </TradeHubContainer>
   )
 }
 

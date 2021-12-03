@@ -1,6 +1,7 @@
 import React from 'react'
 import Sidebar from '@components/sidebar'
 import styled from 'styled-components'
+import pages from '@constants/sidebar-pages'
 
 const SidebarDiv = styled.div`
   display: flex;
@@ -13,7 +14,7 @@ const ChildrenDiv = styled.div`
 
 const Layout = ({ children }) => (
   <SidebarDiv>
-    <Sidebar />
+    <Sidebar pages={pages} />
     <ChildrenDiv>{children}</ChildrenDiv>
   </SidebarDiv>
 )

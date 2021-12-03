@@ -1,6 +1,15 @@
 import React from 'react'
-import Home from '@pages/home'
+import { useRouter } from 'next/router'
 
-const index = () => <Home />
+const index = () => {
+  const router = useRouter()
+  if (typeof window !== 'undefined') {
+    router.push({
+      pathname: '/home',
+    })
+  }
+
+  return null
+}
 
 export default index

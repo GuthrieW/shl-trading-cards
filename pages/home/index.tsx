@@ -1,10 +1,30 @@
 import PageHeader from '@components/page-header'
 import React from 'react'
+import styled from 'styled-components'
+
+const StyledVideo = styled.video`
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+`
+
+const HomeContainer = () => (
+  <StyledVideo autoPlay loop playsInline muted>
+    <source src={'/videos/background-video.mp4'} type={'video/mp4'} />
+  </StyledVideo>
+)
 
 const Home = () => {
   return (
     <>
-      <PageHeader>Home</PageHeader>
+      <HomeContainer />
+      {/* <div
+        style={{
+          zIndex: 1,
+        }}
+      >
+        <PageHeader>Home</PageHeader>
+      </div> */}
     </>
   )
 }
