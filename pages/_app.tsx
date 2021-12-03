@@ -19,11 +19,21 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   const [queryClient] = useState(() => new QueryClient())
 
   if (typeof window !== 'undefined') {
+    console.log('we have a window')
+    if (!sessionStorage.getItem('uid')) {
+      console.log('no user id in sessionStorage')
+      window.open(
+        'https://simulationhockey.com/userinfo.php',
+        'user-authentication-window'
+      )
+    }
+
     window.addEventListener('message', (event) => {
+      console.log('we have a message')
       if (event.origin === 'https://simulationhockey.com') {
-        const { uid, username } = event.data
+        console.log('data', event.data)
+        const { uid } = event.data
         sessionStorage.setItem('uid', uid)
-        sessionStorage.setItem('username', username)
       }
     })
   }
@@ -39,16 +49,6 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
         <QueryClientProvider client={queryClient}>
           <Hydrate state={pageProps.dehydratedState}>
             <Layout>
-              <iframe
-                src={'https://simulationhockey.com/userinfo.php'}
-                title={'user-info-authentication'}
-                style={{
-                  width: '0px',
-                  height: '0px',
-                  border: '0',
-                  position: 'absolute',
-                }}
-              />
               <DefaultSeo {...SEO} />
               <Component {...pageProps} />
             </Layout>
