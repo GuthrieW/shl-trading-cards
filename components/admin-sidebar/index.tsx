@@ -13,9 +13,10 @@ import { groups } from '@utils/user-groups'
 type SidebarProps = {
   pages: any[]
   onItemClick: any
+  selectedItem: string
 }
 
-const AdminSidebar = ({ pages, onItemClick }: SidebarProps) => {
+const AdminSidebar = ({ pages, onItemClick, selectedItem }: SidebarProps) => {
   const { currentUser, isLoading, isError } = useCurrentUser()
 
   return (
@@ -30,14 +31,22 @@ const AdminSidebar = ({ pages, onItemClick }: SidebarProps) => {
           }
 
           return (
-            <SidebarItem
-              button
-              onClick={() => onItemClick(page.href)}
-              key={page.name}
+            <div
+              style={{
+                backgroundColor:
+                  selectedItem === page.href ? 'rgba(0, 0, 0, 0.08)' : 'white',
+              }}
             >
-              {page.icon ? <SidebarIcon>{page.icon}</SidebarIcon> : null}
-              <SidebarText primary={page.name} />
-            </SidebarItem>
+              <SidebarItem
+                button
+                onClick={() => onItemClick(page.href)}
+                key={page.name}
+                disabled={selectedItem === page.href}
+              >
+                {page.icon ? <SidebarIcon>{page.icon}</SidebarIcon> : null}
+                <SidebarText primary={page.name} />
+              </SidebarItem>
+            </div>
           )
         })}
       </List>

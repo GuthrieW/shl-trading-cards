@@ -30,7 +30,7 @@ export const StyledSidebar = styled(Box)`
   }
 
   @media only screen and (min-width: 768px) {
-    width: 190px;
+    width: 195px;
   }
   border-right: 1px solid rgba(0, 0, 0, 0.12);
   height: 100vh;

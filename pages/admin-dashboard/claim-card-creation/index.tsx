@@ -1,7 +1,8 @@
 import React from 'react'
+import PageHeader from '@components/page-header'
 
 const ClaimCardCreation = () => {
-  return <h1>Placeholder</h1>
+  return <PageHeader>Placeholder</PageHeader>
 }
 
 export default ClaimCardCreation

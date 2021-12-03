@@ -26,16 +26,24 @@ const Sidebar = ({ pages }: SidebarProps) => {
           }
 
           return (
-            <SidebarItem
-              component="a"
-              button
-              href={page.href}
-              key={page.name}
-              disabled={asPath.includes(page.href)}
+            <div
+              style={{
+                backgroundColor: asPath.includes(page.href)
+                  ? 'rgba(0, 0, 0, 0.08)'
+                  : 'white',
+              }}
             >
-              {page.icon ? <SidebarIcon>{page.icon}</SidebarIcon> : null}
-              <SidebarText primary={page.name} />
-            </SidebarItem>
+              <SidebarItem
+                component="a"
+                button
+                href={page.href}
+                key={page.name}
+                disabled={asPath.includes(page.href)}
+              >
+                {page.icon ? <SidebarIcon>{page.icon}</SidebarIcon> : null}
+                <SidebarText primary={page.name} />
+              </SidebarItem>
+            </div>
           )
         })}
       </List>

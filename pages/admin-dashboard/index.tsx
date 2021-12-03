@@ -64,6 +64,7 @@ const Dashboard = () => {
           <AdminSidebar
             pages={adminPagesNew}
             onItemClick={setSelectedAdminPage}
+            selectedItem={selectedAdminPage}
           />
         </VerticalSelectionBox>
         <VerticalContentBox>

@@ -19,39 +19,40 @@ type AdminPage = {
 
 const adminPagesNew: AdminPage[] = [
   {
-    name: 'Edit Card',
+    name: 'Edit Cards',
     href: 'edit-cards',
     icon: <ListAltOutlined />,
     requiredPermissions: [],
   },
   {
-    name: 'Edit User',
+    name: 'Edit Users',
     href: 'edit-users',
     icon: <AccountBoxOutlined />,
     requiredPermissions: [],
   },
+
   {
-    name: 'Process Card',
-    href: 'process-cards',
-    icon: <CheckBoxOutlined />,
+    name: 'Request Cards',
+    href: 'request-card-creation',
+    icon: <AddBoxOutlined />,
     requiredPermissions: [],
   },
   {
-    name: 'Submit Card',
-    href: 'submit-cards',
-    icon: <PublishOutlined />,
-    requiredPermissions: [],
-  },
-  {
-    name: 'Claim Card',
+    name: 'Claim Cards',
     href: 'claim-card-creation',
     icon: <GetAppOutlined />,
     requiredPermissions: [],
   },
   {
-    name: 'Request Card ',
-    href: 'request-card-creation',
-    icon: <AddBoxOutlined />,
+    name: 'Submit Cards',
+    href: 'submit-cards',
+    icon: <PublishOutlined />,
+    requiredPermissions: [],
+  },
+  {
+    name: 'Process Cards',
+    href: 'process-cards',
+    icon: <CheckBoxOutlined />,
     requiredPermissions: [],
   },
 ]
