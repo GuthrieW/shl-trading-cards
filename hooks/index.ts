@@ -1,4 +1,4 @@
-export { default as useAllCards } from './use-all-cards'
+export { default as useAllCards } from './use-approved-cards'
 export { default as useAllUsers } from './use-all-users'
 export { default as useBuyPack } from './use-buy-pack'
 export { default as useCurrentUser } from './use-current-user'

@@ -38,7 +38,7 @@ const Collection = () => {
     typeof username === 'string' ? username : currentUser.username
 
   const {
-    cards,
+    userCards,
     isLoading: userCardsIsLoading,
     isError: userCardsIsError,
   } = useUserCards(collectionUsername)
@@ -60,7 +60,7 @@ const Collection = () => {
 
     const allDisabled = selectedRarityNames.length === 0
 
-    const newFilteredCards = cards.filter((card) => {
+    const newFilteredCards = userCards.filter((card) => {
       return (
         stringInCardName(card, searchString) &&
         (allDisabled || selectedRarityNames.includes(card.rarity))
@@ -73,7 +73,7 @@ const Collection = () => {
 
     setFilteredCards(sortedCards)
     setFilteringCards(false)
-  }, [searchString, rarityOptions, cards])
+  }, [searchString, rarityOptions, userCards])
 
   const handleSearchStringUpdate = (newSearchString) => {
     setSearchString(newSearchString)

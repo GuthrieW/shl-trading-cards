@@ -1,8 +1,15 @@
 import React from 'react'
 import PageHeader from '@components/page-header'
+import useRequestedCards from '@hooks/use-requested-cards'
 
 const ClaimCardCreation = () => {
-  return <PageHeader>Placeholder</PageHeader>
+  const { requestedCards, isLoading, isError } = useRequestedCards()
+
+  return (
+    <>
+      <PageHeader>Placeholder</PageHeader>
+    </>
+  )
 }
 
 export default ClaimCardCreation

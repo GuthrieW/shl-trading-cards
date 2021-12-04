@@ -14,7 +14,7 @@ import attributes from 'constants/attributes'
 import rarities from 'constants/rarities'
 
 const CardForm = () => {
-  const [cardData, setCardData] = useState<Card>(null)
+  const [cardData, setCardData] = useState<any>(null)
   const [canSubmit, setCanSubmit] = useState<boolean>(false)
   const [isSkater, setIsSkater] = useState<boolean>(true)
   const [selectedFile, setSelectedFile] = useState<any>(null)

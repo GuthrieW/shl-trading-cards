@@ -1,8 +1,10 @@
 import React from 'react'
 import DataTable from '@components/data-table'
-import testCards from '@utils/test-data/cards.json'
 import goalieColumns from 'constants/goalie-columns-buttons'
 import skaterColumns from 'constants/skater-columns-buttons'
+import useAllCards from '@hooks/use-approved-cards'
+import onlySkaterCards from '@utils/only-skater-cards'
+import onlyGoalieCards from '@utils/only-goalie-cards'
 
 const options = {
   filterType: 'dropdown',
@@ -16,12 +18,10 @@ const options = {
 }
 
 const EditCards = () => {
-  const skaterCards = testCards.data.filter((card) => {
-    return card.position !== 'G'
-  })
-  const goalieCards = testCards.data.filter((card) => {
-    return card.position === 'G'
-  })
+  const { allCards, isLoading, isError } = useAllCards()
+
+  const skaterCards = onlySkaterCards(allCards)
+  const goalieCards = onlyGoalieCards(allCards)
 
   return (
     <>

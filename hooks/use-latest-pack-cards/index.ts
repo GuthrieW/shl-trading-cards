@@ -1,20 +1,20 @@
 import useSWR from 'swr'
 import cards from '@utils/test-data/cards.json'
 
-type UseAllCards = {
-  cards: Card[]
+type UseLatestPackCards = {
+  latestPackCards: any[]
   isLoading: boolean
   isError: boolean
 }
 
-const useAllCards = () => {
+const useLatestPackCards = (): UseLatestPackCards => {
   const { data, error } = useSWR(() => ``)
 
   return {
-    cards: cards.data,
+    latestPackCards: cards.data.slice(0, 6),
     isLoading: !data && !error,
     isError: error,
   }
 }
 
-export default useAllCards
+export default useLatestPackCards
