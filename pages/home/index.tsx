@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { PageHeader } from '@components/index'
 
 const StyledVideo = styled.video`
   width: 100%;
@@ -16,14 +17,14 @@ const HomeContainer = () => (
 const Home = () => {
   return (
     <>
-      {/* <HomeContainer /> */}
-      {/* <div
+      <HomeContainer />
+      <div
         style={{
           zIndex: 1,
         }}
       >
         <PageHeader>Home</PageHeader>
-      </div> */}
+      </div>
     </>
   )
 }
