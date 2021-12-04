@@ -13,13 +13,13 @@ const ProcessCards = () => {
   return (
     <>
       <DataTable
-        title={'Process Skaters'}
+        title={'Process Skater Cards'}
         data={skaterCards}
         columns={skaterColumns}
         options={{}}
       />
       <DataTable
-        title={'Process Goaltenders'}
+        title={'Process Goalie Cards'}
         data={goalieCards}
         columns={goalieColumns}
         options={{}}

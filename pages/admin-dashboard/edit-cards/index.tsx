@@ -13,13 +13,13 @@ const EditCards = () => {
   return (
     <>
       <DataTable
-        title={'Edit Skaters'}
+        title={'Edit a Skater Card'}
         data={skaterCards}
         columns={skaterColumns}
         options={{}}
       />
       <DataTable
-        title={'Edit Goaltenders'}
+        title={'Edit a Goalie Card'}
         data={goalieCards}
         columns={goalieColumns}
         options={{}}

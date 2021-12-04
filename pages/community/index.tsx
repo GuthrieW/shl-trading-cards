@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useAllUsers } from '@hooks/index'
 import { DataTable } from '@components/index'
+import router from 'next/router'
 
 const columns = [
   {
@@ -12,6 +13,16 @@ const columns = [
     name: 'cards',
   },
 ]
+
+const options = {
+  onRowClick: (rowData) => {
+    console.log('rowData', rowData)
+    router.push({
+      pathname: 'collection',
+      query: { username: rowData[0] },
+    })
+  },
+}
 
 const Community = () => {
   const { users, isLoading, isError } = useAllUsers()
@@ -29,10 +40,10 @@ const Community = () => {
 
   return (
     <DataTable
-      title={'Community'}
+      title={"View a Member's Collection"}
       data={userData}
       columns={columns}
-      options={{}}
+      options={options}
     />
   )
 }
