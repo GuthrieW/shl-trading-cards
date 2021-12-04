@@ -1,21 +1,8 @@
 import React from 'react'
-import DataTable from '@components/data-table'
-import goalieColumns from 'constants/goalie-columns-buttons'
-import skaterColumns from 'constants/skater-columns-buttons'
-import useAllCards from '@hooks/use-approved-cards'
-import onlySkaterCards from '@utils/only-skater-cards'
-import onlyGoalieCards from '@utils/only-goalie-cards'
-
-const options = {
-  filterType: 'dropdown',
-  download: false,
-  print: false,
-  selectableRows: 'none',
-  onRowClick: (rowData) => {
-    return
-  },
-  responsive: 'simple',
-}
+import { DataTable } from '@components/index'
+import { useAllCards } from '@hooks/index'
+import { goalieColumns, skaterColumns } from '@constants/index'
+import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
 
 const EditCards = () => {
   const { allCards, isLoading, isError } = useAllCards()
@@ -29,13 +16,13 @@ const EditCards = () => {
         title={'Edit Skaters'}
         data={skaterCards}
         columns={skaterColumns}
-        options={options}
+        options={{}}
       />
       <DataTable
         title={'Edit Goaltenders'}
         data={goalieCards}
         columns={goalieColumns}
-        options={options}
+        options={{}}
       />
     </>
   )

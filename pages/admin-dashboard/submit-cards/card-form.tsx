@@ -8,10 +8,7 @@ import {
   InputLabel,
   Box,
 } from '@material-ui/core'
-import teams from 'constants/teams'
-import positions from 'constants/positions'
-import attributes from 'constants/attributes'
-import rarities from 'constants/rarities'
+import { attributes, positions, rarities, teams } from '@constants/index'
 
 const CardForm = () => {
   const [cardData, setCardData] = useState<any>(null)

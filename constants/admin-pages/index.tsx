@@ -1,6 +1,5 @@
 import React from 'react'
 import {
-  AccountBoxOutlined,
   AddBoxOutlined,
   CheckBoxOutlined,
   GetAppOutlined,
@@ -22,13 +21,6 @@ const adminPages: AdminPage[] = [
     icon: <ListAltOutlined />,
     requiredPermissions: [],
   },
-  {
-    name: 'Edit Users',
-    href: 'edit-users',
-    icon: <AccountBoxOutlined />,
-    requiredPermissions: [],
-  },
-
   {
     name: 'Request Cards',
     href: 'request-card-creation',

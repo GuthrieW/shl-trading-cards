@@ -1,21 +1,8 @@
 import React from 'react'
-import DataTable from '@components/data-table'
-import goalieColumns from 'constants/goalie-columns'
-import skaterColumns from 'constants/skater-columns'
-import onlySkaterCards from '@utils/only-skater-cards'
-import onlyGoalieCards from '@utils/only-goalie-cards'
-import useUnapprovedCards from '@hooks/use-unapproved-cards'
-
-const options = {
-  filterType: 'dropdown',
-  download: false,
-  print: false,
-  selectableRows: 'none',
-  onRowClick: (rowData) => {
-    return
-  },
-  responsive: 'simple',
-}
+import { DataTable } from '@components/index'
+import { goalieColumns, skaterColumns } from '@constants/index'
+import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
+import { useUnapprovedCards } from '@hooks/index'
 
 const ProcessCards = () => {
   const { unapprovedCards, isLoading, isError } = useUnapprovedCards()
@@ -29,13 +16,13 @@ const ProcessCards = () => {
         title={'Process Skaters'}
         data={skaterCards}
         columns={skaterColumns}
-        options={options}
+        options={{}}
       />
       <DataTable
         title={'Process Goaltenders'}
         data={goalieCards}
         columns={goalieColumns}
-        options={options}
+        options={{}}
       />
     </>
   )

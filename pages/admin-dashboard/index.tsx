@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
-import PageHeader from '@components/page-header'
-import useCurrentUser from '@hooks/use-current-user'
+import { useRouter } from 'next/router'
+import styled from 'styled-components'
 import { Box } from '@material-ui/core'
+import { AdminSidebar, PageHeader } from '@components/index'
+import { hasRequiredPermisson } from '@utils/index'
+import { groups } from '@utils/user-groups'
+import { useCurrentUser } from '@hooks/index'
+import { adminPages } from '@constants/index'
+
 import EditCards from './edit-cards'
 import ProcessCards from './process-cards'
 import SubmitCards from './submit-cards'
-import styled from 'styled-components'
-import { hasRequiredPermisson } from '@utils/index'
 import ClaimCardCreation from './claim-card-creation'
 import RequestCardCreation from './request-card-creation'
-import adminPages from '@constants/admin-pages'
-import AdminSidebar from '@components/admin-sidebar'
-import { groups } from '@utils/user-groups'
-import { useRouter } from 'next/router'
 
 const HorizontalBox = styled(Box)`
   display: flex;
@@ -27,6 +27,7 @@ const VerticalSelectionBox = styled(Box)`
 const VerticalContentBox = styled(Box)`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `
 
 export type SelectedAdminPage =

@@ -6,13 +6,12 @@ import {
   ImageListItemBar,
   IconButton,
 } from '@material-ui/core'
-import packsMap from 'constants/packs-map'
-import OpenPacksIcon from '@public/icons/open-packs-icon'
-import Router from 'next/router'
-import useBuyPack from '@hooks/use-buy-pack'
-import useCurrentUser from '@hooks/use-current-user'
-import PageHeader from '@components/page-header'
 import styled from 'styled-components'
+import Router from 'next/router'
+import { packsMap } from '@constants/index'
+import { useCurrentUser } from '@hooks/index'
+import { PageHeader } from '@components/index'
+import OpenPacksIcon from '@public/icons/open-packs-icon'
 
 const OpenPacksScreen = styled.div`
   @media only screen and (max-width: 768px) {

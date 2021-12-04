@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 // import AnimatedPackViewer from '../animated-pack-viewer'
 import StaticPackViewer from '../static-pack-viewer'
-import useLatestPackCards from '@hooks/use-latest-pack-cards'
+import { useLatestPackCards } from '@hooks/index'
 
 type ViewerType = 'animated' | 'static'
 

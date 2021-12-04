@@ -5,7 +5,7 @@ import {
   SidebarIcon,
   StyledSidebar,
   SidebarText,
-} from '../sidebar/styled'
+} from '@components/sidebar/styled'
 import useCurrentUser from '@hooks/use-current-user'
 import hasRequiredPermisson from '@utils/has-required-permission'
 import { groups } from '@utils/user-groups'
