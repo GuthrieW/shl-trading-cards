@@ -5,6 +5,7 @@ import pages from '@constants/sidebar-pages'
 
 const SidebarDiv = styled.div`
   display: flex;
+  flex-direction: row;
   height: 100%;
 `
 

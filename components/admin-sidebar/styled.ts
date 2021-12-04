@@ -9,7 +9,7 @@ export const SidebarItem = styled(ListItem)`
 export const SidebarIcon = styled(ListItemIcon)`
   display: flex;
   align-items: center;
-  width: 32px;
+  min-width: 32px;
   height: 32px;
 `
 
@@ -32,6 +32,9 @@ export const StyledSidebar = styled(Box)`
   @media only screen and (min-width: 768px) {
     width: 185px;
   }
+  position: unset;
+  margin: 0;
+  padding: 0;
   border-right: 1px solid rgba(0, 0, 0, 0.12);
   height: 100vh;
 `
