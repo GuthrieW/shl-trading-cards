@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DefaultSeo } from 'next-seo'
 import { ThemeProvider } from '@material-ui/styles'
 import { SWRConfig } from 'swr'
@@ -15,28 +15,51 @@ const theme = createTheme({
   },
 })
 
+const AuthModal = () => (
+  <iframe
+    style={{
+      position: 'absolute',
+      top: '0',
+      left: '0',
+      width: '100%',
+      height: '100vh',
+    }}
+    name={'user-authentication-window'}
+    src={'https://simulationhockey.com/userinfo.php'}
+  />
+)
+
 export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   const [queryClient] = useState(() => new QueryClient())
+  const [showModal, setShowModal] = useState<boolean>(false)
 
-  if (typeof window !== 'undefined') {
-    console.log('we have a window')
-    if (!sessionStorage.getItem('uid')) {
-      console.log('no user id in sessionStorage')
-      window.open(
-        'https://simulationhockey.com/userinfo.php',
-        'user-authentication-window'
-      )
+  useEffect(() => {
+    const windowExists = typeof window !== 'undefined'
+    const eventHandler = (event) => {
+      if (windowExists) {
+        if (event.origin === 'https://simulationhockey.com') {
+          setShowModal(false)
+          const { type, uid } = event.data
+          if (type == 'uid') {
+            sessionStorage.setItem('uid', uid)
+          }
+        }
+      }
     }
 
-    window.addEventListener('message', (event) => {
-      console.log('we have a message')
-      if (event.origin === 'https://simulationhockey.com') {
-        console.log('data', event.data)
-        const { uid } = event.data
-        sessionStorage.setItem('uid', uid)
+    if (windowExists) {
+      if (!sessionStorage.getItem('uid')) {
+        setShowModal(true)
       }
-    })
-  }
+      window.addEventListener('message', eventHandler)
+    }
+
+    return () => {
+      if (windowExists) {
+        window.removeEventListener('message', eventHandler)
+      }
+    }
+  }, [])
 
   return (
     <SWRConfig
@@ -50,6 +73,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
           <Hydrate state={pageProps.dehydratedState}>
             <Layout>
               <DefaultSeo {...SEO} />
+              {showModal && <AuthModal />}
               <Component {...pageProps} />
             </Layout>
           </Hydrate>

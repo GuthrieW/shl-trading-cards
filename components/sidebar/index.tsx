@@ -32,6 +32,7 @@ const Sidebar = ({ pages }: SidebarProps) => {
                   ? 'rgba(0, 0, 0, 0.08)'
                   : 'white',
               }}
+              key={page.name}
             >
               <SidebarItem
                 component="a"
