@@ -29,7 +29,7 @@ const ButtonContainer = styled.div`
 
 const EditUsers = () => {
   const { users, isLoading, isError } = useAllUsers()
-  const [selectedUser, setSelectedUser] = useState(null)
+  const [selectedUser, setSelectedUser] = useState<User>(null)
 
   const handleSubmit = () => {
     Router.reload()

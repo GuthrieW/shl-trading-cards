@@ -20,7 +20,7 @@ const columns = [
 
 const Community = () => {
   const { users, isLoading, isError } = useAllUsers()
-  const [pageNumber, setPageNumber] = useState(1)
+  const [pageNumber, setPageNumber] = useState<number>(1)
   const usersPerPage = 10
 
   const handlePageChange = (event, value) => {

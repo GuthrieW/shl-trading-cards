@@ -14,10 +14,10 @@ import attributes from 'constants/attributes'
 import rarities from 'constants/rarities'
 
 const CardForm = () => {
-  const [cardData, setCardData] = useState(null)
-  const [canSubmit, setCanSubmit] = useState(false)
-  const [isSkater, setIsSkater] = useState(true)
-  const [selectedFile, setSelectedFile] = useState(null)
+  const [cardData, setCardData] = useState<Card>(null)
+  const [canSubmit, setCanSubmit] = useState<boolean>(false)
+  const [isSkater, setIsSkater] = useState<boolean>(true)
+  const [selectedFile, setSelectedFile] = useState<any>(null)
 
   useEffect(() => {
     setIsSkater(cardData?.position !== 'G')

@@ -10,8 +10,9 @@ const TradeHubContainer = styled.div`
 `
 
 const TradeHub = () => {
-  const [searchString, setSearchString] = useState('')
-  const [filteredCards, setFilteredCards] = useState([])
+  const [searchString, setSearchString] = useState<string>('')
+  const [filteredCards, setFilteredCards] = useState<Card[]>([])
+  const [selectedCard, setSelectedCard] = useState<Card>(null)
   const { cards, isLoading, isError } = useAllCards()
 
   useEffect(() => {

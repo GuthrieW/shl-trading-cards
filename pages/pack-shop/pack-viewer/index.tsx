@@ -6,7 +6,7 @@ import StaticPackViewer from '../static-pack-viewer'
 type ViewerType = 'animated' | 'static'
 
 const PackViewer = () => {
-  const [packCards, setPackCards] = useState([])
+  const [packCards, setPackCards] = useState<Card[]>([])
   const [cardsLoading, setCardsLoading] = useState(false)
   const [packViewerType, setPackViewerType] = useState<ViewerType>('animated')
 
