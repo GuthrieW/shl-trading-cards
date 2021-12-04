@@ -1,17 +1,15 @@
 import React, { useState } from 'react'
-import InfoCard from '@components/info-card'
 import PageHeader from '@components/page-header'
 import useCurrentUser from '@hooks/use-current-user'
 import { Box } from '@material-ui/core'
 import EditCards from './edit-cards'
-import EditUsers from './edit-users'
 import ProcessCards from './process-cards'
 import SubmitCards from './submit-cards'
 import styled from 'styled-components'
-import { adminPages, hasRequiredPermisson } from '@utils/index'
+import { hasRequiredPermisson } from '@utils/index'
 import ClaimCardCreation from './claim-card-creation'
 import RequestCardCreation from './request-card-creation'
-import adminPagesNew from '@constants/admin-pages'
+import adminPages from '@constants/admin-pages'
 import AdminSidebar from '@components/admin-sidebar'
 import { groups } from '@utils/user-groups'
 import { useRouter } from 'next/router'
@@ -33,7 +31,6 @@ const VerticalContentBox = styled(Box)`
 
 export type SelectedAdminPage =
   | 'none'
-  | 'edit-users'
   | 'edit-cards'
   | 'process-cards'
   | 'submit-cards'
@@ -62,13 +59,12 @@ const Dashboard = () => {
       <HorizontalBox>
         <VerticalSelectionBox>
           <AdminSidebar
-            pages={adminPagesNew}
+            pages={adminPages}
             onItemClick={setSelectedAdminPage}
             selectedItem={selectedAdminPage}
           />
         </VerticalSelectionBox>
         <VerticalContentBox>
-          {selectedAdminPage === 'edit-users' && <EditUsers />}
           {selectedAdminPage === 'edit-cards' && <EditCards />}
           {selectedAdminPage === 'process-cards' && <ProcessCards />}
           {selectedAdminPage === 'submit-cards' && <SubmitCards />}

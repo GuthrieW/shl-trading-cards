@@ -1,6 +1,4 @@
 import React from 'react'
-
-import { SelectedAdminPage } from '@pages/admin-dashboard'
 import {
   AccountBoxOutlined,
   AddBoxOutlined,
@@ -17,7 +15,7 @@ type AdminPage = {
   requiredPermissions: number[]
 }
 
-const adminPagesNew: AdminPage[] = [
+const adminPages: AdminPage[] = [
   {
     name: 'Edit Cards',
     href: 'edit-cards',
@@ -57,4 +55,4 @@ const adminPagesNew: AdminPage[] = [
   },
 ]
 
-export default adminPagesNew
+export default adminPages
