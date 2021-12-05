@@ -5,8 +5,9 @@ import { stringInCardName } from '@utils/index'
 import { DataTable, OptionInput, PageHeader } from '@components/index'
 import Router from 'next/router'
 import sortBy from 'lodash/sortBy'
+import { Paper } from '@material-ui/core'
 
-const TradeHubContainer = styled.div`
+const TradeHubContainer = styled(Paper)`
   margin-left: 10px;
 `
 

@@ -1,6 +1,19 @@
 {
   "data": [
     {
+      "playerName": "Brady McIntyre",
+      "team": "Atlanta Inferno",
+      "rarity": "Diamond",
+      "position": "LD",
+      "overall": 89,
+      "skating": 17,
+      "shooting": 18,
+      "hands": 18,
+      "checking": 17,
+      "defense": 18,
+      "imageUrl": "https://cdn.discordapp.com/attachments/544328543610601503/916946754396651530/bradymcintyrebase_-_Simon_Simon1.png"
+    },
+    {
       "playerName": "Luke Thomason",
       "team": "Manhattan Rage",
       "rarity": "Ruby",
