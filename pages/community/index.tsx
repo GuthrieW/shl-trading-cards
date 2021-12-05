@@ -5,7 +5,7 @@ import Router from 'next/router'
 
 const columns = [
   {
-    label: 'Name',
+    label: 'Username',
     name: 'username',
   },
   {

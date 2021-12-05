@@ -75,6 +75,17 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
               <DefaultSeo {...SEO} />
               {showModal && <AuthModal />}
               <Component {...pageProps} />
+              <style global jsx>{`
+                body {
+                  font-family: 'Raleway', sans-serif;
+                  background-color: '#E9ECEF';
+                }
+                * {
+                  margin: 0;
+                  padding: 0;
+                  box-sizing: border-box;
+                }
+              `}</style>
             </Layout>
           </Hydrate>
         </QueryClientProvider>

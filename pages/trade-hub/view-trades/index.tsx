@@ -1,8 +1,8 @@
 import PageHeader from '@components/page-header'
 import React from 'react'
 
-const CreateTrade = () => {
+const ViewTrades = () => {
   return <PageHeader>View Trades</PageHeader>
 }
 
-export default CreateTrade
+export default ViewTrades

@@ -1,8 +1,8 @@
 import React from 'react'
 import {
   AddBoxOutlined,
-  GetAppOutlined,
   ListAltOutlined,
+  ImageSearchOutlined,
 } from '@material-ui/icons'
 
 type TradeHubPage = {
@@ -14,21 +14,21 @@ type TradeHubPage = {
 
 const tradeHubPages: TradeHubPage[] = [
   {
-    name: 'Card Search',
-    href: 'card-search',
-    icon: <ListAltOutlined />,
-    requiredPermissions: [],
-  },
-  {
     name: 'Create Trade',
     href: 'create-trade',
     icon: <AddBoxOutlined />,
     requiredPermissions: [],
   },
   {
+    name: 'Card Search',
+    href: 'card-search',
+    icon: <ImageSearchOutlined />,
+    requiredPermissions: [],
+  },
+  {
     name: 'View Trades',
     href: 'view-trades',
-    icon: <GetAppOutlined />,
+    icon: <ListAltOutlined />,
     requiredPermissions: [],
   },
 ]

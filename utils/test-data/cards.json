@@ -1,6 +1,19 @@
 {
   "data": [
     {
+      "playerName": "Luke Thomason",
+      "team": "Manhattan Rage",
+      "rarity": "Ruby",
+      "position": "LW",
+      "overall": 86,
+      "skating": 17,
+      "shooting": 18,
+      "hands": 17,
+      "checking": 15,
+      "defense": 18,
+      "imageUrl": "https://cdn.discordapp.com/attachments/573227685514575875/916926663034564628/LukeThomasonCard_-_Seymour_Snatches.png"
+    },
+    {
       "playerName": "Eric Hudson",
       "team": "Texas Renegades",
       "rarity": "Bronze",

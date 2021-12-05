@@ -32,6 +32,7 @@ const AdminSidebar = ({ pages, onItemClick, selectedItem }: SidebarProps) => {
 
           return (
             <div
+              key={page.href}
               style={{
                 backgroundColor:
                   selectedItem === page.href ? 'rgba(0, 0, 0, 0.08)' : 'white',
