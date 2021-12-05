@@ -37,4 +37,6 @@ export const StyledSidebar = styled(Box)`
   padding: 0;
   border-right: 1px solid rgba(0, 0, 0, 0.12);
   height: 100vh;
+  background-color: white;
+  background: white;
 `
