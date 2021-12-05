@@ -7,8 +7,6 @@ import {
   SidebarText,
 } from '@components/sidebar/styled'
 import useCurrentUser from '@hooks/use-current-user'
-import hasRequiredPermisson from '@utils/has-required-permission'
-import { groups } from '@utils/user-groups'
 
 type TradeHubSidebarProps = {
   pages: any[]

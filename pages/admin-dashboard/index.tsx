@@ -38,7 +38,7 @@ export type SelectedAdminPage =
   | 'claim-card-creation'
   | 'request-card-creation'
 
-const Dashboard = () => {
+const AdminDashboard = () => {
   const router = useRouter()
   const { currentUser, isLoading, isError } = useCurrentUser()
   const [selectedAdminPage, setSelectedAdminPage] =
@@ -79,4 +79,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default AdminDashboard
