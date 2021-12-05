@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useAllUsers } from '@hooks/index'
 import { DataTable } from '@components/index'
-import router from 'next/router'
+import Router from 'next/router'
 
 const columns = [
   {
@@ -17,7 +17,7 @@ const columns = [
 const options = {
   onRowClick: (rowData) => {
     console.log('rowData', rowData)
-    router.push({
+    Router.push({
       pathname: 'collection',
       query: { username: rowData[0] },
     })

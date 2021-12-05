@@ -1,6 +1,7 @@
 export { default as useAllCards } from './use-approved-cards'
 export { default as useAllUsers } from './use-all-users'
 export { default as useBuyPack } from './use-buy-pack'
+export { default as useCardOwners } from './use-card-owners'
 export { default as useClaimedCards } from './use-claimed-cards'
 export { default as useCurrentUser } from './use-current-user'
 export { default as useLatestPackCards } from './use-latest-pack-cards'

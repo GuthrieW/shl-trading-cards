@@ -18,9 +18,7 @@ const SubmitCards = () => {
 
   useEffect(() => {
     setFilteringCards(true)
-    let filteredCards = []
-
-    console.log({ searchString })
+    let newFilteredCards = []
 
     if (searchString !== '') {
       const cardsIncludingString = claimedCards.filter((card) => {
@@ -35,13 +33,13 @@ const SubmitCards = () => {
         ? setSelectedCard(matchingCards[0])
         : setSelectedCard(null)
 
-      filteredCards = cardsIncludingString
+      newFilteredCards = cardsIncludingString
     } else {
       setSelectedCard(null)
-      filteredCards = claimedCards
+      newFilteredCards = claimedCards
     }
 
-    const sortedCards = sortBy(filteredCards, (card) => {
+    const sortedCards = sortBy(newFilteredCards, (card) => {
       return [card.rarity, card.playerName]
     })
     setFilteredCards(sortedCards)
