@@ -1,9 +1,9 @@
 const rarities = {
-  Bronze: 'Bronze',
-  Silver: 'Silver',
-  Gold: 'Gold',
-  Ruby: 'Ruby',
-  Diamond: 'Diamond',
+  Bronze: { label: 'Bronze' },
+  Silver: { label: 'Silver' },
+  Gold: { label: 'Gold' },
+  Ruby: { label: 'Ruby' },
+  Diamond: { label: 'Diamond' },
 }
 
 export default rarities

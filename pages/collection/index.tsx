@@ -112,7 +112,7 @@ const Collection = () => {
       </Box>
       <OptionInput
         options={filteredCards}
-        loading={userCardsIsLoading}
+        loading={userCardsIsLoading || filteringCards}
         groupBy={(option) => (option ? option.rarity : '')}
         getOptionLabel={(option) => (option ? option.playerName : '')}
         label={'Enter player name'}

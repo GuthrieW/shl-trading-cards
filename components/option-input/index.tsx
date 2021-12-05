@@ -14,6 +14,7 @@ type OptionInputProps = {
 
 const StyledAutocomplete = styled(Autocomplete)`
   margin-top: 16px;
+  width: 100%;
 `
 
 const OptionInput = ({
@@ -25,6 +26,7 @@ const OptionInput = ({
   onInputChange,
 }: OptionInputProps) => (
   <StyledAutocomplete
+    disableClearable={true}
     options={options}
     loading={loading}
     groupBy={groupBy}

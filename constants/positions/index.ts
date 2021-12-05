@@ -1,26 +1,26 @@
 const positions = {
   Center: {
-    label: 'Center',
+    label: 'C',
     abbreviation: 'C',
   },
   RightWing: {
-    label: 'Right Wing',
+    label: 'RW',
     abbreviation: 'RW',
   },
   LeftWing: {
-    label: 'Left Wing',
+    label: 'LW',
     abbreviation: 'LW',
   },
   RightDefense: {
-    label: 'Right Defense',
+    label: 'RD',
     abbreviation: 'RD',
   },
   LeftDefense: {
-    label: 'Left Defense',
+    label: 'LD',
     abbreviation: 'LD',
   },
   Goaltender: {
-    label: 'Goaltender',
+    label: 'G',
     abbreviation: 'G',
   },
 }
