@@ -35,6 +35,10 @@ const goalieColumns = [
     label: 'Conditioning',
     name: 'conditioning',
   },
+  {
+    label: 'Image URL',
+    name: 'imageUrl',
+  },
 ]
 
 export default goalieColumns

@@ -35,6 +35,10 @@ const skaterColumns = [
     label: 'Defense',
     name: 'defense',
   },
+  {
+    label: 'Image URL',
+    name: 'imageUrl',
+  },
 ]
 
 export default skaterColumns
