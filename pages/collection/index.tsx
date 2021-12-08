@@ -113,8 +113,8 @@ const Collection = () => {
       <OptionInput
         options={filteredCards}
         loading={userCardsIsLoading || filteringCards}
-        groupBy={(option) => (option ? option.rarity : '')}
-        getOptionLabel={(option) => (option ? option.playerName : '')}
+        groupBy={(option: Card) => (option ? option.card_rarity : '')}
+        getOptionLabel={(option: Card) => (option ? option.player_name : '')}
         label={'Enter player name'}
         onInputChange={(event, newInputValue) => {
           handleSearchStringUpdate(newInputValue)

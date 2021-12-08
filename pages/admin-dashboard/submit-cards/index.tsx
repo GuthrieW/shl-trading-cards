@@ -26,7 +26,7 @@ const SubmitCards = () => {
       })
 
       const matchingCards = cardsIncludingString.filter((card) => {
-        return card.playerName === searchString
+        return card.player_name === searchString
       })
 
       matchingCards.length === 1
@@ -70,8 +70,8 @@ const SubmitCards = () => {
       <OptionInput
         options={filteredCards}
         loading={isLoading || filteringCards}
-        groupBy={(option) => (option ? option.rarity : '')}
-        getOptionLabel={(option) => (option ? option.playerName : '')}
+        groupBy={(option: Card) => (option ? option.card_rarity : '')}
+        getOptionLabel={(option: Card) => (option ? option.player_name : '')}
         label={'Enter claimed card name'}
         onInputChange={(event, newInputValue) => {
           setSearchString(newInputValue)

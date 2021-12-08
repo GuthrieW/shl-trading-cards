@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 type StaticPackViewerProps = {
-  cards: any[]
+  cards: Card[]
 }
 
 const GridContainer = styled(Grid)`
@@ -39,7 +39,7 @@ const StaticPackViewer = ({ cards }: StaticPackViewerProps) => (
       cards.map((card, index) => {
         return (
           <GridItem key={index}>
-            <StyledImage width={300} height={400} src={card.imageUrl} />
+            <StyledImage width={300} height={400} src={card.image_url} />
           </GridItem>
         )
       })}
