@@ -2,7 +2,7 @@ import useSWR from 'swr'
 import cards from '@utils/test-data/cards.json'
 
 type UseUnapprovedCards = {
-  unapprovedCards: any[]
+  unapprovedCards: Card[]
   isLoading: boolean
   isError: boolean
 }

@@ -2,7 +2,7 @@ import useSWR from 'swr'
 import cards from '@utils/test-data/cards.json'
 
 type UseLatestPackCards = {
-  latestPackCards: any[]
+  latestPackCards: Card[]
   isLoading: boolean
   isError: boolean
 }

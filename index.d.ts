@@ -10,16 +10,16 @@ type Card = {
   image_url: string
   position: string
   overall: number
-  skating?: number
-  shooting?: number
-  hands?: number
-  checking?: number
-  defense?: number
-  high_shots?: number
-  low_shots?: number
-  quickness?: number
-  control?: number
-  conditioning?: number
+  skating?: number | null
+  shooting?: number | null
+  hands?: number | null
+  checking?: number | null
+  defense?: number | null
+  high_shots?: number | null
+  low_shots?: number | null
+  quickness?: number | null
+  control?: number | null
+  conditioning?: number | null
 }
 
 type CardSet = {
@@ -65,8 +65,6 @@ type User = {
   uid: number
   username: string
   avatar: string
-  avatardimensions: string
-  avatartype: string
   usergroup: number
   additionalgroups: string
   displaygroups: number

@@ -1,5 +1,5 @@
 const teams = {
-  Atlanta: {
+  18: {
     teamID: 18,
     label: 'Atlanta Inferno',
     city: 'Atlanta',
@@ -8,7 +8,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  Baltimore: {
+  7: {
     teamID: 7,
     label: 'Baltimore Platoon',
     city: 'Baltimore',
@@ -17,7 +17,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  Buffalo: {
+  0: {
     teamID: 0,
     label: 'Buffalo Stampede',
     city: 'Buffalo',
@@ -26,7 +26,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  Chicago: {
+  1: {
     teamID: 1,
     label: 'Chicago Syndicate',
     city: 'Chicago',
@@ -35,7 +35,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  Hamilton: {
+  2: {
     teamID: 2,
     label: 'Hamilton Steelhawks',
     city: 'Hamilton',
@@ -44,7 +44,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  Manhattan: {
+  4: {
     teamID: 4,
     label: 'Manhattan Rage',
     city: 'Manhattan',
@@ -53,7 +53,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  NewEngland: {
+  5: {
     teamID: 5,
     label: 'New England Wolfpack',
     city: 'New England',
@@ -62,7 +62,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  TampaBay: {
+  6: {
     teamID: 6,
     label: 'Tampa Bay Barracudua',
     city: 'Tampa Bay',
@@ -71,7 +71,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  Toronto: {
+  3: {
     teamID: 3,
     label: 'Toronto North Stars',
     city: 'Toronto',
@@ -80,7 +80,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  Calgary: {
+  8: {
     teamID: 8,
     label: 'Calgary Dragons',
     city: 'Calgary',
@@ -89,7 +89,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  Edmonton: {
+  9: {
     teamID: 9,
     label: 'Edmonton Blizzard',
     city: 'Edmonton',
@@ -98,7 +98,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  LosAngeles: {
+  13: {
     teamID: 13,
     label: 'Los Angeles Panthers',
     city: 'Los Angeles',
@@ -107,7 +107,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  Minnesota: {
+  10: {
     teamID: 10,
     label: 'Minnesota Monarchs',
     city: 'Minnesota',
@@ -116,7 +116,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  NewOrleans: {
+  14: {
     teamID: 14,
     label: 'New Orleans Specters',
     city: 'New Orleans',
@@ -125,7 +125,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  SanFrancisco: {
+  12: {
     teamID: 12,
     label: 'San Francisco Pride',
     city: 'San Francisco',
@@ -134,7 +134,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  Seattle: {
+  19: {
     teamID: 19,
     label: 'Seattle Argonauts',
     city: 'Seattle',
@@ -143,7 +143,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  Texas: {
+  15: {
     teamID: 15,
     label: 'Texas Renegades',
     city: 'Texas',
@@ -152,7 +152,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  Winnipeg: {
+  11: {
     teamID: 11,
     label: 'Winnipeg Aurora',
     city: 'Winnipeg',
@@ -161,115 +161,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  Anaheim: {
-    teamID: 5,
-    label: 'Anaheim Outlaws',
-    city: 'Anaheim',
-    team: 'Outlaws',
-    abbreviation: 'ANA',
-    league: 'SMJHL',
-    conference: 'SMJHL',
-  },
-  Anchorage: {
-    teamID: 0,
-    label: 'Anchorage Armada',
-    city: 'Anchorage',
-    team: 'Armada',
-    abbreviation: 'ANC',
-    league: 'SMJHL',
-    conference: 'SMJHL',
-  },
-  Carolina: {
-    teamID: 9,
-    label: 'Carolina Kraken',
-    city: 'Carolina',
-    team: 'Kraken',
-    abbreviation: 'CAR',
-    league: 'SMJHL',
-    conference: 'SMJHL',
-  },
-  Colorado: {
-    teamID: 6,
-    label: 'Colorado Raptors',
-    city: 'Colorado',
-    team: 'Raptors',
-    abbreviation: 'COL',
-    league: 'SMJHL',
-    conference: 'SMJHL',
-  },
-  Detroit: {
-    teamID: 7,
-    label: 'Detroit Falcons',
-    city: 'Detroit',
-    team: 'Falcons',
-    abbreviation: 'DET',
-    league: 'SMJHL',
-    conference: 'SMJHL',
-  },
-  Kelowna: {
-    teamID: 1,
-    label: 'Kelowna Knights',
-    city: 'Kelowna',
-    team: 'Knights',
-    abbreviation: 'KEL',
-    league: 'SMJHL',
-    conference: 'SMJHL',
-  },
-  Maine: {
-    teamID: 2,
-    label: 'Maine Timber',
-    city: 'Maine',
-    team: 'Timber',
-    abbreviation: 'MET',
-    league: 'SMJHL',
-    conference: 'SMJHL',
-  },
-  Nevada: {
-    teamID: 14,
-    label: 'Nevada Battleborn',
-    city: 'Nevada',
-    team: 'Battleborn',
-    abbreviation: 'NBB',
-    league: 'SMJHL',
-    conference: 'SMJHL',
-  },
-  Newfoundland: {
-    teamID: 4,
-    label: 'Newfoundland Berserkers',
-    city: 'Newfoundland',
-    team: 'Berserkers',
-    abbreviation: 'NL',
-    league: 'SMJHL',
-    conference: 'SMJHL',
-  },
-  QuebecCity: {
-    teamID: 15,
-    label: 'Quebec City Citadelles',
-    city: 'Quebec City',
-    team: 'Citadelles',
-    abbreviation: 'QCC',
-    league: 'SMJHL',
-    conference: 'SMJHL',
-  },
-  StLouis: {
-    teamID: 8,
-    label: 'St. Louis Scarecrows',
-    city: 'St. Louis',
-    team: 'Scarecrows',
-    abbreviation: 'STL',
-    league: 'SMJHL',
-    conference: 'SMJHL',
-  },
-  Vancouver: {
-    teamID: 3,
-    label: 'Vancouver Whalers',
-    city: 'Vancouver',
-    team: 'Whalers',
-    abbreviation: 'VAN',
-    league: 'SMJHL',
-    conference: 'SMJHL',
-  },
-  Philadelphia: {
+  21: {
     teamID: 21,
     label: 'Philadelphia Forge',
     city: 'Philadelphia',
@@ -278,7 +170,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  Montreal: {
+  20: {
     teamID: 20,
     label: 'Montreal Patriotes',
     city: 'Montreal',
@@ -286,24 +178,6 @@ const teams = {
     abbreviation: 'MTL',
     league: 'SHL',
     conference: 'East',
-  },
-  GreatFalls: {
-    teamID: 17,
-    label: 'Great Falls Grizzles',
-    city: 'Great Falls',
-    team: 'Grizzles',
-    abbreviation: 'GFG',
-    league: 'SMJHL',
-    conference: 'SMJHL',
-  },
-  Regina: {
-    teamID: 16,
-    label: 'Regina Elk',
-    city: 'Regina',
-    team: 'Elk',
-    abbreviation: 'REG',
-    league: 'SMJHL',
-    conference: 'SMJHL',
   },
 }
 

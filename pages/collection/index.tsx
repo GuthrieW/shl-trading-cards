@@ -60,7 +60,7 @@ const Collection = () => {
     const newFilteredCards = userCards.filter((card) => {
       return (
         stringInCardName(card, searchString) &&
-        (allDisabled || selectedRarityNames.includes(card.rarity))
+        (allDisabled || selectedRarityNames.includes(card.card_rarity))
       )
     })
 

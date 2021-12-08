@@ -1,6 +1,5 @@
 export { default as adminPages } from './admin-pages'
 export { default as attributes } from './attributes'
-export { default as cardData } from './card-data'
 export { default as filterOptions } from './filter-options'
 export { default as goalieColumns } from './goalie-columns'
 export { default as goalieColumnsWithButtons } from './goalie-columns-with-buttons'

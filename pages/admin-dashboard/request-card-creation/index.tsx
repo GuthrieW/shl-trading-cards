@@ -62,9 +62,9 @@ const RequestCardCreation = () => {
     if (canSubmit) {
       setIsSubmitting(true)
       const basePlayerData = {
-        playerName: singlePlayerName,
-        team: singleTeamName,
-        rarity: singleRarity,
+        player_name: singlePlayerName,
+        teamID: singleTeamName,
+        card_rarity: singleRarity,
         position: singlePosition,
         overall: singleOverall,
       }
@@ -78,9 +78,19 @@ const RequestCardCreation = () => {
               hands: singleSkaterHands,
               checking: singleSkaterChecking,
               defense: singleSkaterDefense,
+              highShots: null,
+              lowShots: null,
+              quickness: null,
+              control: null,
+              conditioning: null,
             }
           : {
               ...basePlayerData,
+              skating: null,
+              shooting: null,
+              hands: null,
+              checking: null,
+              defense: null,
               highShots: singleGoalieHighShots,
               lowShots: singleGoalieLowShots,
               quickness: singleGoalieQuickness,
@@ -329,16 +339,6 @@ const RequestCardCreation = () => {
                 // parserOptions={}
               />
             </div>
-
-            {/* <Button
-              variant="contained"
-              component="label"
-              style={{ alignSelf: 'center', marginRight: '10px' }}
-              disabled={isSubmitting}
-            >
-              Upload CSV
-              <input type="file" onChange={handleSelectCsv} hidden />
-            </Button> */}
             <Button
               disabled={!canSubmit && isSubmitting}
               style={{ alignSelf: 'end' }}

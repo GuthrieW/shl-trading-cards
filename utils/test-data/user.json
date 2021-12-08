@@ -3,68 +3,90 @@
     {
       "uid": 1,
       "username": "caltroit_red_flames",
-      "permissions": [157],
-      "cards": []
+      "avatar": "",
+      "usergroup": 157,
+      "additionalgroups": "",
+      "displaygroups": 157
     },
     {
-      "userId": 2,
+      "uid": 2,
       "username": "luketd",
-      "permissions": [157],
-      "cards": []
+      "avatar": "",
+      "usergroup": 157,
+      "additionalgroups": "",
+      "displaygroups": 157
     },
     {
-      "userId": 3,
+      "uid": 3,
       "username": "slashACM",
-      "permissions": [165],
-      "cards": []
+      "avatar": "",
+      "usergroup": 165,
+      "additionalgroups": "",
+      "displaygroups": 165
     },
     {
-      "userId": 4,
+      "uid": 4,
       "username": "Hotdog",
-      "permissions": [],
-      "cards": []
+      "avatar": "",
+      "usergroup": null,
+      "additionalgroups": "",
+      "displaygroups": null
     },
     {
-      "userId": 5,
+      "uid": 5,
       "username": "Blastmeaway",
-      "permissions": [157],
-      "cards": []
+      "avatar": "",
+      "usergroup": 157,
+      "additionalgroups": "",
+      "displaygroups": 157
     },
     {
-      "userId": 6,
+      "uid": 6,
       "username": "jeffie43",
-      "permissions": [165],
-      "cards": []
+      "avatar": "",
+      "usergroup": 165,
+      "additionalgroups": "",
+      "displaygroups": 165
     },
     {
-      "userId": 7,
+      "uid": 7,
       "username": "Lime",
-      "permissions": [165],
-      "cards": []
+      "avatar": "",
+      "usergroup": 165,
+      "additionalgroups": "",
+      "displaygroups": 165
     },
     {
-      "userId": 8,
+      "uid": 8,
       "username": "Nour",
-      "permissions": [157],
-      "cards": []
+      "avatar": "",
+      "usergroup": 157,
+      "additionalgroups": "",
+      "displaygroups": 157
     },
     {
-      "userId": 9,
+      "uid": 9,
       "username": "Nokazoa",
-      "permissions": [165],
-      "cards": []
+      "avatar": "",
+      "usergroup": 165,
+      "additionalgroups": "",
+      "displaygroups": 165
     },
     {
-      "userId": 10,
+      "uid": 10,
       "username": "39alaska39",
-      "permissions": [165],
-      "cards": []
+      "avatar": "",
+      "usergroup": 165,
+      "additionalgroups": "",
+      "displaygroups": 165
     },
     {
-      "userId": 11,
+      "uid": 11,
       "username": "DrunkenTeddy",
-      "permissions": [157],
-      "cards": []
+      "avatar": "",
+      "usergroup": 157,
+      "additionalgroups": "",
+      "displaygroups": 157
     }
   ]
 }

@@ -8,10 +8,6 @@ const columns = [
     label: 'Username',
     name: 'username',
   },
-  {
-    label: 'Number of Cards',
-    name: 'cards',
-  },
 ]
 
 const options = {
@@ -26,22 +22,11 @@ const options = {
 
 const Community = () => {
   const { users, isLoading, isError } = useAllUsers()
-  const [userData, setUserData] = useState<any[]>([])
-
-  useEffect(() => {
-    const newUserData = users.map((user) => {
-      return {
-        username: user.username,
-        cards: user.cards.length,
-      }
-    })
-    setUserData(newUserData)
-  }, [users])
 
   return (
     <DataTable
       title={"View a Member's Collection"}
-      data={userData}
+      data={users}
       columns={columns}
       options={options}
     />

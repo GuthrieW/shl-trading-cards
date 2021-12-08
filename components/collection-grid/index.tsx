@@ -46,7 +46,7 @@ const CollectionGrid = ({
         .slice((pageNumber - 1) * cardsPerPage, pageNumber * cardsPerPage)
         .map((card) => {
           const numberOfDuplicates = filteredCards.filter(
-            (collectionCard) => collectionCard.playerName === card.playerName
+            (collectionCard) => collectionCard.player_name === card.player_name
           ).length
 
           return card ? (
@@ -56,7 +56,7 @@ const CollectionGrid = ({
                   badgeContent={numberOfDuplicates ? numberOfDuplicates : null}
                   color={'primary'}
                 >
-                  <StyledImage width={300} height={400} src={card.imageUrl} />
+                  <StyledImage width={300} height={400} src={card.image_url} />
                 </Badge>
               </Box>
               <CardModal

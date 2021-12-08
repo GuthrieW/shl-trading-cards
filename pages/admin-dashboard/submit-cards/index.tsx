@@ -6,6 +6,7 @@ import { useClaimedCards } from '@hooks/index'
 import find from 'lodash/find'
 import sortBy from 'lodash/sortBy'
 import stringInCardName from '@utils/string-in-card-name'
+import { teams } from '@constants/index'
 
 const SubmitCards = () => {
   const [filteringCards, setFilteringCards] = useState<boolean>(false)
@@ -89,28 +90,28 @@ const SubmitCards = () => {
             <FormGroup>
               <FormTextField
                 label={'Player Name'}
-                value={selectedCard.playerName}
+                value={selectedCard.player_name}
                 disabled={true}
               />
               <FormSelectField
                 label={'Team Name'}
                 labelId={'team-label'}
-                value={selectedCard.team}
+                value={teams[selectedCard.teamID]}
                 disabled={true}
                 options={{
                   team: {
-                    label: selectedCard.team,
+                    label: teams[selectedCard.teamID],
                   },
                 }}
               />
               <FormSelectField
                 label={'Rarity'}
                 labelId={'rarity-label'}
-                value={selectedCard.rarity}
+                value={selectedCard.card_rarity}
                 disabled={true}
                 options={{
                   rarity: {
-                    label: selectedCard.rarity,
+                    label: selectedCard.card_rarity,
                   },
                 }}
               />
@@ -135,7 +136,7 @@ const SubmitCards = () => {
                 value={
                   selectedCard.position !== 'G'
                     ? selectedCard.skating
-                    : selectedCard.highShots
+                    : selectedCard.high_shots
                 }
                 disabled={true}
               />
@@ -144,7 +145,7 @@ const SubmitCards = () => {
                 value={
                   selectedCard.position !== 'G'
                     ? selectedCard.shooting
-                    : selectedCard.lowShots
+                    : selectedCard.low_shots
                 }
                 disabled={true}
               />

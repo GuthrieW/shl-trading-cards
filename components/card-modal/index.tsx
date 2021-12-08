@@ -15,11 +15,11 @@ const CardModal = ({ open, handleCardClose, card }: CardModalProps) => (
     aria-describedby="alert-dialog-description"
   >
     <DialogContent>
-      {card && <img width={300} height={400} src={card.imageUrl} />}
+      {card && <img width={300} height={400} src={card.image_url} />}
     </DialogContent>
     {card && (
       <DialogTitle id="alert-dialog-title">
-        {card.playerName} - {card.rarity}
+        {card.player_name} - {card.card_rarity}
       </DialogTitle>
     )}
   </Dialog>

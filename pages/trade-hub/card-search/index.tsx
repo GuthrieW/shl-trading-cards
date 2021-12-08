@@ -44,7 +44,7 @@ const CardSearch = () => {
       })
 
       const matchingCards = cardsIncludingString.filter((card) => {
-        return card.playerName === searchString
+        return card.player_name === searchString
       })
 
       matchingCards.length === 1
@@ -87,7 +87,7 @@ const CardSearch = () => {
         >
           <div style={{ width: '50%' }}>
             <DataTable
-              title={`Owners of ${selectedCard.playerName}`}
+              title={`Owners of ${selectedCard.player_name}`}
               data={cardOwners}
               columns={columns}
               options={{}}
@@ -101,7 +101,7 @@ const CardSearch = () => {
               width: '50%',
             }}
           >
-            <img width={300} height={400} src={selectedCard.imageUrl} />
+            <img width={300} height={400} src={selectedCard.image_url} />
           </div>
         </div>
       )}
