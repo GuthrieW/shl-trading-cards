@@ -25,7 +25,7 @@ const AdminSidebar = ({ pages, onItemClick, selectedItem }: SidebarProps) => {
         {pages.map((page) => {
           if (
             page.admin &&
-            !hasRequiredPermisson([groups.Admin.id], currentUser)
+            !hasRequiredPermisson([groups.TradingCardAdmin.id], currentUser)
           ) {
             return null
           }

@@ -1,10 +1,12 @@
 const groups = {
-  Admin: {
+  TradingCardAdmin: {
     id: 157,
+    idAsString: '157',
     label: 'Trading Card Admin',
   },
-  Approver: {
+  TradingCardTeam: {
     id: 165,
+    idAsString: '165',
     label: 'Trading Card Team',
   },
 }
