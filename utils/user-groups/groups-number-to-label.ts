@@ -1,7 +1,6 @@
 const groupNumberToLabel = {
-  157: 'Trading Card Management',
-  165: 'Approver',
-  166: 'Submitter',
+  157: 'Trading Card Admin',
+  165: 'Trading Card Team',
 }
 
 export default groupNumberToLabel

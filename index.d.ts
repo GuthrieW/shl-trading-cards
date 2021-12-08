@@ -1,45 +1,98 @@
 type Card = {
-  playerName: string
-  team: string
-  rarity: 'Bronze' | 'Silver' | 'Gold' | 'Ruby' | 'Diamond'
-  position: 'C' | 'LW' | 'RW' | 'LD' | 'RD' | 'G'
-  overall: string
+  cardID: number
+  teamID: number
+  playerID: number
+  author_userID: number
+  card_rarity: string
+  player_name: string
+  pullable: boolean
+  approved: boolean
+  image_url: string
+  position: string
+  overall: number
   skating?: number
   shooting?: number
   hands?: number
   checking?: number
   defense?: number
-  highShots?: number
-  lowShots?: number
+  high_shots?: number
+  low_shots?: number
   quickness?: number
   control?: number
   conditioning?: number
-  imageUrl: string
+}
+
+type CardSet = {
+  cardID: number
+  setID: number
+}
+
+type Collection = {
+  userID: number
+  cardID: number
+  quantity: number
+}
+
+type Set = {
+  setID: number
+  name: string
+  description: string
+}
+
+type StartingLineup = {
+  userID: number
+  center: number
+  rightwing: number
+  leftwing: number
+  rightdefense: number
+  leftdefense: number
+  goalie: number
+}
+
+// There is one record for each card involved in the trade
+type Trade = {
+  tradeID: number
+  tradeAssetID: number
+  fromID: number
+  toID: number
+  cardID: number
+  trade_status: string
+  create_date: Date
+  update_data: Date
 }
 
 type User = {
-  userId: number
+  uid: number
   username: string
-  permissions: number[]
-  cards: Card[]
+  avatar: string
+  avatardimensions: string
+  avatartype: string
+  usergroup: number
+  additionalgroups: string
+  displaygroups: number
 }
+
+// type Card = {
+//   playerName: string
+//   team: string
+//   rarity: 'Bronze' | 'Silver' | 'Gold' | 'Ruby' | 'Diamond'
+//   position: 'C' | 'LW' | 'RW' | 'LD' | 'RD' | 'G'
+//   overall: string
+//   skating?: number
+//   shooting?: number
+//   hands?: number
+//   checking?: number
+//   defense?: number
+//   highShots?: number
+//   lowShots?: number
+//   quickness?: number
+//   control?: number
+//   conditioning?: number
+//   imageUrl: string
+// }
 
 type Rarity = {
   rarity: string
   imageUrl: string
   enabled: boolean
-}
-
-type MyBbUser = {
-  uid: number
-  username: string
-  password: string
-  salt: string
-  loginkey: string
-  email: string
-  postnum: number
-  threadnum: number
-  avatar: string
-  avatardimensions: string
-  avatartype: string
 }

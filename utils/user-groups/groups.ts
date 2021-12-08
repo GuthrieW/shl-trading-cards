@@ -1,15 +1,11 @@
 const groups = {
   Admin: {
     id: 157,
-    label: 'Trading Card Management',
+    label: 'Trading Card Admin',
   },
   Approver: {
     id: 165,
-    label: 'Approver',
-  },
-  Submitter: {
-    id: 166,
-    label: 'Submitter',
+    label: 'Trading Card Team',
   },
 }
 

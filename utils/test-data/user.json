@@ -1,7 +1,7 @@
 {
   "data": [
     {
-      "userId": 1,
+      "uid": 1,
       "username": "caltroit_red_flames",
       "permissions": [157],
       "cards": []
@@ -15,7 +15,7 @@
     {
       "userId": 3,
       "username": "slashACM",
-      "permissions": [166],
+      "permissions": [165],
       "cards": []
     },
     {
@@ -33,13 +33,13 @@
     {
       "userId": 6,
       "username": "jeffie43",
-      "permissions": [157, 165],
+      "permissions": [165],
       "cards": []
     },
     {
       "userId": 7,
       "username": "Lime",
-      "permissions": [166],
+      "permissions": [165],
       "cards": []
     },
     {
@@ -51,13 +51,13 @@
     {
       "userId": 9,
       "username": "Nokazoa",
-      "permissions": [166],
+      "permissions": [165],
       "cards": []
     },
     {
       "userId": 10,
       "username": "39alaska39",
-      "permissions": [166],
+      "permissions": [165],
       "cards": []
     },
     {

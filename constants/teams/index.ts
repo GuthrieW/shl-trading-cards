@@ -1,5 +1,6 @@
 const teams = {
   Atlanta: {
+    teamID: 18,
     label: 'Atlanta Inferno',
     city: 'Atlanta',
     team: 'Inferno',
@@ -8,6 +9,7 @@ const teams = {
     conference: 'East',
   },
   Baltimore: {
+    teamID: 7,
     label: 'Baltimore Platoon',
     city: 'Baltimore',
     team: 'Platoon',
@@ -16,6 +18,7 @@ const teams = {
     conference: 'East',
   },
   Buffalo: {
+    teamID: 0,
     label: 'Buffalo Stampede',
     city: 'Buffalo',
     team: 'Stampede',
@@ -24,6 +27,7 @@ const teams = {
     conference: 'East',
   },
   Chicago: {
+    teamID: 1,
     label: 'Chicago Syndicate',
     city: 'Chicago',
     team: 'Syndicate',
@@ -32,6 +36,7 @@ const teams = {
     conference: 'East',
   },
   Hamilton: {
+    teamID: 2,
     label: 'Hamilton Steelhawks',
     city: 'Hamilton',
     team: 'Steelhawks',
@@ -40,6 +45,7 @@ const teams = {
     conference: 'East',
   },
   Manhattan: {
+    teamID: 4,
     label: 'Manhattan Rage',
     city: 'Manhattan',
     team: 'Rage',
@@ -48,6 +54,7 @@ const teams = {
     conference: 'East',
   },
   NewEngland: {
+    teamID: 5,
     label: 'New England Wolfpack',
     city: 'New England',
     team: 'Wolfpack',
@@ -56,6 +63,7 @@ const teams = {
     conference: 'East',
   },
   TampaBay: {
+    teamID: 6,
     label: 'Tampa Bay Barracudua',
     city: 'Tampa Bay',
     team: 'Barracudua',
@@ -64,6 +72,7 @@ const teams = {
     conference: 'East',
   },
   Toronto: {
+    teamID: 3,
     label: 'Toronto North Stars',
     city: 'Toronto',
     team: 'North Stars',
@@ -72,6 +81,7 @@ const teams = {
     conference: 'East',
   },
   Calgary: {
+    teamID: 8,
     label: 'Calgary Dragons',
     city: 'Calgary',
     team: 'Dragons',
@@ -80,6 +90,7 @@ const teams = {
     conference: 'West',
   },
   Edmonton: {
+    teamID: 9,
     label: 'Edmonton Blizzard',
     city: 'Edmonton',
     team: 'Blizzard',
@@ -88,6 +99,7 @@ const teams = {
     conference: 'West',
   },
   LosAngeles: {
+    teamID: 13,
     label: 'Los Angeles Panthers',
     city: 'Los Angeles',
     team: 'Panthers',
@@ -96,6 +108,7 @@ const teams = {
     conference: 'West',
   },
   Minnesota: {
+    teamID: 10,
     label: 'Minnesota Monarchs',
     city: 'Minnesota',
     team: 'Monarchs',
@@ -104,6 +117,7 @@ const teams = {
     conference: 'West',
   },
   NewOrleans: {
+    teamID: 14,
     label: 'New Orleans Specters',
     city: 'New Orleans',
     team: 'Specters',
@@ -112,6 +126,7 @@ const teams = {
     conference: 'West',
   },
   SanFrancisco: {
+    teamID: 12,
     label: 'San Francisco Pride',
     city: 'San Francisco',
     team: 'Pride',
@@ -120,6 +135,7 @@ const teams = {
     conference: 'West',
   },
   Seattle: {
+    teamID: 19,
     label: 'Seattle Argonauts',
     city: 'Seattle',
     team: 'Argonauts',
@@ -128,6 +144,7 @@ const teams = {
     conference: 'West',
   },
   Texas: {
+    teamID: 15,
     label: 'Texas Renegades',
     city: 'Texas',
     team: 'Renegades',
@@ -136,6 +153,7 @@ const teams = {
     conference: 'West',
   },
   Winnipeg: {
+    teamID: 11,
     label: 'Winnipeg Aurora',
     city: 'Winnipeg',
     team: 'Aurora',
@@ -144,6 +162,7 @@ const teams = {
     conference: 'West',
   },
   Anaheim: {
+    teamID: 5,
     label: 'Anaheim Outlaws',
     city: 'Anaheim',
     team: 'Outlaws',
@@ -152,6 +171,7 @@ const teams = {
     conference: 'SMJHL',
   },
   Anchorage: {
+    teamID: 0,
     label: 'Anchorage Armada',
     city: 'Anchorage',
     team: 'Armada',
@@ -160,6 +180,7 @@ const teams = {
     conference: 'SMJHL',
   },
   Carolina: {
+    teamID: 9,
     label: 'Carolina Kraken',
     city: 'Carolina',
     team: 'Kraken',
@@ -168,6 +189,7 @@ const teams = {
     conference: 'SMJHL',
   },
   Colorado: {
+    teamID: 6,
     label: 'Colorado Raptors',
     city: 'Colorado',
     team: 'Raptors',
@@ -176,6 +198,7 @@ const teams = {
     conference: 'SMJHL',
   },
   Detroit: {
+    teamID: 7,
     label: 'Detroit Falcons',
     city: 'Detroit',
     team: 'Falcons',
@@ -184,6 +207,7 @@ const teams = {
     conference: 'SMJHL',
   },
   Kelowna: {
+    teamID: 1,
     label: 'Kelowna Knights',
     city: 'Kelowna',
     team: 'Knights',
@@ -192,6 +216,7 @@ const teams = {
     conference: 'SMJHL',
   },
   Maine: {
+    teamID: 2,
     label: 'Maine Timber',
     city: 'Maine',
     team: 'Timber',
@@ -200,6 +225,7 @@ const teams = {
     conference: 'SMJHL',
   },
   Nevada: {
+    teamID: 14,
     label: 'Nevada Battleborn',
     city: 'Nevada',
     team: 'Battleborn',
@@ -208,6 +234,7 @@ const teams = {
     conference: 'SMJHL',
   },
   Newfoundland: {
+    teamID: 4,
     label: 'Newfoundland Berserkers',
     city: 'Newfoundland',
     team: 'Berserkers',
@@ -216,6 +243,7 @@ const teams = {
     conference: 'SMJHL',
   },
   QuebecCity: {
+    teamID: 15,
     label: 'Quebec City Citadelles',
     city: 'Quebec City',
     team: 'Citadelles',
@@ -224,6 +252,7 @@ const teams = {
     conference: 'SMJHL',
   },
   StLouis: {
+    teamID: 8,
     label: 'St. Louis Scarecrows',
     city: 'St. Louis',
     team: 'Scarecrows',
@@ -232,10 +261,47 @@ const teams = {
     conference: 'SMJHL',
   },
   Vancouver: {
+    teamID: 3,
     label: 'Vancouver Whalers',
     city: 'Vancouver',
     team: 'Whalers',
     abbreviation: 'VAN',
+    league: 'SMJHL',
+    conference: 'SMJHL',
+  },
+  Philadelphia: {
+    teamID: 21,
+    label: 'Philadelphia Forge',
+    city: 'Philadelphia',
+    team: 'Forge',
+    abbreviation: 'PHI',
+    league: 'SHL',
+    conference: 'East',
+  },
+  Montreal: {
+    teamID: 20,
+    label: 'Montreal Patriotes',
+    city: 'Montreal',
+    team: 'Patriotes',
+    abbreviation: 'MTL',
+    league: 'SHL',
+    conference: 'East',
+  },
+  GreatFalls: {
+    teamID: 17,
+    label: 'Great Falls Grizzles',
+    city: 'Great Falls',
+    team: 'Grizzles',
+    abbreviation: 'GFG',
+    league: 'SMJHL',
+    conference: 'SMJHL',
+  },
+  Regina: {
+    teamID: 16,
+    label: 'Regina Elk',
+    city: 'Regina',
+    team: 'Elk',
+    abbreviation: 'REG',
     league: 'SMJHL',
     conference: 'SMJHL',
   },
