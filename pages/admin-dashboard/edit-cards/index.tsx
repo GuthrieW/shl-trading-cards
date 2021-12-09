@@ -1,6 +1,6 @@
 import React from 'react'
 import { DataTable } from '@components/index'
-import { useAllCards } from '@hooks/index'
+import { useAllCards } from '@pages/api/queries/index'
 import { goalieColumns, skaterColumns } from '@constants/index'
 import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
 

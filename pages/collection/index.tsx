@@ -5,7 +5,7 @@ import sortBy from 'lodash/sortBy'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { CollectionGrid, OptionInput, PageHeader } from '@components/index'
-import { useCurrentUser, useUserCards } from '@hooks/index'
+import { useCurrentUser, useUserCards } from '@pages/api/queries/index'
 import { filterOptions } from '@constants/index'
 import { stringInCardName } from '@utils/index'
 

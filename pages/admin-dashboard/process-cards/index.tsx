@@ -5,7 +5,7 @@ import {
   skaterColumnsWithButtons,
 } from '@constants/index'
 import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
-import { useUnapprovedCards } from '@hooks/index'
+import { useUnapprovedCards } from '@pages/api/queries/index'
 
 const ProcessCards = () => {
   const { unapprovedCards, isLoading, isError } = useUnapprovedCards()

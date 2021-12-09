@@ -2,23 +2,23 @@ import user from '@utils/test-data/user.json'
 import axios from 'axios'
 import { useQuery } from 'react-query'
 
-type UseCurrentUser = {
+type UseGetCurrentUser = {
   currentUser: User
   isLoading: boolean
   isError: any
 }
 
-const UseCurrentUserKey = 'use-current-user'
+const UseGetCurrentUserKey = 'use-get-current-user'
 
-function queryCurrentUser() {
-  return useQuery(UseCurrentUserKey, async () => {
+function queryGetCurrentUser() {
+  return useQuery(UseGetCurrentUserKey, async () => {
     const { data } = await axios.get('')
     return data
   })
 }
 
-const useCurrentUser = (): UseCurrentUser => {
-  const { status, data, error, isFetching } = queryCurrentUser()
+const useGetCurrentUser = (): UseGetCurrentUser => {
+  const { status, data, error, isFetching } = queryGetCurrentUser()
 
   return {
     currentUser: user.data[0],
@@ -28,4 +28,4 @@ const useCurrentUser = (): UseCurrentUser => {
   }
 }
 
-export default useCurrentUser
+export default useGetCurrentUser

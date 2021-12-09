@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useAllUsers } from '@hooks/index'
+import { useAllUsers } from '@pages/api/queries/index'
 import { DataTable } from '@components/index'
 import Router from 'next/router'
 

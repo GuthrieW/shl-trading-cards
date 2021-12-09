@@ -2,23 +2,23 @@ import cards from '@utils/test-data/cards.json'
 import axios from 'axios'
 import { useQuery } from 'react-query'
 
-type UseUnapprovedCards = {
+type UseGetUnapprovedCards = {
   unapprovedCards: Card[]
   isLoading: boolean
   isError: any
 }
 
-const UseUnapprovedCardsKey = 'use-unapproved-cards'
+const UseGetUnapprovedCardsKey = 'use-get-unapproved-cards'
 
-function queryUnapprovedCards() {
-  return useQuery(UseUnapprovedCardsKey, async () => {
+function queryGetUnapprovedCards() {
+  return useQuery(UseGetUnapprovedCardsKey, async () => {
     const { data } = await axios.get('')
     return data
   })
 }
 
-const useUnapprovedCards = (): UseUnapprovedCards => {
-  const { status, data, error, isFetching } = queryUnapprovedCards()
+const useGetUnapprovedCards = (): UseGetUnapprovedCards => {
+  const { status, data, error, isFetching } = queryGetUnapprovedCards()
 
   return {
     unapprovedCards: cards.data,
@@ -28,4 +28,4 @@ const useUnapprovedCards = (): UseUnapprovedCards => {
   }
 }
 
-export default useUnapprovedCards
+export default useGetUnapprovedCards

@@ -2,23 +2,23 @@ import cards from '@utils/test-data/cards.json'
 import axios from 'axios'
 import { useQuery } from 'react-query'
 
-type UseClaimedCards = {
+type UseGetClaimedCards = {
   claimedCards: Card[]
   isLoading: boolean
   isError: any
 }
 
-const UseClaimedCardsKey = 'use-claimed-cards'
+const UseGetClaimedCardsKey = 'use-get-claimed-cards'
 
-function queryClaimedCards() {
-  return useQuery(UseClaimedCardsKey, async () => {
+function queryGetClaimedCards() {
+  return useQuery(UseGetClaimedCardsKey, async () => {
     const { data } = await axios.get('')
     return data
   })
 }
 
-const useClaimedCards = (): UseClaimedCards => {
-  const { status, data, error, isFetching } = queryClaimedCards()
+const useGetClaimedCards = (): UseGetClaimedCards => {
+  const { status, data, error, isFetching } = queryGetClaimedCards()
 
   return {
     claimedCards: cards.data,
@@ -28,4 +28,4 @@ const useClaimedCards = (): UseClaimedCards => {
   }
 }
 
-export default useClaimedCards
+export default useGetClaimedCards

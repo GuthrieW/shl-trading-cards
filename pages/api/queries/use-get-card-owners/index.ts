@@ -2,23 +2,23 @@ import users from '@utils/test-data/user.json'
 import { useQuery } from 'react-query'
 import axios from 'axios'
 
-type UseCardOwners = {
+type UseGetCardOwners = {
   cardOwners: User[]
   isLoading: boolean
   isError: any
 }
 
-const UseCardOwnersKey = 'use-card-owners'
+const UseGetCardOwnersKey = 'use-get-card-owners'
 
-function queryCardOwners() {
-  return useQuery(UseCardOwnersKey, async () => {
+function queryGetCardOwners() {
+  return useQuery(UseGetCardOwnersKey, async () => {
     const { data } = await axios.get('')
     return data
   })
 }
 
-const useCardOwners = (): UseCardOwners => {
-  const { status, data, error, isFetching } = queryCardOwners()
+const useGetCardOwners = (): UseGetCardOwners => {
+  const { status, data, error, isFetching } = queryGetCardOwners()
 
   return {
     cardOwners: users.data,
@@ -28,4 +28,4 @@ const useCardOwners = (): UseCardOwners => {
   }
 }
 
-export default useCardOwners
+export default useGetCardOwners

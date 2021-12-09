@@ -6,7 +6,7 @@
         "@utils/*": ["utils/*"],
         "@pages/*": ["pages/*"],
         "@public/*": ["public/*"],
-        "@hooks/*": ["hooks/*"],
+        "@hooks/*": ["queries/*"],
         "@layouts/*": ["layouts/*"],
         "@constants/*": ["constants/*"],
         "@requests/*": ["requests/*"]

@@ -2,7 +2,7 @@ import React from 'react'
 import { List } from '@material-ui/core'
 import { SidebarItem, SidebarIcon, StyledSidebar, SidebarText } from './styled'
 import { useRouter } from 'next/router'
-import useCurrentUser from '@hooks/use-current-user'
+import useCurrentUser from '@pages/api/queries/use-get-current-user'
 import hasRequiredPermisson from '@utils/has-required-permission'
 import { groups } from '@utils/user-groups'
 

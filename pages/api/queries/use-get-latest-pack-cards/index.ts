@@ -2,23 +2,23 @@ import cards from '@utils/test-data/cards.json'
 import axios from 'axios'
 import { useQuery } from 'react-query'
 
-type UseLatestPackCards = {
+type UseGetLatestPackCards = {
   latestPackCards: Card[]
   isLoading: boolean
   isError: any
 }
 
-const UseLatestPackCardsKey = 'use-latest-pack-cards'
+const UseGetLatestPackCardsKey = 'use-get-latest-pack-cards'
 
-function queryLatestPackCards() {
-  return useQuery(UseLatestPackCardsKey, async () => {
+function queryGetLatestPackCards() {
+  return useQuery(UseGetLatestPackCardsKey, async () => {
     const { data } = await axios.get('')
     return data
   })
 }
 
-const useLatestPackCards = (): UseLatestPackCards => {
-  const { status, data, error, isFetching } = queryLatestPackCards()
+const useGetLatestPackCards = (): UseGetLatestPackCards => {
+  const { status, data, error, isFetching } = queryGetLatestPackCards()
   return {
     latestPackCards: cards.data.slice(0, 6),
     // latestPackCards: data,
@@ -27,4 +27,4 @@ const useLatestPackCards = (): UseLatestPackCards => {
   }
 }
 
-export default useLatestPackCards
+export default useGetLatestPackCards
