@@ -3,15 +3,15 @@ import { Button } from '@material-ui/core'
 const goalieColumnsWithButtons = [
   {
     label: 'Name',
-    name: 'playerName',
+    name: 'player_name',
   },
   {
     label: 'Team',
-    name: 'team',
+    name: 'teamID',
   },
   {
     label: 'Rarity',
-    name: 'rarity',
+    name: 'card_rarity',
   },
   {
     label: 'Overall',
@@ -39,7 +39,7 @@ const goalieColumnsWithButtons = [
   },
   {
     label: 'Image URL',
-    name: 'imageUrl',
+    name: 'image_url',
     options: {
       filter: false,
       sort: false,

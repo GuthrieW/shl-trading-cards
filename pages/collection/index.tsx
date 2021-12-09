@@ -5,7 +5,7 @@ import sortBy from 'lodash/sortBy'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { CollectionGrid, OptionInput, PageHeader } from '@components/index'
-import { useCurrentUser, useUserCards } from '@pages/api/queries/index'
+import { useGetCurrentUser, useGetUserCards } from '@pages/api/queries/index'
 import { filterOptions } from '@constants/index'
 import { stringInCardName } from '@utils/index'
 
@@ -29,7 +29,7 @@ const Collection = () => {
     currentUser,
     isLoading: currentUserIsLoading,
     isError: currentUserIsError,
-  } = useCurrentUser()
+  } = useGetCurrentUser()
 
   const collectionUsername =
     typeof username === 'string' ? username : currentUser.username
@@ -38,7 +38,7 @@ const Collection = () => {
     userCards,
     isLoading: userCardsIsLoading,
     isError: userCardsIsError,
-  } = useUserCards(collectionUsername)
+  } = useGetUserCards(collectionUsername)
 
   const cardsPerPage = 12
   const headerDisplay = collectionUsername ? `${collectionUsername}\'s` : 'My'

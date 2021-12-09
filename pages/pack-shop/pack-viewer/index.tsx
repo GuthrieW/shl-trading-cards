@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 // import AnimatedPackViewer from '../animated-pack-viewer'
 import StaticPackViewer from '../static-pack-viewer'
-import { useLatestPackCards } from '@pages/api/queries/index'
+import { useGetLatestPackCards } from '@pages/api/queries/index'
 
 type ViewerType = 'animated' | 'static'
 
 const PackViewer = () => {
   const [packViewerType, setPackViewerType] = useState<ViewerType>('animated')
-  const { latestPackCards, isLoading, isError } = useLatestPackCards()
+  const { latestPackCards, isLoading, isError } = useGetLatestPackCards()
 
   return <StaticPackViewer cards={latestPackCards} />
 

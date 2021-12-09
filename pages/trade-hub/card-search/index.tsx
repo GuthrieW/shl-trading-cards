@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { useAllCards, useCardOwners } from '@pages/api/queries/index'
+import { useGetAllCards, useGetCardOwners } from '@pages/api/queries/index'
 import { stringInCardName } from '@utils/index'
 import { DataTable, OptionInput, PageHeader } from '@components/index'
 import Router from 'next/router'
@@ -27,12 +27,12 @@ const CardSearch = () => {
     allCards,
     isLoading: allCardsIsLoading,
     isError: allCardsIsError,
-  } = useAllCards()
+  } = useGetAllCards()
   const {
     cardOwners,
     isLoading: cardOwnersIsLoading,
     isError: cardOwnersIsError,
-  } = useCardOwners()
+  } = useGetCardOwners()
 
   useEffect(() => {
     setFilteringCards(true)

@@ -1,15 +1,15 @@
 const skaterColumns = [
   {
     label: 'Name',
-    name: 'playerName',
+    name: 'player_name',
   },
   {
     label: 'Team',
-    name: 'team',
+    name: 'teamID',
   },
   {
     label: 'Rarity',
-    name: 'rarity',
+    name: 'card_rarity',
   },
   {
     label: 'Overall',
@@ -37,7 +37,11 @@ const skaterColumns = [
   },
   {
     label: 'Image URL',
-    name: 'imageUrl',
+    name: 'image_url',
+    options: {
+      filter: false,
+      sort: false,
+    },
   },
 ]
 

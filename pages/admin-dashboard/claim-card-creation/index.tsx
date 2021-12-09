@@ -2,10 +2,10 @@ import React from 'react'
 import { goalieColumns, skaterColumns } from '@constants/index'
 import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
 import { DataTable } from '@components/index'
-import { useRequestedCards } from '@pages/api/queries/index'
+import { useGetRequestedCards } from '@pages/api/queries/index'
 
 const ClaimCardCreation = () => {
-  const { requestedCards, isLoading, isError } = useRequestedCards()
+  const { requestedCards, isLoading, isError } = useGetRequestedCards()
 
   const skaterCards = onlySkaterCards(requestedCards)
   const goalieCards = onlyGoalieCards(requestedCards)

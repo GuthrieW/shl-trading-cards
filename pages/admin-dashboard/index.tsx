@@ -5,7 +5,7 @@ import { Box } from '@material-ui/core'
 import { AdminSidebar, PageHeader } from '@components/index'
 import { hasRequiredPermisson } from '@utils/index'
 import { groups } from '@utils/user-groups'
-import { useCurrentUser } from '@pages/api/queries/index'
+import { useGetCurrentUser } from '@pages/api/queries/index'
 import { adminPages } from '@constants/index'
 import EditCards from './edit-cards'
 import ProcessCards from './process-cards'
@@ -39,7 +39,7 @@ export type SelectedAdminPage =
 
 const AdminDashboard = () => {
   const router = useRouter()
-  const { currentUser, isLoading, isError } = useCurrentUser()
+  const { currentUser, isLoading, isError } = useGetCurrentUser()
   const [selectedAdminPage, setSelectedAdminPage] =
     useState<SelectedAdminPage>('none')
 

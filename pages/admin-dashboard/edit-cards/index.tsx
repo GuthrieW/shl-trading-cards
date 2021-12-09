@@ -1,11 +1,11 @@
 import React from 'react'
 import { DataTable } from '@components/index'
-import { useAllCards } from '@pages/api/queries/index'
+import { useGetAllCards } from '@pages/api/queries/index'
 import { goalieColumns, skaterColumns } from '@constants/index'
 import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
 
 const EditCards = () => {
-  const { allCards, isLoading, isError } = useAllCards()
+  const { allCards, isLoading, isError } = useGetAllCards()
 
   const skaterCards = onlySkaterCards(allCards)
   const goalieCards = onlyGoalieCards(allCards)

@@ -9,7 +9,7 @@ import {
 import styled from 'styled-components'
 import Router from 'next/router'
 import { packsMap } from '@constants/index'
-import { useCurrentUser } from '@pages/api/queries/index'
+import { useGetCurrentUser } from '@pages/api/queries/index'
 import { PageHeader } from '@components/index'
 import OpenPacksIcon from '@public/icons/open-packs-icon'
 
@@ -36,7 +36,7 @@ const StyledBarContainer = styled.div`
 `
 
 const OpenPacks = () => {
-  const { currentUser, isLoading, isError } = useCurrentUser()
+  const { currentUser, isLoading, isError } = useGetCurrentUser()
 
   const handleOpenPack = async (packType) => {
     // this probably needs to be re-done, using a hook to make an API call like this feels weird

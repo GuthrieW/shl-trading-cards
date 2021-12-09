@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { FormGroup, Button, Box, Paper } from '@material-ui/core'
 import { FormSelectField, FormTextField, OptionInput } from '@components/index'
 import Router from 'next/router'
-import { useClaimedCards } from '@pages/api/queries/index'
+import { useGetClaimedCards } from '@pages/api/queries/index'
 import sortBy from 'lodash/sortBy'
 import stringInCardName from '@utils/string-in-card-name'
 import { teams } from '@constants/index'
@@ -13,7 +13,7 @@ const SubmitCards = () => {
   const [searchString, setSearchString] = useState<string>('')
   const [selectedFile, setSelectedFile] = useState<any>(null)
   const [selectedCard, setSelectedCard] = useState<Card>(null)
-  const { claimedCards, isLoading, isError } = useClaimedCards()
+  const { claimedCards, isLoading, isError } = useGetClaimedCards()
   const canSubmit = selectedCard && selectedFile
 
   useEffect(() => {
