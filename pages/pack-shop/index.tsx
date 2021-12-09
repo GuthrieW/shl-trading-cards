@@ -29,6 +29,10 @@ const ImageItem = styled.div`
 `
 const StyledImage = styled.img`
   cursor: pointer;
+  transition: all ease 200ms;
+  &:hover {
+    transform: scale(1.05);
+  }
 `
 
 const StyledBarContainer = styled.div`

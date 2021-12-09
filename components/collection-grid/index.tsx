@@ -1,7 +1,7 @@
 import React from 'react'
 import { Badge, Box, Grid } from '@material-ui/core'
 import styled from 'styled-components'
-import CardModal from '@components/card-modal'
+import CardViewModal from '@components/card-view-modal'
 
 type CollectionGridProps = {
   filteredCards: Card[]
@@ -59,14 +59,14 @@ const CollectionGrid = ({
                   <StyledImage width={300} height={400} src={card.image_url} />
                 </Badge>
               </Box>
-              <CardModal
-                open={open}
-                handleCardClose={handleCloseCard}
-                card={currentCard}
-              />
             </GridItem>
           ) : null
         })}
+    <CardViewModal
+      open={open}
+      handleCardClose={handleCloseCard}
+      card={currentCard}
+    />
   </GridContainer>
 )
 

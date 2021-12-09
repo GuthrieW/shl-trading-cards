@@ -1,5 +1,6 @@
 export { default as AdminSidebar } from './admin-sidebar'
-export { default as CardModal } from './card-modal'
+export { default as CardEditModal } from './card-edit-modal'
+export { default as CardViewModal } from './card-view-modal'
 export { default as CollectionGrid } from './collection-grid'
 export { default as DataTable } from './data-table'
 export { default as FormSelectField } from './form-select-field'
