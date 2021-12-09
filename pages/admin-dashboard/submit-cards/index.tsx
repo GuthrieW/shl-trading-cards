@@ -21,17 +21,18 @@ const SubmitCards = () => {
     let newFilteredCards = []
 
     if (searchString !== '') {
-      const cardsIncludingString = claimedCards.filter((card) => {
+      const cardsIncludingString = claimedCards.filter((card: Card) => {
         return stringInCardName(card, searchString)
       })
 
-      const matchingCards = cardsIncludingString.filter((card) => {
+      const matchingCards = cardsIncludingString.filter((card: Card) => {
         return card.player_name === searchString
       })
 
       matchingCards.length === 1
         ? setSelectedCard(matchingCards[0])
         : setSelectedCard(null)
+      console.log(matchingCards)
 
       newFilteredCards = cardsIncludingString
     } else {
@@ -39,8 +40,8 @@ const SubmitCards = () => {
       newFilteredCards = claimedCards
     }
 
-    const sortedCards = sortBy(newFilteredCards, (card) => {
-      return [card.rarity, card.playerName]
+    const sortedCards = sortBy(newFilteredCards, (card: Card) => {
+      return [card.card_rarity, card.player_name]
     })
     setFilteredCards(sortedCards)
     setFilteringCards(false)
@@ -95,11 +96,11 @@ const SubmitCards = () => {
               <FormSelectField
                 label={'Team Name'}
                 labelId={'team-label'}
-                value={teams[selectedCard.teamID]}
+                value={teams[selectedCard.teamID].label}
                 disabled={true}
                 options={{
                   team: {
-                    label: teams[selectedCard.teamID],
+                    label: teams[selectedCard.teamID].label,
                   },
                 }}
               />
@@ -109,7 +110,7 @@ const SubmitCards = () => {
                 value={selectedCard.card_rarity}
                 disabled={true}
                 options={{
-                  rarity: {
+                  card_rarity: {
                     label: selectedCard.card_rarity,
                   },
                 }}
