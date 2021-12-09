@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { DefaultSeo } from 'next-seo'
 import { ThemeProvider } from '@material-ui/styles'
-import { SWRConfig } from 'swr'
 import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
 import Layout from '@components/layout'
@@ -62,34 +61,27 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   }, [])
 
   return (
-    <SWRConfig
-      value={{
-        fetcher: (resource, init) =>
-          fetch(resource, init).then((result) => result.json()),
-      }}
-    >
-      <ThemeProvider theme={theme}>
-        <QueryClientProvider client={queryClient}>
-          <Hydrate state={pageProps.dehydratedState}>
-            <Layout>
-              <DefaultSeo {...SEO} />
-              {showModal && <AuthModal />}
-              <Component {...pageProps} />
-              <style global jsx>{`
-                body {
-                  font-family: 'Raleway', sans-serif;
-                  background-color: '#E9ECEF';
-                }
-                * {
-                  margin: 0;
-                  padding: 0;
-                  box-sizing: border-box;
-                }
-              `}</style>
-            </Layout>
-          </Hydrate>
-        </QueryClientProvider>
-      </ThemeProvider>
-    </SWRConfig>
+    <ThemeProvider theme={theme}>
+      <QueryClientProvider client={queryClient}>
+        <Hydrate state={pageProps.dehydratedState}>
+          <Layout>
+            <DefaultSeo {...SEO} />
+            {showModal && <AuthModal />}
+            <Component {...pageProps} />
+            <style global jsx>{`
+              body {
+                font-family: 'Raleway', sans-serif;
+                background-color: '#E9ECEF';
+              }
+              * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+              }
+            `}</style>
+          </Layout>
+        </Hydrate>
+      </QueryClientProvider>
+    </ThemeProvider>
   )
 }

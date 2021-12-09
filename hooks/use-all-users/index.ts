@@ -1,18 +1,29 @@
-import useSWR from 'swr'
+import { useQuery } from 'react-query'
 import users from '@utils/test-data/user.json'
+import axios from 'axios'
 
 type UseAllUsers = {
   users: User[]
   isLoading: boolean
-  isError: boolean
+  isError: any
+}
+
+const UseAllUsersKey = 'use-all-users'
+
+function queryAllUsers() {
+  return useQuery(UseAllUsersKey, async () => {
+    const { data } = await axios.get('')
+    return data
+  })
 }
 
 const useAllUsers = (): UseAllUsers => {
-  const { data, error } = useSWR(() => ``)
+  const { status, data, error, isFetching } = queryAllUsers()
 
   return {
     users: users.data,
-    isLoading: !data && !error,
+    // users: data,
+    isLoading: isFetching,
     isError: error,
   }
 }
