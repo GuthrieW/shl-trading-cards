@@ -38,9 +38,7 @@ const OptionInput = ({
     clearOnBlur={false}
     onChange={onChange}
     onInputChange={onInputChange}
-    renderInput={(params) => (
-      <TextField {...params} label={label} variant="outlined" />
-    )}
+    renderInput={(params) => <TextField {...params} label={label} />}
     defaultValue={defaultValue}
   />
 )
