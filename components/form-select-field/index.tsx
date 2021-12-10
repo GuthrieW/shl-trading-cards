@@ -24,12 +24,13 @@ const FormSelectField = ({
       <Select
         labelId={labelId}
         label={label}
-        value={value || ''}
+        value={value}
         onChange={onChange}
         disabled={disabled}
+        defaultValue={'' || 0}
       >
         {Object.values(options).map((option: any) => (
-          <MenuItem key={option.label} value={option.label}>
+          <MenuItem key={option.value} value={option.value}>
             {option.label}
           </MenuItem>
         ))}

@@ -1,13 +1,13 @@
 import React from 'react'
 import { Dialog, DialogContent, DialogTitle } from '@material-ui/core'
 
-type CardEditModalProps = {
+type ViewCardModalProps = {
   open: boolean
   handleCardClose: any
   card: Card
 }
 
-const CardEditModal = ({ open, handleCardClose, card }: CardEditModalProps) => (
+const ViewCardModal = ({ open, handleCardClose, card }: ViewCardModalProps) => (
   <Dialog
     open={open}
     onClose={handleCardClose}
@@ -28,4 +28,4 @@ const CardEditModal = ({ open, handleCardClose, card }: CardEditModalProps) => (
   </Dialog>
 )
 
-export default CardEditModal
+export default ViewCardModal

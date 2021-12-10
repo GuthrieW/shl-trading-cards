@@ -1,5 +1,5 @@
-const teams = {
-  18: {
+const teams = [
+  {
     teamID: 18,
     label: 'Atlanta Inferno',
     city: 'Atlanta',
@@ -8,7 +8,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  7: {
+  {
     teamID: 7,
     label: 'Baltimore Platoon',
     city: 'Baltimore',
@@ -17,7 +17,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  0: {
+  {
     teamID: 0,
     label: 'Buffalo Stampede',
     city: 'Buffalo',
@@ -26,7 +26,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  1: {
+  {
     teamID: 1,
     label: 'Chicago Syndicate',
     city: 'Chicago',
@@ -35,7 +35,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  2: {
+  {
     teamID: 2,
     label: 'Hamilton Steelhawks',
     city: 'Hamilton',
@@ -44,7 +44,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  4: {
+  {
     teamID: 4,
     label: 'Manhattan Rage',
     city: 'Manhattan',
@@ -53,7 +53,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  5: {
+  {
     teamID: 5,
     label: 'New England Wolfpack',
     city: 'New England',
@@ -62,7 +62,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  6: {
+  {
     teamID: 6,
     label: 'Tampa Bay Barracudua',
     city: 'Tampa Bay',
@@ -71,7 +71,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  3: {
+  {
     teamID: 3,
     label: 'Toronto North Stars',
     city: 'Toronto',
@@ -80,7 +80,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  8: {
+  {
     teamID: 8,
     label: 'Calgary Dragons',
     city: 'Calgary',
@@ -89,7 +89,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  9: {
+  {
     teamID: 9,
     label: 'Edmonton Blizzard',
     city: 'Edmonton',
@@ -98,7 +98,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  13: {
+  {
     teamID: 13,
     label: 'Los Angeles Panthers',
     city: 'Los Angeles',
@@ -107,7 +107,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  10: {
+  {
     teamID: 10,
     label: 'Minnesota Monarchs',
     city: 'Minnesota',
@@ -116,7 +116,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  14: {
+  {
     teamID: 14,
     label: 'New Orleans Specters',
     city: 'New Orleans',
@@ -125,7 +125,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  12: {
+  {
     teamID: 12,
     label: 'San Francisco Pride',
     city: 'San Francisco',
@@ -134,7 +134,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  19: {
+  {
     teamID: 19,
     label: 'Seattle Argonauts',
     city: 'Seattle',
@@ -143,7 +143,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  15: {
+  {
     teamID: 15,
     label: 'Texas Renegades',
     city: 'Texas',
@@ -152,7 +152,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  11: {
+  {
     teamID: 11,
     label: 'Winnipeg Aurora',
     city: 'Winnipeg',
@@ -161,7 +161,7 @@ const teams = {
     league: 'SHL',
     conference: 'West',
   },
-  21: {
+  {
     teamID: 21,
     label: 'Philadelphia Forge',
     city: 'Philadelphia',
@@ -170,7 +170,7 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-  20: {
+  {
     teamID: 20,
     label: 'Montreal Patriotes',
     city: 'Montreal',
@@ -179,6 +179,6 @@ const teams = {
     league: 'SHL',
     conference: 'East',
   },
-}
+]
 
 export default teams

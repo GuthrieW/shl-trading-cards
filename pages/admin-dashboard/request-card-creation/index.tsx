@@ -1,11 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Button, ButtonGroup, FormGroup, Paper } from '@material-ui/core'
-import { FormTextField, FormSelectField } from '@components/index'
-import { attributes, positions, rarities, teams } from '@constants/index'
+import { CardForm } from '@components/index'
 import CSVReader from 'react-csv-reader'
 import Router from 'next/router'
 
 type SelectedRequestUi = 'single-card' | 'csv-import'
+
+const defaultCardState = {
+  teamID: null,
+  playerID: 0,
+  card_rarity: '',
+  player_name: '',
+  position: '',
+  overall: 0,
+  skating: 0,
+  shooting: 0,
+  hands: 0,
+  checking: 0,
+  defense: 0,
+  high_shots: 0,
+  low_shots: 0,
+  quickness: 0,
+  control: 0,
+  conditioning: 0,
+}
 
 const RequestCardCreation = () => {
   const [selectedRequestUi, setSelectedRequestUi] =
@@ -13,45 +31,39 @@ const RequestCardCreation = () => {
   const [csvToUpload, setCsvToUpload] = useState(null)
   const [canSubmit, setCanSubmit] = useState<boolean>(true)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-
-  // Single Card State
-  const [singlePlayerName, setSinglePlayerName] = useState<string>('')
-  const [singleTeamName, setSingleTeamName] = useState<string>('')
-  const [singleRarity, setSingleRarity] = useState<string>('')
-  const [singlePosition, setSinglePosition] = useState<string>('')
-  const [singleOverall, setSingleOverall] = useState<number>(0)
-  const [singleSkaterSkating, setSingleSkaterSkating] = useState<number>(0)
-  const [singleSkaterShooting, setSingleSkaterShooting] = useState<number>(0)
-  const [singleSkaterHands, setSingleSkaterHands] = useState<number>(0)
-  const [singleSkaterChecking, setSingleSkaterChecking] = useState<number>(0)
-  const [singleSkaterDefense, setSingleSkaterDefense] = useState<number>(0)
-  const [singleGoalieHighShots, setSingleGoalieHighShots] = useState<number>(0)
-  const [singleGoalieLowShots, setSingleGoalieLowShots] = useState<number>(0)
-  const [singleGoalieQuickness, setSingleGoalieQuickness] = useState<number>(0)
-  const [singleGoalieControl, setSingleGoalieControl] = useState<number>(0)
-  const [singleGoalieConditioning, setSingleGoalieConditioning] =
-    useState<number>(0)
+  const [singleCard, setSingleCard] = useState<CardRequest>(defaultCardState)
 
   useEffect(() => {
-    if (selectedRequestUi === 'single-card') {
-      setSinglePlayerName('')
-      setSingleTeamName('')
-      setSingleRarity('')
-      setSinglePosition('')
-      setSingleOverall(0)
-      setSingleSkaterSkating(0)
-      setSingleSkaterShooting(0)
-      setSingleSkaterHands(0)
-      setSingleSkaterChecking(0)
-      setSingleSkaterDefense(0)
-      setSingleGoalieHighShots(0)
-      setSingleGoalieLowShots(0)
-      setSingleGoalieQuickness(0)
-      setSingleGoalieControl(0)
-      setSingleGoalieConditioning(0)
-    } else {
-      setCsvToUpload(null)
-    }
+    const isNotDefaultState = Object.keys(singleCard).every((key) => {
+      if (
+        singleCard.position !== 'G' &&
+        [
+          'high_shots',
+          'low_shots',
+          'quickness',
+          'control',
+          'conditioning',
+        ].indexOf(key) >= 0
+      ) {
+        return true
+      } else if (
+        singleCard.position === 'G' &&
+        ['skating', 'shooting', 'hands', 'checking', 'defense'].indexOf(key) >=
+          0
+      ) {
+        return true
+      }
+
+      return singleCard[key] !== defaultCardState[key]
+    })
+
+    setCanSubmit(isNotDefaultState)
+  }, [singleCard])
+
+  useEffect(() => {
+    selectedRequestUi === 'single-card'
+      ? setSingleCard(defaultCardState)
+      : setCsvToUpload(null)
   }, [selectedRequestUi])
 
   const handleSelectCsv = (data, fileInfo) => {
@@ -62,22 +74,23 @@ const RequestCardCreation = () => {
     if (canSubmit) {
       setIsSubmitting(true)
       const basePlayerData = {
-        player_name: singlePlayerName,
-        teamID: singleTeamName,
-        card_rarity: singleRarity,
-        position: singlePosition,
-        overall: singleOverall,
+        teamID: singleCard.teamID,
+        playerID: singleCard.playerID,
+        card_rarity: singleCard.card_rarity,
+        player_name: singleCard.player_name,
+        position: singleCard.position,
+        overall: singleCard.overall,
       }
 
       const fullPlayerData =
-        singlePosition !== 'G'
+        singleCard.position !== 'G'
           ? {
               ...basePlayerData,
-              skating: singleSkaterSkating,
-              shooting: singleSkaterShooting,
-              hands: singleSkaterHands,
-              checking: singleSkaterChecking,
-              defense: singleSkaterDefense,
+              skating: singleCard.skating,
+              shooting: singleCard.shooting,
+              hands: singleCard.hands,
+              checking: singleCard.checking,
+              defense: singleCard.defense,
               highShots: null,
               lowShots: null,
               quickness: null,
@@ -91,33 +104,15 @@ const RequestCardCreation = () => {
               hands: null,
               checking: null,
               defense: null,
-              highShots: singleGoalieHighShots,
-              lowShots: singleGoalieLowShots,
-              quickness: singleGoalieQuickness,
-              control: singleGoalieControl,
-              conditioning: singleGoalieConditioning,
+              highShots: singleCard.high_shots,
+              lowShots: singleCard.low_shots,
+              quickness: singleCard.quickness,
+              control: singleCard.control,
+              conditioning: singleCard.conditioning,
             }
-
-      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-      await delay(5000)
-      // Router.reload()
     }
 
-    setSinglePlayerName('')
-    setSingleTeamName('')
-    setSingleRarity('')
-    setSinglePosition('')
-    setSingleOverall(0)
-    setSingleSkaterSkating(0)
-    setSingleSkaterShooting(0)
-    setSingleSkaterHands(0)
-    setSingleSkaterChecking(0)
-    setSingleSkaterDefense(0)
-    setSingleGoalieHighShots(0)
-    setSingleGoalieLowShots(0)
-    setSingleGoalieQuickness(0)
-    setSingleGoalieControl(0)
-    setSingleGoalieConditioning(0)
+    setSingleCard(defaultCardState)
     setIsSubmitting(false)
     setCsvToUpload(null)
   }
@@ -156,164 +151,14 @@ const RequestCardCreation = () => {
       <FormGroup>
         {selectedRequestUi === 'single-card' && (
           <>
-            <FormTextField
-              label={'Player Name'}
-              value={singlePlayerName}
-              onChange={(event) => {
-                setSinglePlayerName(event.target.value)
-              }}
-              disabled={isSubmitting}
+            <CardForm
+              handleOnChange={setSingleCard}
+              cardData={singleCard}
+              formDisabled={isSubmitting}
             />
-            <FormSelectField
-              label={'Team'}
-              labelId={'team-label'}
-              value={singleTeamName}
-              onChange={(event) => {
-                setSingleTeamName(event.target.value)
-              }}
-              options={teams}
-              disabled={isSubmitting}
-            />
-            <FormSelectField
-              label={'Rarity'}
-              labelId={'rarity-label'}
-              value={singleRarity}
-              onChange={(event) => {
-                setSingleRarity(event.target.value)
-              }}
-              options={rarities}
-              disabled={isSubmitting}
-            />
-            <FormSelectField
-              label={'Position'}
-              labelId={'position-label'}
-              value={singlePosition}
-              onChange={(event) => {
-                setSinglePosition(event.target.value)
-              }}
-              options={positions}
-              disabled={isSubmitting}
-            />
-            <FormTextField
-              type={'number'}
-              inputProps={{ min: 0, max: 99 }}
-              label={'Overall'}
-              value={singleOverall}
-              onChange={(event) => {
-                setSingleOverall(event.target.value)
-              }}
-              disabled={isSubmitting}
-            />
-            {singlePosition !== 'G' ? (
-              <>
-                <FormTextField
-                  type={'number'}
-                  inputProps={{ min: 0, max: 20 }}
-                  label={attributes.Skater.Skating}
-                  value={singleSkaterSkating}
-                  onChange={(event) => {
-                    setSingleSkaterSkating(event.target.value)
-                  }}
-                  disabled={isSubmitting}
-                />
-                <FormTextField
-                  type={'number'}
-                  inputProps={{ min: 0, max: 20 }}
-                  label={attributes.Skater.Shooting}
-                  value={singleSkaterShooting}
-                  onChange={(event) => {
-                    setSingleSkaterShooting(event.target.value)
-                  }}
-                  disabled={isSubmitting}
-                />
-                <FormTextField
-                  type={'number'}
-                  inputProps={{ min: 0, max: 20 }}
-                  label={attributes.Skater.Hands}
-                  value={singleSkaterHands}
-                  onChange={(event) => {
-                    setSingleSkaterHands(event.target.value)
-                  }}
-                  disabled={isSubmitting}
-                />
-                <FormTextField
-                  type={'number'}
-                  inputProps={{ min: 0, max: 20 }}
-                  label={attributes.Skater.Checking}
-                  value={singleSkaterChecking}
-                  onChange={(event) => {
-                    setSingleSkaterChecking(event.target.value)
-                  }}
-                  disabled={isSubmitting}
-                />
-                <FormTextField
-                  type={'number'}
-                  inputProps={{ min: 0, max: 20 }}
-                  label={attributes.Skater.Defense}
-                  value={singleSkaterDefense}
-                  onChange={(event) => {
-                    setSingleSkaterDefense(event.target.value)
-                  }}
-                  disabled={isSubmitting}
-                />
-              </>
-            ) : (
-              <>
-                <FormTextField
-                  type={'number'}
-                  inputProps={{ min: 0, max: 20 }}
-                  label={attributes.Goalie.HighShots}
-                  value={singleGoalieHighShots}
-                  onChange={(event) => {
-                    setSingleGoalieHighShots(event.target.value)
-                  }}
-                  disabled={isSubmitting}
-                />
-                <FormTextField
-                  type={'number'}
-                  inputProps={{ min: 0, max: 20 }}
-                  label={attributes.Goalie.LowShots}
-                  value={singleGoalieLowShots}
-                  onChange={(event) => {
-                    setSingleGoalieLowShots(event.target.value)
-                  }}
-                  disabled={isSubmitting}
-                />
-                <FormTextField
-                  type={'number'}
-                  inputProps={{ min: 0, max: 20 }}
-                  label={attributes.Goalie.Quickness}
-                  value={singleGoalieQuickness}
-                  onChange={(event) => {
-                    setSingleGoalieQuickness(event.target.value)
-                  }}
-                  disabled={isSubmitting}
-                />
-                <FormTextField
-                  type={'number'}
-                  inputProps={{ min: 0, max: 20 }}
-                  label={attributes.Goalie.Control}
-                  value={singleGoalieControl}
-                  onChange={(event) => {
-                    setSingleGoalieControl(event.target.value)
-                  }}
-                  disabled={isSubmitting}
-                />
-                <FormTextField
-                  type={'number'}
-                  inputProps={{ min: 0, max: 20 }}
-                  label={attributes.Goalie.Conditioning}
-                  value={singleGoalieConditioning}
-                  onChange={(event) => {
-                    setSingleGoalieConditioning(event.target.value)
-                  }}
-                  disabled={isSubmitting}
-                />
-              </>
-            )}
             <Box m={2}>
               <Button
-                disabled={!canSubmit && isSubmitting}
+                disabled={!canSubmit || isSubmitting}
                 style={{ alignSelf: 'end' }}
                 variant="contained"
                 color="primary"
@@ -340,7 +185,7 @@ const RequestCardCreation = () => {
               />
             </div>
             <Button
-              disabled={!canSubmit && isSubmitting}
+              disabled={!canSubmit || isSubmitting}
               style={{ alignSelf: 'end' }}
               variant="contained"
               color="primary"

@@ -1,9 +1,9 @@
-const rarities = {
-  Bronze: { label: 'Bronze' },
-  Silver: { label: 'Silver' },
-  Gold: { label: 'Gold' },
-  Ruby: { label: 'Ruby' },
-  Diamond: { label: 'Diamond' },
-}
+const rarities = [
+  { label: 'Bronze', value: 'Bronze' },
+  { label: 'Silver', value: 'Silver' },
+  { label: 'Gold', value: 'Gold' },
+  { label: 'Ruby', value: 'Ruby' },
+  { label: 'Diamond', value: 'Diamond' },
+]
 
 export default rarities

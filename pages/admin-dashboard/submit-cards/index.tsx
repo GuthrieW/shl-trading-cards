@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { FormGroup, Button, Box, Paper } from '@material-ui/core'
-import { FormSelectField, FormTextField, OptionInput } from '@components/index'
+import {
+  CardForm,
+  FormSelectField,
+  FormTextField,
+  OptionInput,
+} from '@components/index'
 import Router from 'next/router'
 import { useGetClaimedCards } from '@pages/api/queries/index'
 import sortBy from 'lodash/sortBy'
@@ -32,7 +37,6 @@ const SubmitCards = () => {
       matchingCards.length === 1
         ? setSelectedCard(matchingCards[0])
         : setSelectedCard(null)
-      console.log(matchingCards)
 
       newFilteredCards = cardsIncludingString
     } else {
@@ -88,95 +92,10 @@ const SubmitCards = () => {
         >
           <Box style={{ width: '50%' }}>
             <FormGroup>
-              <FormTextField
-                label={'Player Name'}
-                value={selectedCard.player_name}
-                disabled={true}
-              />
-              <FormSelectField
-                label={'Team Name'}
-                labelId={'team-label'}
-                value={teams[selectedCard.teamID].label}
-                disabled={true}
-                options={{
-                  team: {
-                    label: teams[selectedCard.teamID].label,
-                  },
-                }}
-              />
-              <FormSelectField
-                label={'Rarity'}
-                labelId={'rarity-label'}
-                value={selectedCard.card_rarity}
-                disabled={true}
-                options={{
-                  card_rarity: {
-                    label: selectedCard.card_rarity,
-                  },
-                }}
-              />
-              <FormSelectField
-                label={'Position'}
-                labelId={'position-label'}
-                value={selectedCard.position}
-                disabled={true}
-                options={{
-                  position: {
-                    label: selectedCard.position,
-                  },
-                }}
-              />
-              <FormTextField
-                label={'Overall'}
-                value={selectedCard.overall}
-                disabled={true}
-              />
-              <FormTextField
-                label={selectedCard.position !== 'G' ? 'Skating' : 'High Shots'}
-                value={
-                  selectedCard.position !== 'G'
-                    ? selectedCard.skating
-                    : selectedCard.high_shots
-                }
-                disabled={true}
-              />
-              <FormTextField
-                label={selectedCard.position !== 'G' ? 'Shooting' : 'Low Shots'}
-                value={
-                  selectedCard.position !== 'G'
-                    ? selectedCard.shooting
-                    : selectedCard.low_shots
-                }
-                disabled={true}
-              />
-              <FormTextField
-                label={selectedCard.position !== 'G' ? 'Hands' : 'Quickness'}
-                value={
-                  selectedCard.position !== 'G'
-                    ? selectedCard.hands
-                    : selectedCard.quickness
-                }
-                disabled={true}
-              />
-              <FormTextField
-                label={selectedCard.position !== 'G' ? 'Checking' : 'Control'}
-                value={
-                  selectedCard.position !== 'G'
-                    ? selectedCard.checking
-                    : selectedCard.control
-                }
-                disabled={true}
-              />
-              <FormTextField
-                label={
-                  selectedCard.position !== 'G' ? 'Defense' : 'Conditioning'
-                }
-                value={
-                  selectedCard.position !== 'G'
-                    ? selectedCard.defense
-                    : selectedCard.conditioning
-                }
-                disabled={true}
+              <CardForm
+                handleOnChange={null}
+                cardData={selectedCard}
+                formDisabled={true}
               />
               <Box m={2}>
                 <Button

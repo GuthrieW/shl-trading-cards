@@ -1,15 +1,49 @@
 const goalieColumns = [
   {
+    label: 'Card ID',
+    name: 'cardID',
+  },
+  {
+    label: 'Team ID',
+    name: 'teamID',
+  },
+  {
+    label: 'Player ID',
+    name: 'playerID',
+  },
+  {
+    label: 'Card Creator ID',
+    name: 'author_userID',
+  },
+  {
     label: 'Name',
     name: 'player_name',
   },
   {
-    label: 'Team',
-    name: 'teamID',
-  },
-  {
     label: 'Rarity',
     name: 'card_rarity',
+  },
+  {
+    label: 'Pullable',
+    name: 'pullable',
+    options: {
+      customBodyRender: (value) => {
+        return value === true ? 'true' : 'false'
+      },
+    },
+  },
+  {
+    label: 'Approved',
+    name: 'approved',
+    options: {
+      customBodyRender: (value) => {
+        return value === true ? 'true' : 'false'
+      },
+    },
+  },
+  {
+    label: 'Position',
+    name: 'position',
   },
   {
     label: 'Overall',

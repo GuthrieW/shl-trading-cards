@@ -1,7 +1,7 @@
 import React from 'react'
 import { Badge, Box, Grid } from '@material-ui/core'
 import styled from 'styled-components'
-import CardViewModal from '@components/card-view-modal'
+import { ViewCardModal } from '@components/index'
 
 type CollectionGridProps = {
   filteredCards: Card[]
@@ -62,7 +62,7 @@ const CollectionGrid = ({
             </GridItem>
           ) : null
         })}
-    <CardViewModal
+    <ViewCardModal
       open={open}
       handleCardClose={handleCloseCard}
       card={currentCard}

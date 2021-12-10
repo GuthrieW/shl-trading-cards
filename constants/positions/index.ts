@@ -1,28 +1,28 @@
-const positions = {
-  Center: {
+const positions = [
+  {
     label: 'C',
-    abbreviation: 'C',
+    value: 'C',
   },
-  RightWing: {
+  {
     label: 'RW',
-    abbreviation: 'RW',
+    value: 'RW',
   },
-  LeftWing: {
+  {
     label: 'LW',
-    abbreviation: 'LW',
+    value: 'LW',
   },
-  RightDefense: {
+  {
     label: 'RD',
-    abbreviation: 'RD',
+    value: 'RD',
   },
-  LeftDefense: {
+  {
     label: 'LD',
-    abbreviation: 'LD',
+    value: 'LD',
   },
-  Goaltender: {
+  {
     label: 'G',
-    abbreviation: 'G',
+    value: 'G',
   },
-}
+]
 
 export default positions

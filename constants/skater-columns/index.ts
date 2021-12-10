@@ -4,7 +4,7 @@ const skaterColumns = [
     name: 'cardID',
   },
   {
-    label: 'Team',
+    label: 'Team ID',
     name: 'teamID',
   },
   {

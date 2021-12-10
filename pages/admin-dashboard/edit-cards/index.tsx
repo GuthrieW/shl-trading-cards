@@ -1,15 +1,13 @@
 import React, { useState } from 'react'
-import { DataTable } from '@components/index'
+import { DataTable, EditCardModal } from '@components/index'
 import { useGetAllCards } from '@pages/api/queries/index'
 import { goalieColumns, skaterColumns } from '@constants/index'
 import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
-import { Dialog, DialogContent, DialogTitle } from '@material-ui/core'
 
 const EditCards = () => {
   const { allCards, isLoading, isError } = useGetAllCards()
-  console.log(allCards)
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [selectedRow, setSelectedRow] = useState<Card>(null)
+  const [selectedCard, setSelectedCard] = useState<Card>(null)
   const skaterCards = onlySkaterCards(allCards)
   const goalieCards = onlyGoalieCards(allCards)
   const skaterTableOptions = {
@@ -37,7 +35,7 @@ const EditCards = () => {
         conditioning: null,
         image_url: rowData[15],
       }
-      setSelectedRow(skaterCard)
+      setSelectedCard(skaterCard)
       setIsOpen(true)
     },
   }
@@ -67,9 +65,14 @@ const EditCards = () => {
         conditioning: parseInt(rowData[14]),
         image_url: rowData[15],
       }
-      setSelectedRow(goalieCard)
+      setSelectedCard(goalieCard)
       setIsOpen(true)
     },
+  }
+
+  const handleCloseCard = () => {
+    setSelectedCard(null)
+    setIsOpen(false)
   }
 
   return (
@@ -86,27 +89,13 @@ const EditCards = () => {
         columns={goalieColumns}
         options={goalieTableOptions}
       />
-      <Dialog
-        open={isOpen}
-        onClose={() => {
-          setIsOpen(false)
-          setSelectedRow(null)
-        }}
-        BackdropProps={{ style: { backgroundColor: 'rgba(0, 0, 0, 0.5)' } }}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        {selectedRow && (
-          <>
-            <DialogTitle>
-              Edit {selectedRow.player_name} - {selectedRow.card_rarity}
-            </DialogTitle>
-            <DialogContent>
-              <img width={300} height={400} src={selectedRow.image_url} />
-            </DialogContent>
-          </>
-        )}
-      </Dialog>
+      {selectedCard && (
+        <EditCardModal
+          open={isOpen}
+          handleCardClose={handleCloseCard}
+          card={selectedCard}
+        />
+      )}
     </>
   )
 }

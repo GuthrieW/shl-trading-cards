@@ -12,7 +12,6 @@ const columns = [
 
 const options = {
   onRowClick: (rowData) => {
-    console.log('rowData', rowData)
     Router.push({
       pathname: 'collection',
       query: { username: rowData[0] },
