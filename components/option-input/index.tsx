@@ -11,6 +11,7 @@ type OptionInputProps = {
   label: string
   onChange: any
   onInputChange: any
+  defaultValue: string
 }
 
 const StyledAutocomplete = styled(Autocomplete)`
@@ -26,6 +27,7 @@ const OptionInput = ({
   label,
   onChange,
   onInputChange,
+  defaultValue,
 }: OptionInputProps) => (
   <StyledAutocomplete
     disableClearable={true}
@@ -39,6 +41,7 @@ const OptionInput = ({
     renderInput={(params) => (
       <TextField {...params} label={label} variant="outlined" />
     )}
+    defaultValue={defaultValue}
   />
 )
 

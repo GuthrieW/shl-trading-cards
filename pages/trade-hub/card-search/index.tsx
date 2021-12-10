@@ -73,6 +73,7 @@ const CardSearch = () => {
         onInputChange={(event, newInputValue) => {
           setSearchString(newInputValue)
         }}
+        defaultValue={searchString}
       />
       {selectedCard && (
         <div

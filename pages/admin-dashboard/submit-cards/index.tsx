@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { FormGroup, Button, Box, Paper } from '@material-ui/core'
-import {
-  CardForm,
-  FormSelectField,
-  FormTextField,
-  OptionInput,
-} from '@components/index'
+import { CardForm, OptionInput } from '@components/index'
 import Router from 'next/router'
 import { useGetClaimedCards } from '@pages/api/queries/index'
 import sortBy from 'lodash/sortBy'
 import stringInCardName from '@utils/string-in-card-name'
-import { teams } from '@constants/index'
 
 const SubmitCards = () => {
   const [filteringCards, setFilteringCards] = useState<boolean>(false)
@@ -75,6 +69,7 @@ const SubmitCards = () => {
         onInputChange={(event, newInputValue) => {
           setSearchString(newInputValue)
         }}
+        defaultValue={searchString}
       />
       {selectedCard && (
         <div

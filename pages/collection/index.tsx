@@ -120,6 +120,7 @@ const Collection = () => {
         onInputChange={(event, newInputValue) => {
           handleSearchStringUpdate(newInputValue)
         }}
+        defaultValue={searchString}
       />
       <CollectionGrid
         filteredCards={filteredCards}

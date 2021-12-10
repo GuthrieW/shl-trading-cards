@@ -87,6 +87,7 @@ const StartingLineupSelector = ({
         onInputChange={(event, newInputValue) => {
           setSearchString(newInputValue)
         }}
+        defaultValue={searchString}
       />
     </Box>
   )
