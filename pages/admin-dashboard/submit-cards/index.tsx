@@ -30,17 +30,8 @@ const SubmitCards = () => {
         return stringInCardName(card, searchString)
       })
 
-      const matchingCards = cardsIncludingString.filter((card: Card) => {
-        return card.player_name === searchString
-      })
-
-      matchingCards.length === 1
-        ? setSelectedCard(matchingCards[0])
-        : setSelectedCard(null)
-
       newFilteredCards = cardsIncludingString
     } else {
-      setSelectedCard(null)
       newFilteredCards = claimedCards
     }
 
@@ -78,6 +69,9 @@ const SubmitCards = () => {
         groupBy={(option: Card) => (option ? option.card_rarity : '')}
         getOptionLabel={(option: Card) => (option ? option.player_name : '')}
         label={'Enter claimed card name'}
+        onChange={(event, newValue) => {
+          setSelectedCard(newValue)
+        }}
         onInputChange={(event, newInputValue) => {
           setSearchString(newInputValue)
         }}

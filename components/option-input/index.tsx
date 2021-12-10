@@ -9,6 +9,7 @@ type OptionInputProps = {
   groupBy: any
   getOptionLabel: any
   label: string
+  onChange: any
   onInputChange: any
 }
 
@@ -23,6 +24,7 @@ const OptionInput = ({
   groupBy,
   getOptionLabel,
   label,
+  onChange,
   onInputChange,
 }: OptionInputProps) => (
   <StyledAutocomplete
@@ -32,6 +34,7 @@ const OptionInput = ({
     groupBy={groupBy}
     getOptionLabel={getOptionLabel}
     clearOnBlur={false}
+    onChange={onChange}
     onInputChange={onInputChange}
     renderInput={(params) => (
       <TextField {...params} label={label} variant="outlined" />

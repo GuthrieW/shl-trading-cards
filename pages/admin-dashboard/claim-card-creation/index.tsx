@@ -1,5 +1,5 @@
 import React from 'react'
-import { goalieColumns, skaterColumns } from '@constants/index'
+import { claimingGoalieColumns, claimingSkaterColumns } from '@constants/index'
 import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
 import { DataTable } from '@components/index'
 import { useGetRequestedCards } from '@pages/api/queries/index'
@@ -15,13 +15,13 @@ const ClaimCardCreation = () => {
       <DataTable
         title={'Claim a Skater Card'}
         data={skaterCards}
-        columns={skaterColumns}
+        columns={claimingGoalieColumns}
         options={{}}
       />
       <DataTable
         title={'Claim a Goalie Card'}
         data={goalieCards}
-        columns={goalieColumns}
+        columns={claimingSkaterColumns}
         options={{}}
       />
     </>

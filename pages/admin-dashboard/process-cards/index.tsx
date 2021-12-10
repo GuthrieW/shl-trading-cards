@@ -1,8 +1,8 @@
 import React from 'react'
 import { DataTable } from '@components/index'
 import {
-  goalieColumnsWithButtons,
-  skaterColumnsWithButtons,
+  processingGoalieColumns,
+  processingSkaterColumns,
 } from '@constants/index'
 import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
 import { useGetUnapprovedCards } from '@pages/api/queries/index'
@@ -18,13 +18,13 @@ const ProcessCards = () => {
       <DataTable
         title={'Process Skater Cards'}
         data={skaterCards}
-        columns={skaterColumnsWithButtons}
+        columns={processingSkaterColumns}
         options={{}}
       />
       <DataTable
         title={'Process Goalie Cards'}
         data={goalieCards}
-        columns={goalieColumnsWithButtons}
+        columns={processingGoalieColumns}
         options={{}}
       />
     </>

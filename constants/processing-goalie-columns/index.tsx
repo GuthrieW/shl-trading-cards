@@ -1,7 +1,6 @@
 import { Button } from '@material-ui/core'
-import React from 'react'
 
-const skaterColumnsWithButtons = [
+const processingGoalieColumns = [
   {
     label: 'Name',
     name: 'player_name',
@@ -19,24 +18,24 @@ const skaterColumnsWithButtons = [
     name: 'overall',
   },
   {
-    label: 'Skating',
-    name: 'skating',
+    label: 'High Shots',
+    name: 'highShots',
   },
   {
-    label: 'Shooting',
-    name: 'shooting',
+    label: 'Low Shots',
+    name: 'lowShots',
   },
   {
-    label: 'Hands',
-    name: 'hands',
+    label: 'Quickness',
+    name: 'quickness',
   },
   {
-    label: 'Checking',
-    name: 'checking',
+    label: 'Control',
+    name: 'control',
   },
   {
-    label: 'Defense',
-    name: 'defense',
+    label: 'Conditioning',
+    name: 'conditioning',
   },
   {
     label: 'Image URL',
@@ -78,4 +77,4 @@ const skaterColumnsWithButtons = [
   },
 ]
 
-export default skaterColumnsWithButtons
+export default processingGoalieColumns

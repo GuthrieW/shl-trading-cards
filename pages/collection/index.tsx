@@ -64,8 +64,8 @@ const Collection = () => {
       )
     })
 
-    const sortedCards = sortBy(newFilteredCards, (card) => {
-      return [card.rarity, card.playerName]
+    const sortedCards = sortBy(newFilteredCards, (card: Card) => {
+      return [card.card_rarity, card.player_name]
     })
 
     setFilteredCards(sortedCards)
@@ -116,6 +116,7 @@ const Collection = () => {
         groupBy={(option: Card) => (option ? option.card_rarity : '')}
         getOptionLabel={(option: Card) => (option ? option.player_name : '')}
         label={'Enter player name'}
+        onChange={() => {}}
         onInputChange={(event, newInputValue) => {
           handleSearchStringUpdate(newInputValue)
         }}

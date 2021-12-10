@@ -39,31 +39,24 @@ const CardSearch = () => {
     let newFilteredCards = []
 
     if (searchString !== '') {
-      const cardsIncludingString = allCards.filter((card) => {
+      const cardsIncludingString = allCards.filter((card: Card) => {
         return stringInCardName(card, searchString)
       })
 
-      const matchingCards = cardsIncludingString.filter((card) => {
-        return card.player_name === searchString
-      })
-
-      matchingCards.length === 1
-        ? setSelectedCard(matchingCards[0])
-        : setSelectedCard(null)
-
       newFilteredCards = cardsIncludingString
     } else {
-      setSelectedCard(null)
       newFilteredCards = allCards
     }
 
-    const sortedCards = sortBy(newFilteredCards, (card) => {
-      return [card.rarity, card.playerName]
+    const sortedCards = sortBy(newFilteredCards, (card: Card) => {
+      return [card.card_rarity, card.player_name]
     })
 
     setFilteredCards(sortedCards)
     setFilteringCards(false)
   }, [allCards, searchString])
+
+  console.log('selectedCard', selectedCard)
 
   return (
     <TradeHubContainer>
@@ -74,6 +67,9 @@ const CardSearch = () => {
         groupBy={(option: Card) => (option ? option.card_rarity : '')}
         getOptionLabel={(option: Card) => (option ? option.player_name : '')}
         label={'Enter player name'}
+        onChange={(event, newValue) => {
+          setSelectedCard(newValue)
+        }}
         onInputChange={(event, newInputValue) => {
           setSearchString(newInputValue)
         }}
