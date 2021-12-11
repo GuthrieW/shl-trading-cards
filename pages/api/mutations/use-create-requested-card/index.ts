@@ -7,7 +7,7 @@ type UseCreateRequestedCard = {
   isError: any
 }
 
-function queryCreateRequestedCard(requestedCard: Card) {
+function queryCreateRequestedCard(requestedCard: CardRequest) {
   return useMutation(() => {
     return axios({
       method: 'POST',
@@ -18,7 +18,7 @@ function queryCreateRequestedCard(requestedCard: Card) {
 }
 
 const useCreateRequestedCard = (
-  requestedCard: Card
+  requestedCard: CardRequest
 ): UseCreateRequestedCard => {
   const { status, data, error, isLoading } =
     queryCreateRequestedCard(requestedCard)

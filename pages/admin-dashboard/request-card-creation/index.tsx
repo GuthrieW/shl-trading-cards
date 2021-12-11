@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Box, Button, ButtonGroup, FormGroup, Paper } from '@material-ui/core'
 import { CardForm } from '@components/index'
 import CSVReader from 'react-csv-reader'
-import Router from 'next/router'
+import { useCreateRequestedCard } from '@pages/api/mutations'
 
 type SelectedRequestUi = 'single-card' | 'csv-import'
 
@@ -118,7 +118,7 @@ const RequestCardCreation = () => {
   }
 
   const handleCsvUploadSubmit = () => {
-    Router.reload()
+    const { response, isLoading, isError } = useCreateRequestedCard(singleCard)
   }
 
   return (

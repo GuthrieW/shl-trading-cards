@@ -3,13 +3,13 @@
       "baseUrl": ".",
       "paths": {
         "@components/*": ["components/*"],
-        "@utils/*": ["utils/*"],
-        "@pages/*": ["pages/*"],
-        "@public/*": ["public/*"],
+        "@constants/*": ["constants/*"],
         "@hooks/*": ["queries/*"],
         "@layouts/*": ["layouts/*"],
-        "@constants/*": ["constants/*"],
-        "@requests/*": ["requests/*"]
+        "@pages/*": ["pages/*"],
+        "@public/*": ["public/*"],
+        "@requests/*": ["requests/*"],
+        "@utils/*": ["utils/*"]
       },
       "target": "es5",
       "lib": ["dom", "dom.iterable", "esnext"],

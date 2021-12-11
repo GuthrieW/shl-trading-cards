@@ -14,3 +14,5 @@ export { default as sidebarPages } from './sidebar-pages'
 export { default as skaterColumns } from './skater-columns'
 export { default as teams } from './teams'
 export { default as tradeHubPages } from './trade-hub-pages'
+
+export { GET, PATCH, POST, PUT, DELETE } from './http-methods'
