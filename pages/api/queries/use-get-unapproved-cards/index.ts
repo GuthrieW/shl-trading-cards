@@ -1,6 +1,9 @@
+import { GET } from '@constants/http-methods'
 import cards from '@utils/test-data/cards.json'
 import axios from 'axios'
 import { useQuery } from 'react-query'
+
+type UseGetUnapprovedCardsRequest = {}
 
 type UseGetUnapprovedCards = {
   unapprovedCards: Card[]
@@ -10,22 +13,26 @@ type UseGetUnapprovedCards = {
 
 const UseGetUnapprovedCardsKey = 'use-get-unapproved-cards'
 
-function queryGetUnapprovedCards() {
+function queryGetUnapprovedCards({}: UseGetUnapprovedCardsRequest) {
   return useQuery(UseGetUnapprovedCardsKey, async () => {
-    const { data } = await axios.get('')
+    const { data } = await axios({
+      method: GET,
+      url: '/api/v1/cards/unapproved',
+    })
     return data
   })
 }
 
-const useGetUnapprovedCards = (): UseGetUnapprovedCards => {
-  const { data, error, isFetching } = queryGetUnapprovedCards()
+const useGetUnapprovedCards =
+  ({}: UseGetUnapprovedCardsRequest): UseGetUnapprovedCards => {
+    const { data, error, isFetching } = queryGetUnapprovedCards({})
 
-  return {
-    unapprovedCards: cards.data,
-    // unapprovedCards: data,
-    isLoading: isFetching,
-    isError: error,
+    return {
+      unapprovedCards: cards.data,
+      // unapprovedCards: data,
+      isLoading: isFetching,
+      isError: error,
+    }
   }
-}
 
 export default useGetUnapprovedCards

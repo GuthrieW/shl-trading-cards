@@ -1,8 +1,11 @@
+import { GET } from '@constants/http-methods'
 import cards from '@utils/test-data/cards.json'
 import axios from 'axios'
 import { useQuery } from 'react-query'
 
-type UseGetAllCards = {
+type UseGetApprovedCardsRequrest = {}
+
+type UseGetApprovedCards = {
   allCards: Card[]
   isLoading: boolean
   isError: any
@@ -10,22 +13,26 @@ type UseGetAllCards = {
 
 const UseGetApprovedCardsKey = 'use-get-approved-cards'
 
-function queryGetApprovedCards() {
+function queryGetApprovedCards({}: UseGetApprovedCardsRequrest) {
   return useQuery(UseGetApprovedCardsKey, async () => {
-    const { data } = await axios.get('')
+    const { data } = await axios({
+      method: GET,
+      url: '/api/v1/cards/approved',
+    })
     return data
   })
 }
 
-const useGetApprovedCards = (): UseGetAllCards => {
-  const { data, error, isFetching } = queryGetApprovedCards()
+const useGetApprovedCards =
+  ({}: UseGetApprovedCardsRequrest): UseGetApprovedCards => {
+    const { data, error, isFetching } = queryGetApprovedCards({})
 
-  return {
-    allCards: cards.data,
-    // allCards: data,
-    isLoading: isFetching,
-    isError: error,
+    return {
+      allCards: cards.data,
+      // allCards: data,
+      isLoading: isFetching,
+      isError: error,
+    }
   }
-}
 
 export default useGetApprovedCards

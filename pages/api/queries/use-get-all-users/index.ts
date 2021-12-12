@@ -1,6 +1,9 @@
 import { useQuery } from 'react-query'
 import users from '@utils/test-data/user.json'
 import axios from 'axios'
+import { GET } from '@constants/http-methods'
+
+type GetAllUsersRequest = {}
 
 type UseGetAllUsers = {
   users: User[]
@@ -10,15 +13,18 @@ type UseGetAllUsers = {
 
 const UseGetAllUsersKey = 'use-get-all-users'
 
-function queryGetAllUsers() {
+function queryGetAllUsers({}: GetAllUsersRequest) {
   return useQuery(UseGetAllUsersKey, async () => {
-    const { data } = await axios.get('')
+    const { data } = await axios({
+      method: GET,
+      url: ``,
+    })
     return data
   })
 }
 
-const useGetAllUsers = (): UseGetAllUsers => {
-  const { data, error, isFetching } = queryGetAllUsers()
+const useGetAllUsers = ({}: GetAllUsersRequest): UseGetAllUsers => {
+  const { data, error, isFetching } = queryGetAllUsers({})
 
   return {
     users: users.data,

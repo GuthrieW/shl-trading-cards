@@ -1,6 +1,11 @@
 import { useQuery } from 'react-query'
 import cards from '@utils/test-data/cards.json'
 import axios from 'axios'
+import { GET } from '@constants/http-methods'
+
+type UseGetUserCardsRequest = {
+  uid: number
+}
 
 type UseGetUserCards = {
   userCards: Card[]
@@ -10,15 +15,18 @@ type UseGetUserCards = {
 
 const UseGetUserCardsKey = 'use-get-user-cards'
 
-function queryGetUserCards(username: string) {
+function queryGetUserCards({ uid }: UseGetUserCardsRequest) {
   return useQuery(UseGetUserCardsKey, async () => {
-    const { data } = await axios.get(`${username}`)
+    const { data } = await axios({
+      method: GET,
+      url: `/api/v1/collections/${uid}`,
+    })
     return data
   })
 }
 
-const useGetUserCards = (username: string): UseGetUserCards => {
-  const { data, error, isFetching } = queryGetUserCards(username)
+const useGetUserCards = ({ uid }: UseGetUserCardsRequest): UseGetUserCards => {
+  const { data, error, isFetching } = queryGetUserCards({ uid })
   return {
     userCards: cards.data,
     // userCards: data,
