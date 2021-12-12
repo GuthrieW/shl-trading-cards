@@ -5,7 +5,7 @@ import { DataTable } from '@components/index'
 import { useGetRequestedCards } from '@pages/api/queries/index'
 
 const ClaimCardCreation = () => {
-  const { requestedCards, isLoading, isError } = useGetRequestedCards()
+  const { requestedCards, isLoading, isError } = useGetRequestedCards({})
 
   const skaterCards = onlySkaterCards(requestedCards)
   const goalieCards = onlyGoalieCards(requestedCards)

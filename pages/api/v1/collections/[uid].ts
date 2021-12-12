@@ -28,6 +28,7 @@ const index = async (
     response
       .status(StatusCodes.OK)
       .json({ result: 'get user collection', userID: uid })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)

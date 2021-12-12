@@ -2,8 +2,8 @@ import React from 'react'
 import { List } from '@material-ui/core'
 import { SidebarItem, SidebarIcon, StyledSidebar, SidebarText } from './styled'
 import { useRouter } from 'next/router'
-import useCurrentUser from '@pages/api/queries/use-get-current-user'
-import hasRequiredPermisson from '@utils/has-required-permission'
+import { useGetUser } from '@pages/api/queries/index'
+import { getUidFromSession, hasRequiredPermisson } from '@utils/index'
 import { groups } from '@utils/user-groups'
 
 type SidebarProps = {
@@ -11,7 +11,9 @@ type SidebarProps = {
 }
 
 const Sidebar = ({ pages }: SidebarProps) => {
-  const { currentUser, isLoading, isError } = useCurrentUser()
+  const { user, isLoading, isError } = useGetUser({
+    uid: getUidFromSession(),
+  })
   const { asPath } = useRouter()
 
   return (
@@ -20,7 +22,7 @@ const Sidebar = ({ pages }: SidebarProps) => {
         {pages.map((page) => {
           if (
             page.admin &&
-            !hasRequiredPermisson([groups.TradingCardAdmin.id], currentUser)
+            !hasRequiredPermisson([groups.TradingCardAdmin.id], user)
           ) {
             return null
           }

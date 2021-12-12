@@ -6,8 +6,8 @@ import {
   StyledSidebar,
   SidebarText,
 } from '@components/sidebar/styled'
-import useCurrentUser from '@pages/api/queries/use-get-current-user'
-import hasRequiredPermisson from '@utils/has-required-permission'
+import { useGetUser } from '@pages/api/queries/index'
+import { getUidFromSession, hasRequiredPermisson } from '@utils/index'
 import { groups } from '@utils/user-groups'
 
 type SidebarProps = {
@@ -17,7 +17,9 @@ type SidebarProps = {
 }
 
 const AdminSidebar = ({ pages, onItemClick, selectedItem }: SidebarProps) => {
-  const { currentUser, isLoading, isError } = useCurrentUser()
+  const { user, isLoading, isError } = useGetUser({
+    uid: getUidFromSession(),
+  })
 
   return (
     <StyledSidebar>
@@ -25,7 +27,7 @@ const AdminSidebar = ({ pages, onItemClick, selectedItem }: SidebarProps) => {
         {pages.map((page) => {
           if (
             page.admin &&
-            !hasRequiredPermisson([groups.TradingCardAdmin.id], currentUser)
+            !hasRequiredPermisson([groups.TradingCardAdmin.id], user)
           ) {
             return null
           }

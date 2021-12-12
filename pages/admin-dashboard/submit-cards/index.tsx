@@ -4,7 +4,7 @@ import { CardForm, OptionInput } from '@components/index'
 import Router from 'next/router'
 import { useGetClaimedCards } from '@pages/api/queries/index'
 import sortBy from 'lodash/sortBy'
-import stringInCardName from '@utils/string-in-card-name'
+import { getUidFromSession, stringInCardName } from '@utils/index'
 
 const SubmitCards = () => {
   const [filteringCards, setFilteringCards] = useState<boolean>(false)
@@ -12,7 +12,9 @@ const SubmitCards = () => {
   const [searchString, setSearchString] = useState<string>('')
   const [selectedFile, setSelectedFile] = useState<any>(null)
   const [selectedCard, setSelectedCard] = useState<Card>(null)
-  const { claimedCards, isLoading, isError } = useGetClaimedCards()
+  const { claimedCards, isLoading, isError } = useGetClaimedCards({
+    uid: getUidFromSession(),
+  })
   const canSubmit = selectedCard && selectedFile
 
   useEffect(() => {

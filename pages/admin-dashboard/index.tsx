@@ -5,7 +5,8 @@ import { Box } from '@material-ui/core'
 import { AdminSidebar, PageHeader } from '@components/index'
 import { hasRequiredPermisson } from '@utils/index'
 import { groups } from '@utils/user-groups'
-import { useGetCurrentUser } from '@pages/api/queries/index'
+import { getUidFromSession } from '@utils/index'
+import { useGetUser } from '@pages/api/queries/index'
 import { adminPages } from '@constants/index'
 import EditCards from './edit-cards'
 import ProcessCards from './process-cards'
@@ -39,12 +40,14 @@ export type SelectedAdminPage =
 
 const AdminDashboard = () => {
   const router = useRouter()
-  const { currentUser, isLoading, isError } = useGetCurrentUser()
+  const { user, isLoading, isError } = useGetUser({
+    uid: getUidFromSession(),
+  })
   const [selectedAdminPage, setSelectedAdminPage] =
     useState<SelectedAdminPage>('none')
 
   if (typeof window !== 'undefined') {
-    if (!hasRequiredPermisson([groups.TradingCardAdmin.id], currentUser)) {
+    if (!hasRequiredPermisson([groups.TradingCardAdmin.id], user)) {
       router.push({
         pathname: '/home',
       })

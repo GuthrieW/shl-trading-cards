@@ -5,7 +5,7 @@ import { goalieColumns, skaterColumns } from '@constants/index'
 import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
 
 const EditCards = () => {
-  const { allCards, isLoading, isError } = useGetAllCards()
+  const { allCards, isLoading, isError } = useGetAllCards({})
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [selectedCard, setSelectedCard] = useState<Card>(null)
   const skaterCards = onlySkaterCards(allCards)

@@ -118,7 +118,9 @@ const RequestCardCreation = () => {
   }
 
   const handleCsvUploadSubmit = () => {
-    const { response, isLoading, isError } = useCreateRequestedCard(singleCard)
+    const { response, isLoading, isError } = useCreateRequestedCard({
+      requestedCard: singleCard,
+    })
   }
 
   return (

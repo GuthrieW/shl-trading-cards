@@ -8,7 +8,7 @@ import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
 import { useGetUnapprovedCards } from '@pages/api/queries/index'
 
 const ProcessCards = () => {
-  const { unapprovedCards, isLoading, isError } = useGetUnapprovedCards()
+  const { unapprovedCards, isLoading, isError } = useGetUnapprovedCards({})
 
   const skaterCards = onlySkaterCards(unapprovedCards)
   const goalieCards = onlyGoalieCards(unapprovedCards)

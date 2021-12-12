@@ -5,13 +5,26 @@ import sortBy from 'lodash/sortBy'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { CollectionGrid, OptionInput, PageHeader } from '@components/index'
-import { useGetCurrentUser, useGetUserCards } from '@pages/api/queries/index'
+import { useGetUser, useGetUserCards } from '@pages/api/queries/index'
 import { filterOptions } from '@constants/index'
 import { stringInCardName } from '@utils/index'
 
 const CollectionPage = styled.div`
   margin: 10px;
 `
+
+const getUidForFetching = (routerUid: string | string[]): number => {
+  const uidAsString =
+    typeof routerUid !== 'undefined'
+      ? typeof routerUid === 'string'
+        ? routerUid
+        : routerUid[0]
+      : typeof window !== 'undefined'
+      ? sessionStorage.getItem('uid')
+      : null
+
+  return parseInt(uidAsString)
+}
 
 const Collection = () => {
   const [rarityOptions, setRarityOptions] = useState<Rarity[]>(filterOptions)
@@ -23,25 +36,27 @@ const Collection = () => {
   const [currentCard, setCurrentCard] = useState<Card>(null)
 
   const router = useRouter()
-  const { username } = router.query
+  const { uid } = router.query
+  const uidForFetching = getUidForFetching(uid)
 
   const {
-    currentUser,
-    isLoading: currentUserIsLoading,
-    isError: currentUserIsError,
-  } = useGetCurrentUser()
-
-  const collectionUsername =
-    typeof username === 'string' ? username : currentUser.username
+    user,
+    isLoading: userIsLoading,
+    isError: userIsError,
+  } = useGetUser({
+    uid: uidForFetching,
+  })
 
   const {
     userCards,
     isLoading: userCardsIsLoading,
     isError: userCardsIsError,
-  } = useGetUserCards(collectionUsername)
+  } = useGetUserCards({
+    uid: uidForFetching,
+  })
 
   const cardsPerPage = 12
-  const headerDisplay = collectionUsername ? `${collectionUsername}\'s` : 'My'
+  const headerDisplay = user ? `${user.username}\'s` : 'My'
 
   useEffect(() => {
     setFilteringCards(true)

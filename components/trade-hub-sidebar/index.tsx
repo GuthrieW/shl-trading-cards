@@ -6,7 +6,6 @@ import {
   StyledSidebar,
   SidebarText,
 } from '@components/sidebar/styled'
-import useCurrentUser from '@pages/api/queries/use-get-current-user'
 
 type TradeHubSidebarProps = {
   pages: any[]

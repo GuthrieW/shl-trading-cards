@@ -27,12 +27,12 @@ const CardSearch = () => {
     allCards,
     isLoading: allCardsIsLoading,
     isError: allCardsIsError,
-  } = useGetAllCards()
+  } = useGetAllCards({})
   const {
     cardOwners,
     isLoading: cardOwnersIsLoading,
     isError: cardOwnersIsError,
-  } = useGetCardOwners()
+  } = useGetCardOwners({ cardID: selectedCard?.cardID })
 
   useEffect(() => {
     setFilteringCards(true)

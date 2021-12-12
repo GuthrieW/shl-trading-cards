@@ -3,9 +3,12 @@ import StartingLineupSelector from '@components/starting-lineup-selector'
 import { useGetUserCards } from '@pages/api/queries'
 import React, { useEffect, useState } from 'react'
 import { Box } from '@material-ui/core'
+import { getUidFromSession } from '@utils/index'
 
 const StartingLineups = () => {
-  const { userCards, isLoading, isError } = useGetUserCards('')
+  const { userCards, isLoading, isError } = useGetUserCards({
+    uid: getUidFromSession(),
+  })
   const [centerCard, setCenterCard] = useState<Card>(null)
   const [rightWingCard, setRightWingCard] = useState<Card>(null)
   const [leftWingCard, setLeftWingCard] = useState<Card>(null)

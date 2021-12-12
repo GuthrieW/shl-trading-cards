@@ -5,6 +5,10 @@ import Router from 'next/router'
 
 const columns = [
   {
+    label: 'User ID',
+    name: 'uid',
+  },
+  {
     label: 'Username',
     name: 'username',
   },
@@ -14,13 +18,13 @@ const options = {
   onRowClick: (rowData) => {
     Router.push({
       pathname: 'collection',
-      query: { username: rowData[0] },
+      query: { uid: rowData[0] },
     })
   },
 }
 
 const Community = () => {
-  const { users, isLoading, isError } = useGetAllUsers()
+  const { users, isLoading, isError } = useGetAllUsers({})
 
   return (
     <DataTable
