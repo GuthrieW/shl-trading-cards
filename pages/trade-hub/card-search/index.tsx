@@ -3,13 +3,7 @@ import styled from 'styled-components'
 import { useGetAllCards, useGetCardOwners } from '@pages/api/queries/index'
 import { stringInCardName } from '@utils/index'
 import { DataTable, OptionInput, PageHeader } from '@components/index'
-import Router from 'next/router'
 import sortBy from 'lodash/sortBy'
-import { Paper } from '@material-ui/core'
-
-const TradeHubContainer = styled(Paper)`
-  margin-left: 10px;
-`
 
 const columns = [
   {
@@ -59,7 +53,7 @@ const CardSearch = () => {
   console.log('selectedCard', selectedCard)
 
   return (
-    <TradeHubContainer>
+    <div>
       <PageHeader>Card Search</PageHeader>
       <OptionInput
         options={filteredCards}
@@ -102,7 +96,7 @@ const CardSearch = () => {
           </div>
         </div>
       )}
-    </TradeHubContainer>
+    </div>
   )
 }
 

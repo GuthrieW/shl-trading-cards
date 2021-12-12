@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, ButtonGroup, FormGroup, Paper } from '@material-ui/core'
+import { Box, Button, ButtonGroup, FormGroup } from '@material-ui/core'
 import { CardForm } from '@components/index'
 import CSVReader from 'react-csv-reader'
 import { useCreateRequestedCard } from '@pages/api/mutations'
@@ -124,8 +124,7 @@ const RequestCardCreation = () => {
   }
 
   return (
-    <Paper
-      elevation={4}
+    <div
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -198,7 +197,7 @@ const RequestCardCreation = () => {
           </div>
         )}
       </FormGroup>
-    </Paper>
+    </div>
   )
 }
 

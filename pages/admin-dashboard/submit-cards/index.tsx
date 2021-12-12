@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FormGroup, Button, Box, Paper } from '@material-ui/core'
+import { FormGroup, Button, Box } from '@material-ui/core'
 import { CardForm, OptionInput } from '@components/index'
 import Router from 'next/router'
 import { useGetClaimedCards } from '@pages/api/queries/index'
@@ -48,8 +48,7 @@ const SubmitCards = () => {
   }
 
   return (
-    <Paper
-      elevation={4}
+    <div
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -121,7 +120,7 @@ const SubmitCards = () => {
           </Box>
         </div>
       )}
-    </Paper>
+    </div>
   )
 }
 

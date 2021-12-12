@@ -5,7 +5,7 @@ type PageHeaderProps = {
   children: string
 }
 
-const StyledHeader = styled.h1`
+const StyledHeader = styled.h2`
   padding: 5px;
   margin: 0px;
 `
