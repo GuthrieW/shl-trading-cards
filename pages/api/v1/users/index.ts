@@ -18,12 +18,13 @@ const index = async (
   const { method } = request
 
   if (method === GET) {
-    /*
-     * use: select all users
-     * called when: a lot of places
-     */
-
-    // const results = await queryDatabase(``)
+    const results = await queryDatabase(`
+    select 
+      uid,
+      username,
+      avatar
+    from admin_mybb.mybb_users
+    `)
     response.status(StatusCodes.OK).json({ result: 'all users selected' })
   }
 

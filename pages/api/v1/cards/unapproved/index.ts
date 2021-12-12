@@ -18,12 +18,7 @@ const index = async (
   const { method } = request
 
   if (method === GET) {
-    /*
-     * use: get all unapproved cards
-     * called when:
-     */
-
-    // const results = await queryDatabase(``)
+    const results = await queryDatabase(``)
     response.status(StatusCodes.OK).json({ result: 'all unapproved cards' })
   }
 

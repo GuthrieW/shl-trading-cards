@@ -19,12 +19,16 @@ const index = async (
   const { uid } = request.query
 
   if (method === GET) {
-    /*
-     * use: get the current user
-     * called when: a lot of places
-     */
-
-    // const results = await queryDatabase(``)
+    const results = await queryDatabase(`
+    select 
+      uid,
+      username,
+      avatar,
+      usergroup,
+      additionalgroups,
+      displaygroups
+    from admin_mybb.mybb_users
+    where uid = ${uid}`)
     response.status(StatusCodes.OK).json({ result: 'current user', uid: uid })
   }
 

@@ -16,18 +16,16 @@ const index = async (
 ): Promise<void> => {
   await middleware(request, response, cors)
   const { method } = request
-  const { uid } = request.query
+  const { id } = request.query
 
   if (method === PATCH) {
-    /*
-     * use: set a card's approval status to false
-     * called when: a member of the trading card team clicks the deny button on the approval page
-     */
-
-    // const results = await queryDatabase(``)
+    const results = await queryDatabase(`
+      update \`admin_cards\`.\`cards\`
+      set approved = 0
+      where cardid = ${id};`)
     response
       .status(StatusCodes.OK)
-      .json({ result: 'approved card', denied_card_id: uid })
+      .json({ result: 'approved card', denied_card_id: id })
   }
 
   response.setHeader('Allowed', allowedMethods)

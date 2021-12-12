@@ -16,15 +16,13 @@ const index = async (
 ): Promise<void> => {
   await middleware(request, response, cors)
   const { method } = request
-  const { uid } = request.query
+  const { id, uid } = request.query
 
   if (method === PATCH) {
-    /*
-     * use: update author_userID
-     * called when: a card creator claims a card that they will be making the picture for
-     */
-
-    // const results = await queryDatabase(``)
+    const results = await queryDatabase(`
+      update \`admin_cards\`.\`cards\`
+      set author_userID = ${uid}
+      where cardid = ${id};`)
     response
       .status(StatusCodes.OK)
       .json({ result: 'author added to card', author_userID: uid })

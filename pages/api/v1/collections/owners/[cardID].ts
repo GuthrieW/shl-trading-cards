@@ -24,7 +24,12 @@ const index = async (
      * called when: a lot of places
      */
 
-    // const results = await queryDatabase(``)
+    const results = await queryDatabase(`
+      select userID
+      from \`admin_cards\`.\`collection\`
+      where cardID = ${cardID}
+    `)
+
     response
       .status(StatusCodes.OK)
       .json({ result: 'get cards owners for cardID', cardID: cardID })

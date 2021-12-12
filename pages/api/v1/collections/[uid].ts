@@ -19,12 +19,15 @@ const index = async (
   const { uid } = request.query
 
   if (method === GET) {
-    /*
-     * use: get all cards in a user's collection
-     * called when: a lot of places
-     */
-
-    // const results = await queryDatabase(``)
+   const results = await queryDatabase(`
+    select
+      col.cardID,
+      col.quantity,
+      c.image_url
+    from \`admin_cards\`.\`collection\` col
+      left join \`admin_cards\`.\`cards\` c
+        on col.cardID = c.cardID
+    where col.userID = ${uid} `)
     response
       .status(StatusCodes.OK)
       .json({ result: 'get user collection', userID: uid })

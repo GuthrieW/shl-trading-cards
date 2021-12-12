@@ -19,12 +19,18 @@ const index = async (
   const { uid } = request.query
 
   if (method === GET) {
-    /*
-     * use: get latest pack cards
-     * called when: in the pack viewing components
-     */
 
-    // const results = await queryDatabase(``)
+    const results = await queryDatabase(`
+      select 
+        col.cardID,
+        c.image_url
+      from \`admin_cards\`.\`collection\` col
+        left join \`admin_cards\`.\`cards\` c
+        on col.cardID = c.cardID
+      where col.userID = ${uid} 
+      order by col.update_date DESC
+      limit 6
+    `)
     response
       .status(StatusCodes.OK)
       .json({ result: 'latest pack cards', uid: uid })

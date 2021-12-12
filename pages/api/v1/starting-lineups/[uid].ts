@@ -19,12 +19,16 @@ const index = async (
   const { uid } = request.query
 
   if (method === GET) {
-    /*
-     * use: get the user's starting lineup
-     * called when: when viewing a starting lineup
-     */
-
-    // const results = await queryDatabase(``)
+    const results = await queryDatabase(`
+      select
+        center,
+        rightwing,
+        leftwing,
+        rightdefense,
+        leftdefense,
+        goalie
+      from \`admin_cards\`.\`starting_lineup\`
+      where userID = ${uid}`)
     response
       .status(StatusCodes.OK)
       .json({ result: 'starting lineup', uid: uid })

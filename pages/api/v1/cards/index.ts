@@ -16,14 +16,15 @@ const index = async (
 ): Promise<void> => {
   await middleware(request, response, cors)
   const { body, method } = request
+  const { player_name, teamID, playerID, card_rarity, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season } = request.body
 
   if (method === POST) {
-    /*
-     * use: insert a card into the database that will be in the table of cards that are available to be claimed
-     * called when: when a member of the trading card team submits a card request
-     */
-
-    // const results = await queryDatabase(``)
+    const results = await queryDatabase(`
+    insert into \`admin_cards\`.\`cards\`
+      (player_name, teamID, playerID, card_rarity, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season)
+    VALUES
+      (${player_name},${teamID},${playerID},${card_rarity},0,0,${position},${overall},${high_shots},${low_shots},${quickness},${control},${conditioning},${skating},${shooting},${hands},${checking},${defense},${season})   
+        `)
     response
       .status(StatusCodes.OK)
       .json({ result: 'card request created', card: body })

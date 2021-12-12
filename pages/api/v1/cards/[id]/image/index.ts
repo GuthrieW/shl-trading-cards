@@ -15,18 +15,21 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { body, method, query } = request
+  const { method } = request
+  const { cardID } = request.query
+  const { imageFileName } = request.body
+
+/* need to add UID to the variable list */   
 
   if (method === PATCH) {
-    /*
-     * use: upload an image to the server then update the card with the route to the card image
-     * called when: a card creator uploads a card image
-     */
-
-    // const results = await queryDatabase(``)
+    const results = await queryDatabase(`
+      update \`admin_cards\`.\`cards\`
+      set image_url = ${imageFileName},
+      author_userID = ${uid}
+      where cardid = ${cardID};`)
     response
       .status(StatusCodes.OK)
-      .json({ result: 'added image to card', image: body, cardID: query })
+      .json({ result: 'added image to card', image: imageFileName, cardID: cardID })
   }
 
   response.setHeader('Allowed', allowedMethods)
