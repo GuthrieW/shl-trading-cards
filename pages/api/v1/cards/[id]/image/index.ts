@@ -15,7 +15,7 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { body, method } = request
+  const { body, method, query } = request
 
   if (method === PATCH) {
     /*
@@ -26,7 +26,7 @@ const index = async (
     // const results = await queryDatabase(``)
     response
       .status(StatusCodes.OK)
-      .json({ result: 'added image to card', image: body })
+      .json({ result: 'added image to card', image: body, cardID: query })
   }
 
   response.setHeader('Allowed', allowedMethods)

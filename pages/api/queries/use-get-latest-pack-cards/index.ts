@@ -18,7 +18,7 @@ function queryGetLatestPackCards() {
 }
 
 const useGetLatestPackCards = (): UseGetLatestPackCards => {
-  const { status, data, error, isFetching } = queryGetLatestPackCards()
+  const { data, error, isFetching } = queryGetLatestPackCards()
   return {
     latestPackCards: cards.data.slice(0, 6),
     // latestPackCards: data,

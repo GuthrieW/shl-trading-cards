@@ -18,7 +18,7 @@ function queryGetUnapprovedCards() {
 }
 
 const useGetUnapprovedCards = (): UseGetUnapprovedCards => {
-  const { status, data, error, isFetching } = queryGetUnapprovedCards()
+  const { data, error, isFetching } = queryGetUnapprovedCards()
 
   return {
     unapprovedCards: cards.data,

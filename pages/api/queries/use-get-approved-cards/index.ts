@@ -18,7 +18,7 @@ function queryGetApprovedCards() {
 }
 
 const useGetApprovedCards = (): UseGetAllCards => {
-  const { status, data, error, isFetching } = queryGetApprovedCards()
+  const { data, error, isFetching } = queryGetApprovedCards()
 
   return {
     allCards: cards.data,

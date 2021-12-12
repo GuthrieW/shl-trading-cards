@@ -18,7 +18,7 @@ function queryGetCurrentUser() {
 }
 
 const useGetCurrentUser = (): UseGetCurrentUser => {
-  const { status, data, error, isFetching } = queryGetCurrentUser()
+  const { data, error, isFetching } = queryGetCurrentUser()
 
   return {
     currentUser: user.data[0],

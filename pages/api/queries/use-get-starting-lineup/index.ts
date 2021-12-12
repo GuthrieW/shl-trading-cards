@@ -18,7 +18,7 @@ function queryGetStartingLineup() {
 }
 
 const useGetStartingLineup = (): UseGetStartingLineup => {
-  const { status, data, error, isFetching } = queryGetStartingLineup()
+  const { data, error, isFetching } = queryGetStartingLineup()
 
   return {
     startingLineup: cards.data.slice(0, 6),

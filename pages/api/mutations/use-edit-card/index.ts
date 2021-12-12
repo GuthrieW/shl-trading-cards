@@ -1,5 +1,11 @@
 import { useMutation } from 'react-query'
 import axios from 'axios'
+import { PATCH } from '@constants/http-methods'
+
+type UseEditCardRequest = {
+  cardID: number
+  newCardData: Card
+}
 
 type UseEditCard = {
   response: any
@@ -7,17 +13,21 @@ type UseEditCard = {
   isError: any
 }
 
-function queryEditCard() {
+function queryEditCard({ cardID, newCardData }: UseEditCardRequest) {
   return useMutation(() => {
     return axios({
-      method: 'POST',
-      url: '',
+      method: PATCH,
+      url: `/api/v1/cards/${cardID}`,
+      data: newCardData,
     })
   })
 }
 
-const useEditCard = (): UseEditCard => {
-  const { status, data, error, isLoading } = queryEditCard()
+const useEditCard = ({
+  cardID,
+  newCardData,
+}: UseEditCardRequest): UseEditCard => {
+  const { data, error, isLoading } = queryEditCard({ cardID, newCardData })
   return {
     response: data,
     isLoading: isLoading,

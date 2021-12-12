@@ -18,7 +18,7 @@ function queryGetAllUsers() {
 }
 
 const useGetAllUsers = (): UseGetAllUsers => {
-  const { status, data, error, isFetching } = queryGetAllUsers()
+  const { data, error, isFetching } = queryGetAllUsers()
 
   return {
     users: users.data,

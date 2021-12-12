@@ -19,7 +19,7 @@ const index = async (
 
   if (method === POST) {
     /*
-     * use: get all cards in a user's collection
+     * use: add cards to a user's
      * called when: a lot of places
      */
 

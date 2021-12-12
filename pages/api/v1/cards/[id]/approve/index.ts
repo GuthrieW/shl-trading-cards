@@ -5,7 +5,7 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 
-const allowedMethods = []
+const allowedMethods = [PATCH]
 const cors = Cors({
   methods: allowedMethods,
 })
@@ -15,18 +15,19 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { body, method } = request
+  const { method } = request
+  const { uid } = request.query
 
   if (method === PATCH) {
     /*
-     * use: edit some card's data
-     * called when: when a member of the trading card team edits the card
+     * use: set a card's approval status to true
+     * called when: a member of the trading card team clicks the accept button on the approval page
      */
 
     // const results = await queryDatabase(``)
     response
       .status(StatusCodes.OK)
-      .json({ result: 'card request created', card: body })
+      .json({ result: 'approved card', approved_card_id: uid })
   }
 
   response.setHeader('Allowed', allowedMethods)

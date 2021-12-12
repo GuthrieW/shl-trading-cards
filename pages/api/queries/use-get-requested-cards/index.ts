@@ -18,7 +18,7 @@ function queryGetRequestedCards() {
 }
 
 const useGetRequestedCards = (): UseGetRequestedCards => {
-  const { status, data, error, isFetching } = queryGetRequestedCards()
+  const { data, error, isFetching } = queryGetRequestedCards()
   return {
     requestedCards: cards.data,
     // requestedCards: data,

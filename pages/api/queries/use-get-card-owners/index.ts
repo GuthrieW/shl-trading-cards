@@ -18,7 +18,7 @@ function queryGetCardOwners() {
 }
 
 const useGetCardOwners = (): UseGetCardOwners => {
-  const { status, data, error, isFetching } = queryGetCardOwners()
+  const { data, error, isFetching } = queryGetCardOwners()
 
   return {
     cardOwners: users.data,

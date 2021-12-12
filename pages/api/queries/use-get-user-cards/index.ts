@@ -18,7 +18,7 @@ function queryGetUserCards(username: string) {
 }
 
 const useGetUserCards = (username: string): UseGetUserCards => {
-  const { status, data, error, isFetching } = queryGetUserCards(username)
+  const { data, error, isFetching } = queryGetUserCards(username)
   return {
     userCards: cards.data,
     // userCards: data,
