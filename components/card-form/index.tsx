@@ -84,6 +84,18 @@ const CardForm = ({
     />
     <FormTextField
       type={'number'}
+      label={'Season'}
+      value={cardData.season}
+      disabled={formDisabled}
+      onChange={(event) => {
+        handleOnChange({
+          ...cardData,
+          season: event.target.value,
+        })
+      }}
+    />
+    <FormTextField
+      type={'number'}
       inputProps={{ min: 0, max: 99 }}
       label={'Overall'}
       value={cardData.overall}

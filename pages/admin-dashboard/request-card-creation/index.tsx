@@ -23,15 +23,17 @@ const defaultCardState = {
   quickness: 0,
   control: 0,
   conditioning: 0,
+  season: 0,
 }
 
 const RequestCardCreation = () => {
   const [selectedRequestUi, setSelectedRequestUi] =
     useState<SelectedRequestUi>('single-card')
-  const [csvToUpload, setCsvToUpload] = useState(null)
-  const [canSubmit, setCanSubmit] = useState<boolean>(true)
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [singleCard, setSingleCard] = useState<CardRequest>(defaultCardState)
+  const [canSubmitSingleCard, setCanSubmitSingleCard] = useState<boolean>(false)
+  const [csvToUpload, setCsvToUpload] = useState(null)
+  const [canSubmitCsv, setCanSubmitCsv] = useState<boolean>(false)
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
   useEffect(() => {
     const isNotDefaultState = Object.keys(singleCard).every((key) => {
@@ -57,8 +59,12 @@ const RequestCardCreation = () => {
       return singleCard[key] !== defaultCardState[key]
     })
 
-    setCanSubmit(isNotDefaultState)
+    setCanSubmitSingleCard(isNotDefaultState)
   }, [singleCard])
+
+  useEffect(() => {
+    setCanSubmitCsv(csvToUpload !== null)
+  }, [csvToUpload])
 
   useEffect(() => {
     selectedRequestUi === 'single-card'
@@ -71,7 +77,7 @@ const RequestCardCreation = () => {
   }
 
   const handleSingleCardSubmit = async () => {
-    if (canSubmit) {
+    if (canSubmitSingleCard) {
       setIsSubmitting(true)
       const basePlayerData = {
         teamID: singleCard.teamID,
@@ -79,10 +85,11 @@ const RequestCardCreation = () => {
         card_rarity: singleCard.card_rarity,
         player_name: singleCard.player_name,
         position: singleCard.position,
+        season: singleCard.season,
         overall: singleCard.overall,
       }
 
-      const fullPlayerData =
+      const fullPlayerData: CardRequest =
         singleCard.position !== 'G'
           ? {
               ...basePlayerData,
@@ -91,8 +98,8 @@ const RequestCardCreation = () => {
               hands: singleCard.hands,
               checking: singleCard.checking,
               defense: singleCard.defense,
-              highShots: null,
-              lowShots: null,
+              high_shots: null,
+              low_shots: null,
               quickness: null,
               control: null,
               conditioning: null,
@@ -104,13 +111,17 @@ const RequestCardCreation = () => {
               hands: null,
               checking: null,
               defense: null,
-              highShots: singleCard.high_shots,
-              lowShots: singleCard.low_shots,
+              high_shots: singleCard.high_shots,
+              low_shots: singleCard.low_shots,
               quickness: singleCard.quickness,
               control: singleCard.control,
               conditioning: singleCard.conditioning,
             }
     }
+
+    const { response, isLoading, isError } = useCreateRequestedCard({
+      requestedCard: singleCard,
+    })
 
     setSingleCard(defaultCardState)
     setIsSubmitting(false)
@@ -118,9 +129,10 @@ const RequestCardCreation = () => {
   }
 
   const handleCsvUploadSubmit = () => {
-    const { response, isLoading, isError } = useCreateRequestedCard({
-      requestedCard: singleCard,
-    })
+    console.log('csvToUpload', csvToUpload)
+    // const { response, isLoading, isError } = useCreateRequestedCard({
+    //   requestedCard: singleCard,
+    // })
   }
 
   return (
@@ -159,7 +171,7 @@ const RequestCardCreation = () => {
             />
             <Box m={2}>
               <Button
-                disabled={!canSubmit || isSubmitting}
+                disabled={!canSubmitSingleCard || isSubmitting}
                 style={{ alignSelf: 'end' }}
                 variant="contained"
                 color="primary"
@@ -186,7 +198,7 @@ const RequestCardCreation = () => {
               />
             </div>
             <Button
-              disabled={!canSubmit || isSubmitting}
+              disabled={!canSubmitCsv || isSubmitting}
               style={{ alignSelf: 'end' }}
               variant="contained"
               color="primary"

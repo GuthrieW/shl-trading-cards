@@ -34,6 +34,7 @@ const EditCards = () => {
         control: null,
         conditioning: null,
         image_url: rowData[15],
+        season: parseInt(rowData[16]),
       }
       setSelectedCard(skaterCard)
       setIsOpen(true)
@@ -64,6 +65,7 @@ const EditCards = () => {
         control: parseInt(rowData[13]),
         conditioning: parseInt(rowData[14]),
         image_url: rowData[15],
+        season: parseInt(rowData[16]),
       }
       setSelectedCard(goalieCard)
       setIsOpen(true)
