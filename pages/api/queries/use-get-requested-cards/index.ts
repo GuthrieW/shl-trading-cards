@@ -13,19 +13,17 @@ type UseGetRequestedCards = {
 
 const UseGetRequestedCardsKey = 'use-get-requested-cards'
 
-function queryGetRequestedCards({}: UseGetRequestedCardsRequest) {
-  return useQuery(UseGetRequestedCardsKey, async () => {
-    const { data } = await axios({
-      method: GET,
-      url: `/api/v1/cards/requested`,
-    })
-    return data
-  })
-}
-
 const useGetRequestedCards =
   ({}: UseGetRequestedCardsRequest): UseGetRequestedCards => {
-    const { data, error, isFetching } = queryGetRequestedCards({})
+    const { data, error, isFetching } = useQuery(
+      UseGetRequestedCardsKey,
+      async () => {
+        return await axios({
+          method: GET,
+          url: `/api/v1/cards/requested`,
+        })
+      }
+    )
     return {
       requestedCards: cards.data,
       // requestedCards: data,

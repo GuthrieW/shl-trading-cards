@@ -1,4 +1,4 @@
-const claimingGoalieColumns = [
+const processingGoalieColumns = [
   {
     label: 'Card ID',
     name: 'cardID',
@@ -49,4 +49,4 @@ const claimingGoalieColumns = [
   },
 ]
 
-export default claimingGoalieColumns
+export default processingGoalieColumns

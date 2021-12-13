@@ -1,7 +1,8 @@
-import { Button } from '@material-ui/core'
-import React from 'react'
-
 const claimingSkaterColumns = [
+  {
+    label: 'Card ID',
+    name: 'cardID',
+  },
   {
     label: 'Name',
     name: 'player_name',
@@ -44,21 +45,6 @@ const claimingSkaterColumns = [
     options: {
       filter: false,
       sort: false,
-    },
-  },
-  {
-    name: 'Claim Card',
-    options: {
-      filter: false,
-      sort: false,
-      empty: true,
-      customBodyRenderLite: (dataIndex) => (
-        <div style={{ textAlign: 'center' }}>
-          <Button color={'default'} variant={'outlined'}>
-            Claim
-          </Button>
-        </div>
-      ),
     },
   },
 ]

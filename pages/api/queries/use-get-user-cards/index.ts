@@ -15,18 +15,13 @@ type UseGetUserCards = {
 
 const UseGetUserCardsKey = 'use-get-user-cards'
 
-function queryGetUserCards({ uid }: UseGetUserCardsRequest) {
-  return useQuery(UseGetUserCardsKey, async () => {
-    const { data } = await axios({
+const useGetUserCards = ({ uid }: UseGetUserCardsRequest): UseGetUserCards => {
+  const { data, error, isFetching } = useQuery(UseGetUserCardsKey, async () => {
+    return await axios({
       method: GET,
       url: `/api/v1/collections/${uid}`,
     })
-    return data
   })
-}
-
-const useGetUserCards = ({ uid }: UseGetUserCardsRequest): UseGetUserCards => {
-  const { data, error, isFetching } = queryGetUserCards({ uid })
   return {
     userCards: cards.data,
     // userCards: data,

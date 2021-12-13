@@ -1,4 +1,4 @@
-const claimingGoalieColumns = [
+const processingSkaterColumns = [
   {
     label: 'Card ID',
     name: 'cardID',
@@ -20,24 +20,24 @@ const claimingGoalieColumns = [
     name: 'overall',
   },
   {
-    label: 'High Shots',
-    name: 'highShots',
+    label: 'Skating',
+    name: 'skating',
   },
   {
-    label: 'Low Shots',
-    name: 'lowShots',
+    label: 'Shooting',
+    name: 'shooting',
   },
   {
-    label: 'Quickness',
-    name: 'quickness',
+    label: 'Hands',
+    name: 'hands',
   },
   {
-    label: 'Control',
-    name: 'control',
+    label: 'Checking',
+    name: 'checking',
   },
   {
-    label: 'Conditioning',
-    name: 'conditioning',
+    label: 'Defense',
+    name: 'defense',
   },
   {
     label: 'Image URL',
@@ -49,4 +49,4 @@ const claimingGoalieColumns = [
   },
 ]
 
-export default claimingGoalieColumns
+export default processingSkaterColumns

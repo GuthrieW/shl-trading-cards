@@ -3,9 +3,27 @@ import { DataTable, EditCardModal } from '@components/index'
 import { useGetAllCards } from '@pages/api/queries/index'
 import { goalieColumns, skaterColumns } from '@constants/index'
 import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
+import { useEditCard, useSubmitCardImage } from '@pages/api/mutations'
 
 const EditCards = () => {
-  const { allCards, isLoading, isError } = useGetAllCards({})
+  const {
+    allCards,
+    isLoading: getAllCardsIsLoading,
+    isError: getAllCardsIsError,
+  } = useGetAllCards({})
+  const {
+    editCard,
+    response: editCardResponse,
+    isLoading: editCardIsLoading,
+    isError: editCardIsError,
+  } = useEditCard()
+  const {
+    submitCardImage,
+    response: submitCardImageResponse,
+    isLoading: submitCardImageIsLoading,
+    isError: submitCardImageIsError,
+  } = useSubmitCardImage()
+
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [selectedCard, setSelectedCard] = useState<Card>(null)
   const skaterCards = onlySkaterCards(allCards)
@@ -34,6 +52,7 @@ const EditCards = () => {
         control: null,
         conditioning: null,
         image_url: rowData[15],
+        season: parseInt(rowData[16]),
       }
       setSelectedCard(skaterCard)
       setIsOpen(true)
@@ -64,13 +83,14 @@ const EditCards = () => {
         control: parseInt(rowData[13]),
         conditioning: parseInt(rowData[14]),
         image_url: rowData[15],
+        season: parseInt(rowData[16]),
       }
       setSelectedCard(goalieCard)
       setIsOpen(true)
     },
   }
 
-  const handleCloseCard = () => {
+  const handleClose = () => {
     setSelectedCard(null)
     setIsOpen(false)
   }
@@ -92,7 +112,9 @@ const EditCards = () => {
       {selectedCard && (
         <EditCardModal
           open={isOpen}
-          handleCardClose={handleCloseCard}
+          handleSubmitCard={editCard}
+          handleSubmitImage={submitCardImage}
+          handleClose={handleClose}
           card={selectedCard}
         />
       )}

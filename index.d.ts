@@ -1,13 +1,13 @@
 type Card = {
   cardID: number
-  teamID: number
-  playerID: number
-  author_userID: number
+  teamID?: number
+  playerID?: number
+  author_userID?: number
   card_rarity: string
   player_name: string
-  pullable: boolean
-  approved: boolean
-  image_url: string
+  pullable?: boolean
+  approved?: boolean
+  image_url?: string
   position: string
   overall: number
   skating?: number | null
@@ -20,11 +20,12 @@ type Card = {
   quickness?: number | null
   control?: number | null
   conditioning?: number | null
+  season: number
 }
 
 type CardRequest = {
-  teamID: number
-  playerID: number
+  teamID?: number
+  playerID?: number
   card_rarity: string
   player_name: string
   position: string
@@ -39,6 +40,7 @@ type CardRequest = {
   quickness?: number | null
   control?: number | null
   conditioning?: number | null
+  season: number
 }
 
 type CardSet = {

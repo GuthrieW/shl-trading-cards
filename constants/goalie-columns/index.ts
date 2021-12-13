@@ -77,6 +77,10 @@ const goalieColumns = [
       sort: false,
     },
   },
+  {
+    label: 'Season',
+    name: 'season',
+  },
 ]
 
 export default goalieColumns

@@ -1,5 +1,5 @@
-import { useMutation } from 'react-query'
-import axios from 'axios'
+import { UseMutateFunction, useMutation } from 'react-query'
+import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
 
 type UseEditCardRequest = {
@@ -8,27 +8,25 @@ type UseEditCardRequest = {
 }
 
 type UseEditCard = {
-  response: any
+  editCard: Function
+  response: AxiosResponse
   isLoading: boolean
   isError: any
 }
 
-function queryEditCard({ cardID, newCardData }: UseEditCardRequest) {
-  return useMutation(() => {
-    return axios({
-      method: PATCH,
-      url: `/api/v1/cards/${cardID}`,
-      data: newCardData,
-    })
-  })
-}
+const useEditCard = (): UseEditCard => {
+  const { mutate, data, error, isLoading } = useMutation(
+    ({ cardID, newCardData }: UseEditCardRequest) => {
+      return axios({
+        method: PATCH,
+        url: `/api/v1/cards/${cardID}`,
+        data: newCardData,
+      })
+    }
+  )
 
-const useEditCard = ({
-  cardID,
-  newCardData,
-}: UseEditCardRequest): UseEditCard => {
-  const { data, error, isLoading } = queryEditCard({ cardID, newCardData })
   return {
+    editCard: mutate,
     response: data,
     isLoading: isLoading,
     isError: error,
