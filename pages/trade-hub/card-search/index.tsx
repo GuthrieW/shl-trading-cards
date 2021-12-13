@@ -50,8 +50,6 @@ const CardSearch = () => {
     setFilteringCards(false)
   }, [allCards, searchString])
 
-  console.log('selectedCard', selectedCard)
-
   return (
     <div>
       <PageHeader>Card Search</PageHeader>

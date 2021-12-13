@@ -1,6 +1,8 @@
-import { Button } from '@material-ui/core'
-
 const claimingGoalieColumns = [
+  {
+    label: 'Card ID',
+    name: 'cardID',
+  },
   {
     label: 'Name',
     name: 'player_name',
@@ -43,21 +45,6 @@ const claimingGoalieColumns = [
     options: {
       filter: false,
       sort: false,
-    },
-  },
-  {
-    name: 'Claim Card',
-    options: {
-      filter: false,
-      sort: false,
-      empty: true,
-      customBodyRenderLite: (dataIndex) => (
-        <div style={{ textAlign: 'center' }}>
-          <Button color={'default'} variant={'outlined'}>
-            Claim
-          </Button>
-        </div>
-      ),
     },
   },
 ]

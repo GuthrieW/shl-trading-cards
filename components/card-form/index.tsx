@@ -33,7 +33,7 @@ const CardForm = ({
       onChange={(event) => {
         handleOnChange({
           ...cardData,
-          playerID: event.target.value,
+          playerID: parseInt(event.target.value),
         })
       }}
     />
@@ -48,7 +48,7 @@ const CardForm = ({
       onChange={(event) => {
         handleOnChange({
           ...cardData,
-          teamID: event.target.value,
+          teamID: parseInt(event.target.value),
         })
       }}
     />
@@ -90,7 +90,7 @@ const CardForm = ({
       onChange={(event) => {
         handleOnChange({
           ...cardData,
-          season: event.target.value,
+          season: parseInt(event.target.value),
         })
       }}
     />
@@ -103,7 +103,7 @@ const CardForm = ({
       onChange={(event) => {
         handleOnChange({
           ...cardData,
-          overall: event.target.value,
+          overall: parseInt(event.target.value),
         })
       }}
     />
@@ -118,7 +118,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              skating: event.target.value,
+              skating: parseInt(event.target.value),
             })
           }}
         />
@@ -131,7 +131,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              shooting: event.target.value,
+              shooting: parseInt(event.target.value),
             })
           }}
         />
@@ -144,7 +144,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              hands: event.target.value,
+              hands: parseInt(event.target.value),
             })
           }}
         />
@@ -157,7 +157,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              checking: event.target.value,
+              checking: parseInt(event.target.value),
             })
           }}
         />
@@ -170,7 +170,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              defense: event.target.value,
+              defense: parseInt(event.target.value),
             })
           }}
         />
@@ -186,7 +186,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              high_shots: event.target.value,
+              high_shots: parseInt(event.target.value),
             })
           }}
         />
@@ -199,7 +199,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              low_shots: event.target.value,
+              low_shots: parseInt(event.target.value),
             })
           }}
         />
@@ -212,7 +212,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              quickness: event.target.value,
+              quickness: parseInt(event.target.value),
             })
           }}
         />
@@ -225,7 +225,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              control: event.target.value,
+              control: parseInt(event.target.value),
             })
           }}
         />
@@ -238,7 +238,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              conditioning: event.target.value,
+              conditioning: parseInt(event.target.value),
             })
           }}
         />

@@ -5,6 +5,7 @@ import Router from 'next/router'
 import { useGetClaimedCards } from '@pages/api/queries/index'
 import sortBy from 'lodash/sortBy'
 import { getUidFromSession, stringInCardName } from '@utils/index'
+import { useSubmitCardImage } from '@pages/api/mutations'
 
 const SubmitCards = () => {
   const [filteringCards, setFilteringCards] = useState<boolean>(false)
@@ -12,9 +13,20 @@ const SubmitCards = () => {
   const [searchString, setSearchString] = useState<string>('')
   const [selectedFile, setSelectedFile] = useState<any>(null)
   const [selectedCard, setSelectedCard] = useState<Card>(null)
-  const { claimedCards, isLoading, isError } = useGetClaimedCards({
+  const {
+    claimedCards,
+    isLoading: getClaimedCardsIsLoading,
+    isError: getClaimedCardsIsError,
+  } = useGetClaimedCards({
     uid: getUidFromSession(),
   })
+  const {
+    submitCardImage,
+    response,
+    isLoading: submitCardImageIsLoading,
+    isError: submitCardImageIsError,
+  } = useSubmitCardImage()
+
   const canSubmit = selectedCard && selectedFile
 
   useEffect(() => {
@@ -44,7 +56,10 @@ const SubmitCards = () => {
   }
 
   const handleSubmit = () => {
-    Router.reload()
+    submitCardImage({ cardID: selectedCard.cardID, image: selectedFile })
+    setSelectedCard(null)
+    setSelectedFile(null)
+    setSearchString('')
   }
 
   return (
@@ -60,7 +75,7 @@ const SubmitCards = () => {
     >
       <OptionInput
         options={filteredCards}
-        loading={isLoading || filteringCards}
+        loading={getClaimedCardsIsLoading || filteringCards}
         groupBy={(option: Card) => (option ? option.card_rarity : '')}
         getOptionLabel={(option: Card) => (option ? option.player_name : '')}
         label={'Enter claimed card name'}

@@ -79,7 +79,7 @@ const RequestCardCreation = () => {
     setCsvToUpload(data)
   }
 
-  const handleSingleCardSubmit = async () => {
+  const handleSingleCardSubmit = () => {
     if (canSubmitSingleCard) {
       setIsSubmitting(true)
       const basePlayerData = {
@@ -93,7 +93,7 @@ const RequestCardCreation = () => {
       }
 
       const fullPlayerData: CardRequest =
-        singleCard.position !== 'G'
+        basePlayerData.position !== 'G'
           ? {
               ...basePlayerData,
               skating: singleCard.skating,
@@ -120,6 +120,7 @@ const RequestCardCreation = () => {
               control: singleCard.control,
               conditioning: singleCard.conditioning,
             }
+
       createRequestedCard({ requestedCard: fullPlayerData })
     }
 
@@ -129,29 +130,51 @@ const RequestCardCreation = () => {
   }
 
   const handleCsvUploadSubmit = () => {
-    console.log('csvToUpload', csvToUpload)
-    csvToUpload.map((row) => {
-      const cardRequest: CardRequest = {
-        teamID: row[0],
-        playerID: row[1],
-        player_name: row[3],
-        season: row[4],
-        card_rarity: row[5],
-        position: row[6],
-        overall: row[7],
-        skating: row[8],
-        shooting: row[9],
-        hands: row[10],
-        checking: row[11],
-        defense: row[12],
-        high_shots: row[13],
-        low_shots: row[14],
-        quickness: row[15],
-        control: row[16],
-        conditioning: row[17],
+    csvToUpload.map((row, index) => {
+      if (index === 0) {
+        return
       }
 
-      createRequestedCard({ requestedCard: cardRequest })
+      const basePlayerData = {
+        teamID: parseInt(row[0]),
+        playerID: parseInt(row[1]),
+        player_name: row[2],
+        season: parseInt(row[3]),
+        card_rarity: row[4],
+        position: row[5],
+        overall: parseInt(row[6]),
+      }
+
+      const fullPlayerData: CardRequest =
+        basePlayerData.position !== 'G'
+          ? {
+              ...basePlayerData,
+              skating: parseInt(row[7]),
+              shooting: parseInt(row[8]),
+              hands: parseInt(row[9]),
+              checking: parseInt(row[10]),
+              defense: parseInt(row[11]),
+              high_shots: null,
+              low_shots: null,
+              quickness: null,
+              control: null,
+              conditioning: null,
+            }
+          : {
+              ...basePlayerData,
+              skating: null,
+              shooting: null,
+              hands: null,
+              checking: null,
+              defense: null,
+              high_shots: parseInt(row[12]),
+              low_shots: parseInt(row[13]),
+              quickness: parseInt(row[14]),
+              control: parseInt(row[15]),
+              conditioning: parseInt(row[16]),
+            }
+
+      createRequestedCard({ requestedCard: fullPlayerData })
     })
   }
 
@@ -187,11 +210,13 @@ const RequestCardCreation = () => {
             <CardForm
               handleOnChange={setSingleCard}
               cardData={singleCard}
-              formDisabled={isSubmitting}
+              formDisabled={isSubmitting || isLoading || isError}
             />
             <Box m={2}>
               <Button
-                disabled={!canSubmitSingleCard || isSubmitting}
+                disabled={
+                  !canSubmitSingleCard || isSubmitting || isLoading || isError
+                }
                 style={{ alignSelf: 'end' }}
                 variant="contained"
                 color="primary"
@@ -217,7 +242,7 @@ const RequestCardCreation = () => {
               />
             </div>
             <Button
-              disabled={!canSubmitCsv || isSubmitting}
+              disabled={!canSubmitCsv || isSubmitting || isLoading || isError}
               style={{ alignSelf: 'end' }}
               variant="contained"
               color="primary"
