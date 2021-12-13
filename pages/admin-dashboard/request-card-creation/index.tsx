@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Button, ButtonGroup, FormGroup } from '@material-ui/core'
-import { CardForm } from '@components/index'
+import { CardRequestForm } from '@components/index'
 import CSVReader from 'react-csv-reader'
 import { useCreateRequestedCard } from '@pages/api/mutations'
 
@@ -207,7 +207,7 @@ const RequestCardCreation = () => {
       <FormGroup>
         {selectedRequestUi === 'single-card' && (
           <>
-            <CardForm
+            <CardRequestForm
               handleOnChange={setSingleCard}
               cardData={singleCard}
               formDisabled={isSubmitting || isLoading || isError}

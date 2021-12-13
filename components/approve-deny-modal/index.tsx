@@ -40,11 +40,9 @@ const ApproveDenyModal = ({
         }}
       >
         <img width={300} height={400} src={card[10]} />
-        <Typography>
-          {card[1]} - {card[3]}
-        </Typography>
         <div
           style={{
+            marginTop: '10px',
             display: 'flex',
             flexDirection: 'row',
           }}
@@ -52,8 +50,8 @@ const ApproveDenyModal = ({
           <Button
             style={{ marginRight: '5px', marginLeft: '5px' }}
             onClick={handleAccept}
-            color="default"
-            variant="outlined"
+            color="primary"
+            variant="contained"
           >
             Accept
           </Button>
@@ -61,7 +59,7 @@ const ApproveDenyModal = ({
             style={{ marginRight: '5px', marginLeft: '5px' }}
             onClick={handleDeny}
             color="secondary"
-            variant="outlined"
+            variant="contained"
           >
             Deny
           </Button>

@@ -1,6 +1,6 @@
 export { default as AdminSidebar } from './admin-sidebar'
 export { default as ApproveDenyModal } from './approve-deny-modal'
-export { default as CardForm } from './card-form'
+export { default as CardRequestForm } from './card-request-form'
 export { default as CollectionGrid } from './collection-grid'
 export { default as ConfirmClaimModal } from './confirm-claim-modal'
 export { default as DataTable } from './data-table'

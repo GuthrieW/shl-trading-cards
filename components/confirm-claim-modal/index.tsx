@@ -32,7 +32,7 @@ const ConfirmClaimModal = ({
           flexDirection: 'row',
         }}
       >
-        <Button onClick={handleConfirm} color="default" variant="outlined">
+        <Button onClick={handleConfirm} color="primary" variant="outlined">
           Confirm
         </Button>
         <Button onClick={handleClose} color="secondary" variant="outlined">

@@ -1,19 +1,18 @@
 import React from 'react'
 import { FormTextField, FormSelectField } from '@components/index'
 import { attributes, positions, rarities, teams } from '@constants/index'
-import find from 'lodash/find'
 
-type CardFormProps = {
+type CardRequestFormProps = {
   handleOnChange: any
   cardData: Card | CardRequest
   formDisabled: boolean
 }
 
-const CardForm = ({
+const CardRequestForm = ({
   handleOnChange,
   cardData,
   formDisabled,
-}: CardFormProps) => (
+}: CardRequestFormProps) => (
   <>
     <FormTextField
       label={'Player Name'}
@@ -247,4 +246,4 @@ const CardForm = ({
   </>
 )
 
-export default CardForm
+export default CardRequestForm
