@@ -1,5 +1,11 @@
 import React from 'react'
-import { Button, Dialog, DialogContent, DialogTitle } from '@material-ui/core'
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Typography,
+} from '@material-ui/core'
 
 type ApproveDenyModalProps = {
   open: boolean
@@ -25,20 +31,41 @@ const ApproveDenyModal = ({
   >
     <DialogTitle id="alert-dialog-title">Approve/Deny Card</DialogTitle>
     <DialogContent>
-      <img width={300} height={400} src={card.image_url} />
-      {card.player_name} - {card.card_rarity}
       <div
         style={{
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
-        <Button onClick={handleAccept} color="default" variant="outlined">
-          Accept
-        </Button>
-        <Button onClick={handleDeny} color="secondary" variant="outlined">
-          Deny
-        </Button>
+        <img width={300} height={400} src={card[10]} />
+        <Typography>
+          {card[1]} - {card[3]}
+        </Typography>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+          }}
+        >
+          <Button
+            style={{ marginRight: '5px', marginLeft: '5px' }}
+            onClick={handleAccept}
+            color="default"
+            variant="outlined"
+          >
+            Accept
+          </Button>
+          <Button
+            style={{ marginRight: '5px', marginLeft: '5px' }}
+            onClick={handleDeny}
+            color="secondary"
+            variant="outlined"
+          >
+            Deny
+          </Button>
+        </div>
       </div>
     </DialogContent>
   </Dialog>
