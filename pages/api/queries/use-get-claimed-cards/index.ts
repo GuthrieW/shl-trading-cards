@@ -15,20 +15,15 @@ type UseGetClaimedCards = {
 
 const UseGetClaimedCardsKey = 'use-get-claimed-cards'
 
-function queryGetClaimedCards({ uid }: UseGetClaimedCardsRequest) {
-  return useQuery(UseGetClaimedCardsKey, async () => {
-    const { data } = await axios({
-      method: GET,
-      url: `/api/v1/cards/claimed/${uid}`,
-    })
-    return data
-  })
-}
-
 const useGetClaimedCards = ({
   uid,
 }: UseGetClaimedCardsRequest): UseGetClaimedCards => {
-  const { data, error, isFetching } = queryGetClaimedCards({ uid })
+  const { data, error, isFetching } = useQuery(
+    UseGetClaimedCardsKey,
+    async () => {
+      return await axios({ method: GET, url: `/api/v1/cards/claimed/${uid}` })
+    }
+  )
 
   return {
     claimedCards: cards.data,

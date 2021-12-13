@@ -15,20 +15,18 @@ type UseGetCardOwners = {
 
 const UseGetCardOwnersKey = 'use-get-card-owners'
 
-function queryGetCardOwners({ cardID }: UseGetCardOwnersRequest) {
-  return useQuery(UseGetCardOwnersKey, async () => {
-    const { data } = await axios({
-      method: GET,
-      url: `/api/v1/collections/owners/${cardID}`,
-    })
-    return data
-  })
-}
-
 const useGetCardOwners = ({
   cardID,
 }: UseGetCardOwnersRequest): UseGetCardOwners => {
-  const { data, error, isFetching } = queryGetCardOwners({ cardID })
+  const { data, error, isFetching } = useQuery(
+    UseGetCardOwnersKey,
+    async () => {
+      return await axios({
+        method: GET,
+        url: `/api/v1/collections/owners/${cardID}`,
+      })
+    }
+  )
 
   return {
     cardOwners: users.data,

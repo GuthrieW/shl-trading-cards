@@ -13,19 +13,14 @@ type UseGetUnapprovedCards = {
 
 const UseGetUnapprovedCardsKey = 'use-get-unapproved-cards'
 
-function queryGetUnapprovedCards({}: UseGetUnapprovedCardsRequest) {
-  return useQuery(UseGetUnapprovedCardsKey, async () => {
-    const { data } = await axios({
-      method: GET,
-      url: '/api/v1/cards/unapproved',
-    })
-    return data
-  })
-}
-
 const useGetUnapprovedCards =
   ({}: UseGetUnapprovedCardsRequest): UseGetUnapprovedCards => {
-    const { data, error, isFetching } = queryGetUnapprovedCards({})
+    const { data, error, isFetching } = useQuery(
+      UseGetUnapprovedCardsKey,
+      async () => {
+        return await axios({ method: GET, url: '/api/v1/cards/unapproved' })
+      }
+    )
 
     return {
       unapprovedCards: cards.data,

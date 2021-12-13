@@ -15,18 +15,10 @@ type UseGetUser = {
 
 const UseGetUserKey = 'use-get-user'
 
-function queryGetUser({ uid }: UseGetUserRequest) {
-  return useQuery(UseGetUserKey, async () => {
-    const { data } = await axios({
-      method: GET,
-      url: `/api/v1/users/${uid}`,
-    })
-    return data
-  })
-}
-
 const useGetUser = ({ uid }: UseGetUserRequest): UseGetUser => {
-  const { data, error, isFetching } = queryGetUser({ uid })
+  const { data, error, isFetching } = useQuery(UseGetUserKey, async () => {
+    return await axios({ method: GET, url: `/api/v1/users/${uid}` })
+  })
 
   return {
     user: user.data[0],

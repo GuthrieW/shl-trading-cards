@@ -35,6 +35,9 @@ const RequestCardCreation = () => {
   const [canSubmitCsv, setCanSubmitCsv] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
+  const { createRequestedCard, response, isLoading, isError } =
+    useCreateRequestedCard()
+
   useEffect(() => {
     const isNotDefaultState = Object.keys(singleCard).every((key) => {
       if (
@@ -117,11 +120,8 @@ const RequestCardCreation = () => {
               control: singleCard.control,
               conditioning: singleCard.conditioning,
             }
+      createRequestedCard({ requestedCard: fullPlayerData })
     }
-
-    const { response, isLoading, isError } = useCreateRequestedCard({
-      requestedCard: singleCard,
-    })
 
     setSingleCard(defaultCardState)
     setIsSubmitting(false)
@@ -130,9 +130,29 @@ const RequestCardCreation = () => {
 
   const handleCsvUploadSubmit = () => {
     console.log('csvToUpload', csvToUpload)
-    // const { response, isLoading, isError } = useCreateRequestedCard({
-    //   requestedCard: singleCard,
-    // })
+    csvToUpload.map((row) => {
+      const cardRequest: CardRequest = {
+        teamID: row[0],
+        playerID: row[1],
+        player_name: row[3],
+        season: row[4],
+        card_rarity: row[5],
+        position: row[6],
+        overall: row[7],
+        skating: row[8],
+        shooting: row[9],
+        hands: row[10],
+        checking: row[11],
+        defense: row[12],
+        high_shots: row[13],
+        low_shots: row[14],
+        quickness: row[15],
+        control: row[16],
+        conditioning: row[17],
+      }
+
+      createRequestedCard({ requestedCard: cardRequest })
+    })
   }
 
   return (
@@ -194,7 +214,6 @@ const RequestCardCreation = () => {
                 cssClass={'react-csv-input'}
                 label={'CSV Upload'}
                 onFileLoaded={handleSelectCsv}
-                // parserOptions={}
               />
             </div>
             <Button
