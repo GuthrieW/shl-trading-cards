@@ -4,7 +4,7 @@ import { Button, Dialog, DialogContent, DialogTitle } from '@material-ui/core'
 type ConfirmClaimModalProps = {
   open: boolean
   playerName: string
-  cardRarity: string
+  cardID: string
   handleConfirm: any
   handleClose: any
 }
@@ -12,7 +12,7 @@ type ConfirmClaimModalProps = {
 const ConfirmClaimModal = ({
   open,
   playerName,
-  cardRarity,
+  cardID,
   handleConfirm,
   handleClose,
 }: ConfirmClaimModalProps) => (
@@ -25,17 +25,17 @@ const ConfirmClaimModal = ({
   >
     <DialogTitle id="alert-dialog-title">Confirm Claim</DialogTitle>
     <DialogContent>
-      {playerName} - {cardRarity}
+      Card ID: {cardID} - {playerName}
       <div
         style={{
           display: 'flex',
           flexDirection: 'row',
         }}
       >
-        <Button onClick={handleConfirm} color="primary" variant="outlined">
+        <Button onClick={handleConfirm} color="primary" variant="contained">
           Confirm
         </Button>
-        <Button onClick={handleClose} color="secondary" variant="outlined">
+        <Button onClick={handleClose} color="secondary" variant="contained">
           Close
         </Button>
       </div>

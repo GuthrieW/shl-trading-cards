@@ -50,7 +50,7 @@ const ClaimCardCreation = () => {
         <ConfirmClaimModal
           open={confirmModalVisible}
           playerName={selectedRow[1]}
-          cardRarity={selectedRow[3]}
+          cardID={selectedRow[0]}
           handleConfirm={() => {
             claimCard({ cardID: selectedRow[0], uid: getUidFromSession() })
             setSelectedRow(null)
