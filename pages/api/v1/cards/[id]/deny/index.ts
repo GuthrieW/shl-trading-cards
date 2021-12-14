@@ -22,6 +22,8 @@ const index = async (
     const results = await queryDatabase(`
       update \`admin_cards\`.\`cards\`
       set approved = 0
+      and author_userid = null
+      and image_url = null
       where cardid = ${id};`)
     response
       .status(StatusCodes.OK)

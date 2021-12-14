@@ -23,7 +23,7 @@ const index = async (
     insert into \`admin_cards\`.\`cards\`
       (player_name, teamID, playerID, card_rarity, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season)
     VALUES
-      (${player_name},${teamID},${playerID},${card_rarity},0,0,${position},${overall},${high_shots},${low_shots},${quickness},${control},${conditioning},${skating},${shooting},${hands},${checking},${defense},${season})   
+      ('${player_name}',${teamID},${playerID},'${card_rarity}',0,0,'${position}',${overall},${high_shots},${low_shots},${quickness},${control},${conditioning},${skating},${shooting},${hands},${checking},${defense},${season})   
         `)
     response
       .status(StatusCodes.OK)

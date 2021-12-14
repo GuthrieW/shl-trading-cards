@@ -16,14 +16,31 @@ const index = async (
 ): Promise<void> => {
   await middleware(request, response, cors)
   const { body, method } = request
+  const { player_name, teamID, playerID, card_rarity, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season } = request.body
 
   if (method === PATCH) {
-    /*
-     * use: edit some card's data
-     * called when: when a member of the trading card team edits the card
-     */
 
-    // const results = await queryDatabase(``)
+    const results = await queryDatabase(`
+    update admin_cards.cards
+    set
+    player_name = '${player_name}'
+    ,teamID = ${teamID}
+    ,playerID = ${playerID}
+    ,card_rarity = '${card_rarity}'
+    ,position = '${position}'
+    ,overall = ${overall}
+    ,high_shots = ${high_shots}
+    ,low_shots = ${low_shots}
+    ,quickness = ${quickness}
+    ,control = ${control}
+    ,conditioning = ${conditioning}
+    ,skating = ${skating}
+    ,shooting = ${shooting}
+    ,hands = ${hands}
+    ,checking = ${checking}
+    ,defense = ${defense}
+    ,season = ${season}
+    `)
     response
       .status(StatusCodes.OK)
       .json({ result: 'card request created', card: body })
