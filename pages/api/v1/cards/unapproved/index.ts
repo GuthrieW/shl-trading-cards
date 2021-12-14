@@ -18,7 +18,10 @@ const index = async (
   const { method } = request
 
   if (method === GET) {
-    const results = await queryDatabase(``)
+    const results = await queryDatabase(`
+    select cardID
+    from admin_cards.cards
+    where approved = 0`)
     response.status(StatusCodes.OK).json({ result: 'all unapproved cards' })
   }
 

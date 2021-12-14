@@ -16,10 +16,8 @@ const index = async (
 ): Promise<void> => {
   await middleware(request, response, cors)
   const { method } = request
-  const { cardID } = request.query
+  const { cardID, uid } = request.query
   const { imageFileName } = request.body
-
-/* need to add UID to the variable list */   
 
   if (method === PATCH) {
     const results = await queryDatabase(`

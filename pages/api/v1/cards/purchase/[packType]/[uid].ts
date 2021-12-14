@@ -15,15 +15,15 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { body, method } = request
-
+  const { body, method, uid } = request
+  const { cardID } = request.body
   if (method === POST) {
-    /*
-     * use: add cards to a user's
-     * called when: a lot of places
-     */
-
-    // const results = await queryDatabase(``)
+    const results = await queryDatabase(`
+    insert into admin_cards.collection
+    (userid, cardid, quantity, update_date)
+    values
+    (${uid}, ${cardID}, 1, CURRENT_TIMESTAMP)
+    on duplicate key update quantity = (quantity + 1)`)
     response
       .status(StatusCodes.OK)
       .json({ result: 'pack purchased', pack_purchase_data: body })
