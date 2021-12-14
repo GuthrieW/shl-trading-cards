@@ -19,12 +19,9 @@ const index = async (
   const { uid } = request.query
 
   if (method === GET) {
-    /*
-     * use: get all requested cards
-     * called when: card creators are selecting cards to create images for
-     */
-
-    // const results = await queryDatabase(``)
+    const results = await queryDatabase(`
+    SELECT cardID, player_name, teamID, playerID, card_rarity, image_url, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, author_userID, season 
+    FROM unassigned_cards`)
     response
       .status(StatusCodes.OK)
       .json({ result: 'get all requested cards', uid: uid })
