@@ -41,10 +41,6 @@ const StyledBarContainer = styled.div`
 `
 
 const OpenPacks = () => {
-  const { user, isLoading, isError } = useGetUser({
-    uid: getUidFromSession(),
-  })
-
   const handleOpenPack = async (packType) => {
     // this probably needs to be re-done, using a hook to make an API call like this feels weird
     // const { result, isLoading, isError } = useBuyPack(currentUser)

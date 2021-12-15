@@ -31,7 +31,7 @@ const index = async (
       FROM admin_cards.starting_lineup
       WHERE userID=${uid};
     `)
-    response.status(StatusCodes.OK).json({ result })
+    response.status(StatusCodes.OK).json(result)
     return
   }
 

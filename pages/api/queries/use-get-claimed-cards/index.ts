@@ -31,8 +31,7 @@ const useGetClaimedCards = ({
   const { data, error, isFetching } = queryGetClaimedCards({ uid })
 
   return {
-    claimedCards: cards.data,
-    // claimedCards: data,
+    claimedCards: data || [],
     isLoading: isFetching,
     isError: error,
   }

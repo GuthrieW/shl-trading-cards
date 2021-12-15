@@ -29,8 +29,7 @@ const useGetUser = ({ uid }: UseGetUserRequest): UseGetUser => {
   const { data, error, isFetching } = queryGetUser({ uid })
 
   return {
-    user: user.data[0],
-    // user: data,
+    user: data || {},
     isLoading: isFetching,
     isError: error,
   }

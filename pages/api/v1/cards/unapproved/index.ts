@@ -19,12 +19,18 @@ const index = async (
   const { method } = request
 
   if (method === GET) {
-    const result = await queryDatabase(SQL`
-      SELECT cardID
+    const unapprovedCards: Card[] = await queryDatabase(SQL`
+      SELECT 
+        cardID, player_name, teamID,
+        card_rarity, overall, skating,
+        shooting, hands, checking, 
+        defense, image_url
+
       FROM admin_cards.cards
       WHERE approved=0;
     `)
-    response.status(StatusCodes.OK).json({ result })
+
+    response.status(StatusCodes.OK).json(unapprovedCards)
     return
   }
 

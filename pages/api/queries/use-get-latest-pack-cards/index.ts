@@ -30,8 +30,7 @@ const useGetLatestPackCards = ({
 }: UseGetLatestPackCardsRequest): UseGetLatestPackCards => {
   const { data, error, isFetching } = queryGetLatestPackCards({ uid })
   return {
-    latestPackCards: cards.data.slice(0, 6),
-    // latestPackCards: data,
+    latestPackCards: data || [],
     isLoading: isFetching,
     isError: error,
   }

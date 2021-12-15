@@ -20,7 +20,7 @@ const dbConnection = mysql(
       }
 )
 
-export const queryDatabase = async (query) => {
+export const queryDatabase = async (query): Promise<any> => {
   try {
     const results = await dbConnection.query(query)
     await dbConnection.end()

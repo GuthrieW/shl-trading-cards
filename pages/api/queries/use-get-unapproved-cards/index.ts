@@ -28,8 +28,7 @@ const useGetUnapprovedCards =
     const { data, error, isFetching } = queryGetUnapprovedCards({})
 
     return {
-      unapprovedCards: cards.data,
-      // unapprovedCards: data,
+      unapprovedCards: data || [],
       isLoading: isFetching,
       isError: error,
     }

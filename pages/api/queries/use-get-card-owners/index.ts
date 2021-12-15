@@ -31,8 +31,7 @@ const useGetCardOwners = ({
   const { data, error, isFetching } = queryGetCardOwners({ cardID })
 
   return {
-    cardOwners: users.data,
-    // cardOwners: data,
+    cardOwners: data || [],
     isLoading: isFetching,
     isError: error,
   }

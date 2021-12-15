@@ -31,8 +31,7 @@ const useGetStartingLineup = ({
   const { data, error, isFetching } = queryGetStartingLineup({ uid })
 
   return {
-    startingLineup: cards.data.slice(0, 6),
-    // unapprovedCards: data,
+    startingLineup: data,
     isLoading: isFetching,
     isError: error,
   }

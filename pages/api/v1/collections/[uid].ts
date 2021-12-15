@@ -31,7 +31,7 @@ const index = async (
       WHERE collection.userID=${uid};
     `)
 
-    response.status(StatusCodes.OK).json({ result })
+    response.status(StatusCodes.OK).json(result)
     return
   }
 

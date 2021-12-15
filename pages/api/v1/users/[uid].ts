@@ -27,11 +27,12 @@ const index = async (
         avatar,
         usergroup,
         additionalgroups,
-        displaygroups
+        displaygroup
       FROM admin_mybb.mybb_users
       WHERE uid=${uid};
     `)
-    response.status(StatusCodes.OK).json({ result })
+
+    response.status(StatusCodes.OK).json(result)
     return
   }
 

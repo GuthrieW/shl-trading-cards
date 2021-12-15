@@ -45,7 +45,7 @@ const index = async (
         ('${player_name}', ${teamID}, ${playerID}, '${card_rarity}', 0, 0, '${position}', ${overall}, ${high_shots}, ${low_shots}, ${quickness}, ${control}, ${conditioning}, ${skating}, ${shooting}, ${hands}, ${checking}, ${defense}, ${season});  
     `)
 
-    response.status(StatusCodes.OK).json({ result: result })
+    response.status(StatusCodes.OK).json(result)
     return
   }
 

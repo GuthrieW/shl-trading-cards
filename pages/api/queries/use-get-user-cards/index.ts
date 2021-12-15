@@ -28,8 +28,7 @@ function queryGetUserCards({ uid }: UseGetUserCardsRequest) {
 const useGetUserCards = ({ uid }: UseGetUserCardsRequest): UseGetUserCards => {
   const { data, error, isFetching } = queryGetUserCards({ uid })
   return {
-    userCards: cards.data,
-    // userCards: data,
+    userCards: data || [],
     isLoading: isFetching,
     isError: error,
   }

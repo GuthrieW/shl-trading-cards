@@ -29,7 +29,7 @@ const index = async (
       ON DUPLICATE KEY UPDATE quantity=(quantity + 1);
     `)
 
-    response.status(StatusCodes.OK).json({ result: result })
+    response.status(StatusCodes.OK).json(result)
     return
   }
 
