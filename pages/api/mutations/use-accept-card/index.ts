@@ -1,29 +1,29 @@
 import { useMutation } from 'react-query'
 import { PATCH } from '@constants/http-methods'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 type UseAcceptCardRequest = {
   cardID: number
 }
 
 type UseAcceptCard = {
-  response: any
+  acceptCard: Function
+  response: AxiosResponse
   isLoading: boolean
   isError: any
 }
 
-function queryAcceptCard({ cardID }: UseAcceptCardRequest) {
-  return useMutation(() => {
-    return axios({
-      method: PATCH,
-      url: `/api/v1/cards/${cardID}/approve`,
-    })
-  })
-}
-
-const useAcceptCard = ({ cardID }: UseAcceptCardRequest): UseAcceptCard => {
-  const { data, error, isLoading } = queryAcceptCard({ cardID })
+const useAcceptCard = (): UseAcceptCard => {
+  const { mutate, data, error, isLoading } = useMutation(
+    ({ cardID }: UseAcceptCardRequest) => {
+      return axios({
+        method: PATCH,
+        url: `/api/v1/cards/${cardID}/approve`,
+      })
+    }
+  )
   return {
+    acceptCard: mutate,
     response: data,
     isLoading: isLoading,
     isError: error,

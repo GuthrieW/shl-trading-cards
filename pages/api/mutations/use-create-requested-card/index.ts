@@ -1,36 +1,34 @@
 import { useMutation } from 'react-query'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
+import { POST } from '@constants/http-methods'
 
-type UseCreateRequestedCardRequest = {
+interface UseCreateRequestedCardRequest {
   requestedCard: CardRequest
 }
 
 type UseCreateRequestedCard = {
-  response: any
+  createRequestedCard: Function
+  response: AxiosResponse
   isLoading: boolean
   isError: any
 }
 
-function queryCreateRequestedCard({
-  requestedCard,
-}: UseCreateRequestedCardRequest) {
-  return useMutation(() => {
-    return axios({
-      method: 'POST',
-      url: '/api/v1/cards',
-      data: requestedCard,
-    })
-  })
-}
+const useCreateRequestedCard = (): UseCreateRequestedCard => {
+  const { mutate, data, isLoading, isError } = useMutation(
+    ({ requestedCard }: UseCreateRequestedCardRequest) => {
+      return axios({
+        method: POST,
+        url: '/api/v1/cards',
+        data: { requestedCard },
+      })
+    }
+  )
 
-const useCreateRequestedCard = ({
-  requestedCard,
-}: UseCreateRequestedCardRequest): UseCreateRequestedCard => {
-  const { data, error, isLoading } = queryCreateRequestedCard({ requestedCard })
   return {
+    createRequestedCard: mutate,
     response: data,
     isLoading: isLoading,
-    isError: error,
+    isError: isError,
   }
 }
 

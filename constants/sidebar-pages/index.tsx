@@ -41,7 +41,7 @@ const pages = [
   },
   {
     name: 'Admin',
-    href: 'admin-dashboard',
+    href: '/admin-dashboard',
     icon: <SettingsOutlined />,
     admin: true,
   },

@@ -13,18 +13,13 @@ type UseGetAllUsers = {
 
 const UseGetAllUsersKey = 'use-get-all-users'
 
-function queryGetAllUsers({}: GetAllUsersRequest) {
-  return useQuery(UseGetAllUsersKey, async () => {
-    const { data } = await axios({
+const useGetAllUsers = ({}: GetAllUsersRequest): UseGetAllUsers => {
+  const { data, error, isFetching } = useQuery(UseGetAllUsersKey, async () => {
+    return await axios({
       method: GET,
       url: '/api/v1/users',
     })
-    return data
   })
-}
-
-const useGetAllUsers = ({}: GetAllUsersRequest): UseGetAllUsers => {
-  const { data, error, isFetching } = queryGetAllUsers({})
 
   return {
     users: data || [],

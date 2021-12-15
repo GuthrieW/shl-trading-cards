@@ -15,20 +15,18 @@ type UseGetStartingLineup = {
 
 const UseGetStartingLineupKey = 'use-get-starting-lineup'
 
-function queryGetStartingLineup({ uid }: UseGetStartingLineupRequest) {
-  return useQuery(UseGetStartingLineupKey, async () => {
-    const { data } = await axios({
-      method: GET,
-      url: `/api/v1/starting-lineups/${uid}`,
-    })
-    return data
-  })
-}
-
 const useGetStartingLineup = ({
   uid,
 }: UseGetStartingLineupRequest): UseGetStartingLineup => {
-  const { data, error, isFetching } = queryGetStartingLineup({ uid })
+  const { data, error, isFetching } = useQuery(
+    UseGetStartingLineupKey,
+    async () => {
+      return await axios({
+        method: GET,
+        url: `/api/v1/starting-lineups/${uid}`,
+      })
+    }
+  )
 
   return {
     startingLineup: data,

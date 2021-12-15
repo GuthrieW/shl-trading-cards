@@ -77,6 +77,10 @@ const skaterColumns = [
       sort: false,
     },
   },
+  {
+    label: 'Season',
+    name: 'season',
+  },
 ]
 
 export default skaterColumns

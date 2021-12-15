@@ -20,8 +20,9 @@
       "high_shots": null,
       "low_shots": null,
       "quickness": null,
-      "contorl": null,
-      "conditioning": null
+      "control": null,
+      "conditioning": null,
+      "season": 39
     },
     {
       "cardID": 2,
@@ -43,8 +44,9 @@
       "high_shots": null,
       "low_shots": null,
       "quickness": null,
-      "contorl": null,
-      "conditioning": null
+      "control": null,
+      "conditioning": null,
+      "season": 43
     },
     {
       "cardID": 3,
@@ -66,8 +68,9 @@
       "high_shots": null,
       "low_shots": null,
       "quickness": null,
-      "contorl": null,
-      "conditioning": null
+      "control": null,
+      "conditioning": null,
+      "season": 58
     },
     {
       "cardID": 4,
@@ -89,8 +92,9 @@
       "high_shots": null,
       "low_shots": null,
       "quickness": null,
-      "contorl": null,
-      "conditioning": null
+      "control": null,
+      "conditioning": null,
+      "season": 45
     },
     {
       "cardID": 5,
@@ -112,8 +116,9 @@
       "high_shots": null,
       "low_shots": null,
       "quickness": null,
-      "contorl": null,
-      "conditioning": null
+      "control": null,
+      "conditioning": null,
+      "season": 35
     },
     {
       "cardID": 6,
@@ -136,7 +141,8 @@
       "lowShots": 18,
       "quickness": 18,
       "control": 18,
-      "conditioning": 18
+      "conditioning": 18,
+      "season": 54
     },
     {
       "cardID": 7,
@@ -158,8 +164,9 @@
       "high_shots": null,
       "low_shots": null,
       "quickness": null,
-      "contorl": null,
-      "conditioning": null
+      "control": null,
+      "conditioning": null,
+      "season": 43
     },
     {
       "cardID": 8,
@@ -181,8 +188,9 @@
       "high_shots": null,
       "low_shots": null,
       "quickness": null,
-      "contorl": null,
-      "conditioning": null
+      "control": null,
+      "conditioning": null,
+      "season": 51
     },
     {
       "cardID": 9,
@@ -204,8 +212,9 @@
       "high_shots": null,
       "low_shots": null,
       "quickness": null,
-      "contorl": null,
-      "conditioning": null
+      "control": null,
+      "conditioning": null,
+      "season": 54
     },
     {
       "cardID": 10,
@@ -227,8 +236,9 @@
       "high_shots": null,
       "low_shots": null,
       "quickness": null,
-      "contorl": null,
-      "conditioning": null
+      "control": null,
+      "conditioning": null,
+      "season": 39
     },
     {
       "cardID": 11,
@@ -251,7 +261,8 @@
       "lowShots": 12,
       "quickness": 15,
       "control": 14,
-      "conditioning": 15
+      "conditioning": 15,
+      "season": 54
     },
     {
       "cardID": 12,
@@ -273,8 +284,9 @@
       "high_shots": null,
       "low_shots": null,
       "quickness": null,
-      "contorl": null,
-      "conditioning": null
+      "control": null,
+      "conditioning": null,
+      "season": 58
     },
     {
       "cardID": 13,
@@ -296,8 +308,9 @@
       "high_shots": null,
       "low_shots": null,
       "quickness": null,
-      "contorl": null,
-      "conditioning": null
+      "control": null,
+      "conditioning": null,
+      "season": 42
     },
     {
       "cardID": 14,
@@ -319,8 +332,9 @@
       "high_shots": null,
       "low_shots": null,
       "quickness": null,
-      "contorl": null,
-      "conditioning": null
+      "control": null,
+      "conditioning": null,
+      "season": 49
     },
     {
       "cardID": 15,
@@ -342,8 +356,9 @@
       "high_shots": null,
       "low_shots": null,
       "quickness": null,
-      "contorl": null,
-      "conditioning": null
+      "control": null,
+      "conditioning": null,
+      "season": 58
     }
   ]
 }

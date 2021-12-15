@@ -31,6 +31,7 @@ const index = async (
       ORDER BY collection.update_date DESC
       LIMIT 6;
     `)
+
     response.status(StatusCodes.OK).json(result)
     return
   }

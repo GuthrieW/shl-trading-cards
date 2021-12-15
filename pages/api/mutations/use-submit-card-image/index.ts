@@ -1,5 +1,5 @@
-import { useMutation } from 'react-query'
-import axios from 'axios'
+import { UseMutateFunction, useMutation } from 'react-query'
+import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
 
 type UseSubmitCardImageRequest = {
@@ -8,27 +8,25 @@ type UseSubmitCardImageRequest = {
 }
 
 type UseSubmitCardImage = {
-  response: any
+  submitCardImage: Function
+  response: AxiosResponse
   isLoading: boolean
   isError: any
 }
 
-function querySubmitCardImage({ cardID, image }: UseSubmitCardImageRequest) {
-  return useMutation(() => {
-    return axios({
-      method: PATCH,
-      url: `/api/v1/cards/${cardID}/image`,
-      data: image,
-    })
-  })
-}
+const useSubmitCardImage = (): UseSubmitCardImage => {
+  const { mutate, data, error, isLoading } = useMutation(
+    ({ cardID, image }: UseSubmitCardImageRequest) => {
+      return axios({
+        method: PATCH,
+        url: `/api/v1/cards/${cardID}/image`,
+        data: image,
+      })
+    }
+  )
 
-const useSubmitCardImage = ({
-  cardID,
-  image,
-}: UseSubmitCardImageRequest): UseSubmitCardImage => {
-  const { data, error, isLoading } = querySubmitCardImage({ cardID, image })
   return {
+    submitCardImage: mutate,
     response: data,
     isLoading: isLoading,
     isError: error,

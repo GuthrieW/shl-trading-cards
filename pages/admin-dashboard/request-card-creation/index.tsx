@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, ButtonGroup, FormGroup, Paper } from '@material-ui/core'
-import { CardForm } from '@components/index'
+import { Box, Button, ButtonGroup, FormGroup } from '@material-ui/core'
+import { CardRequestForm } from '@components/index'
 import CSVReader from 'react-csv-reader'
 import { useCreateRequestedCard } from '@pages/api/mutations'
 
@@ -23,15 +23,20 @@ const defaultCardState = {
   quickness: 0,
   control: 0,
   conditioning: 0,
+  season: 0,
 }
 
 const RequestCardCreation = () => {
   const [selectedRequestUi, setSelectedRequestUi] =
     useState<SelectedRequestUi>('single-card')
-  const [csvToUpload, setCsvToUpload] = useState(null)
-  const [canSubmit, setCanSubmit] = useState<boolean>(true)
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [singleCard, setSingleCard] = useState<CardRequest>(defaultCardState)
+  const [canSubmitSingleCard, setCanSubmitSingleCard] = useState<boolean>(false)
+  const [csvToUpload, setCsvToUpload] = useState(null)
+  const [canSubmitCsv, setCanSubmitCsv] = useState<boolean>(false)
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+
+  const { createRequestedCard, response, isLoading, isError } =
+    useCreateRequestedCard()
 
   useEffect(() => {
     const isNotDefaultState = Object.keys(singleCard).every((key) => {
@@ -57,8 +62,12 @@ const RequestCardCreation = () => {
       return singleCard[key] !== defaultCardState[key]
     })
 
-    setCanSubmit(isNotDefaultState)
+    setCanSubmitSingleCard(isNotDefaultState)
   }, [singleCard])
+
+  useEffect(() => {
+    setCanSubmitCsv(csvToUpload !== null)
+  }, [csvToUpload])
 
   useEffect(() => {
     selectedRequestUi === 'single-card'
@@ -70,8 +79,8 @@ const RequestCardCreation = () => {
     setCsvToUpload(data)
   }
 
-  const handleSingleCardSubmit = async () => {
-    if (canSubmit) {
+  const handleSingleCardSubmit = () => {
+    if (canSubmitSingleCard) {
       setIsSubmitting(true)
       const basePlayerData = {
         teamID: singleCard.teamID,
@@ -79,11 +88,12 @@ const RequestCardCreation = () => {
         card_rarity: singleCard.card_rarity,
         player_name: singleCard.player_name,
         position: singleCard.position,
+        season: singleCard.season,
         overall: singleCard.overall,
       }
 
-      const fullPlayerData =
-        singleCard.position !== 'G'
+      const fullPlayerData: CardRequest =
+        basePlayerData.position !== 'G'
           ? {
               ...basePlayerData,
               skating: singleCard.skating,
@@ -91,8 +101,8 @@ const RequestCardCreation = () => {
               hands: singleCard.hands,
               checking: singleCard.checking,
               defense: singleCard.defense,
-              highShots: null,
-              lowShots: null,
+              high_shots: null,
+              low_shots: null,
               quickness: null,
               control: null,
               conditioning: null,
@@ -104,12 +114,14 @@ const RequestCardCreation = () => {
               hands: null,
               checking: null,
               defense: null,
-              highShots: singleCard.high_shots,
-              lowShots: singleCard.low_shots,
+              high_shots: singleCard.high_shots,
+              low_shots: singleCard.low_shots,
               quickness: singleCard.quickness,
               control: singleCard.control,
               conditioning: singleCard.conditioning,
             }
+
+      createRequestedCard({ requestedCard: fullPlayerData })
     }
 
     setSingleCard(defaultCardState)
@@ -118,14 +130,56 @@ const RequestCardCreation = () => {
   }
 
   const handleCsvUploadSubmit = () => {
-    const { response, isLoading, isError } = useCreateRequestedCard({
-      requestedCard: singleCard,
+    csvToUpload.map((row, index) => {
+      if (index === 0) {
+        return
+      }
+
+      const basePlayerData = {
+        teamID: parseInt(row[0]),
+        playerID: parseInt(row[1]),
+        player_name: row[2],
+        season: parseInt(row[3]),
+        card_rarity: row[4],
+        position: row[5],
+        overall: parseInt(row[6]),
+      }
+
+      const fullPlayerData: CardRequest =
+        basePlayerData.position !== 'G'
+          ? {
+              ...basePlayerData,
+              skating: parseInt(row[7]),
+              shooting: parseInt(row[8]),
+              hands: parseInt(row[9]),
+              checking: parseInt(row[10]),
+              defense: parseInt(row[11]),
+              high_shots: null,
+              low_shots: null,
+              quickness: null,
+              control: null,
+              conditioning: null,
+            }
+          : {
+              ...basePlayerData,
+              skating: null,
+              shooting: null,
+              hands: null,
+              checking: null,
+              defense: null,
+              high_shots: parseInt(row[12]),
+              low_shots: parseInt(row[13]),
+              quickness: parseInt(row[14]),
+              control: parseInt(row[15]),
+              conditioning: parseInt(row[16]),
+            }
+
+      createRequestedCard({ requestedCard: fullPlayerData })
     })
   }
 
   return (
-    <Paper
-      elevation={4}
+    <div
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -153,14 +207,16 @@ const RequestCardCreation = () => {
       <FormGroup>
         {selectedRequestUi === 'single-card' && (
           <>
-            <CardForm
+            <CardRequestForm
               handleOnChange={setSingleCard}
               cardData={singleCard}
-              formDisabled={isSubmitting}
+              formDisabled={isSubmitting || isLoading || isError}
             />
             <Box m={2}>
               <Button
-                disabled={!canSubmit || isSubmitting}
+                disabled={
+                  !canSubmitSingleCard || isSubmitting || isLoading || isError
+                }
                 style={{ alignSelf: 'end' }}
                 variant="contained"
                 color="primary"
@@ -183,11 +239,10 @@ const RequestCardCreation = () => {
                 cssClass={'react-csv-input'}
                 label={'CSV Upload'}
                 onFileLoaded={handleSelectCsv}
-                // parserOptions={}
               />
             </div>
             <Button
-              disabled={!canSubmit || isSubmitting}
+              disabled={!canSubmitCsv || isSubmitting || isLoading || isError}
               style={{ alignSelf: 'end' }}
               variant="contained"
               color="primary"
@@ -198,7 +253,7 @@ const RequestCardCreation = () => {
           </div>
         )}
       </FormGroup>
-    </Paper>
+    </div>
   )
 }
 

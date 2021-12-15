@@ -1,5 +1,5 @@
-import { useMutation } from 'react-query'
-import axios from 'axios'
+import { UseMutateFunction, useMutation } from 'react-query'
+import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
 
 type UseDenyCardRequest = {
@@ -7,23 +7,24 @@ type UseDenyCardRequest = {
 }
 
 type UseDenyCard = {
-  response: any
+  denyCard: Function
+  response: AxiosResponse
   isLoading: boolean
   isError: any
 }
 
-function queryDenyCard({ cardID }: UseDenyCardRequest) {
-  return useMutation(() => {
-    return axios({
-      method: PATCH,
-      url: `/api/v1/cards/${cardID}/deny`,
-    })
-  })
-}
+const useDenyCard = (): UseDenyCard => {
+  const { mutate, data, error, isLoading } = useMutation(
+    ({ cardID }: UseDenyCardRequest) => {
+      return axios({
+        method: PATCH,
+        url: `/api/v1/cards/${cardID}/deny`,
+      })
+    }
+  )
 
-const useDenyCard = ({ cardID }: UseDenyCardRequest): UseDenyCard => {
-  const { data, error, isLoading } = queryDenyCard({ cardID })
   return {
+    denyCard: mutate,
     response: data,
     isLoading: isLoading,
     isError: error,

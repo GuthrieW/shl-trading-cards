@@ -13,19 +13,17 @@ type UseGetApprovedCards = {
 
 const UseGetApprovedCardsKey = 'use-get-approved-cards'
 
-function queryGetApprovedCards({}: UseGetApprovedCardsRequrest) {
-  return useQuery(UseGetApprovedCardsKey, async () => {
-    const { data } = await axios({
-      method: GET,
-      url: '/api/v1/cards/approved',
-    })
-    return data
-  })
-}
-
 const useGetApprovedCards =
   ({}: UseGetApprovedCardsRequrest): UseGetApprovedCards => {
-    const { data, error, isFetching } = queryGetApprovedCards({})
+    const { data, error, isFetching } = useQuery(
+      UseGetApprovedCardsKey,
+      async () => {
+        return await axios({
+          method: GET,
+          url: '/api/v1/cards/approved',
+        })
+      }
+    )
 
     return {
       allCards: data || [],

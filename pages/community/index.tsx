@@ -27,12 +27,14 @@ const Community = () => {
   const { users, isLoading, isError } = useGetAllUsers({})
 
   return (
-    <DataTable
-      title={"View a Member's Collection"}
-      data={users}
-      columns={columns}
-      options={options}
-    />
+    <div>
+      <DataTable
+        title={"View a Member's Collection"}
+        data={users}
+        columns={columns}
+        options={options}
+      />
+    </div>
   )
 }
 

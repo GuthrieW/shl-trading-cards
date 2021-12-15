@@ -1,19 +1,18 @@
 import React from 'react'
 import { FormTextField, FormSelectField } from '@components/index'
 import { attributes, positions, rarities, teams } from '@constants/index'
-import find from 'lodash/find'
 
-type CardFormProps = {
+type CardRequestFormProps = {
   handleOnChange: any
   cardData: Card | CardRequest
   formDisabled: boolean
 }
 
-const CardForm = ({
+const CardRequestForm = ({
   handleOnChange,
   cardData,
   formDisabled,
-}: CardFormProps) => (
+}: CardRequestFormProps) => (
   <>
     <FormTextField
       label={'Player Name'}
@@ -33,7 +32,7 @@ const CardForm = ({
       onChange={(event) => {
         handleOnChange({
           ...cardData,
-          playerID: event.target.value,
+          playerID: parseInt(event.target.value),
         })
       }}
     />
@@ -48,7 +47,7 @@ const CardForm = ({
       onChange={(event) => {
         handleOnChange({
           ...cardData,
-          teamID: event.target.value,
+          teamID: parseInt(event.target.value),
         })
       }}
     />
@@ -84,6 +83,18 @@ const CardForm = ({
     />
     <FormTextField
       type={'number'}
+      label={'Season'}
+      value={cardData.season}
+      disabled={formDisabled}
+      onChange={(event) => {
+        handleOnChange({
+          ...cardData,
+          season: parseInt(event.target.value),
+        })
+      }}
+    />
+    <FormTextField
+      type={'number'}
       inputProps={{ min: 0, max: 99 }}
       label={'Overall'}
       value={cardData.overall}
@@ -91,7 +102,7 @@ const CardForm = ({
       onChange={(event) => {
         handleOnChange({
           ...cardData,
-          overall: event.target.value,
+          overall: parseInt(event.target.value),
         })
       }}
     />
@@ -106,7 +117,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              skating: event.target.value,
+              skating: parseInt(event.target.value),
             })
           }}
         />
@@ -119,7 +130,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              shooting: event.target.value,
+              shooting: parseInt(event.target.value),
             })
           }}
         />
@@ -132,7 +143,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              hands: event.target.value,
+              hands: parseInt(event.target.value),
             })
           }}
         />
@@ -145,7 +156,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              checking: event.target.value,
+              checking: parseInt(event.target.value),
             })
           }}
         />
@@ -158,7 +169,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              defense: event.target.value,
+              defense: parseInt(event.target.value),
             })
           }}
         />
@@ -174,7 +185,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              high_shots: event.target.value,
+              high_shots: parseInt(event.target.value),
             })
           }}
         />
@@ -187,7 +198,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              low_shots: event.target.value,
+              low_shots: parseInt(event.target.value),
             })
           }}
         />
@@ -200,7 +211,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              quickness: event.target.value,
+              quickness: parseInt(event.target.value),
             })
           }}
         />
@@ -213,7 +224,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              control: event.target.value,
+              control: parseInt(event.target.value),
             })
           }}
         />
@@ -226,7 +237,7 @@ const CardForm = ({
           onChange={(event) => {
             handleOnChange({
               ...cardData,
-              conditioning: event.target.value,
+              conditioning: parseInt(event.target.value),
             })
           }}
         />
@@ -235,4 +246,4 @@ const CardForm = ({
   </>
 )
 
-export default CardForm
+export default CardRequestForm

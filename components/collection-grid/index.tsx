@@ -51,12 +51,23 @@ const CollectionGrid = ({
 
           return card ? (
             <GridItem>
-              <Box onClick={() => handleOpenCard(card)}>
+              <Box
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
                 <Badge
                   badgeContent={numberOfDuplicates ? numberOfDuplicates : null}
                   color={'primary'}
                 >
-                  <StyledImage width={300} height={400} src={card.image_url} />
+                  <StyledImage
+                    onClick={() => handleOpenCard(card)}
+                    width={300}
+                    height={400}
+                    src={card.image_url}
+                  />
                 </Badge>
               </Box>
             </GridItem>
