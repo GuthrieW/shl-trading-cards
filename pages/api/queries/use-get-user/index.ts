@@ -21,7 +21,7 @@ const useGetUser = ({ uid }: UseGetUserRequest): UseGetUser => {
   })
 
   return {
-    user: data || {},
+    user: data.data || {},
     isLoading: isFetching,
     isError: error,
   }

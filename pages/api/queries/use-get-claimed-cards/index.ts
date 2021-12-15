@@ -26,7 +26,7 @@ const useGetClaimedCards = ({
   )
 
   return {
-    claimedCards: data || [],
+    claimedCards: data.data || [],
     isLoading: isFetching,
     isError: error,
   }

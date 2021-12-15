@@ -28,7 +28,7 @@ const useGetLatestPackCards = ({
     }
   )
   return {
-    latestPackCards: data || [],
+    latestPackCards: data.data || [],
     isLoading: isFetching,
     isError: error,
   }

@@ -25,7 +25,7 @@ const useGetRequestedCards =
       }
     )
     return {
-      requestedCards: data || [],
+      requestedCards: data.data || [],
       isLoading: isFetching,
       isError: error,
     }

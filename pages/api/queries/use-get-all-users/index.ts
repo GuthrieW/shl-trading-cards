@@ -22,7 +22,7 @@ const useGetAllUsers = ({}: GetAllUsersRequest): UseGetAllUsers => {
   })
 
   return {
-    users: data || [],
+    users: data.data || [],
     isLoading: isFetching,
     isError: error,
   }
