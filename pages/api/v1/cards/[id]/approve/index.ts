@@ -4,6 +4,7 @@ import { PATCH } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
+import SQL from 'sql-template-strings'
 
 const allowedMethods = [PATCH]
 const cors = Cors({
@@ -16,18 +17,17 @@ const index = async (
 ): Promise<void> => {
   await middleware(request, response, cors)
   const { method } = request
-  const { uid } = request.query
+  const { id } = request.query
 
   if (method === PATCH) {
-    /*
-     * use: set a card's approval status to true
-     * called when: a member of the trading card team clicks the accept button on the approval page
-     */
+    const result = await queryDatabase(SQL`
+      UPDATE admin_cards.cards
+      SET approved=1
+      WHERE cardid=${id};
+    `)
 
-    // const results = await queryDatabase(``)
-    response
-      .status(StatusCodes.OK)
-      .json({ result: 'approved card', approved_card_id: uid })
+    response.status(StatusCodes.OK).json({ result: result })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)

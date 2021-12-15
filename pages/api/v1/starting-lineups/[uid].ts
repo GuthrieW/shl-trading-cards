@@ -4,6 +4,7 @@ import { GET } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
+import SQL from 'sql-template-strings'
 
 const allowedMethods = [GET]
 const cors = Cors({
@@ -19,15 +20,19 @@ const index = async (
   const { uid } = request.query
 
   if (method === GET) {
-    /*
-     * use: get the user's starting lineup
-     * called when: when viewing a starting lineup
-     */
-
-    // const results = await queryDatabase(``)
-    response
-      .status(StatusCodes.OK)
-      .json({ result: 'starting lineup', uid: uid })
+    const result = await queryDatabase(SQL`
+      SELECT
+        center,
+        rightwing,
+        leftwing,
+        rightdefense,
+        leftdefense,
+        goalie
+      FROM admin_cards.starting_lineup
+      WHERE userID=${uid};
+    `)
+    response.status(StatusCodes.OK).json({ result })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)

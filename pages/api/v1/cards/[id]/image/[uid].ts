@@ -4,6 +4,7 @@ import { PATCH } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
+import SQL from 'sql-template-strings'
 
 const allowedMethods = [PATCH]
 const cors = Cors({
@@ -15,18 +16,22 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { body, method, query } = request
+  const { method } = request
+  const { cardID, uid } = request.query
+  const { imageFileName } = request.body
 
   if (method === PATCH) {
-    /*
-     * use: upload an image to the server then update the card with the route to the card image
-     * called when: a card creator uploads a card image
-     */
+    const result = await queryDatabase(SQL`
+      UPDATE admin_cards.cards
+      SET image_url = ${imageFileName},
+        author_userID = ${uid}
+      WHERE cardid = ${cardID};
+    `)
 
-    // const results = await queryDatabase(``)
-    response
-      .status(StatusCodes.OK)
-      .json({ result: 'added image to card', image: body, cardID: query })
+    response.status(StatusCodes.OK).json({
+      result: result,
+    })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)
