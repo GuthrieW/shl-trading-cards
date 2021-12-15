@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { List } from '@material-ui/core'
 import { SidebarItem, SidebarIcon, StyledSidebar, SidebarText } from './styled'
 import { useRouter } from 'next/router'
@@ -14,19 +14,25 @@ const Sidebar = ({ pages }: SidebarProps) => {
   const { user, isLoading, isError } = useGetUser({
     uid: getUidFromSession(),
   })
+
+  const [isAdmin, setIsAdmin] = useState<boolean>(false)
+
+  useEffect(() => {
+    setIsAdmin(
+      hasRequiredPermisson(
+        [groups.TradingCardAdmin.id, groups.TradingCardTeam.id],
+        user
+      )
+    )
+  }, [user])
+
   const { asPath } = useRouter()
 
   return (
     <StyledSidebar>
       <List>
         {pages.map((page) => {
-          if (
-            page.admin &&
-            !hasRequiredPermisson(
-              [groups.TradingCardAdmin.id, groups.TradingCardTeam.id],
-              user
-            )
-          ) {
+          if (!isAdmin) {
             return null
           }
 
