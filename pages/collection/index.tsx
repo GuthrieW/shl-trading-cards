@@ -13,17 +13,13 @@ const CollectionPage = styled.div`
   margin: 10px;
 `
 
-const getUidForFetching = (routerUid: string | string[]): number => {
-  const uidAsString =
-    typeof routerUid !== 'undefined'
-      ? typeof routerUid === 'string'
-        ? routerUid
-        : routerUid[0]
-      : typeof window !== 'undefined'
-      ? sessionStorage.getItem('uid')
-      : null
-
-  return parseInt(uidAsString)
+const getUidForFetching = (routerUid: string | string[]): string => {
+  if (routerUid) {
+    const uidAsString: string = routerUid as string
+    return uidAsString
+  } else {
+    return sessionStorage.getItem('uid')
+  }
 }
 
 const Collection = () => {
@@ -37,14 +33,14 @@ const Collection = () => {
 
   const router = useRouter()
   const { uid } = router.query
-  const uidForFetching = getUidForFetching(uid)
+  const collectionUid = parseInt(getUidForFetching(uid))
 
   const {
     user,
     isLoading: userIsLoading,
     isError: userIsError,
   } = useGetUser({
-    uid: uidForFetching,
+    uid: collectionUid,
   })
 
   const {
@@ -52,7 +48,7 @@ const Collection = () => {
     isLoading: userCardsIsLoading,
     isError: userCardsIsError,
   } = useGetUserCards({
-    uid: uidForFetching,
+    uid: user.uid,
   })
 
   const cardsPerPage = 12

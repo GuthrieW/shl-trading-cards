@@ -80,7 +80,6 @@ const RequestCardCreation = () => {
   }
 
   const handleSingleCardSubmit = () => {
-    console.log('singleCard', singleCard)
     if (canSubmitSingleCard) {
       setIsSubmitting(true)
       const basePlayerData = {
@@ -121,7 +120,6 @@ const RequestCardCreation = () => {
               control: singleCard.control,
               conditioning: singleCard.conditioning,
             }
-      console.log('fullPlayerData', fullPlayerData)
 
       createRequestedCard({ requestedCard: fullPlayerData })
     }
@@ -176,7 +174,6 @@ const RequestCardCreation = () => {
               conditioning: parseInt(row[16]),
             }
 
-      console.log('fullPlayerData', fullPlayerData)
       createRequestedCard({ requestedCard: fullPlayerData })
     })
   }

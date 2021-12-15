@@ -1,5 +1,4 @@
 import { GET } from '@constants/http-methods'
-import user from '@utils/test-data/user.json'
 import axios from 'axios'
 import { useQuery } from 'react-query'
 
@@ -21,7 +20,7 @@ const useGetUser = ({ uid }: UseGetUserRequest): UseGetUser => {
   })
 
   return {
-    user: data?.data || {},
+    user: data?.data[0] || {},
     isLoading: isFetching,
     isError: error,
   }

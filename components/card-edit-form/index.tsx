@@ -44,7 +44,6 @@ const CardEditForm = ({
               <Switch
                 checked={updatedCard.approved}
                 onChange={(event) => {
-                  console.log(event)
                   setUpdatedCard({
                     ...updatedCard,
                     approved: !updatedCard.approved,
@@ -62,7 +61,6 @@ const CardEditForm = ({
               <Switch
                 checked={updatedCard.pullable}
                 onChange={(event) => {
-                  console.log(event)
                   setUpdatedCard({
                     ...updatedCard,
                     pullable: !updatedCard.pullable,
