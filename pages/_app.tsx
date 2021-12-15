@@ -4,7 +4,7 @@ import { ThemeProvider } from '@material-ui/styles'
 import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
 import Layout from '@components/layout'
-import { createTheme, Paper } from '@material-ui/core'
+import { createTheme } from '@material-ui/core'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
 

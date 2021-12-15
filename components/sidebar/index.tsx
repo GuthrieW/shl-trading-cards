@@ -15,24 +15,20 @@ const Sidebar = ({ pages }: SidebarProps) => {
     uid: getUidFromSession(),
   })
 
-  const [isAdmin, setIsAdmin] = useState<boolean>(false)
-
-  useEffect(() => {
-    setIsAdmin(
-      hasRequiredPermisson(
-        [groups.TradingCardAdmin.id, groups.TradingCardTeam.id],
-        user
-      )
-    )
-  }, [user])
-
   const { asPath } = useRouter()
 
   return (
     <StyledSidebar>
       <List>
         {pages.map((page) => {
-          if (page.admin && !isAdmin) {
+          console.log(page)
+          if (
+            page.admin &&
+            !hasRequiredPermisson(
+              [groups.TradingCardAdmin.id, groups.TradingCardTeam.id],
+              user
+            )
+          ) {
             return null
           }
 
