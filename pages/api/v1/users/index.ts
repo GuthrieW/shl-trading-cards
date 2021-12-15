@@ -4,6 +4,7 @@ import { GET } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
+import SQL from 'sql-template-strings'
 
 const allowedMethods = [GET]
 const cors = Cors({
@@ -18,14 +19,15 @@ const index = async (
   const { method } = request
 
   if (method === GET) {
-    const results = await queryDatabase(`
-    select 
+    const result = await queryDatabase(SQL`
+    SELECT 
       uid,
       username,
       avatar
-    from admin_mybb.mybb_users
+    FROM admin_mybb.mybb_users;
     `)
-    response.status(StatusCodes.OK).json({ result: 'all users selected' })
+    response.status(StatusCodes.OK).json({ result })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)

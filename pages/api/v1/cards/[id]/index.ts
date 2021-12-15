@@ -4,6 +4,7 @@ import { PATCH } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
+import SQL from 'sql-template-strings'
 
 const allowedMethods = []
 const cors = Cors({
@@ -15,35 +16,54 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { body, method } = request
-  const { player_name, teamID, playerID, card_rarity, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season } = request.body
+  const { method } = request
+  const { id } = request.query
+  const {
+    cardID,
+    teamID,
+    playerID,
+    player_name,
+    card_rarity,
+    position,
+    overall,
+    high_shots,
+    low_shots,
+    quickness,
+    control,
+    conditioning,
+    skating,
+    shooting,
+    hands,
+    checking,
+    defense,
+    season,
+  } = request.body
 
   if (method === PATCH) {
-
-    const results = await queryDatabase(`
-    update admin_cards.cards
-    set
-    player_name = '${player_name}'
-    ,teamID = ${teamID}
-    ,playerID = ${playerID}
-    ,card_rarity = '${card_rarity}'
-    ,position = '${position}'
-    ,overall = ${overall}
-    ,high_shots = ${high_shots}
-    ,low_shots = ${low_shots}
-    ,quickness = ${quickness}
-    ,control = ${control}
-    ,conditioning = ${conditioning}
-    ,skating = ${skating}
-    ,shooting = ${shooting}
-    ,hands = ${hands}
-    ,checking = ${checking}
-    ,defense = ${defense}
-    ,season = ${season}
+    const result = await queryDatabase(SQL`
+      UPDATE admin_cards.cards
+      SET player_name='${player_name}',
+        teamID=${teamID},
+        playerID=${playerID},
+        card_rarity='${card_rarity}',
+        position='${position}',
+        overall=${overall},
+        high_shots=${high_shots},
+        low_shots=${low_shots},
+        quickness=${quickness},
+        control=${control},
+        conditioning=${conditioning},
+        skating=${skating},
+        shooting=${shooting},
+        hands=${hands},
+        checking=${checking},
+        defense=${defense},
+        season=${season}
+      WHERE cardID=${id};
     `)
-    response
-      .status(StatusCodes.OK)
-      .json({ result: 'card request created', card: body })
+
+    response.status(StatusCodes.OK).json({ result: result })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)

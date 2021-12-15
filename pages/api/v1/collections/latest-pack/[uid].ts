@@ -4,6 +4,7 @@ import { GET } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
+import SQL from 'sql-template-strings'
 
 const allowedMethods = [GET]
 const cors = Cors({
@@ -19,21 +20,19 @@ const index = async (
   const { uid } = request.query
 
   if (method === GET) {
-
-    const results = await queryDatabase(`
-      select 
-        col.cardID,
-        c.image_url
-      from \`admin_cards\`.\`collection\` col
-        left join \`admin_cards\`.\`cards\` c
-        on col.cardID = c.cardID
-      where col.userID = ${uid} 
-      order by col.update_date DESC
-      limit 6
+    const result = await queryDatabase(SQL`
+      SELECT 
+        collection.cardID,
+        card.image_url
+      FROM admin_cards.collection collection
+        LEFT JOIN admin_cards.cards card
+        ON collection.cardID=card.cardID
+      WHERE collection.userID=${uid} 
+      ORDER BY collection.update_date DESC
+      LIMIT 6;
     `)
-    response
-      .status(StatusCodes.OK)
-      .json({ result: 'latest pack cards', uid: uid })
+    response.status(StatusCodes.OK).json({ result })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)

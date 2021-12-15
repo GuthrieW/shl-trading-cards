@@ -4,6 +4,7 @@ import { GET, PATCH } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
+import SQL from 'sql-template-strings'
 
 const allowedMethods = [PATCH]
 const cors = Cors({
@@ -19,13 +20,23 @@ const index = async (
   const { uid } = request.query
 
   if (method === GET) {
-    const results = await queryDatabase(`
-    SELECT cardID, player_name, teamID, playerID, card_rarity, image_url, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, author_userID, season 
-    FROM claimed_cards`)
+    const result = await queryDatabase(SQL`
+      SELECT
+        cardID, player_name, teamID,
+        playerID, card_rarity, image_url
+        pullable, approved, position,
+        overall, high_shots, low_shots,
+        quickness, control, conditioning,
+        skating, shooting, hands,
+        checking, defense, author_userID,
+        season 
+      FROM admin_cards.claimed_cards
+      WHERE uid=${uid};
+    `)
     response.status(StatusCodes.OK).json({
-      result: 'cards that have been claimed by the user and are not approved',
-      author_userID: uid,
+      result: result,
     })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)

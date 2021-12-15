@@ -4,6 +4,7 @@ import { PATCH } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
+import SQL from 'sql-template-strings'
 
 const allowedMethods = [PATCH]
 const cors = Cors({
@@ -20,14 +21,17 @@ const index = async (
   const { imageFileName } = request.body
 
   if (method === PATCH) {
-    const results = await queryDatabase(`
-      update \`admin_cards\`.\`cards\`
-      set image_url = ${imageFileName},
-      author_userID = ${uid}
-      where cardid = ${cardID};`)
-    response
-      .status(StatusCodes.OK)
-      .json({ result: 'added image to card', image: imageFileName, cardID: cardID })
+    const result = await queryDatabase(SQL`
+      UPDATE admin_cards.cards
+      SET image_url = ${imageFileName},
+        author_userID = ${uid}
+      WHERE cardid = ${cardID};
+    `)
+
+    response.status(StatusCodes.OK).json({
+      result: result,
+    })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)

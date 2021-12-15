@@ -4,6 +4,7 @@ import { GET } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
+import SQL from 'sql-template-strings'
 
 const allowedMethods = [GET]
 const cors = Cors({
@@ -16,15 +17,22 @@ const index = async (
 ): Promise<void> => {
   await middleware(request, response, cors)
   const { method } = request
-  const { uid } = request.query
 
   if (method === GET) {
-    const results = await queryDatabase(`
-    SELECT cardID, player_name, teamID, playerID, card_rarity, image_url, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, author_userID, season 
-    FROM unassigned_cards`)
-    response
-      .status(StatusCodes.OK)
-      .json({ result: 'get all requested cards', uid: uid })
+    const result = await queryDatabase(SQL`
+      SELECT
+        cardID, player_name, teamID,
+        playerID, card_rarity, image_url,
+        pullable, approved, position,
+        overall, high_shots, low_shots,
+        quickness, control, conditioning,
+        skating, shooting, hands,
+        checking, defense, author_userID,
+        season 
+      FROM admin_cards.unassigned_cards;
+    `)
+    response.status(StatusCodes.OK).json({ result: result })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)

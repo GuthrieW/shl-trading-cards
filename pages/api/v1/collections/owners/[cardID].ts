@@ -4,6 +4,7 @@ import { GET } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
+import SQL from 'sql-template-strings'
 
 const allowedMethods = [GET]
 const cors = Cors({
@@ -19,20 +20,14 @@ const index = async (
   const { cardID } = request.query
 
   if (method === GET) {
-    /*
-     * use: get all cards in a user's collection
-     * called when: a lot of places
-     */
-
-    const results = await queryDatabase(`
-      select userID
-      from \`admin_cards\`.\`collection\`
-      where cardID = ${cardID}
+    const result = await queryDatabase(SQL`
+      SELECT userID
+      FROM admin_cards.collection
+      WHERE cardID=${cardID};
     `)
 
-    response
-      .status(StatusCodes.OK)
-      .json({ result: 'get cards owners for cardID', cardID: cardID })
+    response.status(StatusCodes.OK).json({ result })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)

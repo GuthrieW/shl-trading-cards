@@ -4,6 +4,7 @@ import { PATCH } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
+import SQL from 'sql-template-strings'
 
 const allowedMethods = [PATCH]
 const cors = Cors({
@@ -19,13 +20,14 @@ const index = async (
   const { id, uid } = request.query
 
   if (method === PATCH) {
-    const results = await queryDatabase(`
-      update \`admin_cards\`.\`cards\`
-      set author_userID = ${uid}
-      where cardid = ${id};`)
-    response
-      .status(StatusCodes.OK)
-      .json({ result: 'author added to card', author_userID: uid })
+    const result = await queryDatabase(SQL`
+      UPDATE admin_cards.cards
+      SET author_userID=${uid}
+      WHERE cardID=${id};
+    `)
+
+    response.status(StatusCodes.OK).json({ result: result })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)

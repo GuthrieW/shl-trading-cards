@@ -4,6 +4,7 @@ import { POST } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
+import SQL from 'sql-template-strings'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -16,18 +17,36 @@ const index = async (
 ): Promise<void> => {
   await middleware(request, response, cors)
   const { body, method } = request
-  const { player_name, teamID, playerID, card_rarity, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season } = request.body
+  const {
+    player_name,
+    teamID,
+    playerID,
+    card_rarity,
+    position,
+    overall,
+    high_shots,
+    low_shots,
+    quickness,
+    control,
+    conditioning,
+    skating,
+    shooting,
+    hands,
+    checking,
+    defense,
+    season,
+  } = request.body
 
   if (method === POST) {
-    const results = await queryDatabase(`
-    insert into \`admin_cards\`.\`cards\`
-      (player_name, teamID, playerID, card_rarity, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season)
-    VALUES
-      ('${player_name}',${teamID},${playerID},'${card_rarity}',0,0,'${position}',${overall},${high_shots},${low_shots},${quickness},${control},${conditioning},${skating},${shooting},${hands},${checking},${defense},${season})   
-        `)
-    response
-      .status(StatusCodes.OK)
-      .json({ result: 'card request created', card: body })
+    const result = await queryDatabase(SQL`
+      INSERT INTO admin_cards.cards
+        (player_name, teamID, playerID, card_rarity, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season)
+      VALUES
+        ('${player_name}', ${teamID}, ${playerID}, '${card_rarity}', 0, 0, '${position}', ${overall}, ${high_shots}, ${low_shots}, ${quickness}, ${control}, ${conditioning}, ${skating}, ${shooting}, ${hands}, ${checking}, ${defense}, ${season});  
+    `)
+
+    response.status(StatusCodes.OK).json({ result: result })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)

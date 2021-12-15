@@ -4,6 +4,7 @@ import { GET } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
+import SQL from 'sql-template-strings'
 
 const allowedMethods = [GET]
 const cors = Cors({
@@ -18,11 +19,13 @@ const index = async (
   const { method } = request
 
   if (method === GET) {
-    const results = await queryDatabase(`
-    select cardID
-    from admin_cards.cards
-    where approved = 0`)
-    response.status(StatusCodes.OK).json({ result: 'all unapproved cards' })
+    const result = await queryDatabase(SQL`
+      SELECT cardID
+      FROM admin_cards.cards
+      WHERE approved=0;
+    `)
+    response.status(StatusCodes.OK).json({ result })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)
