@@ -26,7 +26,7 @@ const useGetApprovedCards =
     )
 
     return {
-      allCards: data.data || [],
+      allCards: data?.data || [],
       isLoading: isFetching,
       isError: error,
     }

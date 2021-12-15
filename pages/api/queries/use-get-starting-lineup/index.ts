@@ -29,7 +29,7 @@ const useGetStartingLineup = ({
   )
 
   return {
-    startingLineup: data.data,
+    startingLineup: data?.data,
     isLoading: isFetching,
     isError: error,
   }

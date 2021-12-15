@@ -23,7 +23,7 @@ const useGetUnapprovedCards =
     )
 
     return {
-      unapprovedCards: data.data || [],
+      unapprovedCards: data?.data || [],
       isLoading: isFetching,
       isError: error,
     }
