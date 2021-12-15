@@ -10,7 +10,7 @@ type UseGetAllUsers = {
   isError: any
 }
 
-const UseGetAllUsersKey = 'use-get-all-users'
+export const UseGetAllUsersKey = 'use-get-all-users'
 
 const useGetAllUsers = ({}: GetAllUsersRequest): UseGetAllUsers => {
   const { data, error, isFetching } = useQuery(UseGetAllUsersKey, async () => {

@@ -13,7 +13,7 @@ type UseGetCardOwners = {
   isError: any
 }
 
-const UseGetCardOwnersKey = 'use-get-card-owners'
+export const UseGetCardOwnersKey = 'use-get-card-owners'
 
 const useGetCardOwners = ({
   cardID,

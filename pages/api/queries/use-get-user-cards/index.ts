@@ -13,7 +13,7 @@ type UseGetUserCards = {
   isError: any
 }
 
-const UseGetUserCardsKey = 'use-get-user-cards'
+export const UseGetUserCardsKey = 'use-get-user-cards'
 
 const useGetUserCards = ({ uid }: UseGetUserCardsRequest): UseGetUserCards => {
   const { data, error, isFetching } = useQuery(UseGetUserCardsKey, async () => {

@@ -13,7 +13,7 @@ type UseGetStartingLineup = {
   isError: any
 }
 
-const UseGetStartingLineupKey = 'use-get-starting-lineup'
+export const UseGetStartingLineupKey = 'use-get-starting-lineup'
 
 const useGetStartingLineup = ({
   uid,

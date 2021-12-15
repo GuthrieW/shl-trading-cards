@@ -13,7 +13,7 @@ type UseGetClaimedCards = {
   isError: any
 }
 
-const UseGetClaimedCardsKey = 'use-get-claimed-cards'
+export const UseGetClaimedCardsKey = 'use-get-claimed-cards'
 
 const useGetClaimedCards = ({
   uid,

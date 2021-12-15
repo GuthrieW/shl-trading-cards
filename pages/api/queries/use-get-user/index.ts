@@ -13,7 +13,7 @@ type UseGetUser = {
   isError: any
 }
 
-const UseGetUserKey = 'use-get-user'
+export const UseGetUserKey = 'use-get-user'
 
 const useGetUser = ({ uid }: UseGetUserRequest): UseGetUser => {
   const { data, error, isFetching } = useQuery(UseGetUserKey, async () => {

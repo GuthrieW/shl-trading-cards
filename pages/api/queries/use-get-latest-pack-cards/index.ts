@@ -13,7 +13,7 @@ type UseGetLatestPackCards = {
   isError: any
 }
 
-const UseGetLatestPackCardsKey = 'use-get-latest-pack-cards'
+export const UseGetLatestPackCardsKey = 'use-get-latest-pack-cards'
 
 const useGetLatestPackCards = ({
   uid,

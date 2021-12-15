@@ -1,6 +1,7 @@
-import { UseMutateFunction, useMutation } from 'react-query'
+import { UseMutateFunction, useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
+import { UseGetApprovedCardsKey } from '@pages/api/queries/use-get-approved-cards'
 
 type UseEditCardRequest = {
   cardID: number
@@ -15,6 +16,7 @@ type UseEditCard = {
 }
 
 const useEditCard = (): UseEditCard => {
+  const queryClient = useQueryClient()
   const { mutate, data, error, isLoading } = useMutation(
     ({ cardID, newCardData }: UseEditCardRequest) => {
       return axios({
@@ -22,6 +24,11 @@ const useEditCard = (): UseEditCard => {
         url: `/api/v1/cards/${cardID}`,
         data: newCardData,
       })
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(UseGetApprovedCardsKey)
+      },
     }
   )
 

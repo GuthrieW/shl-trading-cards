@@ -11,7 +11,7 @@ type UseGetUnapprovedCards = {
   isError: any
 }
 
-const UseGetUnapprovedCardsKey = 'use-get-unapproved-cards'
+export const UseGetUnapprovedCardsKey = 'use-get-unapproved-cards'
 
 const useGetUnapprovedCards =
   ({}: UseGetUnapprovedCardsRequest): UseGetUnapprovedCards => {

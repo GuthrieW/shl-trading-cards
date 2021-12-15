@@ -11,7 +11,7 @@ type UseGetRequestedCards = {
   isError: any
 }
 
-const UseGetRequestedCardsKey = 'use-get-requested-cards'
+export const UseGetRequestedCardsKey = 'use-get-requested-cards'
 
 const useGetRequestedCards =
   ({}: UseGetRequestedCardsRequest): UseGetRequestedCards => {
