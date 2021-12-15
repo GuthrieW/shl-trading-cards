@@ -19,13 +19,15 @@ const index = async (
   const { method } = request
   const { id } = request.query
 
+  console.log('id', id)
+
   if (method === PATCH) {
     const result = await queryDatabase(SQL`
       UPDATE admin_cards.cards
       SET approved=0,
-        author_userid=null,
+        author_userID=null,
         image_url=null
-      WHERE cardid=${id};
+      WHERE cardID=${id};
     `)
 
     response.status(StatusCodes.OK).json(result)

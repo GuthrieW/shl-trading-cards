@@ -22,12 +22,17 @@ const index = async (
     const unapprovedCards: Card[] = await queryDatabase(SQL`
       SELECT 
         cardID, player_name, teamID,
-        card_rarity, overall, skating,
-        shooting, hands, checking, 
+        playerID, author_userID, card_rarity, 
+        position, season, overall, 
+        high_shots, low_shots, quickness, 
+        control, conditioning, skating, 
+        shooting, hands, checking,
         defense, image_url
-
       FROM admin_cards.cards
-      WHERE approved=0;
+      WHERE 
+        approved=0
+        AND author_userID IS NOT NULL
+        AND image_url IS NOT NULL;
     `)
 
     response.status(StatusCodes.OK).json(unapprovedCards)

@@ -16,6 +16,7 @@ type UseDenyCard = {
 const useDenyCard = (): UseDenyCard => {
   const { mutate, data, error, isLoading } = useMutation(
     ({ cardID }: UseDenyCardRequest) => {
+      console.log('cardID', cardID)
       return axios({
         method: PATCH,
         url: `/api/v1/cards/${cardID}/deny`,

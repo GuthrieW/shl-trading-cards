@@ -39,7 +39,7 @@ const ApproveDenyModal = ({
           justifyContent: 'center',
         }}
       >
-        <img width={300} height={400} src={card[10]} />
+        <img width={300} height={400} src={card[14]} />
         <div
           style={{
             marginTop: '10px',

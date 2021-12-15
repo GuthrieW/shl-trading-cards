@@ -30,8 +30,10 @@ const index = async (
         skating, shooting, hands,
         checking, defense, author_userID,
         season 
-      FROM admin_cards.claimed_cards
-      WHERE uid=${uid};
+      FROM admin_cards.cards
+      WHERE 
+        author_userID=${uid}
+        AND image_url IS NULL;
     `)
 
     response.status(StatusCodes.OK).json(result)

@@ -29,7 +29,8 @@ const index = async (
         skating, shooting, hands,
         checking, defense, author_userID,
         season 
-      FROM admin_cards.approved_cards;
+      FROM admin_cards.cards
+      WHERE approved=1;
     `)
 
     response.status(StatusCodes.OK).json(result)

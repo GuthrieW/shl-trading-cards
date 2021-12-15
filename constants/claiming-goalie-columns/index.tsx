@@ -12,8 +12,20 @@ const claimingGoalieColumns = [
     name: 'teamID',
   },
   {
+    label: 'Player ID',
+    name: 'playerID',
+  },
+  {
     label: 'Rarity',
     name: 'card_rarity',
+  },
+  {
+    label: 'Position',
+    name: 'position',
+  },
+  {
+    label: 'Season',
+    name: 'season',
   },
   {
     label: 'Overall',
@@ -21,11 +33,11 @@ const claimingGoalieColumns = [
   },
   {
     label: 'High Shots',
-    name: 'highShots',
+    name: 'high_shots',
   },
   {
     label: 'Low Shots',
-    name: 'lowShots',
+    name: 'low_shots',
   },
   {
     label: 'Quickness',
@@ -38,14 +50,6 @@ const claimingGoalieColumns = [
   {
     label: 'Conditioning',
     name: 'conditioning',
-  },
-  {
-    label: 'Image URL',
-    name: 'image_url',
-    options: {
-      filter: false,
-      sort: false,
-    },
   },
 ]
 

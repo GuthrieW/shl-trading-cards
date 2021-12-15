@@ -16,7 +16,7 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { body, method } = request
+  const { method } = request
   const {
     player_name,
     teamID,
@@ -32,18 +32,20 @@ const index = async (
     skating,
     shooting,
     hands,
+    season,
     checking,
     defense,
-    season,
-  } = request.body
+  } = request.body.requestedCard
 
   if (method === POST) {
     const result = await queryDatabase(SQL`
       INSERT INTO admin_cards.cards
         (player_name, teamID, playerID, card_rarity, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season)
       VALUES
-        ('${player_name}', ${teamID}, ${playerID}, '${card_rarity}', 0, 0, '${position}', ${overall}, ${high_shots}, ${low_shots}, ${quickness}, ${control}, ${conditioning}, ${skating}, ${shooting}, ${hands}, ${checking}, ${defense}, ${season});  
+        (${player_name}, ${teamID}, ${playerID}, ${card_rarity}, 0, 0, ${position}, ${overall}, ${high_shots}, ${low_shots}, ${quickness}, ${control}, ${conditioning}, ${skating}, ${shooting}, ${hands}, ${checking}, ${defense}, ${season});  
     `)
+
+    console.log(result)
 
     response.status(StatusCodes.OK).json(result)
     return

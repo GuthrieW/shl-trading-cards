@@ -28,7 +28,7 @@ const goalieColumns = [
     name: 'pullable',
     options: {
       customBodyRender: (value) => {
-        return value === true ? 'true' : 'false'
+        return value === 1 ? 'true' : 'false'
       },
     },
   },
@@ -37,7 +37,7 @@ const goalieColumns = [
     name: 'approved',
     options: {
       customBodyRender: (value) => {
-        return value === true ? 'true' : 'false'
+        return value === 1 ? 'true' : 'false'
       },
     },
   },

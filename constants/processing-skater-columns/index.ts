@@ -12,8 +12,24 @@ const processingSkaterColumns = [
     name: 'teamID',
   },
   {
+    label: 'Player ID',
+    name: 'playerID',
+  },
+  {
+    label: 'Author ID',
+    name: 'author_userID',
+  },
+  {
     label: 'Rarity',
     name: 'card_rarity',
+  },
+  {
+    label: 'Position',
+    name: 'position',
+  },
+  {
+    label: 'Season',
+    name: 'season',
   },
   {
     label: 'Overall',

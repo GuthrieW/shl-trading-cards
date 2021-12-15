@@ -30,6 +30,7 @@ const SubmitCards = () => {
 
   useEffect(() => {
     setFilteringCards(true)
+
     let newFilteredCards = []
 
     if (searchString !== '') {
@@ -75,8 +76,12 @@ const SubmitCards = () => {
       <OptionInput
         options={filteredCards}
         loading={getClaimedCardsIsLoading || filteringCards}
-        groupBy={(option: Card) => (option ? option.card_rarity : '')}
-        getOptionLabel={(option: Card) => (option ? option.player_name : '')}
+        groupBy={(option: Card) =>
+          option.card_rarity ? option.card_rarity : ''
+        }
+        getOptionLabel={(option: Card) =>
+          option.player_name ? option.player_name : ''
+        }
         label={'Enter claimed card name'}
         onChange={(event, newValue) => {
           setSelectedCard(newValue)

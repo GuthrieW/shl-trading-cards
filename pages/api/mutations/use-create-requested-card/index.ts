@@ -16,6 +16,7 @@ type UseCreateRequestedCard = {
 const useCreateRequestedCard = (): UseCreateRequestedCard => {
   const { mutate, data, isLoading, isError } = useMutation(
     ({ requestedCard }: UseCreateRequestedCardRequest) => {
+      console.log('requestedCard', requestedCard)
       return axios({
         method: POST,
         url: '/api/v1/cards',

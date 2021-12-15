@@ -12,8 +12,20 @@ const claimingSkaterColumns = [
     name: 'teamID',
   },
   {
+    label: 'Player ID',
+    name: 'playerID',
+  },
+  {
     label: 'Rarity',
     name: 'card_rarity',
+  },
+  {
+    label: 'Position',
+    name: 'position',
+  },
+  {
+    label: 'Season',
+    name: 'season',
   },
   {
     label: 'Overall',
@@ -38,14 +50,6 @@ const claimingSkaterColumns = [
   {
     label: 'Defense',
     name: 'defense',
-  },
-  {
-    label: 'Image URL',
-    name: 'image_url',
-    options: {
-      filter: false,
-      sort: false,
-    },
   },
 ]
 
