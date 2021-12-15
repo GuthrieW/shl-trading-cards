@@ -23,7 +23,7 @@ const index = async (
     const result = await queryDatabase(SQL`
       UPDATE admin_cards.cards
       SET approved=1
-      WHERE cardid=${id};
+      WHERE cardID=${id};
     `)
 
     response.status(StatusCodes.OK).json(result)

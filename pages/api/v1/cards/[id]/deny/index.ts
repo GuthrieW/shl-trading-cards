@@ -19,8 +19,6 @@ const index = async (
   const { method } = request
   const { id } = request.query
 
-  console.log('id', id)
-
   if (method === PATCH) {
     const result = await queryDatabase(SQL`
       UPDATE admin_cards.cards
