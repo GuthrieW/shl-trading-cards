@@ -28,8 +28,7 @@ const useGetLatestPackCards = ({
     }
   )
   return {
-    latestPackCards: cards.data.slice(0, 6),
-    // latestPackCards: data,
+    latestPackCards: data || [],
     isLoading: isFetching,
     isError: error,
   }

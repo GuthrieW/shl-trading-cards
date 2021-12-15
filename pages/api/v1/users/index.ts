@@ -20,13 +20,14 @@ const index = async (
 
   if (method === GET) {
     const result = await queryDatabase(SQL`
-    SELECT 
-      uid,
-      username,
-      avatar
-    FROM admin_mybb.mybb_users;
+      SELECT 
+        uid,
+        username,
+        avatar
+      FROM admin_mybb.mybb_users;
     `)
-    response.status(StatusCodes.OK).json({ result })
+
+    response.status(StatusCodes.OK).json(result)
     return
   }
 

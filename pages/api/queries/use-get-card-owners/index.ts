@@ -29,8 +29,7 @@ const useGetCardOwners = ({
   )
 
   return {
-    cardOwners: users.data,
-    // cardOwners: data,
+    cardOwners: data || [],
     isLoading: isFetching,
     isError: error,
   }

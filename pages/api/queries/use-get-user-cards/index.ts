@@ -23,8 +23,7 @@ const useGetUserCards = ({ uid }: UseGetUserCardsRequest): UseGetUserCards => {
     })
   })
   return {
-    userCards: cards.data,
-    // userCards: data,
+    userCards: data || [],
     isLoading: isFetching,
     isError: error,
   }

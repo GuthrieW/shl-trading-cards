@@ -26,7 +26,7 @@ const index = async (
       WHERE cardID=${cardID};
     `)
 
-    response.status(StatusCodes.OK).json({ result })
+    response.status(StatusCodes.OK).json(result)
     return
   }
 

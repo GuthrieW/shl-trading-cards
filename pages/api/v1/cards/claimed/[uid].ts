@@ -33,9 +33,8 @@ const index = async (
       FROM admin_cards.claimed_cards
       WHERE uid=${uid};
     `)
-    response.status(StatusCodes.OK).json({
-      result: result,
-    })
+
+    response.status(StatusCodes.OK).json(result)
     return
   }
 

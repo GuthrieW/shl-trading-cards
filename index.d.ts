@@ -85,10 +85,10 @@ type Trade = {
 type User = {
   uid: number
   username: string
-  avatar: string
-  usergroup: number
-  additionalgroups: string
-  displaygroups: number
+  avatar?: string
+  usergroup?: number
+  additionalgroups?: string
+  displaygroup?: number
 }
 
 // type Card = {

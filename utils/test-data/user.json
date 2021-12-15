@@ -6,7 +6,7 @@
       "avatar": "",
       "usergroup": 157,
       "additionalgroups": "",
-      "displaygroups": 157
+      "displaygroup": 157
     },
     {
       "uid": 2,
@@ -14,7 +14,7 @@
       "avatar": "",
       "usergroup": 157,
       "additionalgroups": "",
-      "displaygroups": 157
+      "displaygroup": 157
     },
     {
       "uid": 3,
@@ -22,7 +22,7 @@
       "avatar": "",
       "usergroup": 165,
       "additionalgroups": "",
-      "displaygroups": 165
+      "displaygroup": 165
     },
     {
       "uid": 4,
@@ -30,7 +30,7 @@
       "avatar": "",
       "usergroup": null,
       "additionalgroups": "",
-      "displaygroups": null
+      "displaygroup": null
     },
     {
       "uid": 5,
@@ -38,7 +38,7 @@
       "avatar": "",
       "usergroup": 157,
       "additionalgroups": "",
-      "displaygroups": 157
+      "displaygroup": 157
     },
     {
       "uid": 6,
@@ -46,7 +46,7 @@
       "avatar": "",
       "usergroup": 165,
       "additionalgroups": "",
-      "displaygroups": 165
+      "displaygroup": 165
     },
     {
       "uid": 7,
@@ -54,7 +54,7 @@
       "avatar": "",
       "usergroup": 165,
       "additionalgroups": "",
-      "displaygroups": 165
+      "displaygroup": 165
     },
     {
       "uid": 8,
@@ -62,7 +62,7 @@
       "avatar": "",
       "usergroup": 157,
       "additionalgroups": "",
-      "displaygroups": 157
+      "displaygroup": 157
     },
     {
       "uid": 9,
@@ -70,7 +70,7 @@
       "avatar": "",
       "usergroup": 165,
       "additionalgroups": "",
-      "displaygroups": 165
+      "displaygroup": 165
     },
     {
       "uid": 10,
@@ -78,7 +78,7 @@
       "avatar": "",
       "usergroup": 165,
       "additionalgroups": "",
-      "displaygroups": 165
+      "displaygroup": 165
     },
     {
       "uid": 11,
@@ -86,7 +86,7 @@
       "avatar": "",
       "usergroup": 157,
       "additionalgroups": "",
-      "displaygroups": 157
+      "displaygroup": 157
     }
   ]
 }

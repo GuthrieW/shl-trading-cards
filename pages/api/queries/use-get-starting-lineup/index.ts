@@ -29,8 +29,7 @@ const useGetStartingLineup = ({
   )
 
   return {
-    startingLineup: cards.data.slice(0, 6),
-    // unapprovedCards: data,
+    startingLineup: data,
     isLoading: isFetching,
     isError: error,
   }

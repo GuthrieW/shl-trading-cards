@@ -31,7 +31,8 @@ const index = async (
         season 
       FROM admin_cards.unassigned_cards;
     `)
-    response.status(StatusCodes.OK).json({ result: result })
+
+    response.status(StatusCodes.OK).json(result)
     return
   }
 

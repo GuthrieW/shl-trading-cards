@@ -67,7 +67,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
           <Layout>
             <DefaultSeo {...SEO} />
             {showModal && <AuthModal />}
-            <Component {...pageProps} />
+            {!showModal && <Component {...pageProps} />}
             <style global jsx>{`
               body {
                 font-family: 'Raleway', sans-serif;
