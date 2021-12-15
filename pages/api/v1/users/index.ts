@@ -23,7 +23,9 @@ const index = async (
       SELECT 
         uid,
         username,
-        avatar
+        avatar,
+        displaygroup,
+        additionalgroups
       FROM admin_mybb.mybb_users;
     `)
 

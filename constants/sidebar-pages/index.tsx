@@ -27,18 +27,18 @@ const pages = [
     icon: <EmojiPeopleOutlined />,
     admin: false,
   },
-  {
-    name: 'Pack Shop',
-    href: '/pack-shop',
-    icon: <AddShoppingCartOutlined />,
-    admin: false,
-  },
-  {
-    name: 'Trade Hub',
-    href: '/trade-hub',
-    icon: <CompareArrowsOutlined />,
-    admin: false,
-  },
+  // {
+  //   name: 'Pack Shop',
+  //   href: '/pack-shop',
+  //   icon: <AddShoppingCartOutlined />,
+  //   admin: false,
+  // },
+  // {
+  //   name: 'Trade Hub',
+  //   href: '/trade-hub',
+  //   icon: <CompareArrowsOutlined />,
+  //   admin: false,
+  // },
   {
     name: 'Admin',
     href: '/admin-dashboard',

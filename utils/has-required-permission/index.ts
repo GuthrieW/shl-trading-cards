@@ -1,26 +1,15 @@
 import { groups } from '@utils/user-groups'
 
-const hasRequiredPermisson = (requiredPermissions, user: User) => {
-  const permissions = []
-  permissions.push(user.usergroup)
-  if (user.additionalgroups) {
-    if (user.additionalgroups.indexOf(groups.TradingCardAdmin.idAsString)) {
-      permissions.push(groups.TradingCardAdmin.id)
-    }
+const hasRequiredPermisson = (requiredPermissions: number[], user: User) => {
+  const perms = requiredPermissions.map((permission: number) => {
+    return (
+      user.displaygroup === permission ||
+      (user.additionalgroups &&
+        user.additionalgroups.includes(permission.toString()))
+    )
+  })
 
-    if (user.additionalgroups.indexOf(groups.TradingCardTeam.idAsString)) {
-      permissions.push(groups.TradingCardTeam.id)
-    }
-  }
-
-  if (requiredPermissions.length === 0) {
-    return true
-  }
-
-  return true
-  // return requiredPermissions.some(
-  //   (permission) => permissions.indexOf(permission) >= 0
-  // )
+  return perms.includes(true)
 }
 
 export default hasRequiredPermisson

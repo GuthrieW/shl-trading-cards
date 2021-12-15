@@ -14,11 +14,15 @@ const CollectionPage = styled.div`
 `
 
 const getUidForFetching = (routerUid: string | string[]): string => {
-  if (routerUid) {
-    const uidAsString: string = routerUid as string
-    return uidAsString
+  if (typeof window !== 'undefined') {
+    if (routerUid) {
+      const uidAsString: string = routerUid as string
+      return uidAsString
+    } else {
+      return sessionStorage.getItem('uid')
+    }
   } else {
-    return sessionStorage.getItem('uid')
+    return null
   }
 }
 
@@ -58,22 +62,28 @@ const Collection = () => {
     setFilteringCards(true)
     setPageNumber(1)
 
-    const selectedRarityNames = rarityOptions
-      .filter((rarityOption) => {
-        return rarityOption.enabled
-      })
-      .map((filteredRarityOption) => {
-        return filteredRarityOption.rarity
-      })
+    let newFilteredCards = []
 
-    const allDisabled = selectedRarityNames.length === 0
+    if (searchString !== '') {
+      const selectedRarityNames = rarityOptions
+        .filter((rarityOption) => {
+          return rarityOption.enabled
+        })
+        .map((filteredRarityOption) => {
+          return filteredRarityOption.rarity
+        })
 
-    const newFilteredCards = userCards.filter((card) => {
-      return (
-        stringInCardName(card, searchString) &&
-        (allDisabled || selectedRarityNames.includes(card.card_rarity))
-      )
-    })
+      const allDisabled = selectedRarityNames.length === 0
+
+      newFilteredCards = userCards.filter((card) => {
+        return (
+          stringInCardName(card, searchString) &&
+          (allDisabled || selectedRarityNames.includes(card.card_rarity))
+        )
+      })
+    } else {
+      newFilteredCards = userCards
+    }
 
     const sortedCards = sortBy(newFilteredCards, (card: Card) => {
       return [card.card_rarity, card.player_name]

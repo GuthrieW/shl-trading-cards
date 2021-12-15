@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormTextField, FormSelectField } from '@components/index'
 import { attributes, positions, rarities, teams } from '@constants/index'
 import { useGetAllUsers } from '@pages/api/queries'
 import { Button, FormControlLabel, Switch } from '@material-ui/core'
+import hasRequiredPermisson from '@utils/has-required-permission'
+import { groups } from '@utils/user-groups'
 
 type CardEditFormProps = {
   initialValues: Card
@@ -20,7 +22,21 @@ const CardEditForm = ({
   formDisabled,
 }: CardEditFormProps) => {
   const { users, isLoading, isError } = useGetAllUsers({})
+  const [cardCreators, setCardCreators] = useState<User[]>([])
   const [updatedCard, setUpdatedCard] = useState<Card>(initialValues)
+
+  useEffect(() => {
+    console.log(users)
+    const filteredUsers = users.filter((user) =>
+      hasRequiredPermisson(
+        [groups.TradingCardAdmin.id, groups.TradingCardTeam.id],
+        user
+      )
+    )
+
+    console.log('filteredUsers', filteredUsers)
+    setCardCreators(filteredUsers)
+  }, [users])
 
   return (
     <>
@@ -98,10 +114,10 @@ const CardEditForm = ({
             }}
           />
           <FormSelectField
-            label={'Author User ID'}
+            label={'Author User'}
             labelId={'author-label'}
             value={updatedCard.author_userID}
-            options={users.map((user) => {
+            options={cardCreators.map((user) => {
               return { label: user.username, value: user.uid }
             })}
             disabled={formDisabled}

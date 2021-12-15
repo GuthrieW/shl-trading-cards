@@ -47,12 +47,12 @@ const AdminDashboard = () => {
     useState<SelectedAdminPage>('none')
 
   if (typeof window !== 'undefined') {
-    if (
-      !hasRequiredPermisson(
-        [groups.TradingCardAdmin.id, groups.TradingCardTeam.id],
-        user
-      )
-    ) {
+    const hasPerm = hasRequiredPermisson(
+      [groups.TradingCardAdmin.id, groups.TradingCardTeam.id],
+      user
+    )
+
+    if (!hasPerm && !isLoading) {
       router.push({
         pathname: '/home',
       })
