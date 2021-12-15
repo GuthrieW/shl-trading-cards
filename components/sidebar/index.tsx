@@ -32,7 +32,7 @@ const Sidebar = ({ pages }: SidebarProps) => {
     <StyledSidebar>
       <List>
         {pages.map((page) => {
-          if (!isAdmin) {
+          if (page.admin && !isAdmin) {
             return null
           }
 
