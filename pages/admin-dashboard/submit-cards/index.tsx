@@ -10,7 +10,8 @@ const SubmitCards = () => {
   const [filteringCards, setFilteringCards] = useState<boolean>(false)
   const [filteredCards, setFilteredCards] = useState<Card[]>([])
   const [searchString, setSearchString] = useState<string>('')
-  const [selectedFile, setSelectedFile] = useState<any>(null)
+  const [selectedImage, setSelectedImage] = useState(null)
+  const [selectedFile, setSelectedFile] = useState<string>(null)
   const [selectedCard, setSelectedCard] = useState<Card>(null)
   const {
     claimedCards,
@@ -27,6 +28,17 @@ const SubmitCards = () => {
   } = useSubmitCardImage()
 
   const canSubmit = selectedCard && selectedFile
+
+  const convertToBase64 = (file): Promise<string> => {
+    return new Promise((resolve) => {
+      let reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        const baseUrl = reader.result as string
+        resolve(baseUrl)
+      }
+    })
+  }
 
   useEffect(() => {
     setFilteringCards(true)
@@ -50,14 +62,18 @@ const SubmitCards = () => {
     setFilteringCards(false)
   }, [claimedCards, searchString])
 
-  const onFileChange = (event) => {
-    const file = URL.createObjectURL(event.target.files[0])
-    setSelectedFile(file)
+  const onFileChange = async (event) => {
+    const file = event.target.files[0]
+    const imageViewer = URL.createObjectURL(file)
+    const base64File = await convertToBase64(file)
+    setSelectedImage(imageViewer)
+    setSelectedFile(base64File)
   }
 
   const handleSubmit = () => {
     submitCardImage({ cardID: selectedCard.cardID, image: selectedFile })
     setSelectedCard(null)
+    setSelectedImage(null)
     setSelectedFile(null)
     setSearchString('')
   }
@@ -135,7 +151,7 @@ const SubmitCards = () => {
               justifyContent: 'center',
             }}
           >
-            {selectedFile && <img className={null} src={selectedFile} />}
+            {selectedImage && <img className={null} src={selectedImage} />}
           </Box>
         </div>
       )}

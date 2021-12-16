@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
+import fs from 'fs'
 
 const allowedMethods = [PATCH]
 const cors = Cors({
@@ -17,15 +18,32 @@ const index = async (
 ): Promise<void> => {
   await middleware(request, response, cors)
   const { method } = request
-  const { cardID, uid } = request.query
-  const { imageFileName } = request.body
+  const { id } = request.query
+  const { image } = request.body
 
   if (method === PATCH) {
+    const cardData: Card[] = await queryDatabase(SQL`
+      SELECT *
+      FROM admin_cards.cards
+      WHERE cardID=${id};
+    `)
+
+    const imageFilename = `${cardData[0].cardID}.png`
+    const decodedImage = Buffer.from(image, 'base64')
+
+    try {
+      fs.writeFileSync(
+        `${__dirname}../card-images/${imageFilename}`,
+        decodedImage
+      )
+    } catch (error) {
+      console.log('error', error)
+    }
+
     const result = await queryDatabase(SQL`
       UPDATE admin_cards.cards
-      SET image_url = ${imageFileName},
-        author_userID = ${uid}
-      WHERE cardid = ${cardID};
+      SET image_url=${imageFilename}
+      WHERE cardID=${id};
     `)
 
     response.status(StatusCodes.OK).json(result)

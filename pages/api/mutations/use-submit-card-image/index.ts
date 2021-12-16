@@ -1,10 +1,10 @@
-import { UseMutateFunction, useMutation } from 'react-query'
+import { useMutation } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
 
 type UseSubmitCardImageRequest = {
   cardID: number
-  image: any
+  image: string
 }
 
 type UseSubmitCardImage = {
@@ -20,7 +20,7 @@ const useSubmitCardImage = (): UseSubmitCardImage => {
       return axios({
         method: PATCH,
         url: `/api/v1/cards/${cardID}/image`,
-        data: image,
+        data: { image: image },
       })
     }
   )
