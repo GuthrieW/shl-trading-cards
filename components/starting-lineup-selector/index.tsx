@@ -73,18 +73,21 @@ const StartingLineupSelector = ({
       }}
     >
       <h3>{headerText}</h3>
-      {selectedCard && (
+      {selectedCard ? (
         <img
           src={`${pathToCards}${selectedCard.image_url}`}
-          style={{ width: '75%' }}
+          width={300}
+          height={400}
         />
+      ) : (
+        <img src={null} width={300} height={400} />
       )}
       <OptionInput
         options={filteredCards}
         loading={ownedCardsLoading || filteringCards}
         groupBy={(option: Card) => (option ? option.card_rarity : '')}
         getOptionLabel={(option: Card) => (option ? option.player_name : '')}
-        label={'Enter claimed card name'}
+        label={'Select a card'}
         onChange={(event, newValue) => {
           onCardChange(newValue)
         }}

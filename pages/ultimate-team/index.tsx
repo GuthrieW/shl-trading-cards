@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { Box } from '@material-ui/core'
 import { getUidFromSession } from '@utils/index'
 
-const StartingLineups = () => {
+const UltimateTeam = () => {
   const { userCards, isLoading, isError } = useGetUserCards({
     uid: getUidFromSession(),
   })
@@ -42,7 +42,7 @@ const StartingLineups = () => {
 
   return (
     <>
-      <PageHeader>Starting Lineups</PageHeader>
+      <PageHeader>Ultimate Team</PageHeader>
       <Box
         style={{
           display: 'flex',
@@ -158,4 +158,4 @@ const StartingLineups = () => {
   )
 }
 
-export default StartingLineups
+export default UltimateTeam

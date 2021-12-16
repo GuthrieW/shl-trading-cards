@@ -6,6 +6,7 @@ import {
   EmojiPeopleOutlined,
   HomeOutlined,
   SettingsOutlined,
+  SportsHockeyOutlined,
 } from '@material-ui/icons'
 
 const pages = [
@@ -38,6 +39,12 @@ const pages = [
     href: '/trade-hub',
     icon: <CompareArrowsOutlined />,
     admin: false,
+  },
+  {
+    name: 'Ultimate Team',
+    href: '/ultimate-team',
+    icon: <SportsHockeyOutlined />,
+    admin: true,
   },
   {
     name: 'Admin',
