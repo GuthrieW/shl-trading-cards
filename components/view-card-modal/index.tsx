@@ -1,5 +1,6 @@
 import React from 'react'
 import { Dialog, DialogContent, DialogTitle } from '@material-ui/core'
+import { pathToCards } from '@constants/index'
 
 type ViewCardModalProps = {
   open: boolean
@@ -24,7 +25,7 @@ const ViewCardModal = ({ open, handleCardClose, card }: ViewCardModalProps) => (
           <img
             width={300}
             height={400}
-            src={`${process.env.CARD_IMAGES_PATH}${card.image_url}`}
+            src={`${pathToCards}${card.image_url}`}
           />
         </DialogContent>
       </>

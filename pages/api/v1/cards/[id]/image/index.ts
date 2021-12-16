@@ -29,11 +29,12 @@ const index = async (
     `)
 
     const imageFilename = `${cardData[0].cardID}.png`
-    const decodedImage = Buffer.from(image, 'base64')
+    const base64Data = image.replace(/^data:image\/png;base64,/, '')
+    // const decodedImage = Buffer.from(image, 'base64')
 
     try {
       const imagePage = `./${__dirname}public/images/cards/${imageFilename}`
-      fs.writeFileSync(imagePage, decodedImage)
+      fs.writeFileSync(imagePage, base64Data, 'base64')
     } catch (error) {
       console.log('error', error)
     }

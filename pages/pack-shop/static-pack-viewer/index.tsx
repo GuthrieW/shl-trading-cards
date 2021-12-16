@@ -1,6 +1,7 @@
 import { Grid } from '@material-ui/core'
 import React from 'react'
 import styled from 'styled-components'
+import { pathToCards } from '@constants/index'
 
 type StaticPackViewerProps = {
   cards: Card[]
@@ -42,7 +43,7 @@ const StaticPackViewer = ({ cards }: StaticPackViewerProps) => (
             <StyledImage
               width={300}
               height={400}
-              src={`${process.env.CARD_IMAGES_PATH}${card.image_url}`}
+              src={`${pathToCards}${card.image_url}`}
             />
           </GridItem>
         )

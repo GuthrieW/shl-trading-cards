@@ -4,6 +4,7 @@ import { useGetAllCards, useGetCardOwners } from '@pages/api/queries/index'
 import { stringInCardName } from '@utils/index'
 import { DataTable, OptionInput, PageHeader } from '@components/index'
 import sortBy from 'lodash/sortBy'
+import { pathToCards } from '@constants/index'
 
 const columns = [
   {
@@ -93,7 +94,7 @@ const CardSearch = () => {
             <img
               width={300}
               height={400}
-              src={`${process.env.CARD_IMAGES_PATH}${selectedCard.image_url}`}
+              src={`${pathToCards}${selectedCard.image_url}`}
             />
           </div>
         </div>

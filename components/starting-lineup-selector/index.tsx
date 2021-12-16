@@ -3,6 +3,7 @@ import { OptionInput } from '@components/index'
 import sortBy from 'lodash/sortBy'
 import stringInCardName from '@utils/string-in-card-name'
 import { Box } from '@material-ui/core'
+import { pathToCards } from '@constants/index'
 
 type StartingLineupSelectorProps = {
   headerText: string
@@ -74,7 +75,7 @@ const StartingLineupSelector = ({
       <h3>{headerText}</h3>
       {selectedCard && (
         <img
-          src={`${process.env.CARD_IMAGES_PATH}${selectedCard.image_url}`}
+          src={`${pathToCards}${selectedCard.image_url}`}
           style={{ width: '75%' }}
         />
       )}
