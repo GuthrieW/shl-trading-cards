@@ -110,7 +110,6 @@ const EditCards = () => {
           data={skaterCards}
           columns={skaterColumns}
           options={skaterTableOptions}
-          loading={!skaterCards}
         />
       </div>
       <div style={{ height: '50%', width: '100%' }}>
@@ -119,7 +118,6 @@ const EditCards = () => {
           data={goalieCards}
           columns={goalieColumns}
           options={goalieTableOptions}
-          loading={!goalieCards}
         />
       </div>
       {selectedCard && (
