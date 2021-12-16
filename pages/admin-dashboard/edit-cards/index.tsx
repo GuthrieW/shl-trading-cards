@@ -96,19 +96,32 @@ const EditCards = () => {
   }
 
   return (
-    <>
-      <DataTable
-        title={'Edit a Skater Card'}
-        data={skaterCards}
-        columns={skaterColumns}
-        options={skaterTableOptions}
-      />
-      <DataTable
-        title={'Edit a Goalie Card'}
-        data={goalieCards}
-        columns={goalieColumns}
-        options={goalieTableOptions}
-      />
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+      }}
+    >
+      <div style={{ height: '50%', width: '100%' }}>
+        <DataTable
+          title={'Edit a Skater Card'}
+          data={skaterCards}
+          columns={skaterColumns}
+          options={skaterTableOptions}
+          loading={!skaterCards}
+        />
+      </div>
+      <div style={{ height: '50%', width: '100%' }}>
+        <DataTable
+          title={'Edit a Goalie Card'}
+          data={goalieCards}
+          columns={goalieColumns}
+          options={goalieTableOptions}
+          loading={!goalieCards}
+        />
+      </div>
       {selectedCard && (
         <EditCardModal
           open={isOpen}
@@ -118,7 +131,7 @@ const EditCards = () => {
           card={selectedCard}
         />
       )}
-    </>
+    </div>
   )
 }
 

@@ -9,7 +9,7 @@ import {
 import styled from 'styled-components'
 import Router from 'next/router'
 import { packsMap } from '@constants/index'
-import { useGetUser } from '@pages/api/queries/index'
+import { useGetCurrentUser } from '@pages/api/queries/index'
 import { PageHeader } from '@components/index'
 import OpenPacksIcon from '@public/icons/open-packs-icon'
 import { getUidFromSession } from '@utils/index'

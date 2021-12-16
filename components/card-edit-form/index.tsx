@@ -26,7 +26,6 @@ const CardEditForm = ({
   const [updatedCard, setUpdatedCard] = useState<Card>(initialValues)
 
   useEffect(() => {
-    console.log(users)
     const filteredUsers = users.filter((user) =>
       hasRequiredPermisson(
         [groups.TradingCardAdmin.id, groups.TradingCardTeam.id],
@@ -34,7 +33,6 @@ const CardEditForm = ({
       )
     )
 
-    console.log('filteredUsers', filteredUsers)
     setCardCreators(filteredUsers)
   }, [users])
 

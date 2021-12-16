@@ -1,5 +1,6 @@
 import React from 'react'
 import MUIDataTable from 'mui-datatables'
+import { Skeleton } from '@material-ui/lab'
 
 const defaultOptions = {
   filterType: 'dropdown',
@@ -9,7 +10,8 @@ const defaultOptions = {
   onRowClick: (rowData) => {
     return
   },
-  responsive: 'simple',
+
+  responsive: 'standard',
 }
 
 const DataTable = ({ title, data, columns, options }) => {

@@ -1,5 +1,4 @@
 import { useQuery } from 'react-query'
-import cards from '@utils/test-data/cards.json'
 import axios from 'axios'
 import { GET } from '@constants/http-methods'
 

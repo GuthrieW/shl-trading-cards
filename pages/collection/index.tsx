@@ -52,7 +52,7 @@ const Collection = () => {
     isLoading: userCardsIsLoading,
     isError: userCardsIsError,
   } = useGetUserCards({
-    uid: user.uid,
+    uid: collectionUid,
   })
 
   const cardsPerPage = 12
@@ -126,7 +126,7 @@ const Collection = () => {
             key={rarityOption.rarity}
             variant={rarityOption.enabled ? 'default' : 'outlined'}
             label={rarityOption.rarity}
-            avatar={<Avatar src={rarityOption.imageUrl} />}
+            // avatar={<Avatar src={rarityOption.imageUrl} />}
             onClick={() => handleRarityOptionsUpdate(rarityOption, index)}
           />
         ))}

@@ -24,17 +24,26 @@ const HomeContainer = () => (
 
 const Home = () => {
   return (
-    <>
-      <StyledOverlay>
-        <HomeContainer />
-      </StyledOverlay>
-
+    <StyledOverlay>
+      <HomeContainer />
       <div
         style={{
-          zIndex: 1,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
-      ></div>
-    </>
+      >
+        <h1
+          style={{
+            marginTop: '20px',
+            color: 'white',
+            textShadow: '0px 0px 10px #000000',
+          }}
+        >
+          Welcome to SHL Trading Cards!
+        </h1>
+      </div>
+    </StyledOverlay>
   )
 }
 

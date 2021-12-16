@@ -6,7 +6,7 @@ import {
   StyledSidebar,
   SidebarText,
 } from '@components/sidebar/styled'
-import { useGetUser } from '@pages/api/queries/index'
+import { useGetCurrentUser } from '@pages/api/queries/index'
 import { getUidFromSession, hasRequiredPermisson } from '@utils/index'
 import { groups } from '@utils/user-groups'
 
@@ -17,7 +17,7 @@ type SidebarProps = {
 }
 
 const AdminSidebar = ({ pages, onItemClick, selectedItem }: SidebarProps) => {
-  const { user, isLoading, isError } = useGetUser({
+  const { user, isLoading, isError } = useGetCurrentUser({
     uid: getUidFromSession(),
   })
 

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { List } from '@material-ui/core'
 import { SidebarItem, SidebarIcon, StyledSidebar, SidebarText } from './styled'
 import { useRouter } from 'next/router'
-import { useGetUser } from '@pages/api/queries/index'
+import { useGetCurrentUser } from '@pages/api/queries/index'
 import { getUidFromSession, hasRequiredPermisson } from '@utils/index'
 import { groups } from '@utils/user-groups'
 
@@ -11,7 +11,7 @@ type SidebarProps = {
 }
 
 const Sidebar = ({ pages }: SidebarProps) => {
-  const { user, isLoading, isError } = useGetUser({
+  const { user, isLoading, isError } = useGetCurrentUser({
     uid: getUidFromSession(),
   })
 
@@ -21,7 +21,6 @@ const Sidebar = ({ pages }: SidebarProps) => {
     <StyledSidebar>
       <List>
         {pages.map((page) => {
-          console.log(page)
           if (
             page.admin &&
             !hasRequiredPermisson(
