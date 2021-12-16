@@ -39,3 +39,6 @@ yarn.lock
 yarn.lock
 
 notes.md
+
+/public/images/cards/*
+!/public/images/cards/.gitkeep
