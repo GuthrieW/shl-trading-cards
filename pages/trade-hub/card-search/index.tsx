@@ -90,7 +90,11 @@ const CardSearch = () => {
               width: '50%',
             }}
           >
-            <img width={300} height={400} src={selectedCard.image_url} />
+            <img
+              width={300}
+              height={400}
+              src={`${process.env.CARD_IMAGES_PATH}${selectedCard.image_url}`}
+            />
           </div>
         </div>
       )}

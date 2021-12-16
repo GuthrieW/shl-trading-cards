@@ -39,7 +39,11 @@ const StaticPackViewer = ({ cards }: StaticPackViewerProps) => (
       cards.map((card, index) => {
         return (
           <GridItem key={index}>
-            <StyledImage width={300} height={400} src={card.image_url} />
+            <StyledImage
+              width={300}
+              height={400}
+              src={`${process.env.CARD_IMAGES_PATH}${card.image_url}`}
+            />
           </GridItem>
         )
       })}

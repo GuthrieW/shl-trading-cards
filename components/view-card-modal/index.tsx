@@ -21,7 +21,11 @@ const ViewCardModal = ({ open, handleCardClose, card }: ViewCardModalProps) => (
           {card.player_name} - {card.card_rarity}
         </DialogTitle>
         <DialogContent>
-          <img width={300} height={400} src={card.image_url} />
+          <img
+            width={300}
+            height={400}
+            src={`${process.env.CARD_IMAGES_PATH}${card.image_url}`}
+          />
         </DialogContent>
       </>
     )}

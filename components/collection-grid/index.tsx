@@ -66,7 +66,7 @@ const CollectionGrid = ({
                     onClick={() => handleOpenCard(card)}
                     width={300}
                     height={400}
-                    src={card.image_url}
+                    src={`${process.env.CARD_IMAGES_PATH}${card.image_url}`}
                   />
                 </Badge>
               </Box>

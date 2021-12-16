@@ -73,7 +73,10 @@ const StartingLineupSelector = ({
     >
       <h3>{headerText}</h3>
       {selectedCard && (
-        <img src={selectedCard.image_url} style={{ width: '75%' }} />
+        <img
+          src={`${process.env.CARD_IMAGES_PATH}${selectedCard.image_url}`}
+          style={{ width: '75%' }}
+        />
       )}
       <OptionInput
         options={filteredCards}

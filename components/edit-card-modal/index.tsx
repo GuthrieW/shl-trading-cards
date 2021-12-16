@@ -28,7 +28,11 @@ const EditCardModal = ({
       <>
         <DialogTitle id="alert-dialog-title">{`Edit CardID: ${card.cardID}`}</DialogTitle>
         <DialogContent>
-          <img width={300} height={400} src={card.image_url} />
+          <img
+            width={300}
+            height={400}
+            src={`${process.env.CARD_IMAGES_PATH}${card.image_url}`}
+          />
           <CardEditForm
             initialValues={card}
             handleSubmitCard={handleSubmitCard}
