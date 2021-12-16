@@ -32,7 +32,10 @@ const index = async (
     const decodedImage = Buffer.from(image, 'base64')
 
     try {
-      fs.writeFileSync(`/public/images/cards/${imageFilename}`, decodedImage)
+      fs.writeFileSync(
+        `${__dirname}public/images/cards/${imageFilename}`,
+        decodedImage
+      )
     } catch (error) {
       console.log('error', error)
     }
