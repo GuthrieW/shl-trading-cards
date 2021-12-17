@@ -43,7 +43,7 @@ type CardRequest = {
   season: number
 }
 
-type CardSet = {
+type SetCard = {
   cardID: number
   setID: number
 }
@@ -54,7 +54,7 @@ type Collection = {
   quantity: number
 }
 
-type Set = {
+type CardSet = {
   setID: number
   name: string
   description: string
@@ -70,7 +70,6 @@ type StartingLineup = {
   goalie: number
 }
 
-// There is one record for each card involved in the trade
 type Trade = {
   tradeID: number
   tradeAssetID: number
@@ -90,25 +89,6 @@ type User = {
   additionalgroups?: string
   displaygroup?: number
 }
-
-// type Card = {
-//   playerName: string
-//   team: string
-//   rarity: 'Bronze' | 'Silver' | 'Gold' | 'Ruby' | 'Diamond'
-//   position: 'C' | 'LW' | 'RW' | 'LD' | 'RD' | 'G'
-//   overall: string
-//   skating?: number
-//   shooting?: number
-//   hands?: number
-//   checking?: number
-//   defense?: number
-//   highShots?: number
-//   lowShots?: number
-//   quickness?: number
-//   control?: number
-//   conditioning?: number
-//   imageUrl: string
-// }
 
 type Rarity = {
   rarity: string

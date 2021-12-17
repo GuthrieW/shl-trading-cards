@@ -13,6 +13,7 @@ import ProcessCards from './process-cards'
 import SubmitCards from './submit-cards'
 import ClaimCardCreation from './claim-card-creation'
 import RequestCardCreation from './request-card-creation'
+import EditSets from './edit-sets'
 
 const HorizontalBox = styled(Box)`
   display: flex;
@@ -37,6 +38,7 @@ export type SelectedAdminPage =
   | 'submit-cards'
   | 'claim-card-creation'
   | 'request-card-creation'
+  | 'edit-sets'
 
 const AdminDashboard = () => {
   const router = useRouter()
@@ -80,6 +82,7 @@ const AdminDashboard = () => {
           {selectedAdminPage === 'request-card-creation' && (
             <RequestCardCreation />
           )}
+          {selectedAdminPage === 'edit-sets' && <EditSets />}
         </VerticalContentBox>
       </HorizontalBox>
     </>

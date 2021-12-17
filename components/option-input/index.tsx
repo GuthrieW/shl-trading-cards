@@ -6,12 +6,16 @@ import { TextField } from '@material-ui/core'
 type OptionInputProps = {
   options: any[]
   loading: boolean
-  groupBy: any
+  groupBy?: any
   getOptionLabel: any
   label: string
   onChange: any
   onInputChange: any
-  defaultValue: string
+  defaultValue: string | string[]
+  renderOption?: any
+  multiple?: boolean
+  disabled?: boolean
+  value?: any | any[]
 }
 
 const StyledAutocomplete = styled(Autocomplete)`
@@ -22,15 +26,21 @@ const StyledAutocomplete = styled(Autocomplete)`
 const OptionInput = ({
   options,
   loading,
-  groupBy,
+  groupBy = null,
   getOptionLabel,
   label,
   onChange,
   onInputChange,
   defaultValue,
+  renderOption = null,
+  multiple = false,
+  disabled = false,
+  value = null,
 }: OptionInputProps) => (
   <StyledAutocomplete
-    disableClearable={true}
+    value={value}
+    multiple={multiple}
+    renderOption={renderOption}
     options={options}
     loading={loading}
     groupBy={groupBy}
@@ -40,6 +50,7 @@ const OptionInput = ({
     onInputChange={onInputChange}
     renderInput={(params) => <TextField {...params} label={label} />}
     defaultValue={defaultValue}
+    disabled={disabled}
   />
 )
 

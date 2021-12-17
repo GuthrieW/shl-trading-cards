@@ -45,6 +45,12 @@ const adminPages: AdminPage[] = [
     icon: <CheckBoxOutlined />,
     requiredPermissions: [],
   },
+  {
+    name: 'Edit Sets',
+    href: 'edit-sets',
+    icon: <CheckBoxOutlined />,
+    requiredPermissions: [],
+  },
 ]
 
 export default adminPages
