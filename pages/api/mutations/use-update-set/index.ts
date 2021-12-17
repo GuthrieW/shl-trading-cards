@@ -1,13 +1,12 @@
 import { useMutation, useQueryClient } from 'react-query'
-import { PATCH } from '@constants/http-methods'
+import { POST } from '@constants/http-methods'
 import axios, { AxiosResponse } from 'axios'
 
 type UseUpdateSetRequest = {
   setID: number
   name: string
   description: string
-  cardIdsToAdd: Card[]
-  cardIdsToRemove: Card[]
+  cards: Card[]
 }
 
 type UseUpdateSet = {
@@ -20,14 +19,14 @@ type UseUpdateSet = {
 const useUpdateSet = (): UseUpdateSet => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading } = useMutation(
-    ({ setID, cardIdsToAdd, cardIdsToRemove }: UseUpdateSetRequest) => {
+    ({ setID, name, description, cards }: UseUpdateSetRequest) => {
+      const cardIds = cards.map((card: Card) => {
+        return card.cardID
+      })
       return axios({
-        method: PATCH,
-        url: `/api/v1/sets/${setID}/`,
-        data: {
-          cardIdsToAdd,
-          cardIdsToRemove,
-        },
+        method: POST,
+        url: `/api/v1/card-sets/${setID}`,
+        data: { name, description, cardIds },
       })
     },
     {

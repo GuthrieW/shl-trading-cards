@@ -62,6 +62,7 @@ const EditSets = () => {
   const [newSetDescription, setNewSetDescription] = useState<string>('')
 
   const {
+    refetch: refetchSetCards,
     setCards,
     isLoading: getSetCardsIsLoading,
     isError: getSetCardsIsError,
@@ -127,8 +128,8 @@ const EditSets = () => {
         }
         label={'Select a Card'}
         onChange={(event, newValue) => {
-          console.log('newValue', newValue)
           setSelectedCards(newValue)
+          refetchSetCards()
         }}
         onInputChange={(event, newInputValue) => {
           setSearchCardsString(newInputValue)
@@ -143,8 +144,9 @@ const EditSets = () => {
             setID: selectedSet.setID,
             name: selectedSet.name,
             description: selectedSet.description,
-            cardIds: selectedCards,
+            cards: selectedCards,
           })
+          refetchSetCards()
         }}
       >
         Update Set
