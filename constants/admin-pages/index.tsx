@@ -48,7 +48,7 @@ const adminPages: AdminPage[] = [
   {
     name: 'Edit Sets',
     href: 'edit-sets',
-    icon: <CheckBoxOutlined />,
+    icon: <ListAltOutlined />,
     requiredPermissions: [],
   },
 ]
