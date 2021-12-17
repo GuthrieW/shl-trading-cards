@@ -6,6 +6,7 @@ import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import fs from 'fs'
+import { pathToCardsForUpload } from '@constants/path-to-cards'
 
 const allowedMethods = [PATCH]
 const cors = Cors({
@@ -30,10 +31,9 @@ const index = async (
 
     const imageFilename = `${cardData[0].cardID}.png`
     const base64Data = image.replace(/^data:image\/png;base64,/, '')
-    // const decodedImage = Buffer.from(image, 'base64')
 
     try {
-      const imagePage = `./${__dirname}public/images/cards/${imageFilename}`
+      const imagePage = `${pathToCardsForUpload}${imageFilename}`
       fs.writeFileSync(imagePage, base64Data, 'base64')
     } catch (error) {
       console.log('error', error)
