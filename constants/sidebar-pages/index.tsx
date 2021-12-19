@@ -28,24 +28,24 @@ const pages = [
     icon: <EmojiPeopleOutlined />,
     admin: false,
   },
-  {
-    name: 'Pack Shop',
-    href: '/pack-shop',
-    icon: <AddShoppingCartOutlined />,
-    admin: false,
-  },
+  // {
+  //   name: 'Pack Shop',
+  //   href: '/pack-shop',
+  //   icon: <AddShoppingCartOutlined />,
+  //   admin: false,
+  // },
   {
     name: 'Trade Hub',
     href: '/trade-hub',
     icon: <CompareArrowsOutlined />,
     admin: false,
   },
-  {
-    name: 'Ultimate Team',
-    href: '/ultimate-team',
-    icon: <SportsHockeyOutlined />,
-    admin: true,
-  },
+  // {
+  //   name: 'Ultimate Team',
+  //   href: '/ultimate-team',
+  //   icon: <SportsHockeyOutlined />,
+  //   admin: true,
+  // },
   {
     name: 'Admin',
     href: '/admin-dashboard',

@@ -15,12 +15,12 @@ type AdminPage = {
 }
 
 const adminPages: AdminPage[] = [
-  {
-    name: 'Edit Cards',
-    href: 'edit-cards',
-    icon: <ListAltOutlined />,
-    requiredPermissions: [],
-  },
+  // {
+  //   name: 'Edit Cards',
+  //   href: 'edit-cards',
+  //   icon: <ListAltOutlined />,
+  //   requiredPermissions: [],
+  // },
   {
     name: 'Request Cards',
     href: 'request-card-creation',
@@ -45,12 +45,12 @@ const adminPages: AdminPage[] = [
     icon: <CheckBoxOutlined />,
     requiredPermissions: [],
   },
-  {
-    name: 'Edit Sets',
-    href: 'edit-sets',
-    icon: <ListAltOutlined />,
-    requiredPermissions: [],
-  },
+  // {
+  //   name: 'Edit Sets',
+  //   href: 'edit-sets',
+  //   icon: <ListAltOutlined />,
+  //   requiredPermissions: [],
+  // },
 ]
 
 export default adminPages
