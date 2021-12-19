@@ -8,33 +8,29 @@ type ViewCardModalProps = {
   card: Card
 }
 
-const ViewCardModal = ({ open, handleCardClose, card }: ViewCardModalProps) => {
-  console.log(card)
-  console.log(pathToCards)
-  return (
-    <Dialog
-      open={open}
-      onClose={handleCardClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-      BackdropProps={{ style: { backgroundColor: 'rgba(0, 0, 0, 0.5)' } }}
-    >
-      {card && (
-        <>
-          <DialogTitle id="alert-dialog-title">
-            {card.player_name} - {card.card_rarity}
-          </DialogTitle>
-          <DialogContent>
-            <img
-              width={300}
-              height={400}
-              src={`${pathToCards}${card.image_url}`}
-            />
-          </DialogContent>
-        </>
-      )}
-    </Dialog>
-  )
-}
+const ViewCardModal = ({ open, handleCardClose, card }: ViewCardModalProps) => (
+  <Dialog
+    open={open}
+    onClose={handleCardClose}
+    aria-labelledby="alert-dialog-title"
+    aria-describedby="alert-dialog-description"
+    BackdropProps={{ style: { backgroundColor: 'rgba(0, 0, 0, 0.5)' } }}
+  >
+    {card && (
+      <>
+        <DialogTitle id="alert-dialog-title">
+          {card.player_name} - {card.card_rarity}
+        </DialogTitle>
+        <DialogContent>
+          <img
+            width={300}
+            height={400}
+            src={`${pathToCards}${card.image_url}`}
+          />
+        </DialogContent>
+      </>
+    )}
+  </Dialog>
+)
 
 export default ViewCardModal

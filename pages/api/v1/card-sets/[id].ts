@@ -40,7 +40,6 @@ const index = async (
   if (method === POST) {
     const { id } = query
     const { name, description, cardIds } = body
-    console.log('body', body)
 
     const setResult = await queryDatabase(SQL`
       UPDATE admin_cards.sets
@@ -48,13 +47,11 @@ const index = async (
         description=${description}
       WHERE setID=${id};
     `)
-    console.log('setResult', setResult)
 
     const removeResult = await queryDatabase(SQL`
       DELETE FROM admin_cards.card_sets
       WHERE setID=${id};
     `)
-    console.log('removeResult', removeResult)
 
     cardIds.map(async (cardID: string) => {
       const addResult = await queryDatabase(SQL`
