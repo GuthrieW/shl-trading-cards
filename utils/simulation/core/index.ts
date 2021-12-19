@@ -1,54 +1,60 @@
-type PeriodType = 'first' | 'second' | 'third' | 'overtime' | 'shootout'
+import { Game, GameEvent, NewEvent, EventData, PeriodType } from './index.d'
+import { getLineup, getNewPeriodTime } from './utils/index'
+import handleEvent from './event-handler'
 
-const simulation = (homeTeam: Card[], awayTeam: Card[]) => {
-  const gameLog = {
-    fullLog: [],
+const runSimulation = (
+  homeTeamUser: User,
+  homeTeamCards: Card[],
+  awayTeamUser: User,
+  awayTeamCards: Card[]
+): Game => {
+  const homeTeamLines = getLineup(homeTeamCards)
+  const awayTeamLines = getLineup(awayTeamCards)
+
+  let game: Game = {
+    gameState: 'unplayed',
+    clockState: 'stopped',
+    gameLog: { textLog: [], statistics: {} },
+    homeTeamOwner: homeTeamUser,
+    homeLineup: homeTeamLines,
+    awayTeamOwner: awayTeamUser,
+    awayLineup: awayTeamLines,
   }
-  const homeTeamLines = getLines()
-  const awayTeamLines = getLines()
 
-  simulatePeriod('first')
-  simulatePeriod('second')
-  simulatePeriod('third')
-}
+  game = simulatePeriod('regulation', game)
+  game = simulatePeriod('regulation', game)
+  game = simulatePeriod('regulation', game)
 
-const simulatePeriod = (periodType: PeriodType) => {
-  return
-}
-
-const getLines = () => {
-  return {
-    line1: {
-      center: {},
-      leftWing: {},
-      rightWing: {},
-      leftDefense: {},
-      rightDefense: {},
-      goalie: {},
-    },
-    line2: {
-      center: {},
-      leftWing: {},
-      rightWing: {},
-      leftDefense: {},
-      rightDefense: {},
-      goalie: {},
-    },
-    line3: {
-      center: {},
-      leftWing: {},
-      rightWing: {},
-      leftDefense: {},
-      rightDefense: {},
-    },
-    line4: {
-      center: {},
-      leftWing: {},
-      rightWing: {},
-      leftDefense: {},
-      rightDefense: {},
-    },
+  if (game.gameState !== 'finished') {
+    game = simulatePeriod('overtime', game)
   }
+
+  if (game.gameState !== 'in-progress') {
+    game = simulatePeriod('shootout', game)
+  }
+
+  return game
 }
 
-export default simulation
+const simulatePeriod = (periodType: PeriodType, game: Game): Game => {
+  const periodClock: number = getNewPeriodTime(periodType)
+
+  while (periodClock > 0) {
+    if (game.clockState === 'stopped') {
+      game = handleEvent({
+        game: game,
+        eventType: 'faceoff',
+        eventData: {
+          description: 'Beginning of period faceoff',
+        },
+      })
+
+      game.clockState = 'running'
+    } else {
+    }
+  }
+
+  return game
+}
+
+export default runSimulation
