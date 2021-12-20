@@ -53,6 +53,7 @@ const EditCards = () => {
         conditioning: null,
         image_url: rowData[15],
         season: parseInt(rowData[16]),
+        author_paid: rowData[17] === 'true',
       }
       setSelectedCard(skaterCard)
       setIsOpen(true)
@@ -84,6 +85,7 @@ const EditCards = () => {
         conditioning: parseInt(rowData[14]),
         image_url: rowData[15],
         season: parseInt(rowData[16]),
+        author_paid: rowData[17] === 'true',
       }
       setSelectedCard(goalieCard)
       setIsOpen(true)

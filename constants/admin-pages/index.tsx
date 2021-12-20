@@ -11,46 +11,46 @@ type AdminPage = {
   name: string
   href: string
   icon: any
-  requiredPermissions: number[]
+  admin: boolean
 }
 
 const adminPages: AdminPage[] = [
-  // {
-  //   name: 'Edit Cards',
-  //   href: 'edit-cards',
-  //   icon: <ListAltOutlined />,
-  //   requiredPermissions: [],
-  // },
+  {
+    name: 'Edit Cards',
+    href: 'edit-cards',
+    icon: <ListAltOutlined />,
+    admin: true,
+  },
   {
     name: 'Request Cards',
     href: 'request-card-creation',
     icon: <AddBoxOutlined />,
-    requiredPermissions: [],
+    admin: true,
   },
   {
     name: 'Claim Cards',
     href: 'claim-card-creation',
     icon: <GetAppOutlined />,
-    requiredPermissions: [],
+    admin: false,
   },
   {
     name: 'Submit Cards',
     href: 'submit-cards',
     icon: <PublishOutlined />,
-    requiredPermissions: [],
+    admin: false,
   },
   {
     name: 'Process Cards',
     href: 'process-cards',
     icon: <CheckBoxOutlined />,
-    requiredPermissions: [],
+    admin: true,
   },
-  // {
-  //   name: 'Edit Sets',
-  //   href: 'edit-sets',
-  //   icon: <ListAltOutlined />,
-  //   requiredPermissions: [],
-  // },
+  {
+    name: 'Edit Sets',
+    href: 'edit-sets',
+    icon: <ListAltOutlined />,
+    admin: true,
+  },
 ]
 
 export default adminPages
