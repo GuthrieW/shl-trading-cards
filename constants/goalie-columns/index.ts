@@ -12,16 +12,8 @@ const goalieColumns = [
     name: 'playerID',
   },
   {
-    label: 'Card Creator ID',
+    label: 'Author ID',
     name: 'author_userID',
-  },
-  {
-    label: 'Name',
-    name: 'player_name',
-  },
-  {
-    label: 'Rarity',
-    name: 'card_rarity',
   },
   {
     label: 'Pullable',
@@ -42,44 +34,52 @@ const goalieColumns = [
     },
   },
   {
+    label: 'Name',
+    name: 'player_name',
+  },
+  {
+    label: 'Rarity',
+    name: 'card_rarity',
+  },
+  {
+    label: 'Season',
+    name: 'season',
+  },
+  {
     label: 'Position',
     name: 'position',
   },
   {
-    label: 'Overall',
+    label: 'OVR',
     name: 'overall',
   },
   {
-    label: 'High Shots',
-    name: 'highShots',
+    label: 'HSHT',
+    name: 'high_shots',
   },
   {
-    label: 'Low Shots',
-    name: 'lowShots',
+    label: 'LSHT',
+    name: 'low_shots',
   },
   {
-    label: 'Quickness',
+    label: 'QUI',
     name: 'quickness',
   },
   {
-    label: 'Control',
+    label: 'CTL',
     name: 'control',
   },
   {
-    label: 'Conditioning',
+    label: 'CND',
     name: 'conditioning',
   },
   {
-    label: 'Image URL',
+    label: 'Image',
     name: 'image_url',
     options: {
       filter: false,
       sort: false,
     },
-  },
-  {
-    label: 'Season',
-    name: 'season',
   },
 ]
 

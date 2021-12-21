@@ -12,16 +12,8 @@ const skaterColumns = [
     name: 'playerID',
   },
   {
-    label: 'Card Creator ID',
+    label: 'Author ID',
     name: 'author_userID',
-  },
-  {
-    label: 'Name',
-    name: 'player_name',
-  },
-  {
-    label: 'Rarity',
-    name: 'card_rarity',
   },
   {
     label: 'Pullable',
@@ -42,44 +34,52 @@ const skaterColumns = [
     },
   },
   {
+    label: 'Name',
+    name: 'player_name',
+  },
+  {
+    label: 'Rarity',
+    name: 'card_rarity',
+  },
+  {
+    label: 'Season',
+    name: 'season',
+  },
+  {
     label: 'Position',
     name: 'position',
   },
   {
-    label: 'Overall',
+    label: 'OVR',
     name: 'overall',
   },
   {
-    label: 'Skating',
+    label: 'SKA',
     name: 'skating',
   },
   {
-    label: 'Shooting',
+    label: 'SHT',
     name: 'shooting',
   },
   {
-    label: 'Hands',
+    label: 'HND',
     name: 'hands',
   },
   {
-    label: 'Checking',
+    label: 'CHK',
     name: 'checking',
   },
   {
-    label: 'Defense',
+    label: 'DEF',
     name: 'defense',
   },
   {
-    label: 'Image URL',
+    label: 'Image',
     name: 'image_url',
     options: {
       filter: false,
       sort: false,
     },
-  },
-  {
-    label: 'Season',
-    name: 'season',
   },
 ]
 

@@ -4,11 +4,7 @@ const claimingSkaterColumns = [
     name: 'cardID',
   },
   {
-    label: 'Name',
-    name: 'player_name',
-  },
-  {
-    label: 'Team',
+    label: 'Team ID',
     name: 'teamID',
   },
   {
@@ -16,39 +12,43 @@ const claimingSkaterColumns = [
     name: 'playerID',
   },
   {
-    label: 'Rarity',
-    name: 'card_rarity',
+    label: 'Name',
+    name: 'player_name',
   },
   {
-    label: 'Position',
-    name: 'position',
+    label: 'Rarity',
+    name: 'card_rarity',
   },
   {
     label: 'Season',
     name: 'season',
   },
   {
-    label: 'Overall',
+    label: 'Position',
+    name: 'position',
+  },
+  {
+    label: 'OVR',
     name: 'overall',
   },
   {
-    label: 'Skating',
+    label: 'SKA',
     name: 'skating',
   },
   {
-    label: 'Shooting',
+    label: 'SHT',
     name: 'shooting',
   },
   {
-    label: 'Hands',
+    label: 'HND',
     name: 'hands',
   },
   {
-    label: 'Checking',
+    label: 'CHK',
     name: 'checking',
   },
   {
-    label: 'Defense',
+    label: 'DEF',
     name: 'defense',
   },
 ]
