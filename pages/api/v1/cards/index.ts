@@ -38,12 +38,9 @@ const index = async (
   } = request.body.requestedCard
 
   if (method === POST) {
-    const result = await queryDatabase(SQL`
-      INSERT INTO admin_cards.cards
-        (player_name, teamID, playerID, card_rarity, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season, author_paid,)
-      VALUES
-        (${player_name}, ${teamID}, ${playerID}, ${card_rarity}, 0, 0, ${position}, ${overall}, ${high_shots}, ${low_shots}, ${quickness}, ${control}, ${conditioning}, ${skating}, ${shooting}, ${hands}, ${checking}, ${defense}, ${season}, 0);  
-    `)
+    const result = await queryDatabase(
+      SQL`INSERT INTO admin_cards.cards (player_name, teamID, playerID, card_rarity, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season, author_paid) VALUES (${player_name}, ${teamID}, ${playerID}, ${card_rarity}, 0, 0, ${position}, ${overall}, ${high_shots}, ${low_shots}, ${quickness}, ${control}, ${conditioning}, ${skating}, ${shooting}, ${hands}, ${checking}, ${defense}, ${season}, 0); `
+    )
 
     response.status(StatusCodes.OK).json(result)
     return
