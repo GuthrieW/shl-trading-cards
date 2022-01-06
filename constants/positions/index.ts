@@ -1,23 +1,11 @@
 const positions = [
   {
-    label: 'C',
-    value: 'C',
+    label: 'F',
+    value: 'F',
   },
   {
-    label: 'RW',
-    value: 'RW',
-  },
-  {
-    label: 'LW',
-    value: 'LW',
-  },
-  {
-    label: 'RD',
-    value: 'RD',
-  },
-  {
-    label: 'LD',
-    value: 'LD',
+    label: 'D',
+    value: 'D',
   },
   {
     label: 'G',

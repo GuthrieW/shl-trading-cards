@@ -76,6 +76,7 @@ const RequestCardCreation = () => {
   }, [selectedRequestUi])
 
   const handleSelectCsv = (data, fileInfo) => {
+    console.log('data', data)
     setCsvToUpload(data)
   }
 
@@ -134,6 +135,8 @@ const RequestCardCreation = () => {
       if (index === 0) {
         return
       }
+
+      console.log('row', row)
 
       const basePlayerData = {
         teamID: parseInt(row[0]),

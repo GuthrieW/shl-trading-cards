@@ -21,7 +21,7 @@ const UltimateTeam = () => {
 
   useEffect(() => {
     const forwardPositions = ['C', 'RW', 'LW']
-    const defensePositions = ['RD', 'LD"']
+    const defensePositions = ['RD', 'LD']
 
     const forwards = userCards.filter((card: Card) => {
       return forwardPositions.indexOf(card.position) >= 0
