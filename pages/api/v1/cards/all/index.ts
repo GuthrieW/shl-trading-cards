@@ -22,7 +22,6 @@ const index = async (
     const result = await queryDatabase(SQL`
       SELECT *
       FROM admin_cards.cards
-      WHERE approved=1
       ORDER BY card_rarity;
     `)
 

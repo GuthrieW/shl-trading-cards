@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { useGetAllCards, useGetCardOwners } from '@pages/api/queries/index'
+import { useGetApprovedCards, useGetCardOwners } from '@pages/api/queries/index'
 import { stringInCardName } from '@utils/index'
 import { DataTable, OptionInput, PageHeader } from '@components/index'
 import sortBy from 'lodash/sortBy'
@@ -19,10 +19,10 @@ const CardSearch = () => {
   const [filteringCards, setFilteringCards] = useState<boolean>(false)
   const [selectedCard, setSelectedCard] = useState<Card>(null)
   const {
-    allCards,
+    approvedCards,
     isLoading: allCardsIsLoading,
     isError: allCardsIsError,
-  } = useGetAllCards({})
+  } = useGetApprovedCards({})
   const {
     cardOwners,
     isLoading: cardOwnersIsLoading,
@@ -34,13 +34,13 @@ const CardSearch = () => {
     let newFilteredCards = []
 
     if (searchString !== '') {
-      const cardsIncludingString = allCards.filter((card: Card) => {
+      const cardsIncludingString = approvedCards.filter((card: Card) => {
         return stringInCardName(card, searchString)
       })
 
       newFilteredCards = cardsIncludingString
     } else {
-      newFilteredCards = allCards
+      newFilteredCards = approvedCards
     }
 
     const sortedCards = sortBy(newFilteredCards, (card: Card) => {
@@ -49,7 +49,7 @@ const CardSearch = () => {
 
     setFilteredCards(sortedCards)
     setFilteringCards(false)
-  }, [allCards, searchString])
+  }, [approvedCards, searchString])
 
   return (
     <div>

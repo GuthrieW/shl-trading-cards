@@ -1,6 +1,6 @@
 import PageHeader from '@components/page-header'
 import {
-  useGetAllCards,
+  useGetApprovedCards,
   useGetAllSets,
   useGetSetCards,
 } from '@pages/api/queries'
@@ -22,10 +22,10 @@ const stringInSetName = (set: CardSet, stringToFind: string) => {
 
 const EditSets = () => {
   const {
-    allCards,
+    approvedCards,
     isLoading: getAllCardsIsLoading,
     isError: getAllCardsIsError,
-  } = useGetAllCards({})
+  } = useGetApprovedCards({})
   const {
     allSets,
     isLoading: getAllSetsIsLoading,
@@ -118,7 +118,7 @@ const EditSets = () => {
       />
       <OptionInput
         value={selectedCards}
-        options={allCards || []}
+        options={approvedCards || []}
         loading={getSetCardsIsLoading}
         groupBy={(option: Card) => (option ? option.card_rarity : '')}
         getOptionLabel={(option: Card) =>
@@ -136,7 +136,7 @@ const EditSets = () => {
         }}
         defaultValue={[]}
         multiple={true}
-        disabled={!selectedSet || getSetCardsIsLoading || !allCards}
+        disabled={!selectedSet || getSetCardsIsLoading || !approvedCards}
       />
       <Button
         onClick={() => {

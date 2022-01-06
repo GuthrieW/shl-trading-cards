@@ -1,12 +1,11 @@
 import { GET } from '@constants/http-methods'
-import cards from '@utils/test-data/cards.json'
 import axios from 'axios'
 import { useQuery } from 'react-query'
 
 type UseGetApprovedCardsRequrest = {}
 
 type UseGetApprovedCards = {
-  allCards: Card[]
+  approvedCards: Card[]
   isLoading: boolean
   isError: any
 }
@@ -26,7 +25,7 @@ const useGetApprovedCards =
     )
 
     return {
-      allCards: data?.data || [],
+      approvedCards: data?.data || [],
       isLoading: isFetching,
       isError: error,
     }

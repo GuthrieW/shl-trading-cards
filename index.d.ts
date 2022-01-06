@@ -7,7 +7,7 @@ type Card = {
   player_name: string
   pullable: boolean
   approved: boolean
-  image_url: string
+  image_url?: string
   position: string
   overall: number
   skating?: number | null

@@ -30,29 +30,30 @@ const EditCards = () => {
   const goalieCards = onlyGoalieCards(allCards)
   const skaterTableOptions = {
     onRowClick: (rowData: string[]) => {
+      console.log('rowData', rowData)
       const skaterCard: Card = {
         cardID: parseInt(rowData[0]),
         teamID: parseInt(rowData[1]),
         playerID: parseInt(rowData[2]),
         author_userID: parseInt(rowData[3]),
-        player_name: rowData[4],
-        card_rarity: rowData[5],
-        pullable: rowData[6] === 'true',
-        approved: rowData[7] === 'true',
-        position: rowData[8],
-        overall: parseInt(rowData[9]),
-        skating: parseInt(rowData[10]),
-        shooting: parseInt(rowData[11]),
-        hands: parseInt(rowData[12]),
-        checking: parseInt(rowData[13]),
-        defense: parseInt(rowData[14]),
+        player_name: rowData[6],
+        card_rarity: rowData[7],
+        pullable: rowData[4] === 'true',
+        approved: rowData[5] === 'true',
+        position: rowData[9],
+        overall: parseInt(rowData[10]),
+        skating: parseInt(rowData[11]),
+        shooting: parseInt(rowData[12]),
+        hands: parseInt(rowData[13]),
+        checking: parseInt(rowData[14]),
+        defense: parseInt(rowData[15]),
         high_shots: null,
         low_shots: null,
         quickness: null,
         control: null,
         conditioning: null,
-        image_url: rowData[15],
-        season: parseInt(rowData[16]),
+        image_url: rowData[16],
+        season: parseInt(rowData[8]),
         author_paid: rowData[17] === 'true',
       }
       setSelectedCard(skaterCard)
@@ -67,24 +68,24 @@ const EditCards = () => {
         teamID: parseInt(rowData[1]),
         playerID: parseInt(rowData[2]),
         author_userID: parseInt(rowData[3]),
-        player_name: rowData[4],
-        card_rarity: rowData[5],
-        pullable: rowData[6] === 'true',
-        approved: rowData[7] === 'true',
-        position: rowData[8],
-        overall: parseInt(rowData[9]),
+        player_name: rowData[6],
+        card_rarity: rowData[7],
+        pullable: rowData[4] === 'true',
+        approved: rowData[5] === 'true',
+        position: rowData[9],
+        overall: parseInt(rowData[10]),
         skating: null,
         shooting: null,
         hands: null,
         checking: null,
         defense: null,
-        high_shots: parseInt(rowData[10]),
-        low_shots: parseInt(rowData[11]),
-        quickness: parseInt(rowData[12]),
-        control: parseInt(rowData[13]),
-        conditioning: parseInt(rowData[14]),
-        image_url: rowData[15],
-        season: parseInt(rowData[16]),
+        high_shots: parseInt(rowData[11]),
+        low_shots: parseInt(rowData[12]),
+        quickness: parseInt(rowData[13]),
+        control: parseInt(rowData[14]),
+        conditioning: parseInt(rowData[15]),
+        image_url: rowData[16],
+        season: parseInt(rowData[8]),
         author_paid: rowData[17] === 'true',
       }
       setSelectedCard(goalieCard)
@@ -96,6 +97,8 @@ const EditCards = () => {
     setSelectedCard(null)
     setIsOpen(false)
   }
+
+  console.log('selectedCard', selectedCard)
 
   return (
     <div
