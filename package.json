@@ -21,7 +21,7 @@
     "http-status-codes": "^2.1.4",
     "imagemin-svgo": "^9.0.0",
     "lodash": "^4.17.21",
-    "material-table": "^1.69.2",
+    "material-table": "^1.69.3",
     "mui-datatables": "^3.7.6",
     "next": "10.0.7",
     "next-compose-plugins": "^2.2.1",

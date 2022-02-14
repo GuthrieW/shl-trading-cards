@@ -1,5 +1,6 @@
 import React from 'react'
-import MUIDataTable from 'mui-datatables'
+// import MUIDataTable from 'mui-datatables'
+import MaterialTable from 'material-table'
 import { Skeleton } from '@material-ui/lab'
 
 const defaultOptions = {
@@ -16,7 +17,7 @@ const defaultOptions = {
 
 const DataTable = ({ title, data, columns, options }) => {
   return typeof window !== 'undefined' ? (
-    <MUIDataTable
+    <MaterialTable
       title={title}
       data={data}
       columns={columns}
