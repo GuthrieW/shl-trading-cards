@@ -42,3 +42,5 @@ notes.md
 
 /public/images/cards/*
 !/public/images/cards/.gitkeep
+
+id_rsa
