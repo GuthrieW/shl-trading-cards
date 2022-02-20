@@ -13,6 +13,7 @@ import { useGetCurrentUser } from '@pages/api/queries/index'
 import { PageHeader } from '@components/index'
 import OpenPacksIcon from '@public/icons/open-packs-icon'
 import { getUidFromSession } from '@utils/index'
+import useBuyPack from '@pages/api/mutations/use-buy-pack'
 
 const OpenPacksScreen = styled.div`
   @media only screen and (max-width: 768px) {
@@ -41,22 +42,24 @@ const StyledBarContainer = styled.div`
 `
 
 const OpenPacks = () => {
-  const handleOpenPack = async (packType) => {
-    // this probably needs to be re-done, using a hook to make an API call like this feels weird
-    // const { result, isLoading, isError } = useBuyPack(currentUser)
+  const { buyPack, response, isLoading, isError } = useBuyPack()
+  const handleOpenPack = async (packType: PackType) => {
+    if (!isLoading && !isError) {
+      buyPack({ userId: 1, packType: packType.key })
+    }
+  }
 
-    // if (result.packPurchased) {
+  console.log('response', response)
+
+  if (response.data.packPurchase === 1) {
     Router.push('/pack-shop/pack-viewer')
-    // } else {
-    // tell the user that the pack purchase was unsuccessful
-    // }
   }
 
   return (
     <OpenPacksScreen>
       <PageHeader>Pack Shop</PageHeader>
       <ImageList gap={16} rowHeight={400} cols={3}>
-        {packsMap.map((pack) => {
+        {packsMap.map((pack: PackType) => {
           const { key, label, imageUrl } = pack
           return (
             <ImageListItem key={key}>
@@ -64,10 +67,10 @@ const OpenPacks = () => {
                 <StyledImage
                   height={'400px'}
                   src={imageUrl}
-                  onClick={() => handleOpenPack(key)}
+                  onClick={() => handleOpenPack(pack)}
                 />
               </ImageItem>
-              <StyledBarContainer onClick={() => handleOpenPack(key)}>
+              <StyledBarContainer onClick={() => handleOpenPack(pack)}>
                 <ImageListItemBar
                   title={`Open ${label} Pack`}
                   actionIcon={
