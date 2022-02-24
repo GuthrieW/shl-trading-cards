@@ -1,7 +1,13 @@
 import React, { useMemo } from 'react'
-import { useTable, Cell, Column } from 'react-table'
+import { useTable, Column } from 'react-table'
 
-const DataTable = ({ title, tableData, tableColumns, options }) => {
+type DataTableProps = {
+  title: string
+  tableData: any[]
+  tableColumns: any[]
+}
+
+const DataTable = ({ title, tableColumns, tableData }: DataTableProps) => {
   const columns = useMemo<Column<any>[]>(
     () => [
       {
