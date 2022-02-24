@@ -1,31 +1,76 @@
-import React from 'react'
-// import MUIDataTable from 'mui-datatables'
-import MaterialTable from 'material-table'
-import { Skeleton } from '@material-ui/lab'
+import React, { useMemo } from 'react'
+import { useTable, Cell, Column } from 'react-table'
 
-const defaultOptions = {
-  filterType: 'dropdown',
-  download: false,
-  print: false,
-  selectableRows: 'none',
-  onRowClick: (rowData) => {
-    return
-  },
+const DataTable = ({ title, tableData, tableColumns, options }) => {
+  const columns = useMemo<Column<any>[]>(
+    () => [
+      {
+        Header: '',
+        accessor: '',
+      },
+      {
+        Header: 'Username',
+        accessor: 'username',
+      },
+    ],
+    []
+  )
+  const data = useMemo<any[]>(
+    () => [
+      {
+        uid: '123',
+        username: 'cal',
+      },
+    ],
+    []
+  )
 
-  responsive: 'standard',
-}
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    useTable({ columns, data })
 
-const DataTable = ({ title, data, columns, options }) => {
   return typeof window !== 'undefined' ? (
-    <MaterialTable
-      title={title}
-      data={data}
-      columns={columns}
-      options={{
-        ...defaultOptions,
-        ...options,
-      }}
-    />
+    <table {...getTableProps()} style={{ border: 'solid 1px blue' }}>
+      <thead>
+        {headerGroups.map((headerGroup) => (
+          <tr {...headerGroup.getHeaderGroupProps()}>
+            {headerGroup.headers.map((column) => (
+              <th
+                {...column.getHeaderProps()}
+                style={{
+                  borderBottom: 'solid 3px red',
+                  background: 'aliceblue',
+                  color: 'black',
+                  fontWeight: 'bold',
+                }}
+              >
+                {column.render('Header')}
+              </th>
+            ))}
+          </tr>
+        ))}
+      </thead>
+      <tbody {...getTableBodyProps()}>
+        {rows.map((row) => {
+          prepareRow(row)
+          return (
+            <tr {...row.getRowProps()}>
+              {row.cells.map((cell) => (
+                <td
+                  {...cell.getCellProps()}
+                  style={{
+                    padding: '10px',
+                    border: 'solid 1px gray',
+                    background: 'papaywhip',
+                  }}
+                >
+                  {cell.render('Cell')}
+                </td>
+              ))}
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
   ) : null
 }
 

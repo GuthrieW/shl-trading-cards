@@ -6,11 +6,18 @@ import Router from 'next/router'
 const columns = [
   {
     label: 'User ID',
-    name: 'uid',
+    accessor: 'uid',
   },
   {
     label: 'Username',
-    name: 'username',
+    accessor: 'username',
+  },
+]
+
+const users = [
+  {
+    uid: '123',
+    username: 'cal',
   },
 ]
 
@@ -24,7 +31,7 @@ const options = {
 }
 
 const Community = () => {
-  const { users, isLoading, isError } = useGetAllUsers({})
+  // const { users, isLoading, isError } = useGetAllUsers({})
 
   return (
     <div>
