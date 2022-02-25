@@ -4,6 +4,7 @@ import { useGetAllCards } from '@pages/api/queries/index'
 import { goalieColumns, skaterColumns } from '@constants/index'
 import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
 import { useEditCard, useSubmitCardImage } from '@pages/api/mutations'
+import { Button } from '@material-ui/core'
 
 const EditCards = () => {
   const {
@@ -26,6 +27,7 @@ const EditCards = () => {
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [selectedCard, setSelectedCard] = useState<Card>(null)
+  const [showSkaters, setShowSkaters] = useState<boolean>(true)
   const skaterCards = onlySkaterCards(allCards)
   const goalieCards = onlyGoalieCards(allCards)
   const skaterTableOptions = {
@@ -98,8 +100,6 @@ const EditCards = () => {
     setIsOpen(false)
   }
 
-  console.log('selectedCard', selectedCard)
-
   return (
     <div
       style={{
@@ -109,22 +109,19 @@ const EditCards = () => {
         height: '100%',
       }}
     >
-      <div style={{ height: '50%', width: '100%' }}>
-        <DataTable
-          title={'Edit a Skater Card'}
-          data={skaterCards}
-          columns={skaterColumns}
-          options={skaterTableOptions}
-        />
-      </div>
-      <div style={{ height: '50%', width: '100%' }}>
-        <DataTable
-          title={'Edit a Goalie Card'}
-          data={goalieCards}
-          columns={goalieColumns}
-          options={goalieTableOptions}
-        />
-      </div>
+      <DataTable
+        title={
+          <>
+            {showSkaters ? 'Edit a Skater Card' : 'Edit a Goalie Card'}
+            <Button onClick={() => setShowSkaters(!showSkaters)}>
+              Swap to {showSkaters ? 'Goalies' : 'Skaters'}
+            </Button>
+          </>
+        }
+        data={showSkaters ? skaterCards : goalieCards}
+        columns={showSkaters ? skaterColumns : goalieColumns}
+        options={showSkaters ? skaterTableOptions : goalieTableOptions}
+      />
       {selectedCard && (
         <EditCardModal
           open={isOpen}

@@ -1,30 +1,23 @@
 import React from 'react'
 import MUIDataTable from 'mui-datatables'
-import { Skeleton } from '@material-ui/lab'
 
-const defaultOptions = {
-  filterType: 'dropdown',
-  download: false,
-  print: false,
-  selectableRows: 'none',
-  onRowClick: (rowData) => {
-    return
-  },
-
-  responsive: 'standard',
+type DataTableProps = {
+  title: string
+  data: any[]
+  columns: any[]
+  options: any
 }
 
-const DataTable = ({ title, data, columns, options }) => {
+const DataTable = ({ title, columns, data, options }) => {
   return typeof window !== 'undefined' ? (
-    <MUIDataTable
-      title={title}
-      data={data}
-      columns={columns}
-      options={{
-        ...defaultOptions,
-        ...options,
-      }}
-    />
+    <div style={{ width: '100%', height: '100%' }}>
+      <MUIDataTable
+        title={title}
+        columns={columns}
+        data={data}
+        options={options}
+      />
+    </div>
   ) : null
 }
 

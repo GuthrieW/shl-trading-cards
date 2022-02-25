@@ -21,20 +21,19 @@ const options = {
       query: { uid: rowData[0] },
     })
   },
+  selectableRows: 'none',
 }
 
 const Community = () => {
   const { users, isLoading, isError } = useGetAllUsers({})
 
   return (
-    <div>
-      <DataTable
-        title={"View a Member's Collection"}
-        data={users}
-        columns={columns}
-        options={options}
-      />
-    </div>
+    <DataTable
+      title={"View a Member's Collection"}
+      data={users}
+      columns={columns}
+      options={options}
+    />
   )
 }
 

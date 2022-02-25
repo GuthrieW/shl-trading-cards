@@ -96,3 +96,12 @@ type Rarity = {
   imageUrl: string
   enabled: boolean
 }
+
+type PackKey = 'regular' | 'challenge-cup'
+type PackLabel = 'Regular' | 'Challenge Cup'
+
+type PackType = {
+  key: PackKey
+  label: PackLabel
+  imageUrl: string
+}
