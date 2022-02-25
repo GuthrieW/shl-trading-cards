@@ -8,11 +8,13 @@ import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
 import { useGetUnapprovedCards } from '@pages/api/queries/index'
 import { useAcceptCard, useDenyCard } from '@pages/api/mutations'
 import { ApproveDenyModal } from '@components/index'
+import { Button } from '@material-ui/core'
 
 const ProcessCards = () => {
   const [approveDenyModalVisible, setApproveDenyModalVisible] =
     useState<boolean>(false)
   const [selectedRow, setSelectedRow] = useState(null)
+  const [showSkaters, setShowSkaters] = useState<boolean>(true)
   const {
     unapprovedCards,
     isLoading: getUnapprovedCardsIsLoading,
@@ -42,15 +44,18 @@ const ProcessCards = () => {
   return (
     <>
       <DataTable
-        title={'Process Skater Cards'}
-        data={skaterCards}
-        columns={processingSkaterColumns}
-        options={options}
-      />
-      <DataTable
-        title={'Process Goalie Cards'}
-        data={goalieCards}
-        columns={processingGoalieColumns}
+        title={
+          <>
+            {showSkaters ? 'Process Skater Cards' : 'Process Goalie Cards'}
+            <Button onClick={() => setShowSkaters(!showSkaters)}>
+              Swap to {showSkaters ? 'Goalies' : 'Skaters'}
+            </Button>
+          </>
+        }
+        columns={
+          showSkaters ? processingSkaterColumns : processingGoalieColumns
+        }
+        data={showSkaters ? skaterCards : goalieCards}
         options={options}
       />
       {selectedRow && (

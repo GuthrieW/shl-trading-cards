@@ -6,18 +6,11 @@ import Router from 'next/router'
 const columns = [
   {
     label: 'User ID',
-    accessor: 'uid',
+    name: 'uid',
   },
   {
     label: 'Username',
-    accessor: 'username',
-  },
-]
-
-const users = [
-  {
-    uid: '123',
-    username: 'cal',
+    name: 'username',
   },
 ]
 
@@ -28,20 +21,19 @@ const options = {
       query: { uid: rowData[0] },
     })
   },
+  selectableRows: 'none',
 }
 
 const Community = () => {
-  // const { users, isLoading, isError } = useGetAllUsers({})
+  const { users, isLoading, isError } = useGetAllUsers({})
 
   return (
-    <div>
-      <DataTable
-        title={"View a Member's Collection"}
-        data={users}
-        columns={columns}
-        options={options}
-      />
-    </div>
+    <DataTable
+      title={"View a Member's Collection"}
+      data={users}
+      columns={columns}
+      options={options}
+    />
   )
 }
 

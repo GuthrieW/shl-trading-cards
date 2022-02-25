@@ -45,13 +45,13 @@ const OpenPacks = () => {
   const { buyPack, response, isLoading, isError } = useBuyPack()
   const handleOpenPack = async (packType: PackType) => {
     if (!isLoading && !isError) {
-      buyPack({ userId: 1, packType: packType.key })
+      const value = await buyPack({ userId: 2856, packType: packType.key })
+      console.log('value', value)
     }
   }
 
   console.log('response', response)
-
-  if (response.data.packPurchase === 1) {
+  if (response?.data?.purchaseSuccessful) {
     Router.push('/pack-shop/pack-viewer')
   }
 
