@@ -5,7 +5,7 @@ import Router from 'next/router'
 import { packsMap } from '@constants/index'
 import { PageHeader } from '@components/index'
 import useBuyPack from '@pages/api/mutations/use-buy-pack'
-import { AxiosResponse } from 'axios'
+import { getUidFromSession } from '@utils/index'
 
 const OpenPacksScreen = styled.div`
   @media only screen and (max-width: 768px) {
