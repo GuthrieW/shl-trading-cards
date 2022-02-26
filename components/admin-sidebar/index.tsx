@@ -7,8 +7,7 @@ import {
   SidebarText,
 } from '@components/sidebar/styled'
 import { useGetCurrentUser } from '@pages/api/queries/index'
-import { getUidFromSession, hasRequiredPermisson } from '@utils/index'
-import { groups } from '@utils/user-groups'
+import { getUidFromSession, isAdmin } from '@utils/index'
 
 type SidebarProps = {
   pages: any[]
@@ -25,13 +24,7 @@ const AdminSidebar = ({ pages, onItemClick, selectedItem }: SidebarProps) => {
     <StyledSidebar>
       <List>
         {pages.map((page) => {
-          if (
-            page.admin &&
-            !hasRequiredPermisson(
-              [groups.TradingCardAdmin.id, groups.TradingCardTeam.id],
-              user
-            )
-          ) {
+          if (page.admin && !isAdmin(user)) {
             return null
           }
 

@@ -3,7 +3,7 @@ import { FormTextField, FormSelectField } from '@components/index'
 import { attributes, positions, rarities, teams } from '@constants/index'
 import { useGetAllUsers } from '@pages/api/queries'
 import { Button, FormControlLabel, Switch } from '@material-ui/core'
-import hasRequiredPermisson from '@utils/has-required-permission'
+import { isAdminOrCardTeam } from '@utils/index'
 import { groups } from '@utils/user-groups'
 
 type CardEditFormProps = {
@@ -26,12 +26,7 @@ const CardEditForm = ({
   const [updatedCard, setUpdatedCard] = useState<Card>(initialValues)
 
   useEffect(() => {
-    const filteredUsers = users.filter((user) =>
-      hasRequiredPermisson(
-        [groups.TradingCardAdmin.id, groups.TradingCardTeam.id],
-        user
-      )
-    )
+    const filteredUsers = users.filter((user) => isAdminOrCardTeam(user))
 
     setCardCreators(filteredUsers)
   }, [users])

@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
-import { useRouter } from 'next/router'
+import Router from 'next/router'
 import styled from 'styled-components'
 import { Box } from '@material-ui/core'
 import { AdminSidebar, PageHeader } from '@components/index'
-import { hasRequiredPermisson } from '@utils/index'
-import { groups } from '@utils/user-groups'
-import { getUidFromSession } from '@utils/index'
+import { getUidFromSession, isAdminOrCardTeam } from '@utils/index'
 import { useGetUser } from '@pages/api/queries/index'
 import { adminPages } from '@constants/index'
 import EditCards from './edit-cards'
@@ -41,7 +39,6 @@ export type SelectedAdminPage =
   | 'edit-sets'
 
 const AdminDashboard = () => {
-  const router = useRouter()
   const { user, isLoading, isError } = useGetUser({
     uid: getUidFromSession(),
   })
@@ -49,13 +46,10 @@ const AdminDashboard = () => {
     useState<SelectedAdminPage>('none')
 
   if (typeof window !== 'undefined') {
-    const hasPerm = hasRequiredPermisson(
-      [groups.TradingCardAdmin.id, groups.TradingCardTeam.id],
-      user
-    )
+    const hasPerm = isAdminOrCardTeam(user)
 
     if (!hasPerm && !isLoading) {
-      router.push({
+      Router.push({
         pathname: '/home',
       })
     }

@@ -1,19 +1,11 @@
 import React from 'react'
-import {
-  Badge,
-  ImageList,
-  ImageListItem,
-  ImageListItemBar,
-  IconButton,
-} from '@material-ui/core'
+import { ImageList, ImageListItem, ImageListItemBar } from '@material-ui/core'
 import styled from 'styled-components'
 import Router from 'next/router'
 import { packsMap } from '@constants/index'
-import { useGetCurrentUser } from '@pages/api/queries/index'
 import { PageHeader } from '@components/index'
-import OpenPacksIcon from '@public/icons/open-packs-icon'
-import { getUidFromSession } from '@utils/index'
 import useBuyPack from '@pages/api/mutations/use-buy-pack'
+import { AxiosResponse } from 'axios'
 
 const OpenPacksScreen = styled.div`
   @media only screen and (max-width: 768px) {
@@ -41,16 +33,16 @@ const StyledBarContainer = styled.div`
   cursor: pointer;
 `
 
-const OpenPacks = () => {
-  const { buyPack, response, isLoading, isError } = useBuyPack()
-  const handleOpenPack = async (packType: PackType) => {
-    if (!isLoading && !isError) {
-      const value = await buyPack({ userId: 2856, packType: packType.key })
-      console.log('value', value)
-    }
-  }
+type UseBuyPack = {
+  buyPack: Function
+  response: AxiosResponse
+  isLoading: boolean
+  isError: any
+}
 
-  console.log('response', response)
+const OpenPacks = () => {
+  const { buyPack, response, isLoading, isError }: UseBuyPack = useBuyPack()
+
   if (response?.data?.purchaseSuccessful) {
     Router.push('/pack-shop/pack-viewer')
   }
@@ -67,19 +59,19 @@ const OpenPacks = () => {
                 <StyledImage
                   height={'400px'}
                   src={imageUrl}
-                  onClick={() => handleOpenPack(pack)}
+                  onClick={() => {
+                    buyPack({ uid: 2856, packType: pack.key })
+                  }}
                 />
               </ImageItem>
-              <StyledBarContainer onClick={() => handleOpenPack(pack)}>
+              <StyledBarContainer
+                onClick={() => {
+                  buyPack({ uid: 2856, packType: pack.key })
+                }}
+              >
                 <ImageListItemBar
+                  position={'bottom'}
                   title={`Open ${label} Pack`}
-                  actionIcon={
-                    <IconButton aria-label={`Info about ${label}`}>
-                      <Badge max={999} color={'secondary'} showZero={true}>
-                        <OpenPacksIcon />
-                      </Badge>
-                    </IconButton>
-                  }
                 />
               </StyledBarContainer>
             </ImageListItem>

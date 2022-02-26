@@ -5,7 +5,7 @@ import { UseGetUserCardsKey } from '@pages/api/queries/use-get-user-cards'
 import { UseGetUserKey } from '@pages/api/queries/use-get-user'
 
 type UseBuyPackRequest = {
-  userId: number
+  uid: number
   packType: PackKey
 }
 
@@ -19,10 +19,11 @@ type UseBuyPack = {
 const useBuyPack = (): UseBuyPack => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading } = useMutation(
-    ({ userId, packType }: UseBuyPackRequest) => {
+    ({ uid, packType }: UseBuyPackRequest) => {
       return axios({
         method: POST,
-        url: `localhost:9001/api/v1/purchase/cards?userId=${userId}&packType=${packType}`,
+        url: `/api/v1/cards/purchase/${packType}/${uid}`,
+        data: {},
       })
     },
     {
