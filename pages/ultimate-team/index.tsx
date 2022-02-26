@@ -1,14 +1,24 @@
 import PageHeader from '@components/page-header'
 import StartingLineupSelector from '@components/starting-lineup-selector'
-import { useGetUserCards } from '@pages/api/queries'
+import { useGetCurrentUser, useGetUserCards } from '@pages/api/queries'
 import React, { useEffect, useState } from 'react'
 import { Box } from '@material-ui/core'
-import { getUidFromSession } from '@utils/index'
+import { getUidFromSession, isAdmin } from '@utils/index'
+import Router from 'next/router'
 
 const UltimateTeam = () => {
+  const {
+    user,
+    isLoading: userIsLoading,
+    isError: userIsError,
+  } = useGetCurrentUser({
+    uid: getUidFromSession(),
+  })
+
   const { userCards, isLoading, isError } = useGetUserCards({
     uid: getUidFromSession(),
   })
+
   const [centerCard, setCenterCard] = useState<Card>(null)
   const [rightWingCard, setRightWingCard] = useState<Card>(null)
   const [leftWingCard, setLeftWingCard] = useState<Card>(null)
@@ -40,6 +50,13 @@ const UltimateTeam = () => {
     setGoalieCards(goalies)
   }, [userCards])
 
+  const hasPerm = isAdmin(user)
+
+  if (!hasPerm && !isLoading) {
+    Router.push({
+      pathname: '/home',
+    })
+  }
   return (
     <>
       <PageHeader>Ultimate Team</PageHeader>

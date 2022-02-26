@@ -1,10 +1,9 @@
 import React from 'react'
-import { useRouter } from 'next/router'
+import Router from 'next/router'
 
 const index = () => {
-  const router = useRouter()
   if (typeof window !== 'undefined') {
-    router.push({
+    Router.push({
       pathname: '/home',
     })
   }

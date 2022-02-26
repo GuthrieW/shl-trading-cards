@@ -1,5 +1,6 @@
-export { default as hasRequiredPermisson } from './has-required-permission'
 export { default as onlyGoalieCards } from './only-goalie-cards'
 export { default as onlySkaterCards } from './only-skater-cards'
 export { default as stringInCardName } from './string-in-card-name'
 export { default as getUidFromSession } from './get-uid-from-session'
+export { default as isAdmin } from './is-admin'
+export { default as isAdminOrCardTeam } from './is-admin-or-card-team'

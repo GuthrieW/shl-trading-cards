@@ -3,7 +3,7 @@ import { List } from '@material-ui/core'
 import { SidebarItem, SidebarIcon, StyledSidebar, SidebarText } from './styled'
 import { useRouter } from 'next/router'
 import { useGetCurrentUser } from '@pages/api/queries/index'
-import { getUidFromSession, hasRequiredPermisson } from '@utils/index'
+import { getUidFromSession, isAdminOrCardTeam, isAdmin } from '@utils/index'
 import { groups } from '@utils/user-groups'
 
 type SidebarProps = {
@@ -22,12 +22,11 @@ const Sidebar = ({ pages }: SidebarProps) => {
       <List>
         {pages.map((page) => {
           if (
-            page.admin &&
-            !hasRequiredPermisson(
-              [groups.TradingCardAdmin.id, groups.TradingCardTeam.id],
-              user
-            )
+            ((page.admin && page.cardTeam) || page.cardTeam) &&
+            !isAdminOrCardTeam(user)
           ) {
+            return null
+          } else if (page.admin && !isAdmin(user)) {
             return null
           }
 
