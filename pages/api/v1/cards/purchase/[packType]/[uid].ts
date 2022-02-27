@@ -13,20 +13,22 @@ const randomIntFromInterval = (maximum: number): number => {
   return num
 }
 
+/**
+ * Diamond - 1.5%
+ * Ruby - 3%
+ * Gold - 25.5%
+ * Silver - 30%
+ * Bronze - 40%
+ */
+
 const getRarity = (): string => {
-  const num = randomIntFromInterval(1000)
-  switch (true) {
-    case num > 900:
-      return rarityMap.diamond.label
-    case num > 800:
-      return rarityMap.ruby.label
-    case num > 700:
-      return rarityMap.gold.label
-    case num > 600:
-      return rarityMap.silver.label
-    default:
-      return rarityMap.bronze.label
-  }
+  const num = randomIntFromInterval(10000)
+  if (num > 0 && num <= 150) return rarityMap.diamond.label
+  if (num > 150 && num <= 450) return rarityMap.ruby.label
+  if (num > 450 && num <= 3000) return rarityMap.gold.label
+  if (num > 3000 && num <= 6000) return rarityMap.silver.label
+  if (num > 6000 && num <= 10000) return rarityMap.bronze.label
+  return rarityMap.bronze.label
 }
 
 const getIsSkater = (): boolean => {
@@ -93,6 +95,7 @@ const index = async (
     if (!bankResponse.data.purchaseSuccessful) {
       response.status(StatusCodes.BAD_REQUEST).json({
         error: 'Unsuccessful Purchase',
+        purchaseSuccessful: false,
       })
       return
     }
@@ -108,7 +111,9 @@ const index = async (
       `)
     })
 
-    response.status(StatusCodes.OK).send('Purchase successful')
+    response.status(StatusCodes.OK).json({
+      purchaseSuccessful: true,
+    })
     return
   }
 

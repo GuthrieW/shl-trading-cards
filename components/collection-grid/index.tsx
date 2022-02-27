@@ -5,7 +5,7 @@ import { ViewCardModal } from '@components/index'
 import { pathToCards } from '@constants/index'
 
 type CollectionGridProps = {
-  filteredCards: Card[]
+  filteredCards: any[]
   pageNumber: number
   cardsPerPage: number
   handleOpenCard: Function
@@ -46,10 +46,6 @@ const CollectionGrid = ({
       filteredCards
         .slice((pageNumber - 1) * cardsPerPage, pageNumber * cardsPerPage)
         .map((card) => {
-          const numberOfDuplicates = filteredCards.filter(
-            (collectionCard) => collectionCard.player_name === card.player_name
-          ).length
-
           return card ? (
             <GridItem>
               <Box
@@ -59,10 +55,7 @@ const CollectionGrid = ({
                   justifyContent: 'center',
                 }}
               >
-                <Badge
-                  badgeContent={numberOfDuplicates ? numberOfDuplicates : null}
-                  color={'primary'}
-                >
+                <Badge badgeContent={card.quantity} color={'primary'}>
                   <StyledImage
                     onClick={() => handleOpenCard(card)}
                     width={300}

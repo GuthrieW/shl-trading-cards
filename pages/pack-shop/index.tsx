@@ -4,8 +4,9 @@ import styled from 'styled-components'
 import Router from 'next/router'
 import { packsMap } from '@constants/index'
 import { PageHeader } from '@components/index'
-import useBuyPack from '@pages/api/mutations/use-buy-pack'
+import { useBuyPack } from '@pages/api/mutations'
 import { getUidFromSession } from '@utils/index'
+import { AxiosResponse } from 'axios'
 
 const OpenPacksScreen = styled.div`
   @media only screen and (max-width: 768px) {

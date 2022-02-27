@@ -32,7 +32,6 @@ const EditCards = () => {
   const goalieCards = onlyGoalieCards(allCards)
   const skaterTableOptions = {
     onRowClick: (rowData: string[]) => {
-      console.log('rowData', rowData)
       const skaterCard: Card = {
         cardID: parseInt(rowData[0]),
         teamID: parseInt(rowData[1]),

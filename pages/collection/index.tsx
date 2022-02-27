@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Avatar, Box, Chip } from '@material-ui/core'
 import { Pagination } from '@material-ui/lab'
-import sortBy from 'lodash/sortBy'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { CollectionGrid, OptionInput, PageHeader } from '@components/index'
@@ -62,34 +61,26 @@ const Collection = () => {
     setFilteringCards(true)
     setPageNumber(1)
 
-    let newFilteredCards = []
+    const selectedRarityNames = rarityOptions
+      .filter((rarityOption) => rarityOption.enabled)
+      .map((filteredRarityOption) => filteredRarityOption.rarity)
+    const allDisabled = selectedRarityNames.length === 0
 
-    if (searchString !== '') {
-      const selectedRarityNames = rarityOptions
-        .filter((rarityOption) => {
-          return rarityOption.enabled
-        })
-        .map((filteredRarityOption) => {
-          return filteredRarityOption.rarity
-        })
+    let newFilteredCards = userCards
 
-      const allDisabled = selectedRarityNames.length === 0
-
-      newFilteredCards = userCards.filter((card) => {
-        return (
-          stringInCardName(card, searchString) &&
-          (allDisabled || selectedRarityNames.includes(card.card_rarity))
-        )
-      })
-    } else {
-      newFilteredCards = userCards
+    if (!allDisabled) {
+      newFilteredCards = newFilteredCards.filter((card) =>
+        selectedRarityNames.includes(card.card_rarity)
+      )
     }
 
-    const sortedCards = sortBy(newFilteredCards, (card: Card) => {
-      return [card.card_rarity, card.player_name]
-    })
+    if (searchString !== '') {
+      newFilteredCards = newFilteredCards.filter((card) =>
+        stringInCardName(card, searchString)
+      )
+    }
 
-    setFilteredCards(sortedCards)
+    setFilteredCards(newFilteredCards)
     setFilteringCards(false)
   }, [searchString, rarityOptions, userCards])
 
