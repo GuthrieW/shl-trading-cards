@@ -107,7 +107,7 @@ const index = async (
           (userID, cardID, quantity, update_date)
         VALUES
           (${uid}, ${pulledCard.cardID}, 1, CURRENT_TIMESTAMP)
-        ON DUPLICATE KEY UPDATE quantity=(quantity + 1);
+        ON DUPLICATE KEY UPDATE quantity=(quantity + 1), update_date=CURRENT_TIMESTAMP;
       `)
     })
 
