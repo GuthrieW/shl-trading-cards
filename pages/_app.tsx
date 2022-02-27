@@ -7,6 +7,8 @@ import Layout from '@components/layout'
 import { createTheme } from '@material-ui/core'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const theme = createTheme({
   palette: {
@@ -65,6 +67,17 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps.dehydratedState}>
           <Layout>
+            <ToastContainer
+              position="bottom-left"
+              autoClose={5000}
+              hideProgressBar={true}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss={false}
+              draggable={false}
+              pauseOnHover={false}
+            />
             <DefaultSeo {...SEO} />
             {showModal && <AuthModal />}
             {!showModal && <Component {...pageProps} />}
