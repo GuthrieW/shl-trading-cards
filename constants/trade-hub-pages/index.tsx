@@ -3,7 +3,7 @@ import {
   AddBoxOutlined,
   ListAltOutlined,
   ImageSearchOutlined,
-} from '@material-ui/icons'
+} from '@mui/icons-material'
 
 type TradeHubPage = {
   name: string

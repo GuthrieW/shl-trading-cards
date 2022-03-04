@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Box, ListItem, ListItemIcon, ListItemText } from '@material-ui/core'
+import { Box, ListItem, ListItemIcon, ListItemText } from '@mui/material'
 
 export const SidebarItem = styled(ListItem)`
   height: 48px;

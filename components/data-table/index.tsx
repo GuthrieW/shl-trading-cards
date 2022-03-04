@@ -1,22 +1,22 @@
 import React from 'react'
-import MUIDataTable from 'mui-datatables'
+import Table from 'rc-table'
 
-type DataTableProps = {
+export type Columns = {
   title: string
-  data: any[]
-  columns: any[]
-  options: any
+  dataIndex: string
+  key: string
+  width: number
 }
 
-const DataTable = ({ title, columns, data, options }) => {
+export type DataTableProps = {
+  columns: Columns
+  data: any
+}
+
+const DataTable = ({ title, columns, data }) => {
   return typeof window !== 'undefined' ? (
     <div style={{ width: '100%', height: '100%' }}>
-      <MUIDataTable
-        title={title}
-        columns={columns}
-        data={data}
-        options={options}
-      />
+      <Table columns={columns} data={data} />
     </div>
   ) : null
 }

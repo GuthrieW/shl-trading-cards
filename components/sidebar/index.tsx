@@ -1,5 +1,5 @@
 import React from 'react'
-import { List } from '@material-ui/core'
+import { List } from '@mui/material'
 import { SidebarItem, SidebarIcon, StyledSidebar, SidebarText } from './styled'
 import { useRouter } from 'next/router'
 import { useGetCurrentUser } from '@pages/api/queries/index'

@@ -2,7 +2,7 @@ import PageHeader from '@components/page-header'
 import StartingLineupSelector from '@components/starting-lineup-selector'
 import { useGetCurrentUser, useGetUserCards } from '@pages/api/queries'
 import React, { useEffect, useState } from 'react'
-import { Box } from '@material-ui/core'
+import { Box } from '@mui/material'
 import { getUidFromSession, isAdmin } from '@utils/index'
 import Router from 'next/router'
 

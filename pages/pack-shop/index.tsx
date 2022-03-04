@@ -4,7 +4,7 @@ import {
   ImageList,
   ImageListItem,
   ImageListItemBar,
-} from '@material-ui/core'
+} from '@mui/material'
 import styled from 'styled-components'
 import Router from 'next/router'
 import { packsMap } from '@constants/index'

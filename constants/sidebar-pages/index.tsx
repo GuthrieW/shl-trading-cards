@@ -7,7 +7,7 @@ import {
   HomeOutlined,
   SettingsOutlined,
   SportsHockeyOutlined,
-} from '@material-ui/icons'
+} from '@mui/icons-material'
 
 const pages = [
   {

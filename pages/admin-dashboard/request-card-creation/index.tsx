@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, ButtonGroup, FormGroup } from '@material-ui/core'
+import { Box, Button, ButtonGroup, FormGroup } from '@mui/material'
 import { CardRequestForm } from '@components/index'
 import CSVReader from 'react-csv-reader'
 import { useCreateRequestedCard } from '@pages/api/mutations'

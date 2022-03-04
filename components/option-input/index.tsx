@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Autocomplete } from '@material-ui/lab'
-import { TextField } from '@material-ui/core'
+import { Autocomplete, TextField } from '@mui/material'
 
 type OptionInputProps = {
   options: any[]

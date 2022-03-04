@@ -32,7 +32,6 @@ const Community = () => {
       title={"View a Member's Collection"}
       data={users}
       columns={columns}
-      options={options}
     />
   )
 }

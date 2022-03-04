@@ -14,7 +14,7 @@ import {
   DialogTitle,
   FormGroup,
   TextField,
-} from '@material-ui/core'
+} from '@mui/material'
 
 const stringInSetName = (set: CardSet, stringToFind: string) => {
   return set.name.toLowerCase().includes(stringToFind.toLowerCase())

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Avatar, Box, Chip } from '@material-ui/core'
-import { Pagination } from '@material-ui/lab'
+import { Avatar, Box, Chip, Pagination } from '@mui/material'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { CollectionGrid, OptionInput, PageHeader } from '@components/index'
@@ -115,7 +114,7 @@ const Collection = () => {
         {rarityOptions.map((rarityOption, index) => (
           <Chip
             key={rarityOption.rarity}
-            variant={rarityOption.enabled ? 'default' : 'outlined'}
+            variant={rarityOption.enabled ? 'filled' : 'outlined'}
             label={rarityOption.rarity}
             // avatar={<Avatar src={rarityOption.imageUrl} />}
             onClick={() => handleRarityOptionsUpdate(rarityOption, index)}

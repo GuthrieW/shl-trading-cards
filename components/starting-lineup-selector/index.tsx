@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { OptionInput } from '@components/index'
 import sortBy from 'lodash/sortBy'
 import stringInCardName from '@utils/string-in-card-name'
-import { Box } from '@material-ui/core'
+import { Box } from '@mui/material'
 import { pathToCards } from '@constants/index'
 
 type StartingLineupSelectorProps = {

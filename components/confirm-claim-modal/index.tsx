@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Dialog, DialogContent, DialogTitle } from '@material-ui/core'
+import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material'
 
 type ConfirmClaimModalProps = {
   open: boolean

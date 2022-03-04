@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FormGroup, Button, Box } from '@material-ui/core'
+import { FormGroup, Button, Box } from '@mui/material'
 import { CardRequestForm, OptionInput } from '@components/index'
 import { useGetClaimedCards } from '@pages/api/queries/index'
 import sortBy from 'lodash/sortBy'

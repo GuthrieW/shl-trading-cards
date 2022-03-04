@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Router from 'next/router'
 import styled from 'styled-components'
-import { Box } from '@material-ui/core'
+import { Box } from '@mui/material'
 import { AdminSidebar, PageHeader } from '@components/index'
 import { getUidFromSession, isAdminOrCardTeam } from '@utils/index'
 import { useGetUser } from '@pages/api/queries/index'

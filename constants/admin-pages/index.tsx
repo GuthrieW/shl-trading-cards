@@ -5,7 +5,7 @@ import {
   GetAppOutlined,
   ListAltOutlined,
   PublishOutlined,
-} from '@material-ui/icons'
+} from '@mui/icons-material'
 
 type AdminPage = {
   name: string

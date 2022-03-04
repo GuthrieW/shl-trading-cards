@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FormTextField, FormSelectField } from '@components/index'
 import { attributes, positions, rarities, teams } from '@constants/index'
 import { useGetAllUsers } from '@pages/api/queries'
-import { Button, FormControlLabel, Switch } from '@material-ui/core'
+import { Button, FormControlLabel, Switch } from '@mui/material'
 import { isAdminOrCardTeam } from '@utils/index'
 import { groups } from '@utils/user-groups'
 
