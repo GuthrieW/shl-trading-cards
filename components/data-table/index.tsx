@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import {
   Box,
+  IconButton,
+  InputAdornment,
   Paper,
   Table,
   TableBody,
@@ -10,9 +12,11 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  TextField,
   Toolbar,
   Typography,
 } from '@mui/material'
+import { Search } from '@mui/icons-material'
 
 export type Column = {
   field: string
@@ -32,34 +36,37 @@ export type DataTableProps = {
 
 export type SortOrders = 'asc' | 'desc'
 
-const EnhancedToolbar = (title) => {
-  return (
-    <Toolbar>
-      <Typography>{title}</Typography>
-    </Toolbar>
-  )
-}
-
-const EnhancedHeader = () => {}
-
-const EnhancedBody = () => {}
-
 const DataTable = ({ title, columns, data }: DataTableProps) => {
+  const [tableData, setTableData] = useState(data)
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [rowsPerPage, setRowsPerPage] = useState<number>(5)
+  const [searchFor, setSearchFor] = useState<string>('')
   const [orderBy, setOrderby] = useState(null)
   const [order, setOrder] = useState<SortOrders>('asc')
 
   useEffect(() => {
-    if (data.length > 0) {
-      setOrderby(data[0].id)
+    let newData = data
+    if (searchFor !== '') {
+      newData = newData.filter((user: User) =>
+        user.username.toLowerCase().includes(searchFor.toLowerCase())
+      )
     }
-  })
 
-  const handleSort = (event, property) => {
+    if (orderBy) {
+      // TODO: add table sorting
+    }
+
+    setTableData(newData)
+  }, [searchFor, orderBy])
+
+  const handleSortRequest = (event, property) => {
     const isAsc = orderBy === property && order === 'asc'
     setOrder(isAsc ? 'asc' : 'desc')
     setOrderby(property)
+  }
+
+  const createSortHandler = (property) => (event) => {
+    handleSortRequest(event, property)
   }
 
   const handleChangePage = (event, newPage) => {
@@ -71,38 +78,70 @@ const DataTable = ({ title, columns, data }: DataTableProps) => {
     setPage(0)
   }
 
+  const handleUpdateSearch = (event) => {
+    console.log(event.target.value)
+    setSearchFor(event.target.value)
+  }
+
   const numberOfEmptyRows = new Array(
-    Math.max(0, (1 + page) * rowsPerPage - data.length)
+    Math.max(0, (1 + page) * rowsPerPage - tableData.length)
   ).fill('undefined')
 
-  console.log(data.slice(0, 10))
+  if (orderBy) {
+    alert('Sorting is not supported yet')
+  }
 
   return typeof window !== 'undefined' ? (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%' }}>
         <TableContainer>
-          <Toolbar>
+          <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography>{title}</Typography>
+            <Box>
+              <TextField
+                onChange={handleUpdateSearch}
+                InputProps={{
+                  placeholder: 'Member Search...',
+                  endAdornment: (
+                    <InputAdornment position={'end'}>
+                      <IconButton>
+                        <Search />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
           </Toolbar>
           <Table>
             <TableHead>
               <TableRow>
                 {columns.map((column: Column) => (
                   <TableCell
+                    key={column.field}
                     align={'left'}
                     sortDirection={orderBy === column.field ? order : false}
                   >
-                    {column.headerName}
-                    <TableSortLabel>
-                      {/* {column?.label} */}
-                      {/* {orderBy === column.id ? <Box></Box> : null} */}
+                    <TableSortLabel
+                      active={orderBy === column.field}
+                      direction={orderBy === column.field ? order : 'asc'}
+                      onClick={createSortHandler(column.field)}
+                    >
+                      {column.headerName}
+                      {orderBy === column.field ? (
+                        <Box>
+                          {order === 'desc'
+                            ? 'sorted descending'
+                            : 'sorted ascending'}
+                        </Box>
+                      ) : null}
                     </TableSortLabel>
                   </TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {data
+              {tableData
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row: User) => (
                   <TableRow>
@@ -112,7 +151,8 @@ const DataTable = ({ title, columns, data }: DataTableProps) => {
                 ))}
               {numberOfEmptyRows.map((emptyRow) => (
                 <TableRow>
-                  <TableCell></TableCell>
+                  <TableCell>{'\u00A0'}</TableCell>
+                  <TableCell>{'\u00A0'}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -121,7 +161,7 @@ const DataTable = ({ title, columns, data }: DataTableProps) => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={data.length}
+          count={tableData.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
