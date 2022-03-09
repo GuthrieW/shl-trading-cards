@@ -4,7 +4,6 @@ import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
 import Layout from '@components/layout'
 import { createTheme, ThemeProvider } from '@mui/material'
-import { grey } from '@mui/material/colors'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
 import { ToastContainer } from 'react-toastify'
@@ -12,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css'
 
 const theme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: 'light',
   },
 })
 

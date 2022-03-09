@@ -5,12 +5,12 @@ import Router from 'next/router'
 
 const columns = [
   {
-    label: 'User ID',
-    name: 'uid',
+    headerName: 'User ID',
+    field: 'uid',
   },
   {
-    label: 'Username',
-    name: 'username',
+    headerName: 'Username',
+    field: 'username',
   },
 ]
 

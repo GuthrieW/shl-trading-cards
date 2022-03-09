@@ -1,23 +1,134 @@
-import React from 'react'
-import Table from 'rc-table'
+import React, { useEffect, useState } from 'react'
+import {
+  Box,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  TableSortLabel,
+  Toolbar,
+  Typography,
+} from '@mui/material'
 
-export type Columns = {
-  title: string
-  dataIndex: string
-  key: string
-  width: number
+export type Column = {
+  field: string
+  headerName: string
+}
+
+export type Data = any & {
+  id: string
+  name: string
 }
 
 export type DataTableProps = {
-  columns: Columns
-  data: any
+  title: any
+  columns: Column[]
+  data: Data[]
 }
 
-const DataTable = ({ title, columns, data }) => {
+export type SortOrders = 'asc' | 'desc'
+
+const EnhancedToolbar = (title) => {
+  return (
+    <Toolbar>
+      <Typography>{title}</Typography>
+    </Toolbar>
+  )
+}
+
+const EnhancedHeader = () => {}
+
+const EnhancedBody = () => {}
+
+const DataTable = ({ title, columns, data }: DataTableProps) => {
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [orderBy, setOrderby] = useState(null)
+  const [order, setOrder] = useState<SortOrders>('asc')
+
+  useEffect(() => {
+    if (data.length > 0) {
+      setOrderby(data[0].id)
+    }
+  })
+
+  const handleSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc'
+    setOrder(isAsc ? 'asc' : 'desc')
+    setOrderby(property)
+  }
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
+
+  const numberOfEmptyRows = new Array(
+    Math.max(0, (1 + page) * rowsPerPage - data.length)
+  ).fill('undefined')
+
+  console.log(data.slice(0, 10))
+
   return typeof window !== 'undefined' ? (
-    <div style={{ width: '100%', height: '100%' }}>
-      <Table columns={columns} data={data} />
-    </div>
+    <Box sx={{ width: '100%' }}>
+      <Paper sx={{ width: '100%' }}>
+        <TableContainer>
+          <Toolbar>
+            <Typography>{title}</Typography>
+          </Toolbar>
+          <Table>
+            <TableHead>
+              <TableRow>
+                {columns.map((column: Column) => (
+                  <TableCell
+                    align={'left'}
+                    sortDirection={orderBy === column.field ? order : false}
+                  >
+                    {column.headerName}
+                    <TableSortLabel>
+                      {/* {column?.label} */}
+                      {/* {orderBy === column.id ? <Box></Box> : null} */}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {data
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row: User) => (
+                  <TableRow>
+                    <TableCell>{row.uid}</TableCell>
+                    <TableCell>{row.username}</TableCell>
+                  </TableRow>
+                ))}
+              {numberOfEmptyRows.map((emptyRow) => (
+                <TableRow>
+                  <TableCell></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={data.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
+    </Box>
   ) : null
 }
 
