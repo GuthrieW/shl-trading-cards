@@ -17,6 +17,8 @@ import {
   Typography,
 } from '@mui/material'
 import { Search } from '@mui/icons-material'
+import _SortBy from 'lodash/sortBy'
+import Router from 'next/router'
 
 export type Column = {
   field: string
@@ -31,7 +33,7 @@ export type Data = any & {
 export type DataTableProps = {
   title: any
   columns: Column[]
-  data: Data[]
+  data: User[]
 }
 
 export type SortOrders = 'asc' | 'desc'
@@ -46,28 +48,21 @@ const DataTable = ({ title, columns, data }: DataTableProps) => {
 
   useEffect(() => {
     let newData = data
+    console.log('data useEffect', data)
     if (searchFor !== '') {
+      console.log('searchFor', searchFor)
       newData = newData.filter((user: User) =>
         user.username.toLowerCase().includes(searchFor.toLowerCase())
       )
     }
 
     if (orderBy) {
-      // TODO: add table sorting
+      console.log('orderBy', orderBy)
+      newData = _SortBy(newData, (user) => user[orderBy])
     }
 
     setTableData(newData)
   }, [searchFor, orderBy])
-
-  const handleSortRequest = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc'
-    setOrder(isAsc ? 'asc' : 'desc')
-    setOrderby(property)
-  }
-
-  const createSortHandler = (property) => (event) => {
-    handleSortRequest(event, property)
-  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage)
@@ -78,18 +73,29 @@ const DataTable = ({ title, columns, data }: DataTableProps) => {
     setPage(0)
   }
 
-  const handleUpdateSearch = (event) => {
-    console.log(event.target.value)
+  const handleChangeSort = (property) => (event, property) => {
+    const newOrderIfSameProperty: SortOrders = order === 'asc' ? 'desc' : 'asc'
+    orderBy === property ? setOrder(newOrderIfSameProperty) : setOrder('asc')
+    setOrderby(property)
+  }
+
+  const handleChangeSearch = (event) => {
     setSearchFor(event.target.value)
+  }
+
+  const handleRowClick = (uid: number) => {
+    Router.push({
+      pathname: 'collection',
+      query: { uid: uid },
+    })
   }
 
   const numberOfEmptyRows = new Array(
     Math.max(0, (1 + page) * rowsPerPage - tableData.length)
   ).fill('undefined')
 
-  if (orderBy) {
-    alert('Sorting is not supported yet')
-  }
+  console.log('data', data)
+  console.log('tableData', tableData)
 
   return typeof window !== 'undefined' ? (
     <Box sx={{ width: '100%' }}>
@@ -99,7 +105,7 @@ const DataTable = ({ title, columns, data }: DataTableProps) => {
             <Typography>{title}</Typography>
             <Box>
               <TextField
-                onChange={handleUpdateSearch}
+                onChange={handleChangeSearch}
                 InputProps={{
                   placeholder: 'Member Search...',
                   endAdornment: (
@@ -125,7 +131,9 @@ const DataTable = ({ title, columns, data }: DataTableProps) => {
                     <TableSortLabel
                       active={orderBy === column.field}
                       direction={orderBy === column.field ? order : 'asc'}
-                      onClick={createSortHandler(column.field)}
+                      onClick={() => {
+                        handleChangeSort(column.field)
+                      }}
                     >
                       {column.headerName}
                       {orderBy === column.field ? (
@@ -143,14 +151,19 @@ const DataTable = ({ title, columns, data }: DataTableProps) => {
             <TableBody>
               {tableData
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row: User) => (
-                  <TableRow>
-                    <TableCell>{row.uid}</TableCell>
-                    <TableCell>{row.username}</TableCell>
+                .map((user: User) => (
+                  <TableRow
+                    key={user.uid}
+                    onClick={() => {
+                      handleRowClick(user.uid)
+                    }}
+                  >
+                    <TableCell>{user.uid}</TableCell>
+                    <TableCell>{user.username}</TableCell>
                   </TableRow>
                 ))}
-              {numberOfEmptyRows.map((emptyRow) => (
-                <TableRow>
+              {numberOfEmptyRows.map((emptyRow, index) => (
+                <TableRow key={index}>
                   <TableCell>{'\u00A0'}</TableCell>
                   <TableCell>{'\u00A0'}</TableCell>
                 </TableRow>
