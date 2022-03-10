@@ -16,6 +16,10 @@ const columns = [
 const Community = () => {
   const { users, isLoading, isError } = useGetAllUsers({})
 
+  if (isLoading || isError) {
+    return '...loading'
+  }
+
   return (
     <DataTable
       title={"View a Member's Collection"}

@@ -39,7 +39,7 @@ export type DataTableProps = {
 export type SortOrders = 'asc' | 'desc'
 
 const DataTable = ({ title, columns, data }: DataTableProps) => {
-  const [tableData, setTableData] = useState(data)
+  const [tableData, setTableData] = useState<User[]>(data)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState<number>(5)
   const [searchFor, setSearchFor] = useState<string>('')
@@ -48,16 +48,13 @@ const DataTable = ({ title, columns, data }: DataTableProps) => {
 
   useEffect(() => {
     let newData = data
-    console.log('data useEffect', data)
     if (searchFor !== '') {
-      console.log('searchFor', searchFor)
       newData = newData.filter((user: User) =>
         user.username.toLowerCase().includes(searchFor.toLowerCase())
       )
     }
 
     if (orderBy) {
-      console.log('orderBy', orderBy)
       newData = _SortBy(newData, (user) => user[orderBy])
     }
 
@@ -93,9 +90,6 @@ const DataTable = ({ title, columns, data }: DataTableProps) => {
   const numberOfEmptyRows = new Array(
     Math.max(0, (1 + page) * rowsPerPage - tableData.length)
   ).fill('undefined')
-
-  console.log('data', data)
-  console.log('tableData', tableData)
 
   return typeof window !== 'undefined' ? (
     <Box sx={{ width: '100%' }}>
