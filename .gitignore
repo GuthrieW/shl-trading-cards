@@ -33,10 +33,6 @@ yarn-error.log*
 
 # vercel
 .vercel
-yarn.lock
-yarn.lock
-*.lock
-yarn.lock
 
 notes.md
 
