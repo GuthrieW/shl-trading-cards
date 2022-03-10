@@ -7,11 +7,6 @@ const Header = () => (
       <span>This is a dropdown</span>
       <ChevronDownIcon className="ml-2 h-5 w-5" />
     </div>
-    |
-    <div className="flex flex-row ml-5">
-      <span>another dropdown</span>
-      <ChevronDownIcon className="ml-2 h-5 w-5" />
-    </div>
   </div>
 )
 
