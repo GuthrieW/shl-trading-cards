@@ -2,18 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { DefaultSeo } from 'next-seo'
 import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
+import { DefaultLayout } from '../tailwind-components/index'
 import Layout from '@components/layout'
-import { createTheme, ThemeProvider } from '@mui/material'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-  },
-})
+import '../styles/globals.css'
 
 const AuthModal = () => (
   <iframe
@@ -62,38 +57,36 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   }, [])
 
   return (
-    <ThemeProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        <Hydrate state={pageProps.dehydratedState}>
-          <Layout>
-            <ToastContainer
-              position="bottom-left"
-              autoClose={5000}
-              hideProgressBar={true}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss={false}
-              draggable={false}
-              pauseOnHover={false}
-            />
-            <DefaultSeo {...SEO} />
-            {showModal && <AuthModal />}
-            {!showModal && <Component {...pageProps} />}
-            <style global jsx>{`
-              body {
-                font-family: 'Raleway', sans-serif;
-                background-color: '#E9ECEF';
-              }
-              * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-              }
-            `}</style>
-          </Layout>
-        </Hydrate>
-      </QueryClientProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={pageProps.dehydratedState}>
+        <DefaultLayout>
+          <ToastContainer
+            position="bottom-left"
+            autoClose={5000}
+            hideProgressBar={true}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss={false}
+            draggable={false}
+            pauseOnHover={false}
+          />
+          <DefaultSeo {...SEO} />
+          {showModal && <AuthModal />}
+          {!showModal && <Component {...pageProps} />}
+          <style global jsx>{`
+            body {
+              font-family: 'Raleway', sans-serif;
+              background-color: '#E9ECEF';
+            }
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+            }
+          `}</style>
+        </DefaultLayout>
+      </Hydrate>
+    </QueryClientProvider>
   )
 }
