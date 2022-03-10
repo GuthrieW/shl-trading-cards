@@ -4,7 +4,7 @@ import { useGetAllCards } from '@pages/api/queries/index'
 import { goalieColumns, skaterColumns } from '@constants/index'
 import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
 import { useEditCard, useSubmitCardImage } from '@pages/api/mutations'
-import { Button } from '@material-ui/core'
+import { Button } from '@mui/material'
 
 const EditCards = () => {
   const {
@@ -119,7 +119,6 @@ const EditCards = () => {
         }
         data={showSkaters ? skaterCards : goalieCards}
         columns={showSkaters ? skaterColumns : goalieColumns}
-        options={showSkaters ? skaterTableOptions : goalieTableOptions}
       />
       {selectedCard && (
         <EditCardModal

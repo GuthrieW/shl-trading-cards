@@ -1,5 +1,5 @@
 import React from 'react'
-import { Badge, Box, Grid } from '@material-ui/core'
+import { Badge, Box, Grid } from '@mui/material'
 import styled from 'styled-components'
 import { ViewCardModal } from '@components/index'
 import { pathToCards } from '@constants/index'

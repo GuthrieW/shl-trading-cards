@@ -1,21 +1,19 @@
 import React from 'react'
-import { List } from '@material-ui/core'
+import { List } from '@mui/material'
 import { SidebarItem, SidebarIcon, StyledSidebar, SidebarText } from './styled'
 import { useRouter } from 'next/router'
 import { useGetCurrentUser } from '@pages/api/queries/index'
 import { getUidFromSession, isAdminOrCardTeam, isAdmin } from '@utils/index'
-import { groups } from '@utils/user-groups'
 
 type SidebarProps = {
   pages: any[]
 }
 
 const Sidebar = ({ pages }: SidebarProps) => {
+  const { asPath } = useRouter()
   const { user, isLoading, isError } = useGetCurrentUser({
     uid: getUidFromSession(),
   })
-
-  const { asPath } = useRouter()
 
   return (
     <StyledSidebar>
@@ -32,12 +30,12 @@ const Sidebar = ({ pages }: SidebarProps) => {
 
           return (
             <div
+              key={page.name}
               style={{
                 backgroundColor: asPath.includes(page.href)
                   ? 'rgba(0, 0, 0, 0.08)'
                   : 'white',
               }}
-              key={page.name}
             >
               <SidebarItem
                 component="a"

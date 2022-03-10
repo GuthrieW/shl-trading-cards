@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { DefaultSeo } from 'next-seo'
-import { ThemeProvider } from '@material-ui/styles'
 import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
 import Layout from '@components/layout'
-import { createTheme } from '@material-ui/core'
+import { createTheme, ThemeProvider } from '@mui/material'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
 import { ToastContainer } from 'react-toastify'
@@ -12,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css'
 
 const theme = createTheme({
   palette: {
-    type: 'light',
+    mode: 'light',
   },
 })
 

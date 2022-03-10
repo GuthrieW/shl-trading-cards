@@ -8,7 +8,7 @@ import { onlyGoalieCards, onlySkaterCards } from '@utils/index'
 import { useGetUnapprovedCards } from '@pages/api/queries/index'
 import { useAcceptCard, useDenyCard } from '@pages/api/mutations'
 import { ApproveDenyModal } from '@components/index'
-import { Button } from '@material-ui/core'
+import { Button } from '@mui/material'
 
 const ProcessCards = () => {
   const [approveDenyModalVisible, setApproveDenyModalVisible] =
@@ -56,7 +56,6 @@ const ProcessCards = () => {
           showSkaters ? processingSkaterColumns : processingGoalieColumns
         }
         data={showSkaters ? skaterCards : goalieCards}
-        options={options}
       />
       {selectedRow && (
         <ApproveDenyModal

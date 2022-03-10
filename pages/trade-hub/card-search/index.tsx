@@ -80,7 +80,6 @@ const CardSearch = () => {
               title={`Owners of ${selectedCard.player_name}`}
               data={cardOwners}
               columns={columns}
-              options={{}}
             />
           </div>
           <div

@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  Button,
-  ImageList,
-  ImageListItem,
-  ImageListItemBar,
-} from '@material-ui/core'
+import { ImageList, ImageListItem, ImageListItemBar } from '@mui/material'
 import styled from 'styled-components'
 import Router from 'next/router'
 import { packsMap } from '@constants/index'
@@ -12,7 +7,6 @@ import { PageHeader } from '@components/index'
 import { useBuyPack } from '@pages/api/mutations'
 import { getUidFromSession } from '@utils/index'
 import { AxiosResponse } from 'axios'
-import { ToastContainer, toast } from 'react-toastify'
 
 const OpenPacksScreen = styled.div`
   @media only screen and (max-width: 768px) {
@@ -37,7 +31,7 @@ const StyledImage = styled.img`
 `
 
 const StyledBarContainer = styled.div`
-  cursor: pointer;
+  text-align: center;
 `
 
 type UseBuyPack = {
@@ -55,40 +49,33 @@ const OpenPacks = () => {
   }
 
   return (
-    <>
-      <OpenPacksScreen>
-        <PageHeader>Pack Shop</PageHeader>
-        <ImageList gap={16} rowHeight={400} cols={3}>
-          {packsMap.map((pack: PackType) => {
-            const { key, label, imageUrl } = pack
-            return (
-              <ImageListItem key={key}>
-                <ImageItem>
-                  <StyledImage
-                    height={'400px'}
-                    src={imageUrl}
-                    onClick={() => {
-                      buyPack({ uid: 2856, packType: pack.key })
-                    }}
-                  />
-                </ImageItem>
-                <StyledBarContainer
+    <OpenPacksScreen>
+      <PageHeader>Pack Shop</PageHeader>
+      <ImageList gap={16} rowHeight={400} cols={3}>
+        {packsMap.map((pack: PackType) => {
+          const { key, label, imageUrl } = pack
+          return (
+            <ImageListItem key={key}>
+              <ImageItem>
+                <StyledImage
+                  height={'400px'}
+                  src={imageUrl}
                   onClick={() => {
-                    buyPack({ uid: 2856, packType: pack.key })
+                    buyPack({ uid: getUidFromSession(), packType: pack.key })
                   }}
-                >
-                  <ImageListItemBar
-                    position={'bottom'}
-                    title={`Open ${label} Pack`}
-                  />
-                </StyledBarContainer>
-              </ImageListItem>
-            )
-          })}
-        </ImageList>
-      </OpenPacksScreen>
-      <Button onClick={() => toast.error('testing')}>Test</Button>
-    </>
+                />
+              </ImageItem>
+              <StyledBarContainer>
+                <ImageListItemBar
+                  position={'bottom'}
+                  title={`Open ${label} Pack`}
+                />
+              </StyledBarContainer>
+            </ImageListItem>
+          )
+        })}
+      </ImageList>
+    </OpenPacksScreen>
   )
 }
 

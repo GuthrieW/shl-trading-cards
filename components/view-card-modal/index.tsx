@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogTitle } from '@material-ui/core'
+import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { pathToCards } from '@constants/index'
 
 type ViewCardModalProps = {

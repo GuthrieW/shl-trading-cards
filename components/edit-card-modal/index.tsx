@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dialog, DialogContent, DialogTitle } from '@material-ui/core'
+import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import CardEditForm from '@components/card-edit-form'
 import { pathToCards } from '@constants/index'
 

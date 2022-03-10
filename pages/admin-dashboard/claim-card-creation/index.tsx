@@ -5,7 +5,7 @@ import { ConfirmClaimModal, DataTable } from '@components/index'
 import { useGetRequestedCards } from '@pages/api/queries/index'
 import { useClaimCard } from '@pages/api/mutations'
 import { getUidFromSession } from '@utils/index'
-import { Button } from '@material-ui/core'
+import { Button } from '@mui/material'
 
 const ClaimCardCreation = () => {
   const [confirmModalVisible, setConfirmModalVisible] = useState<boolean>(false)
@@ -50,7 +50,6 @@ const ClaimCardCreation = () => {
         }
         columns={showSkaters ? claimingSkaterColumns : claimingGoalieColumns}
         data={showSkaters ? skaterCards : goalieCards}
-        options={options}
       />
       {selectedRow && (
         <ConfirmClaimModal
