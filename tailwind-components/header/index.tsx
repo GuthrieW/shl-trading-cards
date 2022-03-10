@@ -3,8 +3,20 @@ import { ChevronDownIcon } from '@heroicons/react/solid'
 
 const Header = () => (
   <div className="relative top-0 w-full h-16 bg-gray-600 flex flex-row items-center">
-    <div className="flex flex-row ml-5">
-      <span>This is a dropdown</span>
+    <div className="flex flex-row mx-2 cursor-pointer">
+      <span>Home</span>
+      <ChevronDownIcon className="ml-2 h-5 w-5" />
+    </div>
+    <div className="flex flex-row mx-2 cursor-pointer">
+      <span>Collections</span>
+      <ChevronDownIcon className="ml-2 h-5 w-5" />
+    </div>
+    <div className="flex flex-row mx-2 cursor-pointer">
+      <span>Community</span>
+      <ChevronDownIcon className="ml-2 h-5 w-5" />
+    </div>
+    <div className="flex flex-row mx-2 cursor-pointer">
+      <span>Trade Hub</span>
       <ChevronDownIcon className="ml-2 h-5 w-5" />
     </div>
   </div>
