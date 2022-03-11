@@ -1,4 +1,5 @@
-import { Footer, Header } from '../index'
+import Footer from '../footer'
+import Header from '../header'
 
 const DefaultLayout = ({ children }) => (
   <>

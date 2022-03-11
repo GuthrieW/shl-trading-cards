@@ -1,49 +1,22 @@
 import React from 'react'
 
-// const StyledVideo = styled.video`
-//   z-index: -5;
-//   position: fixed;
-//   right: 0;
-//   bottom: 0;
-//   min-width: 100%;
-//   min-height: 100%;
-// `
-
-// const StyledOverlay = styled.div`
-//   width: 100%;
-//   height: 100%;
-//   background: rgba(0, 0, 0, 0.5);
-// `
-
-// const HomeContainer = () => (
-//   <StyledVideo autoPlay loop playsInline muted>
-//     <source src={'/videos/home-background.mp4'} type={'video/mp4'} />
-//   </StyledVideo>
-// )
-
-const Home = () => {
-  return (
-    // <StyledOverlay>
-    //   <HomeContainer />
-    //   <div
-    //     style={{
-    //       display: 'flex',
-    //       justifyContent: 'center',
-    //       alignItems: 'center',
-    //     }}
-    //   >
-    <h1
-      style={{
-        marginTop: '20px',
-        color: 'white',
-        textShadow: '0px 0px 10px #000000',
-      }}
+const Home = () => (
+  <>
+    <video
+      className="fixed -z-10 top-0  opacity-75"
+      autoPlay
+      loop
+      playsInline
+      muted
     >
-      Welcome to SHL Trading Cards!
-    </h1>
-    //   </div>
-    // </StyledOverlay>
-  )
-}
+      <source src={'/videos/home-background.mp4'} type={'video/mp4'} />
+    </video>
+    <div className="w-full h-full flex justify-center items-center">
+      <h1 className="mt-5 text-3xl text-black font-bold">
+        Welcome to SHL Trading Cards!
+      </h1>
+    </div>
+  </>
+)
 
 export default Home

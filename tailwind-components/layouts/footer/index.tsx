@@ -13,14 +13,9 @@ const Footer = () => (
         Visit Forum
       </a>{' '}
       |{' '}
-      <a
-        href="https://gitreports.com/issue/esilverm/shl-index-ui/"
-        rel="noreferrer"
-        target="_blank"
-      >
+      <a href="#" rel="noreferrer" target="_blank">
         Report a Bug
       </a>{' '}
-      | <a href="/api">API Docs</a>
     </div>
   </footer>
 )
