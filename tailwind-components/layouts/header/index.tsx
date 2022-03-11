@@ -1,5 +1,6 @@
 import Router from 'next/router'
 import React from 'react'
+import IceLevelLogo from '../../../public/images/ice-level.svg'
 
 type HeaderData = {
   id: string
@@ -61,27 +62,34 @@ const headers: HeaderData[] = [
   },
 ]
 
-const Header = () => (
-  <div className="relative top-0 w-full h-16 flex flex-row items-center bg-gray-600 ">
-    <div className="flex justify-between">
-      {headers.map((header) => (
-        <>
-          {!header.hide ? (
-            <span
-              className="mx-2 text-gray-100 cursor-pointer"
-              key={header.id}
-              onClick={() => {
-                console.log(`clicked on ${header.href}`)
-                Router.push(header.href)
-              }}
-            >
-              {header.headerText}
-            </span>
-          ) : null}
-        </>
-      ))}
+const Header = () => {
+  const handleNavigation = (href: string) => {
+    Router.push(href)
+  }
+  return (
+    <div className="relative top-0 w-full h-16 flex flex-row items-center bg-gray-600 ">
+      <div className="flex justify-between items-center">
+        <img
+          src={IceLevelLogo}
+          onClick={() => handleNavigation('/home')}
+          className=" h-16"
+        />
+        {headers.map((header) => (
+          <>
+            {!header.hide ? (
+              <span
+                className="mx-2 text-gray-100 cursor-pointer"
+                key={header.id}
+                onClick={() => handleNavigation(header.href)}
+              >
+                {header.headerText}
+              </span>
+            ) : null}
+          </>
+        ))}
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default Header

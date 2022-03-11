@@ -1,82 +1,75 @@
-import React from 'react'
-import { ImageList, ImageListItem, ImageListItemBar } from '@mui/material'
-import styled from 'styled-components'
-import Router from 'next/router'
-import { packsMap } from '@constants/index'
-import { PageHeader } from '@components/index'
-import { useBuyPack } from '@pages/api/mutations'
-import { getUidFromSession } from '@utils/index'
-import { AxiosResponse } from 'axios'
+import React, { useState } from 'react'
 
-const OpenPacksScreen = styled.div`
-  @media only screen and (max-width: 768px) {
-    margin: 10px;
-  }
-
-  @media only screen and (min-width: 768px) {
-    margin: 10px;
-  }
-`
-const ImageItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-const StyledImage = styled.img`
-  cursor: pointer;
-  transition: all ease 200ms;
-  &:hover {
-    transform: scale(1.05);
-  }
-`
-
-const StyledBarContainer = styled.div`
-  text-align: center;
-`
-
-type UseBuyPack = {
-  buyPack: Function
-  response: AxiosResponse
-  isLoading: boolean
-  isError: any
+type packInfo = {
+  id: string
+  name: string
+  description: string
+  coverHref: string
 }
 
-const OpenPacks = () => {
-  const { buyPack, response, isLoading, isError }: UseBuyPack = useBuyPack()
+const examplePacks: packInfo[] = [
+  {
+    id: 'shl-players-pack',
+    name: 'SHL Players Pack',
+    description: 'A pack of 6 SHL player trading cards',
+    coverHref:
+      'https://cdn.discordapp.com/attachments/719410556578299954/773048548026875904/s25_Pack.png',
+  },
+  {
+    id: 'a-different-pack',
+    name: 'A Different SHL Pack',
+    description: 'Some other pack',
+    coverHref:
+      'https://cdn.discordapp.com/attachments/719410556578299954/773048548026875904/s25_Pack.png',
+  },
+  {
+    id: 'a-third-pack',
+    name: 'Third SHL Pack',
+    description: 'Third other pack',
+    coverHref:
+      'https://cdn.discordapp.com/attachments/719410556578299954/773048548026875904/s25_Pack.png',
+  },
+]
 
-  if (response?.data?.purchaseSuccessful) {
-    Router.push('/pack-shop/pack-viewer')
+const PackShop = () => {
+  const [lastTouchedPack, setLastTouchedPack] = useState(examplePacks[0])
+
+  const handleTouchPack = (packIndex) => {
+    setLastTouchedPack(examplePacks[packIndex])
+  }
+
+  const handleBuyPack = (packId) => {
+    console.log(`Buy a ${packId} pack`)
   }
 
   return (
-    <OpenPacksScreen>
-      <PageHeader>Pack Shop</PageHeader>
-      <ImageList gap={16} rowHeight={400} cols={3}>
-        {packsMap.map((pack: PackType) => {
-          const { key, label, imageUrl } = pack
-          return (
-            <ImageListItem key={key}>
-              <ImageItem>
-                <StyledImage
-                  height={'400px'}
-                  src={imageUrl}
-                  onClick={() => {
-                    buyPack({ uid: getUidFromSession(), packType: pack.key })
-                  }}
-                />
-              </ImageItem>
-              <StyledBarContainer>
-                <ImageListItemBar
-                  position={'bottom'}
-                  title={`Open ${label} Pack`}
-                />
-              </StyledBarContainer>
-            </ImageListItem>
-          )
-        })}
-      </ImageList>
-    </OpenPacksScreen>
+    <>
+      <div className="flex flex-col">
+        <span className="mx-2 text-3xl">{lastTouchedPack.name}</span>
+        <span className="mx-5">{lastTouchedPack.description}</span>
+      </div>
+      <div className="h-auto flex flex-row items-center justify-center">
+        {examplePacks.map((pack: packInfo, index: number) => (
+          <div className="flex flex-col items-center justify-center">
+            <img
+              onClick={() => {
+                handleBuyPack(pack.id)
+              }}
+              onMouseOver={() => {
+                handleTouchPack(index)
+              }}
+              className={
+                lastTouchedPack.id !== pack.id
+                  ? 'h-96 mx-4 transition ease-linear translate-y-3 hover:scale-100 duration-800'
+                  : 'h-96 mx-4 transition ease-linear hover:-translate-y-3 hover:scale-100 duration-800'
+              }
+              src={pack.coverHref}
+            />
+          </div>
+        ))}
+      </div>
+    </>
   )
 }
 
-export default OpenPacks
+export default PackShop
