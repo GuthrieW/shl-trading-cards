@@ -67,7 +67,7 @@ const Header = ({ user }: HeaderProps) => {
         <img
           src={IceLevelLogo}
           onClick={() => Router.push('/home')}
-          className="h-16"
+          className="h-16 cursor-pointer"
         />
         {headers.map((header) => (
           <>

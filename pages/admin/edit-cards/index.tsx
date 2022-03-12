@@ -11,7 +11,7 @@ const EditCards = () => {
 
   return (
     <div className="m-2">
-      <h1>Edit Cards Page</h1>
+      <h1>Edit Cards</h1>
       <EditCardsTable tableData={allCards.slice(0, 10)} />
     </div>
   )
