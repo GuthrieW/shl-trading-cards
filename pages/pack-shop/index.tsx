@@ -9,23 +9,16 @@ type packInfo = {
 
 const examplePacks: packInfo[] = [
   {
-    id: 'shl-players-pack',
-    name: 'SHL Players Pack',
+    id: 'regular',
+    name: 'Base Pack',
     description: 'A pack of 6 SHL player trading cards',
     coverHref:
-      'https://cdn.discordapp.com/attachments/719410556578299954/773048548026875904/s25_Pack.png',
+      'https://cdn.discordapp.com/attachments/806601618702336003/951970513830420550/unknown.png',
   },
   {
     id: 'a-different-pack',
-    name: 'A Different SHL Pack',
-    description: 'Some other pack',
-    coverHref:
-      'https://cdn.discordapp.com/attachments/719410556578299954/773048548026875904/s25_Pack.png',
-  },
-  {
-    id: 'a-third-pack',
-    name: 'Third SHL Pack',
-    description: 'Third other pack',
+    name: 'ISFL Base Pack',
+    description: 'A pack of 6 ISFL player trading cards',
     coverHref:
       'https://cdn.discordapp.com/attachments/719410556578299954/773048548026875904/s25_Pack.png',
   },
@@ -58,11 +51,11 @@ const PackShop = () => {
               onMouseOver={() => {
                 handleTouchPack(index)
               }}
-              className={
+              className={`h-96 mx-4 transition ease-linear duration-800 ${
                 lastTouchedPack.id !== pack.id
-                  ? 'h-96 mx-4 transition ease-linear translate-y-3 hover:scale-100 duration-800'
-                  : 'h-96 mx-4 transition ease-linear hover:-translate-y-3 hover:scale-100 duration-800'
-              }
+                  ? 'translate-y-3 hover:scale-100 shadow-none'
+                  : 'hover:-translate-y-3 hover:scale-100 shadow-xl'
+              }`}
               src={pack.coverHref}
             />
           </div>
