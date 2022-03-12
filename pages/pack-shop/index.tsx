@@ -51,7 +51,7 @@ const PackShop = () => {
               onMouseOver={() => {
                 handleTouchPack(index)
               }}
-              className={`h-96 mx-4 transition ease-linear duration-800 ${
+              className={`cursor-pointer h-96 mx-4 transition ease-linear duration-800 ${
                 lastTouchedPack.id !== pack.id
                   ? 'translate-y-3 hover:scale-100 shadow-none'
                   : 'hover:-translate-y-3 hover:scale-100 shadow-xl'
