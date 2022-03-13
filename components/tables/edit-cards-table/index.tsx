@@ -87,6 +87,13 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
       sortDescFirst: true,
     },
     {
+      id: 'author_paid',
+      Header: 'Paid',
+      accessor: 'author_paid',
+      title: 'Author Paid',
+      sortDescFirst: true,
+    },
+    {
       id: 'image_url',
       Header: 'Image',
       accessor: 'image_url',
