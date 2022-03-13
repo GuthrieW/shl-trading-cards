@@ -22,15 +22,15 @@ const Table = ({
       <thead className="bg-neutral-800 text-gray-100 relative">
         {headerGroups.map((headerGroup, headerGroupIndex) => (
           <tr
+            {...headerGroup.getHeaderGroupProps()}
             key={headerGroupIndex}
             className="table-row"
-            {...headerGroup.getHeaderGroupProps()}
           >
             {headerGroup.headers.map((header, headerIndex) => (
               <th
+                {...header.getHeaderProps(header.getSortByToggleProps())}
                 key={headerIndex}
                 className="h-12 px-1 font-normal bg-neutral-800 relative first:pl-4 last:pr-4"
-                {...header.getHeaderProps(header.getSortByToggleProps())}
                 title={header.title}
               >
                 {header.render('Header')}
@@ -40,23 +40,23 @@ const Table = ({
         ))}
       </thead>
       <tbody
-        className=" table-row-group bg-gray-100 mx-auto my-0 align-middle relative"
         {...getTableBodyProps()}
+        className="table-row-group bg-gray-100 mx-auto my-0 align-middle relative"
       >
         {rows.map((row, index) => {
           prepareRow(row)
           return (
             <tr
+              {...row.getRowProps()}
               key={index}
               className="hover:bg-gray-300"
-              onClick={() => (onRowClick ? onRowClick() : null)}
-              {...row.getRowProps()}
+              onClick={() => onRowClick()}
             >
               {row.cells.map((cell, index) => (
                 <td
-                  key={index}
-                  className=" p-2 text-center"
                   {...cell.getCellProps()}
+                  key={index}
+                  className="p-2 text-center"
                 >
                   {cell.render('Cell')}
                 </td>

@@ -48,12 +48,8 @@ const PackShop = () => {
             className="flex flex-col items-center justify-center"
           >
             <img
-              onClick={() => {
-                handleBuyPack(pack.id)
-              }}
-              onMouseOver={() => {
-                handleTouchPack(index)
-              }}
+              onClick={() => handleBuyPack(pack.id)}
+              onMouseOver={() => handleTouchPack(index)}
               className={`cursor-pointer h-96 mx-4 transition ease-linear duration-800 ${
                 lastTouchedPack.id !== pack.id
                   ? 'translate-y-3 hover:scale-100 shadow-none'

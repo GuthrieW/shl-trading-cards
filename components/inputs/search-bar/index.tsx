@@ -9,7 +9,7 @@ const SearchBar = ({ onChange }) => (
     className="my-2 px-2 h-8 rounded-md border border-black text-black font-normal text-base "
     type="text"
     placeholder="Search"
-    onChange={() => onChange()}
+    onChange={onChange}
   />
 )
 

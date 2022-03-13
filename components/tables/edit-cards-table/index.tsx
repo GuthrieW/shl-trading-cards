@@ -1,9 +1,18 @@
 import ButtonGroup from '@components/buttons/button-group'
 import SearchBar from '@components/inputs/search-bar'
 import React, { useMemo, useState } from 'react'
-import { useTable, useSortBy, usePagination } from 'react-table'
+import {
+  useTable,
+  useSortBy,
+  usePagination,
+  useGlobalFilter,
+} from 'react-table'
 import Pagination from '../pagination'
 import Table from '../table'
+
+export type EditCardTableProps = {
+  tableData: Card[]
+}
 
 type ColumnData = {
   id: string
@@ -13,12 +22,19 @@ type ColumnData = {
   sortDescFirst: boolean
 }
 
-export type EditCardTableProps = {
-  tableData: Card[]
+type TableButtonId = 'skaters' | 'goalies'
+
+type TableButtons = {
+  id: TableButtonId
+  text: string
+  disabled: boolean
+  onClick: Function
 }
 
 const EditCardsTable = ({ tableData }: EditCardTableProps) => {
   const [viewSkaters, setViewSkaters] = useState<boolean>(true)
+  const [selectedButtonId, setSelectedButtonId] =
+    useState<TableButtonId>('skaters')
 
   const columnData: ColumnData[] = [
     {
@@ -142,17 +158,23 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
     },
   ]
 
-  const columns = useMemo(() => columnData, [columnData])
-  const data = useMemo(() => tableData, [tableData])
+  const columns = useMemo(() => columnData, [viewSkaters])
+  const data = useMemo(
+    () =>
+      viewSkaters
+        ? tableData.filter((card) => card.position !== 'G')
+        : tableData.filter((card) => card.position === 'G'),
+    [tableData, viewSkaters]
+  )
   const initialState = useMemo(() => {
-    return { sortBy: [{ id: 'cardID' }] }
+    return { sortBy: [{ id: 'player_name' }] }
   }, [])
 
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
+    page,
     prepareRow,
     pageOptions,
     pageCount,
@@ -161,6 +183,7 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
     canNextPage,
     nextPage,
     gotoPage,
+    setGlobalFilter,
     state: { pageIndex },
   } = useTable(
     {
@@ -168,18 +191,18 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
       data,
       initialState: { pageIndex: 0, pageSize: 10, ...initialState },
     },
+    useGlobalFilter,
     useSortBy,
     usePagination
   )
 
-  const gotoLastPage = () => gotoPage(pageCount - 1)
-
-  const tableButtons = [
+  const tableButtons: TableButtons[] = [
     {
       id: 'skaters',
       text: 'Skaters',
       disabled: viewSkaters,
       onClick: () => {
+        setSelectedButtonId('skaters')
         setViewSkaters(true)
       },
     },
@@ -188,25 +211,29 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
       text: 'Goalies',
       disabled: !viewSkaters,
       onClick: () => {
+        setSelectedButtonId('goalies')
         setViewSkaters(false)
       },
     },
   ]
 
+  const gotoLastPage = () => gotoPage(pageCount - 1)
+  const updateSearchFilter = (event) => setGlobalFilter(event.target.value)
+
   return (
     <div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <ButtonGroup
           buttons={tableButtons}
-          selectedButtonId={tableButtons[0].id}
+          selectedButtonId={selectedButtonId}
         />
-        <SearchBar onChange={() => {}} />
+        <SearchBar onChange={updateSearchFilter} />
       </div>
       <Table
         getTableProps={getTableProps}
         headerGroups={headerGroups}
         getTableBodyProps={getTableBodyProps}
-        rows={rows}
+        rows={page}
         prepareRow={prepareRow}
       />
       <Pagination
