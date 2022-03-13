@@ -9,6 +9,7 @@ const SubmitCards = () => {
   })
 
   if (isLoading || isError) return null
+
   return (
     <div className="m-2">
       <h1>Submit Cards</h1>

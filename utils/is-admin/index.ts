@@ -8,7 +8,7 @@ const isAdmin = (user: User) => {
   }
 
   if (user.additionalgroups) {
-    if (user.additionalgroups.includes(groups.TradingCardAdmin.label)) {
+    if (user.additionalgroups.includes(groups.TradingCardAdmin.idAsString)) {
       return true
     }
   }

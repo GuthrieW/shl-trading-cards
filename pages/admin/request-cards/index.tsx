@@ -22,6 +22,7 @@ const RequestCards = () => {
   }
 
   const handleUploadCsv = () => {
+    setIsSubmitting(true)
     csvToUpload.map((row, index) => {
       if (index === 0) return
 
@@ -47,6 +48,7 @@ const RequestCards = () => {
 
       createRequestedCard({ requestedCard: playerData })
     })
+    setIsSubmitting(false)
   }
 
   return (

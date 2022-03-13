@@ -1,5 +1,5 @@
 import EditCardsTable from '@components/tables/edit-cards-table'
-import { useGetAllCards } from '@pages/api/queries'
+import { useGetAllCards, useGetCurrentUser } from '@pages/api/queries'
 import React from 'react'
 
 const EditCards = () => {

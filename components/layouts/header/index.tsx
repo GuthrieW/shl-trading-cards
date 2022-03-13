@@ -1,6 +1,7 @@
+import isAdmin from '@utils/is-admin'
 import isAdminOrCardTeam from '@utils/is-admin-or-card-team'
 import Router from 'next/router'
-import React from 'react'
+import React, { useState } from 'react'
 import IceLevelLogo from '../../../public/images/ice-level.svg'
 import NavLink from '../nav-link'
 
@@ -17,7 +18,14 @@ type HeaderLink = {
   hide: boolean
 }
 
-const headers: HeaderLink[] = [
+type AdminLink = {
+  id: string
+  headerText: string
+  href: string
+  admin: boolean
+}
+
+const headersLinks: HeaderLink[] = [
   {
     id: 'home',
     headerText: 'Home',
@@ -60,30 +68,78 @@ const headers: HeaderLink[] = [
   },
 ]
 
+const adminLinks: AdminLink[] = [
+  {
+    id: 'edit-cards',
+    headerText: 'Edit Cards',
+    href: '/edit-cards',
+    admin: true,
+  },
+  {
+    id: 'request-cards',
+    headerText: 'Request Cards',
+    href: '/request-cards',
+    admin: true,
+  },
+  {
+    id: 'claim-cards',
+    headerText: 'Claim Cards',
+    href: '/claim-cards',
+    admin: false,
+  },
+  {
+    id: 'submit-cards',
+    headerText: 'Submit Cards',
+    href: '/submit-cards',
+    admin: false,
+  },
+  {
+    id: 'process-cards',
+    headerText: 'Process Cards',
+    href: '/process-cards',
+    admin: true,
+  },
+]
+
 const Header = ({ user }: HeaderProps) => {
+  const [showAdminLinks, setShowAdminLinks] = useState<boolean>(false)
+  const userIsAdmin = isAdmin(user)
+  const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
+
   return (
-    <div className="relative justify-between top-0 w-full h-16 flex flex-row bg-neutral-800 ">
+    <div className="relative justify-between top-0 w-full h-16 flex flex-row bg-neutral-800">
       <div className="flex items-center">
         <img
           src={IceLevelLogo}
           onClick={() => Router.push('/home')}
           className="h-16 cursor-pointer"
         />
-        {headers.map((header, index) => (
+        {headersLinks.map((header, index) => (
           <React.Fragment key={index}>
             {!header.hide ? (
-              <NavLink text={header.headerText} href={header.href} />
+              <NavLink onClick={() => Router.push(header.href)}>
+                {header.headerText}
+              </NavLink>
             ) : null}
           </React.Fragment>
         ))}
       </div>
-      <div className="mx-4 flex items-center">
-        {isAdminOrCardTeam(user) ? (
-          <NavLink text={user.username} href={'/admin'} />
-        ) : (
-          <NavLink text={user.username} />
-        )}
-      </div>
+      <ul className="bg-neutral-800 rounded-sm">
+        <li className="bg-neutral-800">
+          <NavLink onClick={() => setShowAdminLinks(!showAdminLinks)}>
+            {user.username}
+          </NavLink>
+        </li>
+        {showAdminLinks &&
+          userIsAdminOrCardTeam &&
+          adminLinks.map((adminLink, index) => (
+            <li className="bg-neutral-800" key={index}>
+              <NavLink onClick={() => Router.push('/admin' + adminLink.href)}>
+                {adminLink.headerText}
+              </NavLink>
+            </li>
+          ))}
+      </ul>
     </div>
   )
 }
