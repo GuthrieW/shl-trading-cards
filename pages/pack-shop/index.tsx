@@ -43,7 +43,10 @@ const PackShop = () => {
       </div>
       <div className="h-auto flex flex-row items-center justify-center">
         {examplePacks.map((pack: packInfo, index: number) => (
-          <div className="flex flex-col items-center justify-center">
+          <div
+            key={index}
+            className="flex flex-col items-center justify-center"
+          >
             <img
               onClick={() => {
                 handleBuyPack(pack.id)

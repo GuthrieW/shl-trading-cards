@@ -69,12 +69,12 @@ const Header = ({ user }: HeaderProps) => {
           onClick={() => Router.push('/home')}
           className="h-16 cursor-pointer"
         />
-        {headers.map((header) => (
-          <>
+        {headers.map((header, index) => (
+          <React.Fragment key={index}>
             {!header.hide ? (
               <NavLink text={header.headerText} href={header.href} />
             ) : null}
-          </>
+          </React.Fragment>
         ))}
       </div>
       <div className="mx-4 flex items-center">

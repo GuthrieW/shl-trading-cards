@@ -1,4 +1,5 @@
 import ButtonGroup from '@components/buttons/button-group'
+import SearchBar from '@components/inputs/search-bar'
 import React, { useMemo, useState } from 'react'
 import { useTable, useSortBy, usePagination } from 'react-table'
 import Pagination from '../pagination'
@@ -17,7 +18,7 @@ export type EditCardTableProps = {
 }
 
 const EditCardsTable = ({ tableData }: EditCardTableProps) => {
-  const [viewSkaters, setViewSkaters] = useState(true)
+  const [viewSkaters, setViewSkaters] = useState<boolean>(true)
 
   const columnData: ColumnData[] = [
     {
@@ -175,20 +176,32 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
 
   const tableButtons = [
     {
+      id: 'skaters',
       text: 'Skaters',
       disabled: viewSkaters,
-      onClick: () => setViewSkaters(true),
+      onClick: () => {
+        setViewSkaters(true)
+      },
     },
     {
+      id: 'goalies',
       text: 'Goalies',
       disabled: !viewSkaters,
-      onClick: () => setViewSkaters(false),
+      onClick: () => {
+        setViewSkaters(false)
+      },
     },
   ]
 
   return (
     <div>
-      <ButtonGroup buttons={tableButtons} />
+      <div className="flex justify-between">
+        <ButtonGroup
+          buttons={tableButtons}
+          selectedButtonId={tableButtons[0].id}
+        />
+        <SearchBar onChange={() => {}} />
+      </div>
       <Table
         getTableProps={getTableProps}
         headerGroups={headerGroups}
