@@ -5,9 +5,7 @@ import React from 'react'
 const EditCards = () => {
   const { allCards, isLoading, isError } = useGetAllCards({})
 
-  if (isLoading || isError) {
-    return null
-  }
+  if (isLoading || isError) return null
 
   return (
     <div className="m-2">

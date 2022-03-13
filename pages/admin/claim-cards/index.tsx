@@ -5,9 +5,7 @@ import React from 'react'
 const ClaimCards = () => {
   const { requestedCards, isLoading, isError } = useGetRequestedCards({})
 
-  if (isLoading || isError) {
-    return null
-  }
+  if (isLoading || isError) return null
 
   return (
     <div className="m-2">

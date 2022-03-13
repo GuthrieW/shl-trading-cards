@@ -10,25 +10,8 @@ import {
 import Pagination from '../pagination'
 import Table from '../table'
 
-export type ClaimCardsTableProps = {
+type ClaimCardsTableProps = {
   tableData: Card[]
-}
-
-type ColumnData = {
-  id: string
-  Header: string
-  accessor: string
-  title: string
-  sortDescFirst: boolean
-}
-
-type TableButtonId = 'skaters' | 'goalies'
-
-type TableButtons = {
-  id: TableButtonId
-  text: string
-  disabled: boolean
-  onClick: Function
 }
 
 const ClaimCardsTable = ({ tableData }: ClaimCardsTableProps) => {
@@ -36,7 +19,7 @@ const ClaimCardsTable = ({ tableData }: ClaimCardsTableProps) => {
   const [selectedButtonId, setSelectedButtonId] =
     useState<TableButtonId>('skaters')
 
-  const columnData = [
+  const columnData: ColumnData[] = [
     {
       id: 'player_name',
       Header: 'Name',

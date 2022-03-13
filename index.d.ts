@@ -1,3 +1,4 @@
+// data types
 type Card = {
   cardID: number
   teamID: number
@@ -104,4 +105,23 @@ type PackType = {
   key: PackKey
   label: PackLabel
   imageUrl: string
+}
+
+// table types
+
+type TableButtons = {
+  id: TableButtonId
+  text: string
+  disabled: boolean
+  onClick: Function
+}
+
+type TableButtonId = 'skaters' | 'goalies'
+
+type ColumnData = {
+  id: string
+  Header: string
+  accessor: string
+  title: string
+  sortDescFirst: boolean
 }
