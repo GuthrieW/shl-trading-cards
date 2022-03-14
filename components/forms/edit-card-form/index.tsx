@@ -157,7 +157,6 @@ const EditCardForm = ({
     },
   ]
 
-  console.log(updatedCard)
   return (
     <form className="flex flex-col justify-center items-center">
       {formFields.map((formField) => {

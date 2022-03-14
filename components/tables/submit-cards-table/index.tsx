@@ -118,7 +118,7 @@ const SubmitCardsTable = ({ tableData }: SubmitCardsTableProps) => {
       viewSkaters
         ? tableData.filter((card) => card.position !== 'G')
         : tableData.filter((card) => card.position === 'G'),
-    [tableData]
+    [tableData, viewSkaters]
   )
 
   const initialState = useMemo(() => {
