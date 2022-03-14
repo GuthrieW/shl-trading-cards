@@ -49,6 +49,13 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
       sortDescFirst: true,
     },
     {
+      id: 'author_userID',
+      Header: 'Author ID',
+      accessor: 'author_userID',
+      title: 'Author ID',
+      sortDescFirst: true,
+    },
+    {
       id: 'card_rarity',
       Header: 'Rarity',
       accessor: 'card_rarity',
