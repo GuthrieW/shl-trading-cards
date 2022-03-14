@@ -1,6 +1,8 @@
 import ButtonGroup from '@components/buttons/button-group'
 import SearchBar from '@components/inputs/search-bar'
-import React, { useMemo, useState } from 'react'
+import EditCardModal from '@components/modals/edit-card-modal'
+import { useEditCard } from '@pages/api/mutations'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   useTable,
   useSortBy,
@@ -32,9 +34,13 @@ type TableButtons = {
 }
 
 const EditCardsTable = ({ tableData }: EditCardTableProps) => {
+  const { editCard, response, isLoading, isError } = useEditCard()
+
   const [viewSkaters, setViewSkaters] = useState<boolean>(true)
+  const [showModal, setShowModal] = useState<boolean>(false)
   const [selectedButtonId, setSelectedButtonId] =
     useState<TableButtonId>('skaters')
+  const [modalRow, setModalRow] = useState<Card>(null)
 
   const columnData: ColumnData[] = [
     {
@@ -226,6 +232,14 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
 
   const gotoLastPage = () => gotoPage(pageCount - 1)
   const updateSearchFilter = (event) => setGlobalFilter(event.target.value)
+  const handleRowClick = (row) => {
+    setModalRow(row.values)
+    setShowModal(true)
+  }
+
+  const handleEditCard = (cardID, newCardData) => {
+    editCard({ cardID, newCardData })
+  }
 
   return (
     <div>
@@ -242,6 +256,7 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
         getTableBodyProps={getTableBodyProps}
         rows={page}
         prepareRow={prepareRow}
+        onRowClick={handleRowClick}
       />
       <Pagination
         pageOptions={pageOptions}
@@ -253,6 +268,13 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
         gotoPage={gotoPage}
         gotoLastPage={gotoLastPage}
       />
+      {showModal && (
+        <EditCardModal
+          cardData={modalRow}
+          setShowModal={setShowModal}
+          onSubmit={handleEditCard}
+        />
+      )}
     </div>
   )
 }

@@ -50,7 +50,7 @@ const Table = ({
               {...row.getRowProps()}
               key={index}
               className="hover:bg-gray-300"
-              onClick={() => onRowClick()}
+              onClick={() => onRowClick(row)}
             >
               {row.cells.map((cell, index) => (
                 <td
