@@ -6,14 +6,22 @@ type EditCardModalProps = {
   cardData: any
   setShowModal: Function
   onSubmit: Function
+  cardID: number
+  cardName: string
 }
 
 const EditCardModal = ({
   cardData,
   setShowModal,
   onSubmit,
+  cardID,
+  cardName,
 }: EditCardModalProps) => (
-  <Modal setShowModal={setShowModal} title="Edit Card">
+  <Modal
+    setShowModal={setShowModal}
+    title={'Edit Card'}
+    subtitle={`${cardName} - ${cardID}`}
+  >
     <EditCardForm
       cardData={cardData}
       onSubmit={onSubmit}

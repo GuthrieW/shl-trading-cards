@@ -273,6 +273,8 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
           cardData={modalRow}
           setShowModal={setShowModal}
           onSubmit={handleEditCard}
+          cardID={modalRow.cardID}
+          cardName={modalRow.player_name}
         />
       )}
     </div>

@@ -1,5 +1,8 @@
 import ButtonGroup from '@components/buttons/button-group'
 import SearchBar from '@components/inputs/search-bar'
+import ClaimCardModal from '@components/modals/claim-card-modal'
+import { useClaimCard } from '@pages/api/mutations'
+import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useMemo, useState } from 'react'
 import {
   useTable,
@@ -15,9 +18,13 @@ type ClaimCardsTableProps = {
 }
 
 const ClaimCardsTable = ({ tableData }: ClaimCardsTableProps) => {
+  const { claimCard, response, isLoading, isError } = useClaimCard()
+
   const [viewSkaters, setViewSkaters] = useState<boolean>(true)
   const [selectedButtonId, setSelectedButtonId] =
     useState<TableButtonId>('skaters')
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [modalRow, setModalRow] = useState<Card>(null)
 
   const columnData: ColumnData[] = [
     {
@@ -118,7 +125,7 @@ const ClaimCardsTable = ({ tableData }: ClaimCardsTableProps) => {
       viewSkaters
         ? tableData.filter((card) => card.position !== 'G')
         : tableData.filter((card) => card.position === 'G'),
-    [tableData]
+    [tableData, viewSkaters]
   )
   const initialState = useMemo(() => {
     return { sortBy: [{ id: 'player_name' }] }
@@ -174,6 +181,15 @@ const ClaimCardsTable = ({ tableData }: ClaimCardsTableProps) => {
   const gotoLastPage = () => gotoPage(pageCount - 1)
   const updateSearchFilter = (event) => setGlobalFilter(event.target.value)
 
+  const handleRowClick = (row) => {
+    setModalRow(row.values)
+    setShowModal(true)
+  }
+
+  const handleClaimCard = () => {
+    claimCard({ cardID: modalRow.cardID, uid: getUidFromSession() })
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -189,6 +205,7 @@ const ClaimCardsTable = ({ tableData }: ClaimCardsTableProps) => {
         getTableBodyProps={getTableBodyProps}
         rows={page}
         prepareRow={prepareRow}
+        onRowClick={handleRowClick}
       />
       <Pagination
         pageOptions={pageOptions}
@@ -200,6 +217,14 @@ const ClaimCardsTable = ({ tableData }: ClaimCardsTableProps) => {
         gotoPage={gotoPage}
         gotoLastPage={gotoLastPage}
       />
+      {showModal && (
+        <ClaimCardModal
+          setShowModal={setShowModal}
+          onClaim={handleClaimCard}
+          cardID={modalRow.cardID}
+          cardName={modalRow.player_name}
+        />
+      )}
     </div>
   )
 }
