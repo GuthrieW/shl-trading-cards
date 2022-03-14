@@ -9,6 +9,8 @@ import {
 } from 'react-table'
 import Pagination from '../pagination'
 import Table from '../table'
+import ProcessCardModal from '@components/modals/process-card-modal'
+import { useAcceptCard, useDenyCard } from '@pages/api/mutations'
 
 type ProcessCardsTableProps = {
   tableData: Card[]
@@ -18,6 +20,19 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
   const [viewSkaters, setViewSkaters] = useState<boolean>(true)
   const [selectedButtonId, setSelectedButtonId] =
     useState<TableButtonId>('skaters')
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [modalRow, setModalRow] = useState<Card>(null)
+
+  const {
+    acceptCard,
+    isLoading: acceptCardIsLoading,
+    isError: acceptCardIsError,
+  } = useAcceptCard()
+  const {
+    denyCard,
+    isLoading: denyCardIsLoading,
+    isError: denyCardIsError,
+  } = useDenyCard()
 
   const columnData = [
     {
@@ -161,6 +176,14 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
   const gotoLastPage = () => gotoPage(pageCount - 1)
   const updateSearchFilter = (event) => setGlobalFilter(event.target.value)
 
+  const handleAcceptCard = () => {
+    acceptCard({ cardID: modalRow.cardID })
+  }
+
+  const handleDenyCard = () => {
+    denyCard({ cardID: modalRow.cardID })
+  }
+
   const tableButtons: TableButtons[] = [
     {
       id: 'skaters',
@@ -208,6 +231,15 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
         gotoPage={gotoPage}
         gotoLastPage={gotoLastPage}
       />
+      {showModal && (
+        <ProcessCardModal
+          setShowModal={setShowModal}
+          onAccept={handleAcceptCard}
+          onDeny={handleDenyCard}
+          cardID={modalRow.cardID}
+          cardName={modalRow.player_name}
+        />
+      )}
     </div>
   )
 }
