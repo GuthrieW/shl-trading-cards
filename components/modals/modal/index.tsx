@@ -22,7 +22,7 @@ const Modal = ({
             <div className="flex justify-between w-full">
               <p className="text-3xl font-semibold">{title}</p>
               <button
-                className="mx-1 w-8 h-8 hover:bg-gray-300 rounded-md cursor-pointer"
+                className="mx-1 w-6 h-6 hover:bg-gray-300 rounded-md cursor-pointer"
                 onClick={() => setShowModal(false)}
               >
                 <XIcon fill="black" stroke="black" />

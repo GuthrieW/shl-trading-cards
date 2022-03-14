@@ -141,7 +141,7 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
       viewSkaters
         ? tableData.filter((card) => card.position !== 'G')
         : tableData.filter((card) => card.position === 'G'),
-    [tableData]
+    [tableData, viewSkaters]
   )
   const initialState = useMemo(() => {
     return { sortBy: [{ id: 'player_name' }] }
@@ -173,17 +173,6 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
     usePagination
   )
 
-  const gotoLastPage = () => gotoPage(pageCount - 1)
-  const updateSearchFilter = (event) => setGlobalFilter(event.target.value)
-
-  const handleAcceptCard = () => {
-    acceptCard({ cardID: modalRow.cardID })
-  }
-
-  const handleDenyCard = () => {
-    denyCard({ cardID: modalRow.cardID })
-  }
-
   const tableButtons: TableButtons[] = [
     {
       id: 'skaters',
@@ -205,6 +194,22 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
     },
   ]
 
+  const gotoLastPage = () => gotoPage(pageCount - 1)
+  const updateSearchFilter = (event) => setGlobalFilter(event.target.value)
+
+  const handleAcceptCard = () => {
+    acceptCard({ cardID: modalRow.cardID })
+  }
+
+  const handleDenyCard = () => {
+    denyCard({ cardID: modalRow.cardID })
+  }
+
+  const handleRowClick = (row) => {
+    setModalRow(row.values)
+    setShowModal(true)
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -220,6 +225,7 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
         getTableBodyProps={getTableBodyProps}
         rows={page}
         prepareRow={prepareRow}
+        onRowClick={handleRowClick}
       />
       <Pagination
         pageOptions={pageOptions}
