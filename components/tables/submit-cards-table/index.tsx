@@ -9,6 +9,7 @@ import {
 } from 'react-table'
 import Pagination from '../pagination'
 import Table from '../table'
+import SubmitCardModal from '@components/modals/submit-card-modal'
 
 type SubmitCardsTableProps = {
   tableData: Card[]
@@ -18,6 +19,8 @@ const SubmitCardsTable = ({ tableData }: SubmitCardsTableProps) => {
   const [viewSkaters, setViewSkaters] = useState<boolean>(true)
   const [selectedButtonId, setSelectedButtonId] =
     useState<TableButtonId>('skaters')
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [modalRow, setModalRow] = useState<Card>(null)
 
   const columnData = [
     {
@@ -154,6 +157,11 @@ const SubmitCardsTable = ({ tableData }: SubmitCardsTableProps) => {
   const gotoLastPage = () => gotoPage(pageCount - 1)
   const updateSearchFilter = (event) => setGlobalFilter(event.target.value)
 
+  const handleRowClick = (row) => {
+    setModalRow(row.values)
+    setShowModal(true)
+  }
+
   const tableButtons: TableButtons[] = [
     {
       id: 'skaters',
@@ -190,6 +198,7 @@ const SubmitCardsTable = ({ tableData }: SubmitCardsTableProps) => {
         getTableBodyProps={getTableBodyProps}
         rows={page}
         prepareRow={prepareRow}
+        onRowClick={handleRowClick}
       />
       <Pagination
         pageOptions={pageOptions}
@@ -201,6 +210,9 @@ const SubmitCardsTable = ({ tableData }: SubmitCardsTableProps) => {
         gotoPage={gotoPage}
         gotoLastPage={gotoLastPage}
       />
+      {showModal && (
+        <SubmitCardModal setShowModal={setShowModal} card={modalRow} />
+      )}
     </div>
   )
 }

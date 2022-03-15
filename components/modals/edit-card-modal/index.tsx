@@ -22,11 +22,12 @@ const EditCardModal = ({
     title={'Edit Card'}
     subtitle={`${cardName} - ${cardID}`}
   >
-    <EditCardForm
+    <img src="https://www.vosp.us/wp-content/uploads/Under.jpg" />
+    {/* <EditCardForm
       cardData={cardData}
       onSubmit={onSubmit}
       setShowModal={setShowModal}
-    />
+    /> */}
   </Modal>
 )
 
