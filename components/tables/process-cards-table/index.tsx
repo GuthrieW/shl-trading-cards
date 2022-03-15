@@ -71,6 +71,13 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
       sortDescFirst: true,
     },
     {
+      id: 'image_url',
+      Header: 'Image URL',
+      accessor: 'image_url',
+      title: 'Image URL',
+      sortDescFirst: true,
+    },
+    {
       id: 'card_rarity',
       Header: 'Rarity',
       accessor: 'card_rarity',
@@ -210,6 +217,8 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
     setShowModal(true)
   }
 
+  console.log('card', modalRow)
+
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -242,8 +251,7 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
           setShowModal={setShowModal}
           onAccept={handleAcceptCard}
           onDeny={handleDenyCard}
-          cardID={modalRow.cardID}
-          cardName={modalRow.player_name}
+          card={modalRow}
         />
       )}
     </div>
