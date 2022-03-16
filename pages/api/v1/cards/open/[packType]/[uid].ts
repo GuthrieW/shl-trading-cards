@@ -114,8 +114,8 @@ const index = async (
     const consumePack = await queryDatabase(SQL`
       UPDATE admin_cards.packs_owned
       SET quantity = quantity - 1
-      WHERE userID = ${uid}
-      `)
+      WHERE userID = ${uid};
+    `)
 
     response.status(StatusCodes.OK).json({
       purchaseSuccessful: true,

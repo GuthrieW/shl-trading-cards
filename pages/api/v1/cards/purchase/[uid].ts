@@ -1,12 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { queryDatabase } from '@pages/api/database/database'
-import { GET } from '@constants/index'
+import { POST } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 
-const allowedMethods = [GET]
+const allowedMethods = [POST]
 const cors = Cors({
   methods: allowedMethods,
 })
@@ -16,14 +16,17 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { method } = request
-  const { uid } = request.query
+  const { method, query, body } = request
+  const { uid } = query
+  const { purchaseAmount } = body
 
-  if (method === GET) {
+  if (method === POST) {
     const result = await queryDatabase(SQL`
-        UPDATE admin_cards.packs_owned
-        SET quantity = quantity + 1
-        WHERE userID = ${uid};
+      INSERT INTO admin_cards.packs_owned
+        (userID, quantity, subscribed)
+      VALUES 
+        (${uid}, 1, 0)
+      ON DUPLICATE KEY UPDATE quantity=(quantity + ${purchaseAmount});
     `)
 
     response.status(StatusCodes.OK).json(result)

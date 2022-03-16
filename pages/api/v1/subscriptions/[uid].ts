@@ -2,13 +2,13 @@
 
 import { NextApiRequest, NextApiResponse } from 'next'
 import { queryDatabase } from '@pages/api/database/database'
-import { GET } from '@constants/index'
+import { GET, POST } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 
-const allowedMethods = [GET]
+const allowedMethods = [GET, POST]
 const cors = Cors({
   methods: allowedMethods,
 })
@@ -18,8 +18,8 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { method } = request
-  const { uid } = request.query
+  const { method, query, body } = request
+  const { uid } = query
 
   if (method === GET) {
     const result = await queryDatabase(SQL`
@@ -28,6 +28,20 @@ const index = async (
         po.subscribed
       FROM admin_cards.packs_owned po
       WHERE po.userID=${uid};
+    `)
+
+    response.status(StatusCodes.OK).json(result)
+    return
+  }
+
+  if (method === POST) {
+    const { subscriptionAmount } = body
+    const result = await queryDatabase(SQL`
+      INSERT INTO admin_cards.packs_owned
+        (userID, quantity, subscribed)
+      VALUES
+        (${uid}, 0, ${subscriptionAmount})
+      ON DUPLICATE KEY UPDATE subscribed=${subscriptionAmount};
     `)
 
     response.status(StatusCodes.OK).json(result)
