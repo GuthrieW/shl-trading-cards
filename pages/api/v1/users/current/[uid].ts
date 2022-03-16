@@ -5,7 +5,6 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
-import { getUidFromSession } from '@utils/index'
 
 const allowedMethods = [GET]
 const cors = Cors({

@@ -64,6 +64,26 @@ const Table = ({
             </tr>
           )
         })}
+        {rows.length > 0 &&
+          Array(10 - rows.length)
+            .fill(undefined)
+            .map((row, index) => {
+              const fakeRow = rows[0]
+              prepareRow(fakeRow)
+              return (
+                <tr {...fakeRow?.getRowProps()} key={index} onClick={() => {}}>
+                  {fakeRow?.cells.map((cell, index) => (
+                    <td
+                      {...cell.getCellProps()}
+                      key={index}
+                      className="p-2 text-center"
+                    >
+                      {'\u00A0'}
+                    </td>
+                  ))}
+                </tr>
+              )
+            })}
       </tbody>
     </table>
   </div>

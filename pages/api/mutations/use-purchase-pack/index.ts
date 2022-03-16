@@ -1,4 +1,4 @@
-import { UseMutateFunction, useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 import { UseGetUserCardsKey } from '@pages/api/queries/use-get-user-cards'

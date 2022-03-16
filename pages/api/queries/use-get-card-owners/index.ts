@@ -1,4 +1,3 @@
-import users from '@utils/test-data/user.json'
 import { useQuery } from 'react-query'
 import axios from 'axios'
 import { GET } from '@constants/http-methods'
