@@ -9,7 +9,7 @@ type packInfo = {
 
 const examplePacks: packInfo[] = [
   {
-    id: 'regular',
+    id: 'base',
     name: 'Base Pack',
     description: 'A pack of 6 SHL player trading cards',
     coverHref:
@@ -36,7 +36,8 @@ const PackShop = () => {
   }
 
   return (
-    <>
+    <div className="m-2">
+      <h1>Pack Shop</h1>
       <div className="flex flex-col">
         <span className="mx-2 text-3xl">{lastTouchedPack.name}</span>
         <span className="mx-5">{lastTouchedPack.description}</span>
@@ -60,7 +61,7 @@ const PackShop = () => {
           </div>
         ))}
       </div>
-    </>
+    </div>
   )
 }
 

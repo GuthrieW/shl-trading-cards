@@ -51,6 +51,14 @@ const headersLinks: HeaderLink[] = [
     hide: false,
   },
   {
+    id: 'open-packs',
+    headerText: 'Open Packs',
+    href: '/open-packs',
+    admin: false,
+    cardTeam: false,
+    hide: false,
+  },
+  {
     id: 'trade-hub',
     headerText: 'Trade Hub',
     href: '/trade-hub',
