@@ -25,7 +25,7 @@ const index = async (
       INSERT INTO admin_cards.packs_owned
         (userID, quantity, subscribed)
       VALUES 
-        (${uid}, 1, 0)
+        (${uid}, ${purchaseAmount}, 0)
       ON DUPLICATE KEY UPDATE quantity=(quantity + ${purchaseAmount});
     `)
 
