@@ -98,8 +98,8 @@ type Rarity = {
   enabled: boolean
 }
 
-type PackKey = 'regular' | 'challenge-cup'
-type PackLabel = 'Regular' | 'Challenge Cup'
+type PackKey = 'base'
+type PackLabel = 'Base'
 
 type PackType = {
   key: PackKey
