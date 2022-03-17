@@ -3,22 +3,24 @@ import React from 'react'
 
 type ButtonProps = {
   id: string
-  disabled: boolean
   onClick: Function
   text: string
 }
 
-export type ButtonGroupProps = {
+export type MultiSelectButtonGroupProps = {
   buttons: ButtonProps[]
-  selectedButtonId: string
+  selectedButtonIds: string[]
 }
 
-const getIsSelected = (buttonId: string, selectedButtonId: string) =>
-  buttonId === selectedButtonId
+const getIsSelected = (buttonId: string, selectedButtonIds: string[]) =>
+  selectedButtonIds.includes(buttonId)
     ? 'bg-neutral-800 text-gray-100'
     : 'bg-white border text-neutral-800 hover:bg-gray-300 hover:text-neutral-800'
 
-const ButtonGroup = ({ buttons, selectedButtonId }: ButtonGroupProps) => (
+const MultiSelectButtonGroup = ({
+  buttons,
+  selectedButtonIds,
+}: MultiSelectButtonGroupProps) => (
   <div className="inline-flex shadow-sm" role="group">
     {buttons.map((button, index) => (
       <button
@@ -28,9 +30,8 @@ const ButtonGroup = ({ buttons, selectedButtonId }: ButtonGroupProps) => (
           buttons.length
         )} py-2 px-4 text-sm font-medium border-neutral-800  cursor-pointer ${getIsSelected(
           button.id,
-          selectedButtonId
+          selectedButtonIds
         )}`}
-        disabled={button.disabled}
         onClick={() => button.onClick()}
       >
         {button.text}
@@ -39,4 +40,4 @@ const ButtonGroup = ({ buttons, selectedButtonId }: ButtonGroupProps) => (
   </div>
 )
 
-export default ButtonGroup
+export default MultiSelectButtonGroup

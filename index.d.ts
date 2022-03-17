@@ -109,14 +109,19 @@ type PackType = {
 
 // table types
 
-type TableButtons = {
-  id: TableButtonId
+type PlayerTableButtons = {
+  id: PlayerTableButtonId
   text: string
   disabled: boolean
   onClick: Function
 }
+type PlayerTableButtonId = 'skaters' | 'goalies'
 
-type TableButtonId = 'skaters' | 'goalies'
+type CollectionTableButtons = {
+  id: string
+  text: string
+  onClick: Function
+}
 
 type ColumnData = {
   id: string
