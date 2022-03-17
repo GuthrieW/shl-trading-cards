@@ -3,21 +3,26 @@ import { queryDatabase } from '../pages/api/database/database'
 
 function issueSubscriptionPacks() {
   const maximumDailyPacks = 3
+  // const maximumDailyPacks = queryDatabase(SQL`
+  //   SELECT maximum_packs
+  //   FROM admin_cards.constants;
+  // `)
 
-  const addSubscribedPacksResult = queryDatabase(SQL`
+  const updateSubscribedUsers = queryDatabase(SQL`
     UPDATE admin_cards.packs_owned,
-    SET quantity = quantity + (${maximumDailyPacks} - packs_purchased_today)
-    WHERE subscribed != 0;
+    SET quantity = quantity + (${maximumDailyPacks} - packs_purchased_today), packs_purchased_today = 3
+    WHERE subscribed = 1;
   `)
 
-  console.log({ addSubscribedPacksResult })
+  console.log({ updateSubscribedUsers })
 
-  const resetPackPurchases = queryDatabase(SQL`
-    UPDATE admin_cards.packs_owned
-    SET packs_purchased_today = 0;
+  const updateUnsubscribedUsers = queryDatabase(SQL`
+    UPDATE admin_cards.packs_owned,
+    SET packs_purchased_today = 0
+    WHERE subscribed = 0;
   `)
 
-  console.log({ resetPackPurchases })
+  console.log({ updateUnsubscribedUsers })
 }
 
 function main() {

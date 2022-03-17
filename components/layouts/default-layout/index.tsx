@@ -16,6 +16,7 @@ const DefaultLayout = ({ children }) => {
     <div className="h-full w-full">
       <Header user={user} />
       {children}
+      {/* Talk with Jess about the footer covering pages */}
       {/* <Footer /> */}
     </div>
   )

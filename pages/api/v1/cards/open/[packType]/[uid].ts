@@ -21,7 +21,7 @@ const randomIntFromInterval = (maximum: number): number => {
  * Bronze - 40%
  */
 
-const getRarity = (): string => {
+const getBasePackRarity = (): string => {
   const num = randomIntFromInterval(10000)
   if (num > 0 && num <= 150) return rarityMap.diamond.label
   if (num > 150 && num <= 450) return rarityMap.ruby.label
@@ -38,7 +38,7 @@ const getIsSkater = (): boolean => {
 const pullCards = async (): Promise<Card[]> => {
   let pulledCards: Card[] = []
   for (let i = 0; i < 6; i++) {
-    const rarity: string = getRarity()
+    const rarity: string = getBasePackRarity()
     const isSkater: boolean = getIsSkater()
 
     const query = isSkater

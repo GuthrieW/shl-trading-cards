@@ -6,6 +6,7 @@ import MultiSelectButtonGroup from '@components/buttons/multi-select-button-grou
 import rarityMap from '@constants/rarity-map'
 import pathToCards from '@constants/path-to-cards'
 import { useRouter } from 'next/router'
+import orderBy from 'lodash/orderBy'
 
 const Collection = () => {
   const { query } = useRouter()
@@ -25,27 +26,27 @@ const Collection = () => {
 
   useEffect(() => {
     const lowerCaseSearchString = searchString.toLowerCase()
+    let newCards = []
     if (searchString !== '' && selectedRarities.length !== 0) {
-      setCardsToDisplay(
-        userCards
-          .filter((card) =>
-            card.player_name.toLowerCase().includes(lowerCaseSearchString)
-          )
-          .filter((card) => selectedRarities.includes(card.card_rarity))
-      )
-    } else if (searchString !== '') {
-      setCardsToDisplay(
-        userCards.filter((card) =>
+      newCards = userCards
+        .filter((card) =>
           card.player_name.toLowerCase().includes(lowerCaseSearchString)
         )
+        .filter((card) => selectedRarities.includes(card.card_rarity))
+    } else if (searchString !== '') {
+      newCards = userCards.filter((card) =>
+        card.player_name.toLowerCase().includes(lowerCaseSearchString)
       )
     } else if (selectedRarities.length !== 0) {
-      setCardsToDisplay(
-        userCards.filter((card) => selectedRarities.includes(card.card_rarity))
+      newCards = userCards.filter((card) =>
+        selectedRarities.includes(card.card_rarity)
       )
     } else {
-      setCardsToDisplay(userCards)
+      newCards = userCards
     }
+
+    const sorted = orderBy(newCards, ['overall'], ['desc'])
+    setCardsToDisplay(sorted)
   }, [userCards, searchString, selectedRarities])
 
   const handleUpdateSearchString = (event) =>
