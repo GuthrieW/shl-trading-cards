@@ -19,7 +19,7 @@ type ProcessCardsTableProps = {
 const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
   const [viewSkaters, setViewSkaters] = useState<boolean>(true)
   const [selectedButtonId, setSelectedButtonId] =
-    useState<TableButtonId>('skaters')
+    useState<PlayerTableButtonId>('skaters')
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalRow, setModalRow] = useState<Card>(null)
 
@@ -180,7 +180,7 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
     usePagination
   )
 
-  const tableButtons: TableButtons[] = [
+  const tableButtons: PlayerTableButtons[] = [
     {
       id: 'skaters',
       text: 'Skaters',

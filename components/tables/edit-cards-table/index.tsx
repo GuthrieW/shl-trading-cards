@@ -24,22 +24,13 @@ type ColumnData = {
   sortDescFirst: boolean
 }
 
-type TableButtonId = 'skaters' | 'goalies'
-
-type TableButtons = {
-  id: TableButtonId
-  text: string
-  disabled: boolean
-  onClick: Function
-}
-
 const EditCardsTable = ({ tableData }: EditCardTableProps) => {
   const { editCard, response, isLoading, isError } = useEditCard()
 
   const [viewSkaters, setViewSkaters] = useState<boolean>(true)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [selectedButtonId, setSelectedButtonId] =
-    useState<TableButtonId>('skaters')
+    useState<PlayerTableButtonId>('skaters')
   const [modalRow, setModalRow] = useState<Card>(null)
 
   const columnData: ColumnData[] = [
@@ -209,7 +200,7 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
     usePagination
   )
 
-  const tableButtons: TableButtons[] = [
+  const tableButtons: PlayerTableButtons[] = [
     {
       id: 'skaters',
       text: 'Skaters',

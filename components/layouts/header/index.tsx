@@ -1,3 +1,4 @@
+import getUidFromSession from '@utils/get-uid-from-session'
 import isAdmin from '@utils/is-admin'
 import isAdminOrCardTeam from '@utils/is-admin-or-card-team'
 import Router from 'next/router'
@@ -35,9 +36,17 @@ const headersLinks: HeaderLink[] = [
     hide: false,
   },
   {
-    id: 'collections',
-    headerText: 'Collections',
-    href: '/collections',
+    id: 'community',
+    headerText: 'Community',
+    href: '/community',
+    admin: false,
+    cardTeam: false,
+    hide: false,
+  },
+  {
+    id: 'collection',
+    headerText: 'Collection',
+    href: `/collection?uid=${getUidFromSession()}`,
     admin: false,
     cardTeam: false,
     hide: false,

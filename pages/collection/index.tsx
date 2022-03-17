@@ -1,27 +1,23 @@
-import { useGetAllUsers, useGetUserCards } from '@pages/api/queries'
+import { useGetUser, useGetUserCards } from '@pages/api/queries'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useEffect, useState } from 'react'
 import SearchBar from '@components/inputs/search-bar'
 import MultiSelectButtonGroup from '@components/buttons/multi-select-button-group'
 import rarityMap from '@constants/rarity-map'
 import pathToCards from '@constants/path-to-cards'
-import AutoCompleteSearchBar from '@components/inputs/autocomplete-search-bar'
+import { useRouter } from 'next/router'
 
-const Collections = () => {
-  const [collectionUid, setCollectionUid] = useState(getUidFromSession())
+const Collection = () => {
+  const { query } = useRouter()
+  const parsedUid = parseInt(query.uid as string) || getUidFromSession()
 
   const {
     userCards,
     isLoading: getUserCardsIsLoading,
     isError: getUserCardsIsError,
   } = useGetUserCards({
-    uid: collectionUid,
+    uid: parsedUid,
   })
-  const {
-    users,
-    isLoading: getAllUsersIsLoading,
-    isError: getAllUsersIsError,
-  } = useGetAllUsers({})
 
   const [cardsToDisplay, setCardsToDisplay] = useState<Card[]>(userCards)
   const [searchString, setSearchString] = useState<string>('')
@@ -54,9 +50,6 @@ const Collections = () => {
 
   const handleUpdateSearchString = (event) =>
     setSearchString(event.target.value || '')
-
-  const handleUpdateCollectionUid = (event) =>
-    setCollectionUid(event.target.value || getUidFromSession())
 
   const updateSelectedButtonIds = (toggleId) =>
     selectedRarities.includes(toggleId)
@@ -95,17 +88,9 @@ const Collections = () => {
 
   if (getUserCardsIsLoading || getUserCardsIsError) return null
 
-  console.log('users', users)
-
   return (
     <div className="m-2">
-      <h1>Collections Placeholder</h1>
-      <div className="flex justify-start items-center">
-        <AutoCompleteSearchBar
-          availableInputs={users}
-          onChange={handleUpdateCollectionUid}
-        />
-      </div>
+      <h1>Collection</h1>
       <div className="flex justify-between items-center">
         <MultiSelectButtonGroup
           buttons={tableButtons}
@@ -124,4 +109,4 @@ const Collections = () => {
   )
 }
 
-export default Collections
+export default Collection

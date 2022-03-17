@@ -22,7 +22,7 @@ const ClaimCardsTable = ({ tableData }: ClaimCardsTableProps) => {
 
   const [viewSkaters, setViewSkaters] = useState<boolean>(true)
   const [selectedButtonId, setSelectedButtonId] =
-    useState<TableButtonId>('skaters')
+    useState<PlayerTableButtonId>('skaters')
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalRow, setModalRow] = useState<Card>(null)
 
@@ -157,7 +157,7 @@ const ClaimCardsTable = ({ tableData }: ClaimCardsTableProps) => {
     usePagination
   )
 
-  const tableButtons: TableButtons[] = [
+  const tableButtons: PlayerTableButtons[] = [
     {
       id: 'skaters',
       text: 'Skaters',

@@ -16,7 +16,7 @@ const DefaultLayout = ({ children }) => {
     <div className="h-full w-full">
       <Header user={user} />
       {children}
-      <Footer />
+      {/* <Footer /> */}
     </div>
   )
 }
