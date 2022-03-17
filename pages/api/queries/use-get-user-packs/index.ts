@@ -6,8 +6,13 @@ type UseGetUserPacksRequest = {
   uid: number
 }
 
+type userPacks = {
+  quantity: number
+  subscribed: number
+}
+
 type UseGetUserPacks = {
-  userPacks: any
+  userPacks: userPacks
   isLoading: boolean
   isError: any
 }
