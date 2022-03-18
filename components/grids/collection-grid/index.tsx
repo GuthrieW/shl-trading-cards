@@ -47,13 +47,13 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
     let newData: Card[] = gridData
 
     if (searchString !== '') {
-      newData = gridData.filter((card) =>
+      newData = newData.filter((card) =>
         card.player_name.toLowerCase().includes(lowerCaseSearchString)
       )
     }
 
     if (selectedRarities.length !== 0) {
-      newData = gridData.filter((card) =>
+      newData = newData.filter((card) =>
         selectedRarities.includes(card.card_rarity)
       )
     }
