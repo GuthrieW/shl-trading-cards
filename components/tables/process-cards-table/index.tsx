@@ -217,8 +217,6 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
     setShowModal(true)
   }
 
-  console.log('card', modalRow)
-
   return (
     <div>
       <div className="flex justify-between items-center">
