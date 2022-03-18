@@ -44,26 +44,23 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
   const columns = useMemo(() => columnData, [])
   const data = useMemo(() => {
     const lowerCaseSearchString = searchString.toLowerCase()
-    let newCards: Card[] = []
-    if (searchString !== '' && selectedRarities.length !== 0) {
-      newCards = gridData
-        .filter((card) =>
-          card.player_name.toLowerCase().includes(lowerCaseSearchString)
-        )
-        .filter((card) => selectedRarities.includes(card.card_rarity))
-    } else if (searchString !== '') {
-      newCards = gridData.filter((card) =>
+    let newData: Card[] = gridData
+
+    if (searchString !== '') {
+      newData = gridData.filter((card) =>
         card.player_name.toLowerCase().includes(lowerCaseSearchString)
       )
-    } else if (selectedRarities.length !== 0) {
-      newCards = gridData.filter((card) =>
+    }
+
+    if (selectedRarities.length !== 0) {
+      newData = gridData.filter((card) =>
         selectedRarities.includes(card.card_rarity)
       )
-    } else {
-      newCards = gridData
     }
-    return orderBy(newCards, ['overall'], ['desc'])
+
+    return orderBy(newData, ['overall'], ['desc'])
   }, [searchString, selectedRarities, gridData])
+
   const initialState = useMemo(() => {
     return { sortBy: [{ id: 'player_name' }] }
   }, [])
@@ -78,7 +75,6 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
     canNextPage,
     nextPage,
     gotoPage,
-    setGlobalFilter,
     state: { pageIndex },
   } = useTable(
     {
@@ -92,8 +88,6 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
   )
 
   const gotoLastPage = () => gotoPage(pageCount - 1)
-  const handleCardClick = (row) => {}
-
   const handleUpdateSearchString = (event) =>
     setSearchString(event.target.value || '')
 
@@ -142,11 +136,7 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
         <SearchBar onChange={handleUpdateSearchString} />
       </div>
       <div className="flex flex-col justify-center items-center">
-        <Grid
-          cards={page}
-          prepareCell={prepareRow}
-          onCellClick={handleCardClick}
-        />
+        <Grid cards={page} prepareCell={prepareRow} onCellClick={() => {}} />
         <Pagination
           pageOptions={pageOptions}
           pageIndex={pageIndex}
