@@ -130,3 +130,7 @@ type ColumnData = {
   title: string
   sortDescFirst: boolean
 }
+
+type GridColumn = {
+  accessor: string
+}
