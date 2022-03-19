@@ -108,7 +108,6 @@ type PackType = {
 }
 
 // table types
-
 type PlayerTableButtons = {
   id: PlayerTableButtonId
   text: string

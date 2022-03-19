@@ -9,13 +9,12 @@ type GridProps = {
 
 const Grid = ({ cards, prepareCell, onCellClick }: GridProps) => (
   <div className="my-2 rounded-md overflow-x-hidden overflow-y-auto">
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-6 gap-2">
       {cards.map((card) => {
         prepareCell(card)
         const cardValues: Card = card.values
         return (
           <img
-            className="m-1"
             onClick={() => onCellClick(cardValues)}
             src={`${pathToCards}${cardValues.image_url}`}
           />

@@ -10,7 +10,6 @@ import {
 import MultiSelectButtonGroup from '@components/buttons/multi-select-button-group'
 import SearchBar from '@components/inputs/search-bar'
 import rarityMap from '@constants/rarity-map'
-import orderBy from 'lodash/orderBy'
 
 type CollectionGridProps = {
   gridData: Card[]
@@ -44,25 +43,28 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
   const columns = useMemo(() => columnData, [])
   const data = useMemo(() => {
     const lowerCaseSearchString = searchString.toLowerCase()
-    let newData: Card[] = gridData
 
-    if (searchString !== '') {
-      newData = newData.filter((card) =>
+    if (searchString !== '' && selectedRarities.length !== 0) {
+      return gridData
+        .filter((card) =>
+          card.player_name.toLowerCase().includes(lowerCaseSearchString)
+        )
+        .filter((card) => selectedRarities.includes(card.card_rarity))
+    } else if (searchString !== '') {
+      return gridData.filter((card) =>
         card.player_name.toLowerCase().includes(lowerCaseSearchString)
       )
-    }
-
-    if (selectedRarities.length !== 0) {
-      newData = newData.filter((card) =>
+    } else if (selectedRarities.length !== 0) {
+      return gridData.filter((card) =>
         selectedRarities.includes(card.card_rarity)
       )
+    } else {
+      return gridData
     }
-
-    return orderBy(newData, ['overall'], ['desc'])
   }, [searchString, selectedRarities, gridData])
 
   const initialState = useMemo(() => {
-    return { sortBy: [{ id: 'player_name' }] }
+    return { sortBy: [{ id: 'overall', desc: true }] }
   }, [])
 
   const {
