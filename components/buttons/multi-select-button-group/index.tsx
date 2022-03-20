@@ -4,6 +4,7 @@ type ButtonProps = {
   id: string
   onClick: Function
   text: string
+  className: string
 }
 
 export type MultiSelectButtonGroupProps = {
@@ -21,10 +22,10 @@ const getPositionalRounding = (index, numberOfButtons) => {
   }
 }
 
-const getIsSelected = (buttonId: string, selectedButtonIds: string[]) =>
-  selectedButtonIds.includes(buttonId)
-    ? 'bg-neutral-800 text-gray-100'
-    : 'bg-white border text-neutral-800 hover:bg-gray-300 hover:text-neutral-800'
+const getIsSelected = (button: ButtonProps, selectedButtonIds: string[]) =>
+  selectedButtonIds.includes(button.id)
+    ? 'bg-neutral-800 text-white'
+    : button.className
 
 const MultiSelectButtonGroup = ({
   buttons,
@@ -34,13 +35,11 @@ const MultiSelectButtonGroup = ({
     {buttons.map((button, index) => (
       <button
         key={index}
-        className={`${getPositionalRounding(
-          index,
-          buttons.length
-        )} py-2 px-4 text-sm font-medium border-neutral-800  cursor-pointer ${getIsSelected(
-          button.id,
-          selectedButtonIds
-        )}`}
+        className={`
+          ${getPositionalRounding(index, buttons.length)}
+          py-2 px-4 text-sm font-medium border text-neutral-800 border-neutral-800 cursor-pointer hover:bg-gray-300 hover:text-neutral-800
+          ${getIsSelected(button, selectedButtonIds)}
+        `}
         onClick={() => button.onClick()}
       >
         {button.text}

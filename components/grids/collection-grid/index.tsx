@@ -12,7 +12,7 @@ import SearchBar from '@components/inputs/search-bar'
 import rarityMap from '@constants/rarity-map'
 
 type CollectionGridProps = {
-  gridData: Card[]
+  gridData: CollectionCard[]
 }
 
 const CollectionGrid = ({ gridData }: CollectionGridProps) => {
@@ -105,26 +105,31 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
       id: rarityMap.bronze.label,
       text: rarityMap.bronze.label,
       onClick: () => updateSelectedButtonIds(rarityMap.bronze.label),
+      className: 'bg-amber-700',
     },
     {
       id: rarityMap.silver.label,
       text: rarityMap.silver.label,
       onClick: () => updateSelectedButtonIds(rarityMap.silver.label),
+      className: 'bg-zinc-500',
     },
     {
       id: rarityMap.gold.label,
       text: rarityMap.gold.label,
       onClick: () => updateSelectedButtonIds(rarityMap.gold.label),
+      className: 'bg-amber-300',
     },
     {
       id: rarityMap.ruby.label,
       text: rarityMap.ruby.label,
       onClick: () => updateSelectedButtonIds(rarityMap.ruby.label),
+      className: 'bg-red-600',
     },
     {
       id: rarityMap.diamond.label,
       text: rarityMap.diamond.label,
       onClick: () => updateSelectedButtonIds(rarityMap.diamond.label),
+      className: 'bg-cyan-600',
     },
   ]
 

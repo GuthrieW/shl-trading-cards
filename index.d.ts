@@ -45,6 +45,15 @@ type CardRequest = {
   season: number
 }
 
+type CollectionCard = {
+  cardID: number
+  quantity: number
+  image_url: string
+  card_rarity: string
+  player_name: string
+  overall: number
+}
+
 type SetCard = {
   cardID: number
   setID: number
@@ -120,6 +129,7 @@ type CollectionTableButtons = {
   id: string
   text: string
   onClick: Function
+  className: string
 }
 
 type ColumnData = {

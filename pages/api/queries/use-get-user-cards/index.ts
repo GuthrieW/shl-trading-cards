@@ -7,7 +7,7 @@ type UseGetUserCardsRequest = {
 }
 
 type UseGetUserCards = {
-  userCards: Card[]
+  userCards: CollectionCard[]
   isLoading: boolean
   isError: any
 }
