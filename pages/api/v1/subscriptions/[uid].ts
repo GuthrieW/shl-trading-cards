@@ -24,10 +24,10 @@ const index = async (
   if (method === GET) {
     const result = await queryDatabase(SQL`
       SELECT 
-        po.quantity,
-        po.subscribed
-      FROM admin_cards.packs_owned po
-      WHERE po.userID=${uid};
+        base_quantity,
+        subscribed
+      FROM admin_cards.packs_owned
+      WHERE userID=${uid};
     `)
 
     response.status(StatusCodes.OK).json(result)
