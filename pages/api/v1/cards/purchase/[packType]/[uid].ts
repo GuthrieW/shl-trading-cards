@@ -23,10 +23,10 @@ const index = async (
   if (method === POST) {
     const result = await queryDatabase(SQL`
       INSERT INTO admin_cards.packs_owned
-        (userID, quantity, subscribed)
+        (userID, base_quantity, subscribed)
       VALUES 
         (${uid}, ${purchaseAmount}, 0)
-      ON DUPLICATE KEY UPDATE quantity=(quantity + ${purchaseAmount});
+      ON DUPLICATE KEY UPDATE base_quantity=(base_quantity + ${purchaseAmount});
     `)
 
     response.status(StatusCodes.OK).json(result)

@@ -113,7 +113,7 @@ const index = async (
 
     const consumePack = await queryDatabase(SQL`
       UPDATE admin_cards.packs_owned
-      SET quantity = quantity - 1
+      SET base_quantity = base_quantity - 1
       WHERE userID = ${uid};
     `)
 

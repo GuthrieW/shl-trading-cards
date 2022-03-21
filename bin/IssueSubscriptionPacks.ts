@@ -10,7 +10,7 @@ function issueSubscriptionPacks() {
 
   const updateSubscribedUsers = queryDatabase(SQL`
     UPDATE admin_cards.packs_owned,
-    SET quantity = quantity + (${maximumDailyPacks} - packs_purchased_today), packs_purchased_today = 3
+    SET base_quantity = base_quantity + (${maximumDailyPacks} - packs_purchased_today), packs_purchased_today = 3
     WHERE subscribed = 1;
   `)
 

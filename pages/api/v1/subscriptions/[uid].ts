@@ -38,7 +38,7 @@ const index = async (
     const { subscriptionAmount } = body
     const result = await queryDatabase(SQL`
       INSERT INTO admin_cards.packs_owned
-        (userID, quantity, subscribed)
+        (userID, base_quantity, subscribed)
       VALUES
         (${uid}, 0, ${subscriptionAmount})
       ON DUPLICATE KEY UPDATE subscribed=${subscriptionAmount};

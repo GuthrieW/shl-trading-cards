@@ -7,7 +7,7 @@ type UseGetUserPacksRequest = {
 }
 
 type userPacks = {
-  quantity: number
+  base_quantity: number
   subscribed: number
 }
 
@@ -27,7 +27,7 @@ const useGetUserPacks = ({ uid }: UseGetUserPacksRequest): UseGetUserPacks => {
     })
   })
   return {
-    userPacks: data?.data || [],
+    userPacks: data?.data[0] || [],
     isLoading: isFetching,
     isError: error,
   }
