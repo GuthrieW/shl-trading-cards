@@ -1,12 +1,14 @@
+//gets a user's quantity of unopened packs and subscription status
+
 import { NextApiRequest, NextApiResponse } from 'next'
 import { queryDatabase } from '@pages/api/database/database'
-import { GET } from '@constants/index'
+import { POST } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 
-const allowedMethods = [GET]
+const allowedMethods = [POST]
 const cors = Cors({
   methods: allowedMethods,
 })
@@ -16,20 +18,17 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { method } = request
-  const { uid } = request.query
+  const { method, query } = request
 
-  if (method === GET) {
+  if (method === POST) {
+    const { uid, subscription } = query
+
     const result = await queryDatabase(SQL`
-      SELECT 
-        uid,
-        username,
-        avatar,
-        usergroup,
-        additionalgroups,
-        displaygroup
-      FROM admin_mybb.mybb_users
-      WHERE uid=${uid};
+      INSERT INTO admin_cards.packs_owned
+        (userID, subscription)
+      VALUES
+        (${uid}, ${subscription})
+      ON DUPLICATE KEY UPDATE subscription=${subscription};
     `)
 
     response.status(StatusCodes.OK).json(result)

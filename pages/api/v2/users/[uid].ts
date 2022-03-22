@@ -16,10 +16,11 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { method } = request
-  const { uid } = request.query
+  const { method, query } = request
 
   if (method === GET) {
+    const { uid } = query
+
     const result = await queryDatabase(SQL`
       SELECT 
         uid,

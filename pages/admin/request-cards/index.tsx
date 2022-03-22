@@ -1,5 +1,5 @@
 import Button from '@components/buttons/button'
-import { useCreateRequestedCard } from '@pages/api/mutations'
+import { useCreateCard } from '@pages/api/mutations'
 import React, { useEffect, useState } from 'react'
 import CSVReader from 'react-csv-reader'
 
@@ -9,8 +9,7 @@ const RequestCards = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [numberOfCardsToUpload, setNumberOfCardsToUpload] = useState<number>(0)
 
-  const { createRequestedCard, response, isLoading, isError } =
-    useCreateRequestedCard()
+  const { createCard, response, isLoading, isError } = useCreateCard()
 
   useEffect(() => {
     setCanSubmitCsv(csvToUpload !== null)
@@ -46,7 +45,7 @@ const RequestCards = () => {
         conditioning: row[5] !== 'G' ? null : parseInt(row[11]),
       }
 
-      createRequestedCard({ requestedCard: playerData })
+      createCard({ requestedCard: playerData })
     })
     setIsSubmitting(false)
   }

@@ -1,3 +1,5 @@
+//gets a user's quantity of unopened packs and subscription status
+
 import { NextApiRequest, NextApiResponse } from 'next'
 import { queryDatabase } from '@pages/api/database/database'
 import { GET } from '@constants/index'
@@ -16,20 +18,17 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { method } = request
-  const { uid } = request.query
+  const { method, query } = request
 
   if (method === GET) {
+    const { uid } = query
+
     const result = await queryDatabase(SQL`
       SELECT 
-        uid,
-        username,
-        avatar,
-        usergroup,
-        additionalgroups,
-        displaygroup
-      FROM admin_mybb.mybb_users
-      WHERE uid=${uid};
+        base_quantity,
+        subscribed
+      FROM admin_cards.packs_owned
+      WHERE userID=${uid};
     `)
 
     response.status(StatusCodes.OK).json(result)

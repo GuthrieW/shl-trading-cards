@@ -17,7 +17,6 @@ const index = async (
 ): Promise<void> => {
   await middleware(request, response, cors)
   const { method } = request
-  const { uid } = request.query
 
   if (method === GET) {
     const result = await queryDatabase(SQL`
@@ -25,11 +24,9 @@ const index = async (
         uid,
         username,
         avatar,
-        usergroup,
-        additionalgroups,
-        displaygroup
-      FROM admin_mybb.mybb_users
-      WHERE uid=${uid};
+        displaygroup,
+        additionalgroups
+      FROM admin_mybb.mybb_users;
     `)
 
     response.status(StatusCodes.OK).json(result)
