@@ -26,7 +26,7 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
 
   const {
     acceptCard,
-    isSuccess: acceptCardIsSucces,
+    isSuccess: acceptCardIsSuccess,
     isLoading: acceptCardIsLoading,
     isError: acceptCardIsError,
   } = useAcceptCard()
@@ -38,9 +38,11 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
     isError: denyCardIsError,
   } = useDenyCard()
 
+  console.log('acceptCardIsSuccess', acceptCardIsSuccess)
+
   useToast({
     successText: 'Card Accepted',
-    successDependencies: [acceptCardIsSucces],
+    successDependencies: [acceptCardIsSuccess],
     errorText: 'Error Accepting Card',
     errorDependencies: [acceptCardIsError],
   })

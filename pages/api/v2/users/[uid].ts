@@ -36,8 +36,6 @@ const index = async (
       WHERE user.uid=${uid};
     `)
 
-    console.log('result', result)
-
     response.status(StatusCodes.OK).json(result)
     return
   }

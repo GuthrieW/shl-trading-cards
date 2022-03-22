@@ -65,8 +65,6 @@ const OpenPacks = () => {
     return null
   }
 
-  console.log('userPacks', userPacks)
-
   return (
     <div className="m-2">
       <h1>Open Packs</h1>
