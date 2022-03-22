@@ -112,7 +112,7 @@ const adminLinks: AdminLink[] = [
 
 const Header = ({ user }: HeaderProps) => {
   const [showAdminLinks, setShowAdminLinks] = useState<boolean>(false)
-  const userIsAdmin = isAdmin(user)
+  const userIsAdmin = false
   const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
 
   return (
@@ -125,11 +125,11 @@ const Header = ({ user }: HeaderProps) => {
         />
         {headersLinks.map((header, index) => (
           <React.Fragment key={index}>
-            {!header.hide ? (
+            {!header.hide && (
               <NavLink onClick={() => Router.push(header.href)}>
                 {header.headerText}
               </NavLink>
-            ) : null}
+            )}
           </React.Fragment>
         ))}
       </div>
@@ -141,13 +141,21 @@ const Header = ({ user }: HeaderProps) => {
         </li>
         {showAdminLinks &&
           userIsAdminOrCardTeam &&
-          adminLinks.map((adminLink, index) => (
-            <li className="bg-neutral-800" key={index}>
-              <NavLink onClick={() => Router.push('/admin' + adminLink.href)}>
-                {adminLink.headerText}
-              </NavLink>
-            </li>
-          ))}
+          adminLinks.map((adminLink, index) => {
+            const showLink =
+              (adminLink.admin && userIsAdmin) || !adminLink.admin
+            return (
+              showLink && (
+                <li className="bg-neutral-800" key={index}>
+                  <NavLink
+                    onClick={() => Router.push('/admin' + adminLink.href)}
+                  >
+                    {adminLink.headerText}
+                  </NavLink>
+                </li>
+              )
+            )
+          })}
       </ul>
     </div>
   )
