@@ -22,7 +22,7 @@ const useGetCardOwners = ({
     async () => {
       return await axios({
         method: GET,
-        url: `/api/v1/collections/owners/${cardID}`,
+        url: `/api/v2/cards/${cardID}/owners`,
       })
     }
   )

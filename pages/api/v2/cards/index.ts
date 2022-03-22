@@ -18,7 +18,7 @@ const index = async (
   await middleware(request, response, cors)
   const { method, body } = request
 
-  // Get a card
+  // Get all cards
   if (method === GET) {
     const result = await queryDatabase(SQL`
       SELECT cardID,
@@ -44,8 +44,7 @@ const index = async (
         author_userID,
         season,
         author_paid
-      FROM admin_cards.cards
-      ORDER BY card_rarity;
+      FROM admin_cards.cards;
     `)
 
     response.status(StatusCodes.OK).json(result)

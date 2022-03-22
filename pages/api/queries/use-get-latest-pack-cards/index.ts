@@ -22,7 +22,7 @@ const useGetLatestPackCards = ({
     async () => {
       return await axios({
         method: GET,
-        url: `/api/v1/collections/latest-pack/${uid}`,
+        url: `/api/v2/collections/${uid}/last-pack`,
       })
     }
   )

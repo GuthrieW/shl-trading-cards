@@ -19,7 +19,7 @@ const useGetApprovedCards =
       async () => {
         return await axios({
           method: GET,
-          url: '/api/v1/cards/approved',
+          url: '/api/v2/cards/approved',
         })
       }
     )

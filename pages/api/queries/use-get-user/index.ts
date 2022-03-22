@@ -16,7 +16,7 @@ export const UseGetUserKey = 'use-get-user'
 
 const useGetUser = ({ uid }: UseGetUserRequest): UseGetUser => {
   const { data, error, isFetching } = useQuery(UseGetUserKey, async () => {
-    return await axios({ method: GET, url: `/api/v1/users/${uid}` })
+    return await axios({ method: GET, url: `/api/v2/users/${uid}` })
   })
 
   return {

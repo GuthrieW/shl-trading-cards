@@ -16,7 +16,7 @@ const useGetAllUsers = ({}: GetAllUsersRequest): UseGetAllUsers => {
   const { data, error, isFetching } = useQuery(UseGetAllUsersKey, async () => {
     return await axios({
       method: GET,
-      url: '/api/v1/users',
+      url: '/api/v2/users',
     })
   })
 

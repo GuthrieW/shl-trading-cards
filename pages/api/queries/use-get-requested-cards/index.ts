@@ -19,7 +19,7 @@ const useGetRequestedCards =
       async () => {
         return await axios({
           method: GET,
-          url: `/api/v1/cards/requested`,
+          url: `/api/v2/cards/requested`,
         })
       }
     )

@@ -16,7 +16,7 @@ const useGetAllCards = ({}: UseGetAllCardsRequrest): UseGetAllCards => {
   const { data, error, isFetching } = useQuery(UseGetAllCardsKey, async () => {
     return await axios({
       method: GET,
-      url: '/api/v1/cards/all',
+      url: '/api/v2/cards',
     })
   })
 

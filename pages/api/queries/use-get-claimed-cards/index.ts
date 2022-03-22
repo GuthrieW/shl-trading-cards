@@ -20,7 +20,7 @@ const useGetClaimedCards = ({
   const { data, error, isFetching } = useQuery(
     UseGetClaimedCardsKey,
     async () => {
-      return await axios({ method: GET, url: `/api/v1/cards/claimed/${uid}` })
+      return await axios({ method: GET, url: `/api/v2/cards/claimed/${uid}` })
     }
   )
 

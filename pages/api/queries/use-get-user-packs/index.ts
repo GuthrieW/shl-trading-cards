@@ -7,8 +7,9 @@ type UseGetUserPacksRequest = {
 }
 
 type userPacks = {
-  base_quantity: number
-  subscribed: number
+  userID: number
+  packType: string
+  purchasedDate: Date
 }
 
 type UseGetUserPacks = {
@@ -23,7 +24,7 @@ const useGetUserPacks = ({ uid }: UseGetUserPacksRequest): UseGetUserPacks => {
   const { data, error, isFetching } = useQuery(UseGetUserPacksKey, async () => {
     return await axios({
       method: GET,
-      url: `/api/v1/subscriptions/${uid}`,
+      url: `/api/v2/packs/${uid}`,
     })
   })
   return {

@@ -17,7 +17,7 @@ const useGetUnapprovedCards =
     const { data, error, isFetching } = useQuery(
       UseGetUnapprovedCardsKey,
       async () => {
-        return await axios({ method: GET, url: '/api/v1/cards/unapproved' })
+        return await axios({ method: GET, url: '/api/v2/cards/unapproved' })
       }
     )
 

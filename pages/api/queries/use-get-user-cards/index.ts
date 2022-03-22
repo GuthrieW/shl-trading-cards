@@ -18,7 +18,7 @@ const useGetUserCards = ({ uid }: UseGetUserCardsRequest): UseGetUserCards => {
   const { data, error, isFetching } = useQuery(UseGetUserCardsKey, async () => {
     return await axios({
       method: GET,
-      url: `/api/v1/collections/${uid}`,
+      url: `/api/v2/collections/${uid}`,
     })
   })
   return {
