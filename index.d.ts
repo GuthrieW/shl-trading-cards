@@ -99,6 +99,7 @@ type User = {
   usergroup?: number
   additionalgroups?: string
   displaygroup?: number
+  subscribed: boolean
 }
 
 type Rarity = {
@@ -114,6 +115,13 @@ type PackType = {
   key: PackKey
   label: PackLabel
   imageUrl: string
+}
+
+type UserPack = {
+  packID: number
+  userID: number
+  packType: string
+  purchasedDate: Date
 }
 
 // table types

@@ -2,37 +2,17 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@components/*": [
-        "components/*"
-      ],
-      "@constants/*": [
-        "constants/*"
-      ],
-      "@hooks/*": [
-        "queries/*"
-      ],
-      "@layouts/*": [
-        "layouts/*"
-      ],
-      "@pages/*": [
-        "pages/*"
-      ],
-      "@public/*": [
-        "public/*"
-      ],
-      "@requests/*": [
-        "requests/*"
-      ],
-      "@utils/*": [
-        "utils/*"
-      ]
+      "@components/*": ["components/*"],
+      "@constants/*": ["constants/*"],
+      "@layouts/*": ["layouts/*"],
+      "@pages/*": ["pages/*"],
+      "@public/*": ["public/*"],
+      "@requests/*": ["requests/*"],
+      "@utils/*": ["utils/*"],
+      "@hooks/*": ["hooks/*"]
     },
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -55,8 +35,5 @@
     "pages/api/schemas/User.js",
     "pages/api/database/database.js"
   ],
-  "exclude": [
-    "node_modules",
-    ".next"
-  ]
+  "exclude": ["node_modules", ".next"]
 }

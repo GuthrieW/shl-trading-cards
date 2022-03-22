@@ -11,6 +11,7 @@ import Pagination from '../pagination'
 import Table from '../table'
 import ProcessCardModal from '@components/modals/process-card-modal'
 import { useAcceptCard, useDenyCard } from '@pages/api/mutations'
+import useToast, { warningToast } from '@hooks/use-toast'
 
 type ProcessCardsTableProps = {
   tableData: Card[]
@@ -25,14 +26,31 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
 
   const {
     acceptCard,
+    isSuccess: acceptCardIsSucces,
     isLoading: acceptCardIsLoading,
     isError: acceptCardIsError,
   } = useAcceptCard()
+
   const {
     denyCard,
+    isSuccess: denyCardIsSuccess,
     isLoading: denyCardIsLoading,
     isError: denyCardIsError,
   } = useDenyCard()
+
+  useToast({
+    successText: 'Card Accepted',
+    successDependencies: [acceptCardIsSucces],
+    errorText: 'Error Accepting Card',
+    errorDependencies: [acceptCardIsError],
+  })
+
+  useToast({
+    successText: 'Card Denied',
+    successDependencies: [denyCardIsSuccess],
+    errorText: 'Error Denying Card',
+    errorDependencies: [denyCardIsError],
+  })
 
   const columnData = [
     {
@@ -205,10 +223,18 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
   const updateSearchFilter = (event) => setGlobalFilter(event.target.value)
 
   const handleAcceptCard = () => {
+    if (acceptCardIsLoading) {
+      warningToast({ warningText: 'Already accepting a card' })
+      return
+    }
     acceptCard({ cardID: modalRow.cardID })
   }
 
   const handleDenyCard = () => {
+    if (denyCardIsLoading) {
+      warningToast({ warningText: 'Already denying a card' })
+      return
+    }
     denyCard({ cardID: modalRow.cardID })
   }
 

@@ -4,9 +4,10 @@ import React, { useState } from 'react'
 import { pathToCards } from '@constants/index'
 
 const LastOpenedPack = () => {
-  const { latestPackCards, isLoading, isError } = useGetLatestPackCards({
-    uid: getUidFromSession(),
-  })
+  const { latestPackCards, isSuccess, isLoading, isError } =
+    useGetLatestPackCards({
+      uid: getUidFromSession(),
+    })
 
   if (isLoading || isError || latestPackCards === []) return null
 

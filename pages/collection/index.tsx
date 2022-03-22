@@ -10,6 +10,7 @@ const Collection = () => {
 
   const {
     userCards,
+    isSuccess: getUserCardsIsSuccess,
     isLoading: getUserCardsIsLoading,
     isError: getUserCardsIsError,
   } = useGetUserCards({

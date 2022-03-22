@@ -1,6 +1,7 @@
 import ButtonGroup from '@components/buttons/button-group'
 import SearchBar from '@components/inputs/search-bar'
 import EditCardModal from '@components/modals/edit-card-modal'
+import useToast, { warningToast } from '@hooks/use-toast'
 import { useEditCard } from '@pages/api/mutations'
 import React, { useEffect, useMemo, useState } from 'react'
 import {
@@ -25,13 +26,20 @@ type ColumnData = {
 }
 
 const EditCardsTable = ({ tableData }: EditCardTableProps) => {
-  const { editCard, response, isLoading, isError } = useEditCard()
+  const { editCard, response, isSuccess, isLoading, isError } = useEditCard()
 
   const [viewSkaters, setViewSkaters] = useState<boolean>(true)
   const [showModal, setShowModal] = useState<boolean>(false)
   const [selectedButtonId, setSelectedButtonId] =
     useState<PlayerTableButtonId>('skaters')
   const [modalRow, setModalRow] = useState<Card>(null)
+
+  useToast({
+    successText: 'Edited Card',
+    successDependencies: [isSuccess],
+    errorText: 'Error Editing Card',
+    errorDependencies: [isError],
+  })
 
   const columnData: ColumnData[] = [
     {
@@ -229,6 +237,9 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
   }
 
   const handleEditCard = (cardID, newCardData) => {
+    if (isLoading) {
+      warningToast({ warningText: 'Already editing a card' })
+    }
     editCard({ cardID, newCardData })
   }
 

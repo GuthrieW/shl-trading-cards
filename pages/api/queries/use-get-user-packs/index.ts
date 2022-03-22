@@ -6,14 +6,8 @@ type UseGetUserPacksRequest = {
   uid: number
 }
 
-type userPacks = {
-  userID: number
-  packType: string
-  purchasedDate: Date
-}
-
 type UseGetUserPacks = {
-  userPacks: userPacks
+  userPacks: UserPack[]
   isSuccess: boolean
   isLoading: boolean
   isError: any
@@ -32,7 +26,7 @@ const useGetUserPacks = ({ uid }: UseGetUserPacksRequest): UseGetUserPacks => {
     }
   )
   return {
-    userPacks: data?.data[0] || [],
+    userPacks: data?.data || [],
     isSuccess: isSuccess,
     isLoading: isFetching,
     isError: error,

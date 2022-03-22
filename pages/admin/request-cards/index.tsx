@@ -1,7 +1,9 @@
 import Button from '@components/buttons/button'
+import useToast, { warningToast } from '@hooks/use-toast'
 import { useCreateCard } from '@pages/api/mutations'
 import React, { useEffect, useState } from 'react'
 import CSVReader from 'react-csv-reader'
+import { toast } from 'react-toastify'
 
 const RequestCards = () => {
   const [csvToUpload, setCsvToUpload] = useState(null)
@@ -10,6 +12,13 @@ const RequestCards = () => {
   const [numberOfCardsToUpload, setNumberOfCardsToUpload] = useState<number>(0)
 
   const { createCard, response, isLoading, isError } = useCreateCard()
+
+  useToast({
+    successText: '', // Left intentionally blank
+    successDependencies: [false],
+    errorText: 'Failed to create card',
+    errorDependencies: [isError],
+  })
 
   useEffect(() => {
     setCanSubmitCsv(csvToUpload !== null)
@@ -21,6 +30,11 @@ const RequestCards = () => {
   }
 
   const handleUploadCsv = () => {
+    if (isLoading) {
+      warningToast({ warningText: 'Already uploading card requests' })
+      return
+    }
+
     setIsSubmitting(true)
     csvToUpload.map((row, index) => {
       if (index === 0) return
@@ -39,10 +53,10 @@ const RequestCards = () => {
         checking: row[5] !== 'G' ? parseInt(row[10]) : null,
         defense: row[5] !== 'G' ? parseInt(row[11]) : null,
         high_shots: row[5] !== 'G' ? null : parseInt(row[11]),
-        low_shots: row[5] !== 'G' ? null : parseInt(row[11]),
-        quickness: row[5] !== 'G' ? null : parseInt(row[11]),
-        control: row[5] !== 'G' ? null : parseInt(row[11]),
-        conditioning: row[5] !== 'G' ? null : parseInt(row[11]),
+        low_shots: row[5] !== 'G' ? null : parseInt(row[12]),
+        quickness: row[5] !== 'G' ? null : parseInt(row[13]),
+        control: row[5] !== 'G' ? null : parseInt(row[14]),
+        conditioning: row[5] !== 'G' ? null : parseInt(row[15]),
       }
 
       createCard({ requestedCard: playerData })

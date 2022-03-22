@@ -27,14 +27,6 @@ type AdminLink = {
 }
 
 const headersLinks: HeaderLink[] = [
-  // {
-  //   id: 'home',
-  //   headerText: 'Home',
-  //   href: '/home',
-  //   admin: false,
-  //   cardTeam: false,
-  //   hide: false,
-  // },
   {
     id: 'community',
     headerText: 'Community',

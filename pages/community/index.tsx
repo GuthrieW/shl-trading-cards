@@ -1,12 +1,30 @@
 import ButtonGroup from '@components/buttons/button-group'
 import CommunityTable from '@components/tables/community-table'
-import { useGetAllUsers } from '@pages/api/queries'
+import { useGetAllCards, useGetAllUsers } from '@pages/api/queries'
 import React from 'react'
 
 const Community = () => {
-  const { users, isLoading, isError } = useGetAllUsers({})
+  const {
+    users,
+    isSuccess: getAllUsersIsSuccess,
+    isLoading: getAllUsersIsLoading,
+    isError: getAllUsersIsError,
+  } = useGetAllUsers({})
+  const {
+    allCards,
+    isSuccess: getAllCardsIsSuccess,
+    isLoading: getAllCardsIsLoading,
+    isError: getAllCardsIsError,
+  } = useGetAllCards({})
 
-  if (isLoading || isError) return null
+  if (
+    getAllCardsIsLoading ||
+    getAllCardsIsError ||
+    getAllUsersIsLoading ||
+    getAllUsersIsError
+  ) {
+    return null
+  }
 
   return (
     <div className="m-2">
