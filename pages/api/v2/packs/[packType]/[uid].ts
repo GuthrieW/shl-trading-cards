@@ -22,11 +22,11 @@ const index = async (
   // Purchase a pack by querying the banking API and then
   // insert that user's newpack into the packs_owned table
   if (method === POST) {
-    const { uid, pack_type } = query
+    const { uid, packType } = query
 
     const bankResponse = await axios({
       method: POST,
-      url: `http://localhost:9001/api/v1/purchase/cards?uid=${uid}&packType=${pack_type}`,
+      url: `http://localhost:9001/api/v1/purchase/cards?uid=${uid}&packType=${packType}`,
       data: {},
     })
 
@@ -42,7 +42,7 @@ const index = async (
       INSERT INTO admin_cards.packs_owned
         (userID, packType)
       VALUES
-        (${uid}, ${pack_type});
+        (${uid}, ${packType});
     `)
 
     response.status(StatusCodes.OK).json({
