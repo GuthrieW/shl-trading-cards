@@ -21,9 +21,9 @@ const index = async (
   if (method === GET) {
     const { uid } = query
 
+    // Get a single user
     const result = await queryDatabase(SQL`
-      SELECT 
-        uid,
+      SELECT uid,
         username,
         avatar,
         usergroup,

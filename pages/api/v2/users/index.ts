@@ -18,10 +18,10 @@ const index = async (
   await middleware(request, response, cors)
   const { method } = request
 
+  // Get all users
   if (method === GET) {
     const result = await queryDatabase(SQL`
-      SELECT 
-        uid,
+      SELECT uid,
         username,
         avatar,
         displaygroup,

@@ -1,5 +1,3 @@
-//gets a user's quantity of unopened packs and subscription status
-
 import { NextApiRequest, NextApiResponse } from 'next'
 import { queryDatabase } from '@pages/api/database/database'
 import { GET } from '@constants/index'
@@ -8,7 +6,7 @@ import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 
-const allowedMethods = [GET]
+const allowedMethods = []
 const cors = Cors({
   methods: allowedMethods,
 })
@@ -18,17 +16,38 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { method, query } = request
+  const { method, query, body } = request
 
   if (method === GET) {
     const { uid } = query
 
-    // Get a user's subscription settings
     const result = await queryDatabase(SQL`
-      SELECT userID,
-        subscription
-      FROM admin_cards.settings
-      WHERE userID=${uid};
+      SELECT cardID,
+        player_name,
+        teamID,
+        playerID,
+        card_rarity,
+        image_url,
+        pullable,
+        approved,
+        position,
+        overall,
+        high_shots,
+        low_shots,
+        quickness,
+        control,
+        conditioning,
+        skating,
+        shooting,
+        hands,
+        checking,
+        defense,
+        author_userID,
+        season,
+        author_paid
+      FROM admin_cards.cards
+      WHERE author_userID=${uid}
+        AND image_url IS NULL;
     `)
 
     response.status(StatusCodes.OK).json(result)

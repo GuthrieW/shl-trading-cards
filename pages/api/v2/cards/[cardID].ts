@@ -1,12 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { queryDatabase } from '@pages/api/database/database'
-import {} from '@constants/index'
+import { GET } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 
-const allowedMethods = []
+const allowedMethods = [GET]
 const cors = Cors({
   methods: allowedMethods,
 })
@@ -16,7 +16,22 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { method, query, body } = request
+  const { method, query } = request
+
+  // Get all of the owners of a card
+  if (method === GET) {
+    const { cardID } = query
+
+    const result = await queryDatabase(SQL`
+      SELECT userID,
+        quantity
+      FROM admin_cards.ownedCards
+      WHERE cardID=${cardID};
+    `)
+
+    response.status(StatusCodes.OK).json(result)
+    return
+  }
 
   response.setHeader('Allowed', allowedMethods)
   response.status(StatusCodes.METHOD_NOT_ALLOWED).end()

@@ -20,11 +20,13 @@ const index = async (
   await middleware(request, response, cors)
   const { method, query } = request
 
+  // Create a user's settings or update a user's settings with a subscription
+  // that will be between 0 and 3 inclusive
   if (method === POST) {
     const { uid, subscription } = query
 
     const result = await queryDatabase(SQL`
-      INSERT INTO admin_cards.packs_owned
+      INSERT INTO admin_cards.settings
         (userID, subscription)
       VALUES
         (${uid}, ${subscription})

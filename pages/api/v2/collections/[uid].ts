@@ -1,12 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { queryDatabase } from '@pages/api/database/database'
-import {} from '@constants/index'
+import { GET } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 
-const allowedMethods = []
+const allowedMethods = [GET]
 const cors = Cors({
   methods: allowedMethods,
 })
@@ -16,7 +16,45 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { method, query, body } = request
+  const { method, query } = request
+
+  // Get all of the cards in a user's collection
+  if (method === GET) {
+    const { uid } = query
+    const result = await queryDatabase(SQL`
+      SELECT ownedCards.quantity
+        ownedCard.cardID,
+        card.player_name,
+        card.teamID,
+        card.playerID,
+        card.card_rarity,
+        card.image_url,
+        card.pullable,
+        card.approved,
+        card.position,
+        card.overall,
+        card.high_shots,
+        card.low_shots,
+        card.quickness,
+        card.control,
+        card.conditioning,
+        card.skating,
+        card.shooting,
+        card.hands,
+        card.checking,
+        card.defense,
+        card.author_userID,
+        card.season,
+        card.author_paid
+      FROM admin_cards.ownedCards ownedCard
+        LEFT JOIN admin_cards.cards card
+          ON ownedCard.cardID=card.cardID
+      WHERE ownedCard.userID=${uid};
+    `)
+
+    response.status(StatusCodes.OK).json(result)
+    return
+  }
 
   response.setHeader('Allowed', allowedMethods)
   response.status(StatusCodes.METHOD_NOT_ALLOWED).end()
