@@ -22,7 +22,7 @@ const useOpenPack = (): UseOpenPack => {
     ({ packID }: UseOpenPackRequest) => {
       return axios({
         method: POST,
-        url: `/api/v2/packs/${packID}`,
+        url: `/api/v2/packs/open/${packID}`,
         data: {},
       })
     },
