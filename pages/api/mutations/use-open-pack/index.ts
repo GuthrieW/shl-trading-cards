@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
+import { UseGetUserPacksKey } from '@pages/api/queries/use-get-user-packs'
+import { UseGetUserCardsKey } from '@pages/api/queries/use-get-user-cards'
 
 type UseOpenPackRequest = {
   packID: number
@@ -26,7 +28,8 @@ const useOpenPack = (): UseOpenPack => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries()
+        queryClient.invalidateQueries(UseGetUserPacksKey)
+        queryClient.invalidateQueries(UseGetUserCardsKey)
       },
     }
   )

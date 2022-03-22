@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
 import { UseGetUnapprovedCardsKey } from '@pages/api/queries/use-get-unapproved-cards'
+import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 
 type UseDenyCardRequest = {
   cardID: number
@@ -27,6 +28,7 @@ const useDenyCard = (): UseDenyCard => {
     },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries(UseGetAllCardsKey)
         queryClient.invalidateQueries(UseGetRequestedCardsKey)
         queryClient.invalidateQueries(UseGetUnapprovedCardsKey)
       },

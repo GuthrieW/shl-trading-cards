@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
 import { UseGetApprovedCardsKey } from '@pages/api/queries/use-get-approved-cards'
+import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 
 type UseEditCardRequest = {
   card: Card
@@ -27,6 +28,7 @@ const useEditCard = (): UseEditCard => {
     },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries(UseGetAllCardsKey)
         queryClient.invalidateQueries(UseGetApprovedCardsKey)
       },
     }

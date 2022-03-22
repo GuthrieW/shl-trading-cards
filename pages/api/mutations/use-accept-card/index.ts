@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from 'axios'
 import { UseGetApprovedCardsKey } from '@pages/api/queries/use-get-approved-cards'
 import { UseGetUnapprovedCardsKey } from '@pages/api/queries/use-get-unapproved-cards'
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
+import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 
 type UseAcceptCardRequest = {
   cardID: number
@@ -28,6 +29,7 @@ const useAcceptCard = (): UseAcceptCard => {
     },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries(UseGetAllCardsKey)
         queryClient.invalidateQueries(UseGetApprovedCardsKey)
         queryClient.invalidateQueries(UseGetUnapprovedCardsKey)
         queryClient.invalidateQueries(UseGetRequestedCardsKey)

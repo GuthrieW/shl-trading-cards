@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
 import { UseGetClaimedCardsKey } from '@pages/api/queries/use-get-claimed-cards'
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
+import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 
 type UseClaimCardRequest = {
   cardID: number
@@ -28,6 +29,7 @@ const useClaimCard = (): UseClaimCard => {
     },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries(UseGetAllCardsKey)
         queryClient.invalidateQueries(UseGetClaimedCardsKey)
         queryClient.invalidateQueries(UseGetRequestedCardsKey)
       },

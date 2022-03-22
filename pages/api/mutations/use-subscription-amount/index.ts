@@ -1,6 +1,7 @@
-import { useMutation } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
+import { UseGetUserKey } from '@pages/api/queries/use-get-user'
 
 type UseSubscriptionAmountRequest = {
   uid: number
@@ -16,6 +17,7 @@ type UseSubscriptionAmount = {
 }
 
 const useSubscriptionAmount = (): UseSubscriptionAmount => {
+  const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     ({ uid, subscriptionAmount }: UseSubscriptionAmountRequest) => {
       return axios({
@@ -23,6 +25,11 @@ const useSubscriptionAmount = (): UseSubscriptionAmount => {
         url: `/api/v2/settings/${uid}/subscription/${subscriptionAmount}`,
         data: {},
       })
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(UseGetUserKey)
+      },
     }
   )
 

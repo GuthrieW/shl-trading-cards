@@ -1,6 +1,7 @@
-import { useMutation } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
+import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 
 type UseSubmitCardImageRequest = {
   cardID: number
@@ -16,6 +17,7 @@ type UseSubmitCardImage = {
 }
 
 const useSubmitCardImage = (): UseSubmitCardImage => {
+  const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     ({ cardID, image }: UseSubmitCardImageRequest) => {
       return axios({
@@ -23,6 +25,11 @@ const useSubmitCardImage = (): UseSubmitCardImage => {
         url: `/api/v2/cards/${cardID}/image`,
         data: { image },
       })
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(UseGetAllCardsKey)
+      },
     }
   )
 
