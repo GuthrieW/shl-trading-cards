@@ -22,7 +22,7 @@ const useAcceptCard = (): UseAcceptCard => {
     ({ cardID }: UseAcceptCardRequest) => {
       return axios({
         method: PATCH,
-        url: `/api/v1/cards/${cardID}/approve`,
+        url: `/api/v2/cards/${cardID}/accept`,
       })
     },
     {

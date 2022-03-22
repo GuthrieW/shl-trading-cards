@@ -4,8 +4,7 @@ import { PATCH } from '@constants/http-methods'
 import { UseGetApprovedCardsKey } from '@pages/api/queries/use-get-approved-cards'
 
 type UseEditCardRequest = {
-  cardID: number
-  newCardData: Card
+  card: Card
 }
 
 type UseEditCard = {
@@ -18,11 +17,11 @@ type UseEditCard = {
 const useEditCard = (): UseEditCard => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading } = useMutation(
-    ({ cardID, newCardData }: UseEditCardRequest) => {
+    ({ card }: UseEditCardRequest) => {
       return axios({
         method: PATCH,
-        url: `/api/v1/cards/${cardID}`,
-        data: newCardData,
+        url: `/api/v2/cards/${card.cardID}/edit`,
+        data: { card },
       })
     },
     {

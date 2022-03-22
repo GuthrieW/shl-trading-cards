@@ -2,13 +2,13 @@
 
 import { NextApiRequest, NextApiResponse } from 'next'
 import { queryDatabase } from '@pages/api/database/database'
-import { GET } from '@constants/index'
+import { POST } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 
-const allowedMethods = [GET]
+const allowedMethods = [POST]
 const cors = Cors({
   methods: allowedMethods,
 })
@@ -20,15 +20,17 @@ const index = async (
   await middleware(request, response, cors)
   const { method, query } = request
 
-  if (method === GET) {
-    const { uid } = query
+  // Create a user's settings or update a user's settings with a subscription
+  // that will be between 0 and 3 inclusive
+  if (method === POST) {
+    const { uid, subscriptionAmount } = query
 
-    // Get a user's subscription settings
     const result = await queryDatabase(SQL`
-      SELECT userID,
-        subscription
-      FROM admin_cards.settings
-      WHERE userID=${uid};
+      INSERT INTO admin_cards.settings
+        (userID, subscription)
+      VALUES
+        (${uid}, ${subscriptionAmount})
+      ON DUPLICATE KEY UPDATE subscription=${subscriptionAmount};
     `)
 
     response.status(StatusCodes.OK).json(result)

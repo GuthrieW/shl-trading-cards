@@ -19,8 +19,8 @@ const useSubscriptionAmount = (): UseSubscriptionAmount => {
     ({ uid, subscriptionAmount }: UseSubscriptionAmountRequest) => {
       return axios({
         method: POST,
-        url: `/api/v1/subscriptions/${uid}`,
-        data: { subscriptionAmount: subscriptionAmount },
+        url: `/api/v2/settings/${uid}/subscription/${subscriptionAmount}`,
+        data: {},
       })
     }
   )

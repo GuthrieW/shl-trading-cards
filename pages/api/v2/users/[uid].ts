@@ -23,14 +23,17 @@ const index = async (
 
     // Get a single user
     const result = await queryDatabase(SQL`
-      SELECT uid,
-        username,
-        avatar,
-        usergroup,
-        additionalgroups,
-        displaygroup
-      FROM admin_mybb.mybb_users
-      WHERE uid=${uid};
+      SELECT user.uid,
+        user.username,
+        user.avatar,
+        user.usergroup,
+        user.additionalgroups,
+        user.displaygroup,
+        settings.subscription
+      FROM admin_mybb.mybb_users user,
+        LEFT JOIN admin_cards.settings settings
+          ON user.uid=settings.userID
+      WHERE user.uid=${uid};
     `)
 
     response.status(StatusCodes.OK).json(result)

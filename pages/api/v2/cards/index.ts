@@ -53,6 +53,7 @@ const index = async (
 
   // Insert a new card
   if (method === POST) {
+    const { card } = body
     const {
       player_name,
       teamID,
@@ -71,7 +72,7 @@ const index = async (
       season,
       checking,
       defense,
-    } = body
+    } = card
 
     const result = await queryDatabase(SQL`
       INSERT INTO admin_cards.cards

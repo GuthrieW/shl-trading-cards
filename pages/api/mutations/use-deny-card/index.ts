@@ -21,7 +21,7 @@ const useDenyCard = (): UseDenyCard => {
     ({ cardID }: UseDenyCardRequest) => {
       return axios({
         method: PATCH,
-        url: `/api/v1/cards/${cardID}/deny`,
+        url: `/api/v2/cards/${cardID}/deny`,
       })
     },
     {

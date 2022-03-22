@@ -20,8 +20,8 @@ const useCreateCard = (): UseCreateCard => {
     ({ card }: UseCreateCardRequest) => {
       return axios({
         method: POST,
-        url: '/api/v1/cards',
-        data: { requestedCard: card },
+        url: '/api/v2/cards',
+        data: { card },
       })
     },
     {

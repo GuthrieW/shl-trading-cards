@@ -3,8 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 
 type UseOpenPackRequest = {
-  uid: number
-  packType: PackKey
+  packID: number
 }
 
 type UseOpenPack = {
@@ -17,10 +16,10 @@ type UseOpenPack = {
 const useOpenPack = (): UseOpenPack => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading } = useMutation(
-    ({ uid, packType }: UseOpenPackRequest) => {
+    ({ packID }: UseOpenPackRequest) => {
       return axios({
         method: POST,
-        url: `/api/v1/cards/open/${packType}/${uid}`,
+        url: `/api/v2/packs/${packID}`,
         data: {},
       })
     },

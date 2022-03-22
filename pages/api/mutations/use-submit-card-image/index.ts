@@ -19,8 +19,8 @@ const useSubmitCardImage = (): UseSubmitCardImage => {
     ({ cardID, image }: UseSubmitCardImageRequest) => {
       return axios({
         method: PATCH,
-        url: `/api/v1/cards/${cardID}/image`,
-        data: { image: image },
+        url: `/api/v2/cards/${cardID}/image`,
+        data: { image },
       })
     }
   )

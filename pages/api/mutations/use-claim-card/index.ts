@@ -22,7 +22,7 @@ const useClaimCard = (): UseClaimCard => {
     ({ cardID, uid }: UseClaimCardRequest) => {
       return axios({
         method: PATCH,
-        url: `/api/v1/cards/${cardID}/claim/${uid}`,
+        url: `/api/v2/cards/${cardID}/claim/${uid}`,
       })
     },
     {

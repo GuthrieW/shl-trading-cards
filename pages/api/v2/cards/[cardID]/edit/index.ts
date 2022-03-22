@@ -21,7 +21,7 @@ const index = async (
   // TODO: implement this method
   if (method === PATCH) {
     const { cardID } = query
-    const newCardData = body
+    const { card } = body
 
     response
       .status(StatusCodes.NOT_IMPLEMENTED)
