@@ -30,11 +30,13 @@ const index = async (
         user.additionalgroups,
         user.displaygroup,
         settings.subscription
-      FROM admin_mybb.mybb_users user,
+      FROM admin_mybb.mybb_users user
         LEFT JOIN admin_cards.settings settings
           ON user.uid=settings.userID
       WHERE user.uid=${uid};
     `)
+
+    console.log('result', result)
 
     response.status(StatusCodes.OK).json(result)
     return

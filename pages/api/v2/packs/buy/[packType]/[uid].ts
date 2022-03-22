@@ -24,11 +24,15 @@ const index = async (
   if (method === POST) {
     const { uid, packType } = query
 
+    console.log(query)
+
     const bankResponse = await axios({
       method: POST,
       url: `http://localhost:9001/api/v1/purchase/cards?uid=${uid}&packType=${packType}`,
       data: {},
     })
+
+    console.log('bankResponse', bankResponse)
 
     if (!bankResponse.data.purchaseSuccessful) {
       response.status(StatusCodes.BAD_REQUEST).json({

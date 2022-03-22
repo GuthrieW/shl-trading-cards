@@ -25,7 +25,7 @@ const index = async (
       SELECT packID,
         userID,
         packType,
-        purchasedDate
+        purchaseDate
       FROM admin_cards.packs_owned
       WHERE userID=${uid}
         AND opened=0;

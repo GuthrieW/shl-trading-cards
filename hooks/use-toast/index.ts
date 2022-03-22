@@ -31,7 +31,9 @@ const useToast = ({
   }, successDependencies)
 
   useEffect(() => {
-    if (errorDependencies.every((dependency) => dependency === true)) {
+    console.log('checking error toast')
+    console.log(errorDependencies)
+    if (errorDependencies.some((dependency) => dependency !== null)) {
       toast.error(errorText, {
         position: 'bottom-left',
         autoClose: 5000,

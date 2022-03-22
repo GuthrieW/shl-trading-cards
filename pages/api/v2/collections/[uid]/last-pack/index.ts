@@ -18,17 +18,49 @@ const index = async (
   await middleware(request, response, cors)
   const { method, query } = request
 
-  // TODO: implement this method
-  // This needs to get the cards that were pulled from the most recently opened pack by the user
-  // We can do this by getting the most recently opened packID from packs_owned,
-  // then the cardIDs in the collection table which match the packID and the userID,
-  // then return the card information for the cards which match those cardIDs
-  // So that's 3 queries
   if (method === GET) {
     const { uid } = query
-    response
-      .status(StatusCodes.NOT_IMPLEMENTED)
-      .json({ error: 'Method not implemented' })
+    const result = await queryDatabase(SQL`
+      SELECT collection.userID,
+        card.cardID,
+        pack.packID,
+        card.player_name,
+        card.teamID,
+        card.playerID,
+        card.card_rarity,
+        card.image_url,
+        card.pullable,
+        card.approved,
+        card.position,
+        card.overall,
+        card.high_shots,
+        card.low_shots,
+        card.quickness,
+        card.control,
+        card.conditioning,
+        card.skating,
+        card.shooting,
+        card.hands,
+        card.checking,
+        card.defense,
+        card.author_userID,
+        card.season,
+        card.author_paid
+      FROM admin_cards.cards as card
+      INNER JOIN admin_cards.collection AS collection
+        ON card.cardID=collection.cardID
+      INNER JOIN admin_cards.packs_owned AS pack
+        ON collection.packID=pack.packID
+      WHERE pack.openDate=(
+        SELECT openDate
+        FROM admin_cards.packs_owned 
+        WHERE userID=${uid}
+        ORDER BY openDate DESC
+        LIMIT 1
+      );
+    `)
+
+    response.status(StatusCodes.OK).json(result)
     return
   }
 

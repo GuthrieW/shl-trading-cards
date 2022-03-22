@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
+import packsMap from '@constants/packs-map'
 
 const allowedMethods = []
 const cors = Cors({
@@ -67,12 +68,13 @@ const index = async (
   // update the pack to be opened
   if (method === POST) {
     const { packID } = query
+
     const packResult = await queryDatabase(SQL`
       SELECT packID,
         userID,
         packType,
         opened,
-        purchasedDate,
+        purchaseDate,
         openDate
       FROM admin_cards.packs_owned
       WHERE packID=${packID};
@@ -80,7 +82,7 @@ const index = async (
     const pack = packResult[0]
 
     let pulledCards: Card[] = []
-    if (pack.packType === 'Base') {
+    if (pack.packType === packsMap.base.id) {
       pulledCards = await pullBaseCards()
     } else {
       response.status(StatusCodes.BAD_REQUEST).json({
@@ -100,7 +102,7 @@ const index = async (
 
     await queryDatabase(SQL`
       UPDATE admin_cards.packs_owned
-      SET opened=1
+      SET opened=1, openDate=CURRENT_TIMESTAMP
       WHERE packID=${packID};
     `)
 

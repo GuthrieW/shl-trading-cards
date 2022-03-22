@@ -3,7 +3,7 @@ import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useState } from 'react'
 import { packs, packInfo } from '@constants/packs-map'
 import BuyPackModal from '@components/modals/buy-pack-modal'
-import useToast from '@hooks/use-toast'
+import useToast, { warningToast } from '@hooks/use-toast'
 
 const PackShop = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -30,9 +30,13 @@ const PackShop = () => {
   }
 
   const handleBuyPack = (packId) => {
-    if (!buyBackIsLoading) {
-      buyPack({ uid: getUidFromSession(), packType: packId })
+    if (buyBackIsLoading) {
+      warningToast({ warningText: 'Already buying a pack' })
+      return
     }
+    buyPack({ uid: getUidFromSession(), packType: packId })
+    setModalPack(null)
+    setShowModal(false)
   }
 
   return (

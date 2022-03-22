@@ -2,21 +2,22 @@ import OpenPackModal from '@components/modals/open-pack-modal'
 import packsMap, { packInfo } from '@constants/packs-map'
 import useToast from '@hooks/use-toast'
 import useOpenPack from '@pages/api/mutations/use-open-pack'
-import { useGetCurrentUser } from '@pages/api/queries'
+import { useGetUser } from '@pages/api/queries'
 import useGetUserPacks from '@pages/api/queries/use-get-user-packs'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useState } from 'react'
+import Router from 'next/router'
 
 const OpenPacks = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [modalPack, setModalPack] = useState<packInfo>(null)
+  const [modalPack, setModalPack] = useState<UserPack>(null)
 
   const {
     user,
     isSuccess: getCurrentUserIsSuccess,
     isLoading: getCurrentUserIsLoading,
     isError: getCurrentUserIsError,
-  } = useGetCurrentUser({})
+  } = useGetUser({ uid: getUidFromSession() })
 
   const {
     userPacks,
@@ -43,14 +44,16 @@ const OpenPacks = () => {
   })
 
   const handleSelectedPack = (pack: UserPack) => {
-    if (pack.packType === packsMap.base.id) {
-      setModalPack(packsMap.base)
-    }
+    setModalPack(pack)
     setShowModal(true)
   }
 
-  const handleOpenPack = (packId) => {
-    openPack({ uid: getUidFromSession(), packType: packId })
+  const handleOpenPack = (packID: number) => {
+    openPack({ packID: packID })
+  }
+
+  if (useOpenPackIsSuccess) {
+    Router.push('/open-packs/last-pack')
   }
 
   if (
@@ -62,11 +65,13 @@ const OpenPacks = () => {
     return null
   }
 
+  console.log('userPacks', userPacks)
+
   return (
     <div className="m-2">
       <h1>Open Packs</h1>
       <p>Number of packs: {userPacks.length}</p>
-      <p>Subscribed: {user.subscribed}</p>
+      <p>Subscribed: {user.subscription ? user.subscription : 'No'}</p>
       <div className="h-full flex flex-row items-center justify-start overflow-x-auto overflow-y-hidden">
         {userPacks.map((pack, index) => (
           <img

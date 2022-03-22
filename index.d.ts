@@ -99,7 +99,7 @@ type User = {
   usergroup?: number
   additionalgroups?: string
   displaygroup?: number
-  subscribed: boolean
+  subscription: boolean
 }
 
 type Rarity = {
@@ -121,7 +121,7 @@ type UserPack = {
   packID: number
   userID: number
   packType: string
-  purchasedDate: Date
+  purchaseDate: Date
 }
 
 // table types

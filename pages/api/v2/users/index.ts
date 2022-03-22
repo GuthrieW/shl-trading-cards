@@ -18,15 +18,17 @@ const index = async (
   await middleware(request, response, cors)
   const { method } = request
 
-  // Get all users
   if (method === GET) {
     const result = await queryDatabase(SQL`
-      SELECT uid,
-        username,
-        avatar,
-        displaygroup,
-        additionalgroups
-      FROM admin_mybb.mybb_users;
+      SELECT DISTINCT collection.userID,
+        mybb_users.uid,
+        mybb_users.username,
+        mybb_users.avatar,
+        mybb_users.displaygroup,
+        mybb_users.additionalgroups
+      FROM admin_mybb.mybb_users
+      INNER JOIN admin_cards.collection
+        ON mybb_users.uid=collection.userID;
     `)
 
     response.status(StatusCodes.OK).json(result)
