@@ -11,13 +11,14 @@ type UseDenyCardRequest = {
 type UseDenyCard = {
   denyCard: Function
   response: AxiosResponse
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
 const useDenyCard = (): UseDenyCard => {
   const queryClient = useQueryClient()
-  const { mutate, data, error, isLoading } = useMutation(
+  const { mutate, data, error, isLoading, isSuccess } = useMutation(
     ({ cardID }: UseDenyCardRequest) => {
       return axios({
         method: PATCH,
@@ -35,6 +36,7 @@ const useDenyCard = (): UseDenyCard => {
   return {
     denyCard: mutate,
     response: data,
+    isSuccess: isSuccess,
     isLoading: isLoading,
     isError: error,
   }

@@ -10,13 +10,14 @@ type UseEditCardRequest = {
 type UseEditCard = {
   editCard: Function
   response: AxiosResponse
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
 const useEditCard = (): UseEditCard => {
   const queryClient = useQueryClient()
-  const { mutate, data, error, isLoading } = useMutation(
+  const { mutate, data, error, isLoading, isSuccess } = useMutation(
     ({ card }: UseEditCardRequest) => {
       return axios({
         method: PATCH,
@@ -34,6 +35,7 @@ const useEditCard = (): UseEditCard => {
   return {
     editCard: mutate,
     response: data,
+    isSuccess: isSuccess,
     isLoading: isLoading,
     isError: error,
   }

@@ -7,6 +7,7 @@ type UseGetCurrentUserRequest = {}
 
 type UseGetCurrentUser = {
   user: User
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
@@ -15,7 +16,7 @@ export const UseGetCurrentUserKey = 'use-get-current-user'
 
 const useGetCurrentUser = ({}: UseGetCurrentUserRequest): UseGetCurrentUser => {
   const uid = getUidFromSession()
-  const { data, error, isFetching } = useQuery(
+  const { data, error, isFetching, isSuccess } = useQuery(
     UseGetCurrentUserKey,
     async () => {
       return await axios({
@@ -27,6 +28,7 @@ const useGetCurrentUser = ({}: UseGetCurrentUserRequest): UseGetCurrentUser => {
 
   return {
     user: data?.data[0] || {},
+    isSuccess: isSuccess,
     isLoading: isFetching,
     isError: error,
   }

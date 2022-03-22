@@ -12,13 +12,14 @@ type UseClaimCardRequest = {
 type UseClaimCard = {
   claimCard: Function
   response: AxiosResponse
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
 const useClaimCard = (): UseClaimCard => {
   const queryClient = useQueryClient()
-  const { mutate, data, error, isLoading } = useMutation(
+  const { mutate, data, error, isLoading, isSuccess } = useMutation(
     ({ cardID, uid }: UseClaimCardRequest) => {
       return axios({
         method: PATCH,
@@ -36,6 +37,7 @@ const useClaimCard = (): UseClaimCard => {
   return {
     claimCard: mutate,
     response: data,
+    isSuccess: isSuccess,
     isLoading: isLoading,
     isError: error,
   }

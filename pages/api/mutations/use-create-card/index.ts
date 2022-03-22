@@ -10,13 +10,14 @@ interface UseCreateCardRequest {
 type UseCreateCard = {
   createCard: Function
   response: AxiosResponse
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
 const useCreateCard = (): UseCreateCard => {
   const queryClient = useQueryClient()
-  const { mutate, data, isLoading, isError } = useMutation(
+  const { mutate, data, isLoading, isError, isSuccess } = useMutation(
     ({ card }: UseCreateCardRequest) => {
       return axios({
         method: POST,
@@ -34,6 +35,7 @@ const useCreateCard = (): UseCreateCard => {
   return {
     createCard: mutate,
     response: data,
+    isSuccess: isSuccess,
     isLoading: isLoading,
     isError: isError,
   }

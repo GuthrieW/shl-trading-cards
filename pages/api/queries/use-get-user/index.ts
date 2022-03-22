@@ -8,6 +8,7 @@ type UseGetUserRequest = {
 
 type UseGetUser = {
   user: User
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
@@ -15,12 +16,16 @@ type UseGetUser = {
 export const UseGetUserKey = 'use-get-user'
 
 const useGetUser = ({ uid }: UseGetUserRequest): UseGetUser => {
-  const { data, error, isFetching } = useQuery(UseGetUserKey, async () => {
-    return await axios({ method: GET, url: `/api/v2/users/${uid}` })
-  })
+  const { data, error, isFetching, isSuccess } = useQuery(
+    UseGetUserKey,
+    async () => {
+      return await axios({ method: GET, url: `/api/v2/users/${uid}` })
+    }
+  )
 
   return {
     user: data?.data[0] || {},
+    isSuccess: isSuccess,
     isLoading: isFetching,
     isError: error,
   }

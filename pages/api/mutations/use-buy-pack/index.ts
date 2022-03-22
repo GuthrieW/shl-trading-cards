@@ -12,13 +12,14 @@ type UseBuyPackRequest = {
 type UseBuyPack = {
   buyPack: Function
   response: AxiosResponse
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
 const useBuyPack = (): UseBuyPack => {
   const queryClient = useQueryClient()
-  const { mutate, data, error, isLoading } = useMutation(
+  const { mutate, data, error, isLoading, isSuccess } = useMutation(
     ({ uid, packType }: UseBuyPackRequest) => {
       return axios({
         method: POST,
@@ -37,6 +38,7 @@ const useBuyPack = (): UseBuyPack => {
   return {
     buyPack: mutate,
     response: data,
+    isSuccess: isSuccess,
     isLoading: isLoading,
     isError: error,
   }

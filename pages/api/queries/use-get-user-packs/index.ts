@@ -14,6 +14,7 @@ type userPacks = {
 
 type UseGetUserPacks = {
   userPacks: userPacks
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
@@ -21,14 +22,18 @@ type UseGetUserPacks = {
 export const UseGetUserPacksKey = 'use-get-user-packs'
 
 const useGetUserPacks = ({ uid }: UseGetUserPacksRequest): UseGetUserPacks => {
-  const { data, error, isFetching } = useQuery(UseGetUserPacksKey, async () => {
-    return await axios({
-      method: GET,
-      url: `/api/v2/packs/${uid}`,
-    })
-  })
+  const { data, error, isFetching, isSuccess } = useQuery(
+    UseGetUserPacksKey,
+    async () => {
+      return await axios({
+        method: GET,
+        url: `/api/v2/packs/${uid}`,
+      })
+    }
+  )
   return {
     userPacks: data?.data[0] || [],
+    isSuccess: isSuccess,
     isLoading: isFetching,
     isError: error,
   }

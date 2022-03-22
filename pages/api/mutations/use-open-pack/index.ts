@@ -9,13 +9,14 @@ type UseOpenPackRequest = {
 type UseOpenPack = {
   openPack: Function
   response: AxiosResponse
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
 const useOpenPack = (): UseOpenPack => {
   const queryClient = useQueryClient()
-  const { mutate, data, error, isLoading } = useMutation(
+  const { mutate, data, error, isLoading, isSuccess } = useMutation(
     ({ packID }: UseOpenPackRequest) => {
       return axios({
         method: POST,
@@ -33,6 +34,7 @@ const useOpenPack = (): UseOpenPack => {
   return {
     openPack: mutate,
     response: data,
+    isSuccess: isSuccess,
     isLoading: isLoading,
     isError: error,
   }

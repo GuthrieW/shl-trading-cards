@@ -6,6 +6,7 @@ type GetAllUsersRequest = {}
 
 type UseGetAllUsers = {
   users: User[]
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
@@ -13,15 +14,19 @@ type UseGetAllUsers = {
 export const UseGetAllUsersKey = 'use-get-all-users'
 
 const useGetAllUsers = ({}: GetAllUsersRequest): UseGetAllUsers => {
-  const { data, error, isFetching } = useQuery(UseGetAllUsersKey, async () => {
-    return await axios({
-      method: GET,
-      url: '/api/v2/users',
-    })
-  })
+  const { data, error, isFetching, isSuccess } = useQuery(
+    UseGetAllUsersKey,
+    async () => {
+      return await axios({
+        method: GET,
+        url: '/api/v2/users',
+      })
+    }
+  )
 
   return {
     users: data?.data || [],
+    isSuccess: isSuccess,
     isLoading: isFetching,
     isError: error,
   }

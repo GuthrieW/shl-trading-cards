@@ -6,6 +6,7 @@ type UseGetUnapprovedCardsRequest = {}
 
 type UseGetUnapprovedCards = {
   unapprovedCards: Card[]
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
@@ -14,7 +15,7 @@ export const UseGetUnapprovedCardsKey = 'use-get-unapproved-cards'
 
 const useGetUnapprovedCards =
   ({}: UseGetUnapprovedCardsRequest): UseGetUnapprovedCards => {
-    const { data, error, isFetching } = useQuery(
+    const { data, error, isFetching, isSuccess } = useQuery(
       UseGetUnapprovedCardsKey,
       async () => {
         return await axios({ method: GET, url: '/api/v2/cards/unapproved' })
@@ -23,6 +24,7 @@ const useGetUnapprovedCards =
 
     return {
       unapprovedCards: data?.data || [],
+      isSuccess: isSuccess,
       isLoading: isFetching,
       isError: error,
     }

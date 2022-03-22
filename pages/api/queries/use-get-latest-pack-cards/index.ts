@@ -8,6 +8,7 @@ type UseGetLatestPackCardsRequest = {
 
 type UseGetLatestPackCards = {
   latestPackCards: Card[]
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
@@ -17,7 +18,7 @@ export const UseGetLatestPackCardsKey = 'use-get-latest-pack-cards'
 const useGetLatestPackCards = ({
   uid,
 }: UseGetLatestPackCardsRequest): UseGetLatestPackCards => {
-  const { data, error, isFetching } = useQuery(
+  const { data, error, isFetching, isSuccess } = useQuery(
     UseGetLatestPackCardsKey,
     async () => {
       return await axios({
@@ -28,6 +29,7 @@ const useGetLatestPackCards = ({
   )
   return {
     latestPackCards: data?.data || [],
+    isSuccess: isSuccess,
     isLoading: isFetching,
     isError: error,
   }

@@ -12,13 +12,14 @@ type UseAcceptCardRequest = {
 type UseAcceptCard = {
   acceptCard: Function
   response: AxiosResponse
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
 const useAcceptCard = (): UseAcceptCard => {
   const queryClient = useQueryClient()
-  const { mutate, data, error, isLoading } = useMutation(
+  const { mutate, data, error, isLoading, isSuccess } = useMutation(
     ({ cardID }: UseAcceptCardRequest) => {
       return axios({
         method: PATCH,
@@ -36,6 +37,7 @@ const useAcceptCard = (): UseAcceptCard => {
   return {
     acceptCard: mutate,
     response: data,
+    isSuccess: isSuccess,
     isLoading: isLoading,
     isError: error,
   }

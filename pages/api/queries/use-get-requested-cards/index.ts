@@ -6,6 +6,7 @@ type UseGetRequestedCardsRequest = {}
 
 type UseGetRequestedCards = {
   requestedCards: Card[]
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
@@ -14,7 +15,7 @@ export const UseGetRequestedCardsKey = 'use-get-requested-cards'
 
 const useGetRequestedCards =
   ({}: UseGetRequestedCardsRequest): UseGetRequestedCards => {
-    const { data, error, isFetching } = useQuery(
+    const { data, error, isFetching, isSuccess } = useQuery(
       UseGetRequestedCardsKey,
       async () => {
         return await axios({
@@ -25,6 +26,7 @@ const useGetRequestedCards =
     )
     return {
       requestedCards: data?.data || [],
+      isSuccess: isSuccess,
       isLoading: isFetching,
       isError: error,
     }

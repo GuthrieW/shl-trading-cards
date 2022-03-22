@@ -10,12 +10,13 @@ type UseSubscriptionAmountRequest = {
 type UseSubscriptionAmount = {
   updateSubscriptionAmount: Function
   response: AxiosResponse
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
 const useSubscriptionAmount = (): UseSubscriptionAmount => {
-  const { mutate, data, error, isLoading } = useMutation(
+  const { mutate, data, error, isLoading, isSuccess } = useMutation(
     ({ uid, subscriptionAmount }: UseSubscriptionAmountRequest) => {
       return axios({
         method: POST,
@@ -28,6 +29,7 @@ const useSubscriptionAmount = (): UseSubscriptionAmount => {
   return {
     updateSubscriptionAmount: mutate,
     response: data,
+    isSuccess: isSuccess,
     isLoading: isLoading,
     isError: error,
   }

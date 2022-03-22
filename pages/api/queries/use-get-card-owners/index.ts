@@ -8,6 +8,7 @@ type UseGetCardOwnersRequest = {
 
 type UseGetCardOwners = {
   cardOwners: User[]
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
@@ -17,7 +18,7 @@ export const UseGetCardOwnersKey = 'use-get-card-owners'
 const useGetCardOwners = ({
   cardID,
 }: UseGetCardOwnersRequest): UseGetCardOwners => {
-  const { data, error, isFetching } = useQuery(
+  const { data, error, isFetching, isSuccess } = useQuery(
     UseGetCardOwnersKey,
     async () => {
       return await axios({
@@ -29,6 +30,7 @@ const useGetCardOwners = ({
 
   return {
     cardOwners: data?.data || [],
+    isSuccess: isSuccess,
     isLoading: isFetching,
     isError: error,
   }

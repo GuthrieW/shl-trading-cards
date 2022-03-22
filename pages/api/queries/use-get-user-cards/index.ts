@@ -8,6 +8,7 @@ type UseGetUserCardsRequest = {
 
 type UseGetUserCards = {
   userCards: CollectionCard[]
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
@@ -15,14 +16,18 @@ type UseGetUserCards = {
 export const UseGetUserCardsKey = 'use-get-user-cards'
 
 const useGetUserCards = ({ uid }: UseGetUserCardsRequest): UseGetUserCards => {
-  const { data, error, isFetching } = useQuery(UseGetUserCardsKey, async () => {
-    return await axios({
-      method: GET,
-      url: `/api/v2/collections/${uid}`,
-    })
-  })
+  const { data, error, isFetching, isSuccess } = useQuery(
+    UseGetUserCardsKey,
+    async () => {
+      return await axios({
+        method: GET,
+        url: `/api/v2/collections/${uid}`,
+      })
+    }
+  )
   return {
     userCards: data?.data || [],
+    isSuccess: isSuccess,
     isLoading: isFetching,
     isError: error,
   }
