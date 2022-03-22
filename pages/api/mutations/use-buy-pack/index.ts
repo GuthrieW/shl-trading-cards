@@ -23,7 +23,7 @@ const useBuyPack = (): UseBuyPack => {
     ({ uid, packType }: UseBuyPackRequest) => {
       return axios({
         method: POST,
-        url: `/api/v2/packs/${packType}/${uid}`,
+        url: `/api/v2/packs/buy/${packType}/${uid}`,
         data: {},
       })
     },
