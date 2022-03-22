@@ -22,7 +22,7 @@ const index = async (
   if (method === GET) {
     const { uid } = query
     const result = await queryDatabase(SQL`
-      SELECT ownedCards.quantity
+      SELECT ownedCard.quantity,
         ownedCard.cardID,
         card.player_name,
         card.teamID,
