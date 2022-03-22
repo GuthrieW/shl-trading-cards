@@ -1,5 +1,4 @@
 import { GET } from '@constants/http-methods'
-import cards from '@utils/test-data/cards.json'
 import axios from 'axios'
 import { useQuery } from 'react-query'
 
@@ -9,6 +8,7 @@ type UseGetLatestPackCardsRequest = {
 
 type UseGetLatestPackCards = {
   latestPackCards: Card[]
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
@@ -18,17 +18,18 @@ export const UseGetLatestPackCardsKey = 'use-get-latest-pack-cards'
 const useGetLatestPackCards = ({
   uid,
 }: UseGetLatestPackCardsRequest): UseGetLatestPackCards => {
-  const { data, error, isFetching } = useQuery(
+  const { data, error, isFetching, isSuccess } = useQuery(
     UseGetLatestPackCardsKey,
     async () => {
       return await axios({
         method: GET,
-        url: `/api/v1/collections/latest-pack/${uid}`,
+        url: `/api/v2/collections/${uid}/last-pack`,
       })
     }
   )
   return {
     latestPackCards: data?.data || [],
+    isSuccess: isSuccess,
     isLoading: isFetching,
     isError: error,
   }

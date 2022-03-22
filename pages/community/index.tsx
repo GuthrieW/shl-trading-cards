@@ -1,31 +1,40 @@
+import ButtonGroup from '@components/buttons/button-group'
+import CommunityTable from '@components/tables/community-table'
+import { useGetAllCards, useGetAllUsers } from '@pages/api/queries'
 import React from 'react'
-import { useGetAllUsers } from '@pages/api/queries/index'
-import { DataTable } from '@components/index'
-
-const columns = [
-  {
-    headerName: 'User ID',
-    field: 'uid',
-  },
-  {
-    headerName: 'Username',
-    field: 'username',
-  },
-]
 
 const Community = () => {
-  const { users, isLoading, isError } = useGetAllUsers({})
+  const {
+    users,
+    isSuccess: getAllUsersIsSuccess,
+    isLoading: getAllUsersIsLoading,
+    isError: getAllUsersIsError,
+  } = useGetAllUsers({})
+  const {
+    allCards,
+    isSuccess: getAllCardsIsSuccess,
+    isLoading: getAllCardsIsLoading,
+    isError: getAllCardsIsError,
+  } = useGetAllCards({})
 
-  if (isLoading || isError) {
-    return '...loading'
+  if (
+    getAllCardsIsLoading ||
+    getAllCardsIsError ||
+    getAllUsersIsLoading ||
+    getAllUsersIsError
+  ) {
+    return null
   }
 
   return (
-    <DataTable
-      title={"View a Member's Collection"}
-      data={users}
-      columns={columns}
-    />
+    <div className="m-2">
+      <h1>Community</h1>
+      {/* <div>
+        This should allow people to choose between finding a user and find who owns a card (and how many of that card)
+        <ButtonGroup buttons={} selectedButtonId={} />
+      </div> */}
+      <CommunityTable tableData={users} />
+    </div>
   )
 }
 

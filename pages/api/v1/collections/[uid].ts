@@ -26,7 +26,8 @@ const index = async (
         collection.quantity,
         card.image_url,
         card.card_rarity,
-        card.player_name
+        card.player_name,
+        card.overall
       FROM admin_cards.collection collection
         LEFT JOIN admin_cards.cards card
           ON collection.cardID=card.cardID

@@ -6,6 +6,7 @@ type UseGetAllCardsRequrest = {}
 
 type UseGetAllCards = {
   allCards: Card[]
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
@@ -13,15 +14,19 @@ type UseGetAllCards = {
 export const UseGetAllCardsKey = 'use-get-all-cards'
 
 const useGetAllCards = ({}: UseGetAllCardsRequrest): UseGetAllCards => {
-  const { data, error, isFetching } = useQuery(UseGetAllCardsKey, async () => {
-    return await axios({
-      method: GET,
-      url: '/api/v1/cards/all',
-    })
-  })
+  const { data, error, isFetching, isSuccess } = useQuery(
+    UseGetAllCardsKey,
+    async () => {
+      return await axios({
+        method: GET,
+        url: '/api/v2/cards',
+      })
+    }
+  )
 
   return {
     allCards: data?.data || [],
+    isSuccess: isSuccess,
     isLoading: isFetching,
     isError: error,
   }

@@ -1,82 +1,70 @@
-import React from 'react'
-import { ImageList, ImageListItem, ImageListItemBar } from '@mui/material'
-import styled from 'styled-components'
-import Router from 'next/router'
-import { packsMap } from '@constants/index'
-import { PageHeader } from '@components/index'
 import { useBuyPack } from '@pages/api/mutations'
-import { getUidFromSession } from '@utils/index'
-import { AxiosResponse } from 'axios'
+import getUidFromSession from '@utils/get-uid-from-session'
+import React, { useState } from 'react'
+import { packs, packInfo } from '@constants/packs-map'
+import BuyPackModal from '@components/modals/buy-pack-modal'
+import useToast, { warningToast } from '@hooks/use-toast'
 
-const OpenPacksScreen = styled.div`
-  @media only screen and (max-width: 768px) {
-    margin: 10px;
+const PackShop = () => {
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [modalPack, setModalPack] = useState<packInfo>(null)
+
+  const {
+    buyPack,
+    response: buyPackResponse,
+    isLoading: buyBackIsLoading,
+    isError: buyPackIsError,
+    isSuccess: buyPackIsSuccess,
+  } = useBuyPack()
+
+  useToast({
+    successText: 'Pack Bought',
+    successDependencies: [buyPackIsSuccess],
+    errorText: 'Error Buying Pack',
+    errorDependencies: [buyPackIsError],
+  })
+
+  const handleSelectedPack = (pack: packInfo) => {
+    setModalPack(pack)
+    setShowModal(true)
   }
 
-  @media only screen and (min-width: 768px) {
-    margin: 10px;
-  }
-`
-const ImageItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-const StyledImage = styled.img`
-  cursor: pointer;
-  transition: all ease 200ms;
-  &:hover {
-    transform: scale(1.05);
-  }
-`
-
-const StyledBarContainer = styled.div`
-  text-align: center;
-`
-
-type UseBuyPack = {
-  buyPack: Function
-  response: AxiosResponse
-  isLoading: boolean
-  isError: any
-}
-
-const OpenPacks = () => {
-  const { buyPack, response, isLoading, isError }: UseBuyPack = useBuyPack()
-
-  if (response?.data?.purchaseSuccessful) {
-    Router.push('/pack-shop/pack-viewer')
+  const handleBuyPack = (packId) => {
+    if (buyBackIsLoading) {
+      warningToast({ warningText: 'Already buying a pack' })
+      return
+    }
+    buyPack({ uid: getUidFromSession(), packType: packId })
+    setModalPack(null)
+    setShowModal(false)
   }
 
   return (
-    <OpenPacksScreen>
-      <PageHeader>Pack Shop</PageHeader>
-      <ImageList gap={16} rowHeight={400} cols={3}>
-        {packsMap.map((pack: PackType) => {
-          const { key, label, imageUrl } = pack
-          return (
-            <ImageListItem key={key}>
-              <ImageItem>
-                <StyledImage
-                  height={'400px'}
-                  src={imageUrl}
-                  onClick={() => {
-                    buyPack({ uid: getUidFromSession(), packType: pack.key })
-                  }}
-                />
-              </ImageItem>
-              <StyledBarContainer>
-                <ImageListItemBar
-                  position={'bottom'}
-                  title={`Open ${label} Pack`}
-                />
-              </StyledBarContainer>
-            </ImageListItem>
-          )
-        })}
-      </ImageList>
-    </OpenPacksScreen>
+    <div className="m-2">
+      <h1>Pack Shop</h1>
+      <div className="my-2 h-auto flex flex-row items-center justify-center">
+        {packs.map((pack: packInfo, index: number) => (
+          <div
+            key={index}
+            className="flex flex-col items-center justify-center"
+          >
+            <img
+              onClick={() => handleSelectedPack(pack)}
+              className="cursor-pointer h-96 mx-4 transition ease-linear hover:scale-105 shadow-none hover:shadow-xl"
+              src={pack.imageUrl}
+            />
+          </div>
+        ))}
+      </div>
+      {showModal && (
+        <BuyPackModal
+          onAccept={handleBuyPack}
+          setShowModal={setShowModal}
+          pack={modalPack}
+        />
+      )}
+    </div>
   )
 }
 
-export default OpenPacks
+export default PackShop

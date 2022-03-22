@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
 import { UseGetClaimedCardsKey } from '@pages/api/queries/use-get-claimed-cards'
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
+import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 
 type UseClaimCardRequest = {
   cardID: number
@@ -12,21 +13,23 @@ type UseClaimCardRequest = {
 type UseClaimCard = {
   claimCard: Function
   response: AxiosResponse
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
 const useClaimCard = (): UseClaimCard => {
   const queryClient = useQueryClient()
-  const { mutate, data, error, isLoading } = useMutation(
+  const { mutate, data, error, isLoading, isSuccess } = useMutation(
     ({ cardID, uid }: UseClaimCardRequest) => {
       return axios({
         method: PATCH,
-        url: `/api/v1/cards/${cardID}/claim/${uid}`,
+        url: `/api/v2/cards/${cardID}/claim/${uid}`,
       })
     },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries(UseGetAllCardsKey)
         queryClient.invalidateQueries(UseGetClaimedCardsKey)
         queryClient.invalidateQueries(UseGetRequestedCardsKey)
       },
@@ -36,6 +39,7 @@ const useClaimCard = (): UseClaimCard => {
   return {
     claimCard: mutate,
     response: data,
+    isSuccess: isSuccess,
     isLoading: isLoading,
     isError: error,
   }

@@ -6,6 +6,7 @@ type UseGetApprovedCardsRequrest = {}
 
 type UseGetApprovedCards = {
   approvedCards: Card[]
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
@@ -14,18 +15,19 @@ export const UseGetApprovedCardsKey = 'use-get-approved-cards'
 
 const useGetApprovedCards =
   ({}: UseGetApprovedCardsRequrest): UseGetApprovedCards => {
-    const { data, error, isFetching } = useQuery(
+    const { data, error, isFetching, isSuccess } = useQuery(
       UseGetApprovedCardsKey,
       async () => {
         return await axios({
           method: GET,
-          url: '/api/v1/cards/approved',
+          url: '/api/v2/cards/approved',
         })
       }
     )
 
     return {
       approvedCards: data?.data || [],
+      isSuccess: isSuccess,
       isLoading: isFetching,
       isError: error,
     }
