@@ -24,8 +24,15 @@ const AuthModal = () => (
 )
 
 export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
-  const [queryClient] = useState(() => new QueryClient())
   const [showModal, setShowModal] = useState<boolean>(false)
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
+    },
+  })
 
   useEffect(() => {
     const windowExists = typeof window !== 'undefined'
