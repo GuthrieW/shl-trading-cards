@@ -1,8 +1,7 @@
 import OpenPackModal from '@components/modals/open-pack-modal'
-import packsMap, { packInfo } from '@constants/packs-map'
+import packsMap from '@constants/packs-map'
 import useToast from '@hooks/use-toast'
 import useOpenPack from '@pages/api/mutations/use-open-pack'
-import { useGetUser } from '@pages/api/queries'
 import useGetUserPacks from '@pages/api/queries/use-get-user-packs'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useState } from 'react'
@@ -11,13 +10,6 @@ import Router from 'next/router'
 const OpenPacks = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalPack, setModalPack] = useState<UserPack>(null)
-
-  const {
-    user,
-    isSuccess: getCurrentUserIsSuccess,
-    isLoading: getCurrentUserIsLoading,
-    isError: getCurrentUserIsError,
-  } = useGetUser({ uid: getUidFromSession() })
 
   const {
     userPacks,
@@ -56,12 +48,7 @@ const OpenPacks = () => {
     Router.push('/open-packs/last-pack')
   }
 
-  if (
-    getUserPacksIsLoading ||
-    getUserPacksIsError ||
-    getCurrentUserIsLoading ||
-    getCurrentUserIsError
-  ) {
+  if (getUserPacksIsLoading || getUserPacksIsError) {
     return null
   }
 
@@ -69,7 +56,6 @@ const OpenPacks = () => {
     <div className="m-2">
       <h1>Open Packs</h1>
       <p>Number of packs: {userPacks.length}</p>
-      <p>Subscribed: {user.subscription ? user.subscription : 'No'}</p>
       <div className="h-full flex flex-row items-center justify-start overflow-x-auto overflow-y-hidden">
         {userPacks.map((pack, index) => (
           <img
