@@ -52,14 +52,14 @@ const RequestCards = () => {
         hands: row[5] !== 'G' ? parseInt(row[9]) : null,
         checking: row[5] !== 'G' ? parseInt(row[10]) : null,
         defense: row[5] !== 'G' ? parseInt(row[11]) : null,
-        high_shots: row[5] !== 'G' ? null : parseInt(row[11]),
-        low_shots: row[5] !== 'G' ? null : parseInt(row[12]),
-        quickness: row[5] !== 'G' ? null : parseInt(row[13]),
-        control: row[5] !== 'G' ? null : parseInt(row[14]),
-        conditioning: row[5] !== 'G' ? null : parseInt(row[15]),
+        high_shots: row[5] !== 'G' ? null : parseInt(row[12]),
+        low_shots: row[5] !== 'G' ? null : parseInt(row[13]),
+        quickness: row[5] !== 'G' ? null : parseInt(row[14]),
+        control: row[5] !== 'G' ? null : parseInt(row[15]),
+        conditioning: row[5] !== 'G' ? null : parseInt(row[16]),
       }
 
-      createCard({ requestedCard: playerData })
+      createCard({ card: playerData })
     })
     setIsSubmitting(false)
   }

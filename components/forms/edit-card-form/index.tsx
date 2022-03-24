@@ -81,23 +81,31 @@ const EditCardForm = ({
       selectOptions: [
         {
           label: 'Bronze',
-          value: 'bronze',
+          value: 'Bronze',
         },
         {
           label: 'Silver',
-          value: 'silver',
+          value: 'Silver',
         },
         {
           label: 'Gold',
-          value: 'gold',
+          value: 'Gold',
         },
         {
           label: 'Ruby',
-          value: 'ruby',
+          value: 'Ruby',
         },
         {
           label: 'Diamond',
-          value: 'diamond',
+          value: 'Diamond',
+        },
+        {
+          label: 'Logo',
+          value: 'Logo',
+        },
+        {
+          label: 'Hall of Fame',
+          value: 'Hall of Fame',
         },
       ],
     },
