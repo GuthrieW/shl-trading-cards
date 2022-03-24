@@ -131,6 +131,18 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
       onClick: () => updateSelectedButtonIds(rarityMap.diamond.label),
       className: 'bg-cyan-600',
     },
+    {
+      id: rarityMap.logo.label,
+      text: rarityMap.logo.label,
+      onClick: () => updateSelectedButtonIds(rarityMap.logo.label),
+      className: 'bg-white',
+    },
+    {
+      id: rarityMap.hallOfFame.label,
+      text: rarityMap.hallOfFame.label,
+      onClick: () => updateSelectedButtonIds(rarityMap.hallOfFame.label),
+      className: 'bg-white',
+    },
   ]
 
   return (
