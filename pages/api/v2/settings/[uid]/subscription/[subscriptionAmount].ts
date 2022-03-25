@@ -2,11 +2,12 @@
 
 import { NextApiRequest, NextApiResponse } from 'next'
 import { queryDatabase } from '@pages/api/database/database'
-import { POST } from '@constants/index'
+import { GET, POST } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
+import axios from 'axios'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -24,6 +25,35 @@ const index = async (
   // that will be between 0 and 3 inclusive
   if (method === POST) {
     const { uid, subscriptionAmount } = query
+
+    const bankResponse = await axios({
+      method: GET,
+      url: `http://localhost:9001/api/v1/account/balance/${uid}`,
+    })
+
+    const subscriptionAmountIsNumber = isNaN(Number(subscriptionAmount))
+    if (subscriptionAmountIsNumber) {
+      response.status(StatusCodes.BAD_REQUEST).json({
+        error: `Invalid Subscription Amount: ${subscriptionAmount} is not a number`,
+      })
+      return
+    }
+
+    const subAmount = parseInt(subscriptionAmount as string)
+
+    if (subAmount < 0 || subAmount > 3) {
+      response.status(StatusCodes.BAD_REQUEST).json({
+        error: `Invalid Subscription Amount: ${subscriptionAmount} is not a number between 0 and 3`,
+      })
+      return
+    }
+
+    if (bankResponse.data.bankbalance < 100000 * subAmount) {
+      response.status(StatusCodes.BAD_REQUEST).json({
+        error: `Bank Balance Insufficient`,
+      })
+      return
+    }
 
     const result = await queryDatabase(SQL`
       INSERT INTO admin_cards.settings

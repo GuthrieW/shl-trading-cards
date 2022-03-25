@@ -4,6 +4,9 @@ import React, { useState } from 'react'
 import { packs, packInfo } from '@constants/packs-map'
 import BuyPackModal from '@components/modals/buy-pack-modal'
 import useToast, { warningToast } from '@hooks/use-toast'
+import subscriptionOptions from '@constants/subscription-options'
+import { useGetUser } from '@pages/api/queries'
+import useUpdateSubscription from '@pages/api/mutations/use-update-subscription'
 
 const PackShop = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -16,6 +19,23 @@ const PackShop = () => {
     isError: buyPackIsError,
     isSuccess: buyPackIsSuccess,
   } = useBuyPack()
+
+  const {
+    user,
+    isSuccess: getUserIsSuccess,
+    isLoading: getUserIsLoading,
+    isError: getUserIsError,
+  } = useGetUser({
+    uid: getUidFromSession(),
+  })
+
+  const {
+    updateSubscription,
+    response: updateSubscriptionResponse,
+    isSuccess: updateSubscriptionIsSuccess,
+    isLoading: updateSubscriptionIsLoading,
+    isError: updateSubscriptionIsError,
+  } = useUpdateSubscription()
 
   useToast({
     successText: 'Pack Bought',
@@ -39,9 +59,30 @@ const PackShop = () => {
     setShowModal(false)
   }
 
+  const handleUpdateSubscription = (event) => {
+    updateSubscription({
+      uid: getUidFromSession(),
+      subscriptionAmount: event.target.value,
+    })
+  }
+
   return (
     <div className="m-2">
       <h1>Pack Shop</h1>
+      <div className="flex flex-row justify-start items-center">
+        <h1>Base Pack Subscription</h1>
+        <select
+          className="m-2"
+          value={user.subscription}
+          onChange={handleUpdateSubscription}
+        >
+          {subscriptionOptions.map((subscriptionOption, index) => (
+            <option key={index} value={subscriptionOption.value}>
+              {subscriptionOption.label}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="my-2 h-auto flex flex-row items-center justify-center">
         {packs.map((pack: packInfo, index: number) => (
           <div

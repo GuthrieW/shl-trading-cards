@@ -3,23 +3,23 @@ import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 import { UseGetUserKey } from '@pages/api/queries/use-get-user'
 
-type UseSubscriptionAmountRequest = {
+type UseUpdateSubscriptionRequest = {
   uid: number
   subscriptionAmount: number
 }
 
-type UseSubscriptionAmount = {
-  updateSubscriptionAmount: Function
+type UseUpdateSubscription = {
+  updateSubscription: Function
   response: AxiosResponse
   isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
-const useSubscriptionAmount = (): UseSubscriptionAmount => {
+const useUpdateSubscription = (): UseUpdateSubscription => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
-    ({ uid, subscriptionAmount }: UseSubscriptionAmountRequest) => {
+    ({ uid, subscriptionAmount }: UseUpdateSubscriptionRequest) => {
       return axios({
         method: POST,
         url: `/api/v2/settings/${uid}/subscription/${subscriptionAmount}`,
@@ -34,7 +34,7 @@ const useSubscriptionAmount = (): UseSubscriptionAmount => {
   )
 
   return {
-    updateSubscriptionAmount: mutate,
+    updateSubscription: mutate,
     response: data,
     isSuccess: isSuccess,
     isLoading: isLoading,
@@ -42,4 +42,4 @@ const useSubscriptionAmount = (): UseSubscriptionAmount => {
   }
 }
 
-export default useSubscriptionAmount
+export default useUpdateSubscription

@@ -99,7 +99,7 @@ type User = {
   usergroup?: number
   additionalgroups?: string
   displaygroup?: number
-  subscription: boolean
+  subscription?: number
 }
 
 type Rarity = {
