@@ -1,6 +1,7 @@
 import SubmitCardsTable from '@components/tables/submit-cards-table'
 import { useGetClaimedCards } from '@pages/api/queries'
 import getUidFromSession from '@utils/get-uid-from-session'
+import { NextSeo } from 'next-seo'
 import React from 'react'
 
 const SubmitCards = () => {
@@ -11,10 +12,13 @@ const SubmitCards = () => {
   if (isLoading || isError) return null
 
   return (
-    <div className="m-2">
-      <h1>Submit Cards</h1>
-      <SubmitCardsTable tableData={claimedCards} />
-    </div>
+    <>
+      <NextSeo title="Submit Cards" />
+      <div className="m-2">
+        <h1>Submit Cards</h1>
+        <SubmitCardsTable tableData={claimedCards} />
+      </div>
+    </>
   )
 }
 

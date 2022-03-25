@@ -1,6 +1,7 @@
 import Button from '@components/buttons/button'
 import useToast, { warningToast } from '@hooks/use-toast'
 import { useCreateCard } from '@pages/api/mutations'
+import { NextSeo } from 'next-seo'
 import React, { useEffect, useState } from 'react'
 import CSVReader from 'react-csv-reader'
 import { toast } from 'react-toastify'
@@ -65,32 +66,35 @@ const RequestCards = () => {
   }
 
   return (
-    <div className="m-2 flex flex-col">
-      <h1>Request Cards</h1>
-      <div className="flex flex-col justify-center items-center">
-        <div className="w-1/3">
-          <div className="flex justify-start items-center">
-            <CSVReader
-              cssClass="react-csv-input"
-              label="CSV Upload"
-              onFileLoaded={handleSelectCsv}
-            />
-          </div>
-          <div className="mb-5 flex justify-start items-center">
-            Cards Awaiting Submission: {numberOfCardsToUpload}
-          </div>
+    <>
+      <NextSeo title="Request Cards" />
+      <div className="m-2 flex flex-col">
+        <h1>Request Cards</h1>
+        <div className="flex flex-col justify-center items-center">
+          <div className="w-1/3">
+            <div className="flex justify-start items-center">
+              <CSVReader
+                cssClass="react-csv-input"
+                label="CSV Upload"
+                onFileLoaded={handleSelectCsv}
+              />
+            </div>
+            <div className="mb-5 flex justify-start items-center">
+              Cards Awaiting Submission: {numberOfCardsToUpload}
+            </div>
 
-          <div className="flex justify-end items-center">
-            <Button
-              disabled={!canSubmitCsv || isSubmitting || isLoading || isError}
-              onClick={handleUploadCsv}
-            >
-              Submit Cards
-            </Button>
+            <div className="flex justify-end items-center">
+              <Button
+                disabled={!canSubmitCsv || isSubmitting || isLoading || isError}
+                onClick={handleUploadCsv}
+              >
+                Submit Cards
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

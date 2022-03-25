@@ -42,8 +42,8 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          {/* change to shl svg */}
-          <link href={'public/vercel.svg'} />
+          <title>SHL Trading Cards | Ice Level</title>
+          <link href={'public/favicon.svg'} />
         </Head>
         <body style={{ margin: '0px' }}>
           <Main />

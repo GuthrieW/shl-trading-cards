@@ -7,6 +7,7 @@ import useGetUserPacks from '@pages/api/queries/use-get-user-packs'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useState } from 'react'
 import Router from 'next/router'
+import { NextSeo } from 'next-seo'
 
 const OpenPacks = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -66,28 +67,31 @@ const OpenPacks = () => {
   }
 
   return (
-    <div className="m-2">
-      <h1>Open Packs</h1>
-      <p>Number of packs: {userPacks.length}</p>
-      <p>Subscribed: {user.subscription ? user.subscription : 'No'}</p>
-      <div className="h-full flex flex-row items-center justify-start overflow-x-auto overflow-y-hidden">
-        {userPacks.map((pack, index) => (
-          <img
-            key={index}
-            onClick={() => handleSelectedPack(pack)}
-            className="my-2 cursor-pointer h-96 mx-4 transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
-            src={packsMap.base.imageUrl}
+    <>
+      <NextSeo title="Open Packs" />
+      <div className="m-2">
+        <h1>Open Packs</h1>
+        <p>Number of packs: {userPacks.length}</p>
+        <p>Subscribed: {user.subscription ? user.subscription : 'No'}</p>
+        <div className="h-full flex flex-row items-center justify-start overflow-x-auto overflow-y-hidden">
+          {userPacks.map((pack, index) => (
+            <img
+              key={index}
+              onClick={() => handleSelectedPack(pack)}
+              className="my-2 cursor-pointer h-96 mx-4 transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
+              src={packsMap.base.imageUrl}
+            />
+          ))}
+        </div>
+        {showModal && (
+          <OpenPackModal
+            onAccept={handleOpenPack}
+            setShowModal={setShowModal}
+            pack={modalPack}
           />
-        ))}
+        )}
       </div>
-      {showModal && (
-        <OpenPackModal
-          onAccept={handleOpenPack}
-          setShowModal={setShowModal}
-          pack={modalPack}
-        />
-      )}
-    </div>
+    </>
   )
 }
 

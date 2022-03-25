@@ -1,7 +1,9 @@
+import { NextSeo } from 'next-seo'
 import React from 'react'
 
 const Home = () => (
   <>
+    <NextSeo title="Home" />
     <video
       className="fixed -z-10 top-0  opacity-75"
       autoPlay

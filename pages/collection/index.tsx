@@ -3,6 +3,7 @@ import getUidFromSession from '@utils/get-uid-from-session'
 import React from 'react'
 import { useRouter } from 'next/router'
 import CollectionGrid from '@components/grids/collection-grid'
+import { NextSeo } from 'next-seo'
 
 const Collection = () => {
   const { query } = useRouter()
@@ -20,10 +21,13 @@ const Collection = () => {
   if (getUserCardsIsLoading || getUserCardsIsError) return null
 
   return (
-    <div className="m-2">
-      <h1>Collection</h1>
-      <CollectionGrid gridData={userCards} />
-    </div>
+    <>
+      <NextSeo title="Collection" />
+      <div className="m-2">
+        <h1>Collection</h1>
+        <CollectionGrid gridData={userCards} />
+      </div>
+    </>
   )
 }
 
