@@ -45,6 +45,13 @@ const PackShop = () => {
     errorDependencies: [buyPackIsError],
   })
 
+  useToast({
+    successText: 'Subscription Updated',
+    successDependencies: [updateSubscriptionIsSuccess],
+    errorText: 'Error Updating Subscription',
+    errorDependencies: [updateSubscriptionIsError],
+  })
+
   const handleSelectedPack = (pack: packInfo) => {
     setModalPack(pack)
     setShowModal(true)
