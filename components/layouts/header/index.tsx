@@ -79,6 +79,12 @@ const headersLinks: HeaderLink[] = [
 
 const adminLinks: AdminLink[] = [
   {
+    id: 'all-cards',
+    headerText: 'All Cards',
+    href: '/all-cards',
+    admin: false,
+  },
+  {
     id: 'edit-cards',
     headerText: 'Edit Cards',
     href: '/edit-cards',
