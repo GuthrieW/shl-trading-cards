@@ -5,6 +5,11 @@ import React from 'react'
 
 const IssuePacks = () => {
   const { users, isSuccess, isLoading, isError } = useGetAllUsers({})
+
+  if (isLoading || isError) {
+    return null
+  }
+
   return (
     <>
       <NextSeo title="Issue Packs" />

@@ -45,16 +45,24 @@ const index = async (
       return
     }
 
+    // await queryDatabase(SQL`
+    //   INSERT INTO admin_cards.packs_owned
+    //     (userID, packType, acquisition_method)
+    //   VALUES
+    //     (${uid}, ${packType}, "Issued by admin ${issueruid}");
+    // `)
+
     await queryDatabase(SQL`
       INSERT INTO admin_cards.packs_owned
-        (userID, packType, acquisition_method)
+        (userID, packType)
       VALUES
-        (${uid}, ${packType}, "Issued by admin ${issueruid}");
+        (${uid}, ${packType});
     `)
 
     response.status(StatusCodes.OK).json({
       purchaseSuccessful: true,
     })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)
