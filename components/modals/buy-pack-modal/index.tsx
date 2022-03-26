@@ -19,7 +19,7 @@ const BuyPackModal = ({
 }: BuyPackModalProps) => (
   <Modal
     setShowModal={setShowModal}
-    title={pack.label}
+    title={`${pack.label} - ${pack.priceLabel}`}
     subtitle={pack.description}
   >
     <div className="flex flex-row justify-center items-center">
