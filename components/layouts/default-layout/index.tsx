@@ -15,16 +15,16 @@ const DefaultLayout = ({ children }) => {
 
   if (!user.uid) {
     Router.reload()
+  } else {
+    return (
+      <div className="h-full w-full">
+        <Header user={user} />
+        {children}
+        {/* Talk with Jess about the footer covering pages */}
+        {/* <Footer /> */}
+      </div>
+    )
   }
-
-  return (
-    <div className="h-full w-full">
-      <Header user={user} />
-      {children}
-      {/* Talk with Jess about the footer covering pages */}
-      {/* <Footer /> */}
-    </div>
-  )
 }
 
 export default DefaultLayout
