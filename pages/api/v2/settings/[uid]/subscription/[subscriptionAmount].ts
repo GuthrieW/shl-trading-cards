@@ -1,5 +1,3 @@
-//gets a user's quantity of unopened packs and subscription status
-
 import { NextApiRequest, NextApiResponse } from 'next'
 import { queryDatabase } from '@pages/api/database/database'
 import { GET, POST } from '@constants/index'

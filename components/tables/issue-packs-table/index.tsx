@@ -1,6 +1,4 @@
 import SearchBar from '@components/inputs/search-bar'
-import { useRouter } from 'next/router'
-import React, { useMemo } from 'react'
 import {
   useTable,
   useSortBy,
@@ -9,13 +7,29 @@ import {
 } from 'react-table'
 import Pagination from '../pagination'
 import Table from '../table'
+import React, { useMemo, useState } from 'react'
+import useIssuePack from '@pages/api/mutations/use-issue-pack'
+import IssuePacksModal from '@components/modals/issue-packs-modal'
+import useToast, { warningToast } from '@hooks/use-toast'
+import getUidFromSession from '@utils/get-uid-from-session'
+import packsMap from '@constants/packs-map'
 
-type CommunityTableProps = {
+type IssuePacksTableProps = {
   tableData: User[]
 }
 
-const CommunityTable = ({ tableData }: CommunityTableProps) => {
-  const router = useRouter()
+const IssuePacksTable = ({ tableData }: IssuePacksTableProps) => {
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [modalRow, setModalRow] = useState<User>(null)
+
+  const { issuePack, response, isSuccess, isLoading, isError } = useIssuePack()
+
+  useToast({
+    successText: 'Pack Issued',
+    successDependencies: [isSuccess],
+    errorText: 'Error Issuing Pack',
+    errorDependencies: [isError],
+  })
 
   const columnData: ColumnData[] = [
     {
@@ -33,7 +47,6 @@ const CommunityTable = ({ tableData }: CommunityTableProps) => {
       sortDescFirst: false,
     },
   ]
-
   const columns = useMemo(() => columnData, [])
   const data = useMemo(() => tableData, [])
 
@@ -72,9 +85,19 @@ const CommunityTable = ({ tableData }: CommunityTableProps) => {
 
   const handleRowClick = (row) => {
     const user: User = row.values
-    router.push({
-      pathname: '/collection/',
-      query: { uid: user.uid },
+    setModalRow(user)
+    setShowModal(true)
+  }
+
+  const handleIssuePack = () => {
+    if (isLoading) {
+      warningToast({ warningText: 'Already issuing a pack' })
+    }
+
+    issuePack({
+      packType: packsMap.base.id,
+      issuerID: getUidFromSession(),
+      receiverID: modalRow.uid,
     })
   }
 
@@ -101,8 +124,15 @@ const CommunityTable = ({ tableData }: CommunityTableProps) => {
         gotoPage={gotoPage}
         gotoLastPage={gotoLastPage}
       />
+      {showModal && (
+        <IssuePacksModal
+          setShowModal={setShowModal}
+          onIssuePack={handleIssuePack}
+          user={modalRow}
+        />
+      )}
     </div>
   )
 }
 
-export default CommunityTable
+export default IssuePacksTable

@@ -1,5 +1,6 @@
 import Button from '@components/buttons/button'
 import { packInfo } from '@constants/packs-map'
+import { warningToast } from '@hooks/use-toast'
 import React from 'react'
 import Modal from '../modal'
 
@@ -7,9 +8,15 @@ type BuyPackModalProps = {
   onAccept: Function
   setShowModal: Function
   pack: packInfo
+  limitReached: boolean
 }
 
-const BuyPackModal = ({ onAccept, setShowModal, pack }: BuyPackModalProps) => (
+const BuyPackModal = ({
+  onAccept,
+  setShowModal,
+  pack,
+  limitReached,
+}: BuyPackModalProps) => (
   <Modal
     setShowModal={setShowModal}
     title={pack.label}
@@ -30,7 +37,15 @@ const BuyPackModal = ({ onAccept, setShowModal, pack }: BuyPackModalProps) => (
         <Button
           disabled={false}
           className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-          onClick={() => onAccept(pack.id)}
+          onClick={
+            limitReached
+              ? () =>
+                  warningToast({
+                    warningText:
+                      'You have already purchased 3 base packs today',
+                  })
+              : () => onAccept(pack.id)
+          }
         >
           Buy Pack
         </Button>

@@ -24,6 +24,40 @@ const index = async (
   if (method === POST) {
     const { uid, packType } = query
 
+    if (!uid) {
+      response.status(StatusCodes.BAD_REQUEST).json({
+        error: 'Missing User ID',
+        purchaseSuccessful: false,
+      })
+      return
+    }
+
+    if (!packType) {
+      response.status(StatusCodes.BAD_REQUEST).json({
+        error: 'Missing Pack Type',
+        purchaseSuccessful: false,
+      })
+      return
+    }
+
+    const hasReachedLimit = await queryDatabase(SQL`
+      SELECT packsToday
+      FROM admin_cards.packToday
+      WHERE userID=${uid};
+    `)
+
+    console.log('limit reached', hasReachedLimit[0])
+
+    if (hasReachedLimit[0].packsToday >= 3) {
+      response.status(StatusCodes.BAD_REQUEST).json({
+        error: 'Daily Pack Limit Reached',
+        purchaseSuccessful: false,
+      })
+      return
+    }
+
+    console.log('hasReachedLimit', hasReachedLimit)
+
     const bankResponse = await axios({
       method: POST,
       url: `http://localhost:9001/api/v1/purchase/cards?uid=${uid}&packType=${packType}`,
@@ -32,7 +66,7 @@ const index = async (
 
     if (!bankResponse.data.purchaseSuccessful) {
       response.status(StatusCodes.BAD_REQUEST).json({
-        error: 'Unsuccessful Purchase',
+        error: 'Insufficient Bank Balance',
         purchaseSuccessful: false,
       })
       return
@@ -42,8 +76,15 @@ const index = async (
       INSERT INTO admin_cards.packs_owned
         (userID, packType)
       VALUES
-        (${uid}, ${packType});
+      (${uid}, ${packType});
     `)
+
+    // await queryDatabase(SQL`
+    //   INSERT INTO admin_cards.packs_owned
+    //     (userID, packType, acquisition_method)
+    //   VALUES
+    //     (${uid}, ${packType}, "Purchased in pack shop");
+    // `)
 
     response.status(StatusCodes.OK).json({
       purchaseSuccessful: true,

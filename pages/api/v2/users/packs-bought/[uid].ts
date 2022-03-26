@@ -1,10 +1,10 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
-import { GET } from '@constants/index'
-import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
+import { NextApiRequest, NextApiResponse } from 'next'
+import { GET } from '@constants/index'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
+import { queryDatabase } from '@pages/api/database/database'
+import { StatusCodes } from 'http-status-codes'
 
 const allowedMethods = [GET]
 const cors = Cors({
@@ -16,20 +16,18 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { method } = request
+  const { method, query } = request
 
   if (method === GET) {
+    const { uid } = query
+
     const result = await queryDatabase(SQL`
-      SELECT
-        uid,
-        username,
-        avatar,
-        displaygroup,
-        additionalgroups
-      FROM admin_mybb.mybb_users;
+      SELECT packsToday
+      FROM admin_cards.packToday
+      WHERE userID=${uid};
     `)
 
-    response.status(StatusCodes.OK).json(result)
+    response.status(StatusCodes.OK).json(result[0].packsToday)
     return
   }
 

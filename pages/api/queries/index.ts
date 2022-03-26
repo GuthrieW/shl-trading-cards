@@ -1,5 +1,6 @@
 export { default as useGetAllCards } from './use-get-all-cards'
 export { default as useGetAllUsers } from './use-get-all-users'
+export { default as useGetAllUsersWithCards } from './use-get-all-users-with-cards'
 export { default as useGetApprovedCards } from './use-get-approved-cards'
 export { default as useGetCardOwners } from './use-get-card-owners'
 export { default as useGetClaimedCards } from './use-get-claimed-cards'

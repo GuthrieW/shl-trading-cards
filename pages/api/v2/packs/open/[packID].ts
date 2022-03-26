@@ -142,6 +142,13 @@ const index = async (
   if (method === POST) {
     const { packID } = query
 
+    if (!packID) {
+      response.status(StatusCodes.BAD_REQUEST).json({
+        error: `Missing Pack ID`,
+      })
+      return
+    }
+
     const packResult = await queryDatabase(SQL`
       SELECT packID,
         userID,

@@ -4,18 +4,18 @@ import { GET } from '@constants/http-methods'
 
 type GetAllUsersRequest = {}
 
-type UseGetAllUsers = {
+type UseGetallUsers = {
   users: User[]
   isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
-export const UseGetAllUsersKey = 'use-get-all-users'
+export const UseGetAllUserKey = 'use-get-all-users'
 
-const useGetAllUsers = ({}: GetAllUsersRequest): UseGetAllUsers => {
+const useGetallUsers = ({}: GetAllUsersRequest): UseGetallUsers => {
   const { data, error, isFetching, isSuccess } = useQuery(
-    UseGetAllUsersKey,
+    UseGetAllUserKey,
     async () => {
       return await axios({
         method: GET,
@@ -32,4 +32,4 @@ const useGetAllUsers = ({}: GetAllUsersRequest): UseGetAllUsers => {
   }
 }
 
-export default useGetAllUsers
+export default useGetallUsers

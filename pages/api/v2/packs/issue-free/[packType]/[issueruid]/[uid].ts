@@ -1,0 +1,64 @@
+import { NextApiRequest, NextApiResponse } from 'next'
+import { queryDatabase } from '@pages/api/database/database'
+import { POST } from '@constants/index'
+import { StatusCodes } from 'http-status-codes'
+import middleware from '@pages/api/database/middleware'
+import Cors from 'cors'
+import SQL from 'sql-template-strings'
+
+const allowedMethods = [POST]
+const cors = Cors({
+  methods: allowedMethods,
+})
+
+const index = async (
+  request: NextApiRequest,
+  response: NextApiResponse
+): Promise<void> => {
+  await middleware(request, response, cors)
+  const { method, query } = request
+
+  if (method === POST) {
+    const { issueruid, uid, packType } = query
+
+    if (!issueruid) {
+      response.status(StatusCodes.BAD_REQUEST).json({
+        error: 'Missing Admin User ID',
+        purchaseSuccessful: false,
+      })
+      return
+    }
+
+    if (!uid) {
+      response.status(StatusCodes.BAD_REQUEST).json({
+        error: 'Missing User ID',
+        purchaseSuccessful: false,
+      })
+      return
+    }
+
+    if (!packType) {
+      response.status(StatusCodes.BAD_REQUEST).json({
+        error: 'Missing Pack Type',
+        purchaseSuccessful: false,
+      })
+      return
+    }
+
+    await queryDatabase(SQL`
+      INSERT INTO admin_cards.packs_owned
+        (userID, packType, acquisition_method)
+      VALUES
+        (${uid}, ${packType}, "Issued by admin ${issueruid}");
+    `)
+
+    response.status(StatusCodes.OK).json({
+      purchaseSuccessful: true,
+    })
+  }
+
+  response.setHeader('Allowed', allowedMethods)
+  response.status(StatusCodes.METHOD_NOT_ALLOWED).end()
+}
+
+export default index

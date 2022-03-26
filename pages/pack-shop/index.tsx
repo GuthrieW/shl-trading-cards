@@ -8,18 +8,11 @@ import subscriptionOptions from '@constants/subscription-options'
 import { useGetUser } from '@pages/api/queries'
 import useUpdateSubscription from '@pages/api/mutations/use-update-subscription'
 import { NextSeo } from 'next-seo'
+import useGetPacksBoughtToday from '@pages/api/queries/use-get-packs-bought-today'
 
 const PackShop = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalPack, setModalPack] = useState<packInfo>(null)
-
-  const {
-    buyPack,
-    response: buyPackResponse,
-    isLoading: buyBackIsLoading,
-    isError: buyPackIsError,
-    isSuccess: buyPackIsSuccess,
-  } = useBuyPack()
 
   const {
     user,
@@ -29,6 +22,21 @@ const PackShop = () => {
   } = useGetUser({
     uid: getUidFromSession(),
   })
+
+  const {
+    packsBoughtToday,
+    isSuccess: packsBoughtTodayIsSuccess,
+    isLoading: packsBoughtTodayIsLoading,
+    isError: packsBoughtTodayIsError,
+  } = useGetPacksBoughtToday({ uid: getUidFromSession() })
+
+  const {
+    buyPack,
+    response: buyPackResponse,
+    isLoading: buyBackIsLoading,
+    isError: buyPackIsError,
+    isSuccess: buyPackIsSuccess,
+  } = useBuyPack()
 
   const {
     updateSubscription,
@@ -41,7 +49,7 @@ const PackShop = () => {
   useToast({
     successText: 'Pack Bought',
     successDependencies: [buyPackIsSuccess],
-    errorText: 'Error Buying Pack',
+    errorText: 'Error Purchasing Pack',
     errorDependencies: [buyPackIsError],
   })
 
@@ -72,6 +80,15 @@ const PackShop = () => {
       uid: getUidFromSession(),
       subscriptionAmount: event.target.value,
     })
+  }
+
+  if (
+    getUserIsLoading ||
+    getUserIsError ||
+    packsBoughtTodayIsLoading ||
+    packsBoughtTodayIsError
+  ) {
+    return null
   }
 
   return (
@@ -112,6 +129,7 @@ const PackShop = () => {
             onAccept={handleBuyPack}
             setShowModal={setShowModal}
             pack={modalPack}
+            limitReached={packsBoughtToday > 3}
           />
         )}
       </div>
