@@ -2,6 +2,7 @@ import { useGetCurrentUser } from '@pages/api/queries'
 import Footer from '../footer'
 import Header from '../header'
 import { getUidFromSession } from '@utils/index'
+import Router from 'next/router'
 
 const DefaultLayout = ({ children }) => {
   const { user, isLoading, isError } = useGetCurrentUser({
@@ -10,6 +11,10 @@ const DefaultLayout = ({ children }) => {
 
   if (isLoading || isError) {
     return null
+  }
+
+  if (!user.uid) {
+    Router.reload()
   }
 
   return (

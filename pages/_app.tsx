@@ -65,33 +65,35 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
-        <DefaultLayout>
-          <ToastContainer
-            position="bottom-left"
-            autoClose={5000}
-            hideProgressBar={true}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss={false}
-            draggable={false}
-            pauseOnHover={false}
-          />
-          <DefaultSeo {...SEO} />
-          {showModal && <AuthModal />}
-          {!showModal && <Component {...pageProps} />}
-          <style global jsx>{`
-            body {
-              font-family: 'Raleway', sans-serif;
-              background-color: '#E9ECEF';
-            }
-            * {
-              margin: 0;
-              padding: 0;
-              box-sizing: border-box;
-            }
-          `}</style>
-        </DefaultLayout>
+        {showModal && <AuthModal />}
+        {!showModal && (
+          <DefaultLayout>
+            <ToastContainer
+              position="bottom-left"
+              autoClose={5000}
+              hideProgressBar={true}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss={false}
+              draggable={false}
+              pauseOnHover={false}
+            />
+            <DefaultSeo {...SEO} />
+            <Component {...pageProps} />
+            <style global jsx>{`
+              body {
+                font-family: 'Raleway', sans-serif;
+                background-color: '#E9ECEF';
+              }
+              * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+              }
+            `}</style>
+          </DefaultLayout>
+        )}
       </Hydrate>
     </QueryClientProvider>
   )
