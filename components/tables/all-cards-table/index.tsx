@@ -1,5 +1,6 @@
 import ButtonGroup from '@components/buttons/button-group'
 import SearchBar from '@components/inputs/search-bar'
+import AllCardsModal from '@components/modals/all-cards-modal'
 import React, { useState, useMemo } from 'react'
 import {
   useTable,
@@ -23,6 +24,8 @@ type ColumnData = {
 }
 
 const AllCardsTable = ({ tableData }: AllCardsTableProps) => {
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [modalRow, setModalRow] = useState<Card>(null)
   const [viewSkaters, setViewSkaters] = useState<boolean>(true)
   const [selectedButtonId, setSelectedButtonId] =
     useState<PlayerTableButtonId>('skaters')
@@ -217,6 +220,10 @@ const AllCardsTable = ({ tableData }: AllCardsTableProps) => {
 
   const gotoLastPage = () => gotoPage(pageCount - 1)
   const updateSearchFilter = (event) => setGlobalFilter(event.target.value)
+  const handleRowClick = (row) => {
+    setModalRow(row.values)
+    setShowModal(true)
+  }
 
   return (
     <div>
@@ -233,7 +240,7 @@ const AllCardsTable = ({ tableData }: AllCardsTableProps) => {
         getTableBodyProps={getTableBodyProps}
         rows={page}
         prepareRow={prepareRow}
-        onRowClick={() => {}}
+        onRowClick={handleRowClick}
       />
       <Pagination
         pageOptions={pageOptions}
@@ -245,6 +252,14 @@ const AllCardsTable = ({ tableData }: AllCardsTableProps) => {
         gotoPage={gotoPage}
         gotoLastPage={gotoLastPage}
       />
+      {showModal && (
+        <AllCardsModal
+          cardID={modalRow.cardID}
+          cardName={modalRow.player_name}
+          cardImage={modalRow.image_url}
+          setShowModal={setShowModal}
+        />
+      )}
     </div>
   )
 }
