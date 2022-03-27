@@ -19,7 +19,7 @@ const useGetCardOwners = ({
   cardID,
 }: UseGetCardOwnersRequest): UseGetCardOwners => {
   const { data, error, isFetching, isSuccess } = useQuery(
-    UseGetCardOwnersKey,
+    `${UseGetCardOwnersKey}/${cardID}`,
     async () => {
       return await axios({
         method: GET,

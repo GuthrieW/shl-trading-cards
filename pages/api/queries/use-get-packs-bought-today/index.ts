@@ -19,7 +19,7 @@ const useGetPacksBoughtToday = ({
   uid,
 }: GetPacksBoughtTodayRequest): UseGetPacksBoughtToday => {
   const { data, error, isFetching, isSuccess } = useQuery(
-    UseGetPacksBoughtTodayKey,
+    `${UseGetPacksBoughtTodayKey}/${uid}`,
     async () => {
       return await axios({
         method: GET,

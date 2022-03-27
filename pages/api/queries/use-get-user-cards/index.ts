@@ -17,7 +17,7 @@ export const UseGetUserCardsKey = 'use-get-user-cards'
 
 const useGetUserCards = ({ uid }: UseGetUserCardsRequest): UseGetUserCards => {
   const { data, error, isFetching, isSuccess } = useQuery(
-    UseGetUserCardsKey,
+    `${UseGetUserCardsKey}/${uid}`,
     async () => {
       return await axios({
         method: GET,
