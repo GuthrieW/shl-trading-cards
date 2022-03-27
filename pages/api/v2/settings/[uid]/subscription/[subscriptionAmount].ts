@@ -61,7 +61,7 @@ const index = async (
       ON DUPLICATE KEY UPDATE subscription=${subscriptionAmount};
     `)
 
-    response.status(StatusCodes.OK).json(result)
+    response.status(StatusCodes.OK).json({ uid })
     return
   }
 

@@ -25,8 +25,8 @@ const LastOpenedPack = () => {
       color: '#e0115f',
     },
     {
-      id: rarityMap.diamond.label,
-      color: '#b9f2ff',
+      id: rarityMap.silver.label,
+      color: '#45ACA5',
     },
     {
       id: rarityMap.hallOfFame.label,
