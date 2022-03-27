@@ -76,19 +76,37 @@ const OpenPacks = () => {
     <>
       <NextSeo title="Open Packs" />
       <div className="m-2">
-        <h1>Open Packs</h1>
-        <p>Number of packs: {userPacks.length}</p>
-        <p>Subscribed: {user.subscription ? user.subscription : 'No'}</p>
-        <div className="h-full flex flex-row items-center justify-start overflow-x-auto overflow-y-hidden">
-          {userPacks.map((pack, index) => (
-            <img
-              key={index}
-              onClick={() => handleSelectedPack(pack)}
-              className="my-2 cursor-pointer h-96 mx-4 transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
-              src={packsMap.base.imageUrl}
-            />
-          ))}
-        </div>
+        <h1 className="text-4xl text-center my-6">Open Packs</h1>
+        {userPacks.length === 0 ? (
+          <div className="text-center">
+            <p className="text-xl">You don't have any packs to open.</p>
+            <p className="text-xl">
+              Go to the{' '}
+              <a
+                className="text-blue-500 hover:text-blue-600 transition-colors duration-200 my-4"
+                href="/pack-shop"
+              >
+                pack shop
+              </a>{' '}
+              to get some packs!
+            </p>
+          </div>
+        ) : (
+          <>
+            <p>Number of packs: {userPacks.length}</p>
+            <p>Subscribed: {user.subscription ? user.subscription : 'No'}</p>
+            <div className="h-full flex flex-row items-center justify-start overflow-x-auto overflow-y-hidden">
+              {userPacks.map((pack, index) => (
+                <img
+                  key={index}
+                  onClick={() => handleSelectedPack(pack)}
+                  className="select-none my-2 cursor-pointer h-96 mx-4 transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
+                  src={packsMap.base.imageUrl}
+                />
+              ))}
+            </div>
+          </>
+        )}
         {showModal && (
           <OpenPackModal
             onAccept={handleOpenPack}

@@ -50,7 +50,14 @@ const Collection = () => {
               You don't have any cards in your collection.
             </p>
             <p className="text-xl">
-              Go to the <a href="/pack-shop">pack shop</a> to get some packs!
+              Go to the{' '}
+              <a
+                className="text-blue-500 hover:text-blue-600 transition-colors duration-200 my-4"
+                href="/pack-shop"
+              >
+                pack shop
+              </a>{' '}
+              to get some packs!
             </p>
           </div>
         ) : (

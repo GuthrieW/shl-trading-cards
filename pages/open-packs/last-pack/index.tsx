@@ -16,7 +16,6 @@ const LastOpenedPack = () => {
     <>
       <NextSeo title="Last Pack" />
       <div className="m-2">
-        <h1>Last Opened Pack</h1>
         <div className="flex justify-center items-center">
           <div className="grid grid-cols-6 gap-2 overflow-x-auto">
             {latestPackCards.map((card, index) => (
