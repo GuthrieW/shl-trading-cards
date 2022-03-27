@@ -56,7 +56,7 @@ const index = async (
 
     const bankResponse = await axios({
       method: POST,
-      url: `https://bank.simulationhockey.com/api/v1/purchase/cards/${packType}/${uid}`,
+      url: `http://bank.simulationhockey.com/api/v1/purchase/cards/${packType}/${uid}`,
       data: {},
     })
 

@@ -94,6 +94,8 @@ const PackShop = () => {
     return null
   }
 
+  console.log('buyPackResponse', buyPackResponse)
+
   return (
     <>
       <NextSeo title="Pack Shop" />

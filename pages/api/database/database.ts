@@ -22,6 +22,25 @@ const dbConnection = mysql(
 
 export const queryDatabase = async (query): Promise<any> => {
   try {
+    console.log(
+      process.env.NODE_ENV === 'production'
+        ? {
+            config: {
+              host: process.env.DATABASE_HOST,
+              user: process.env.DATABASE_USER,
+              password: process.env.DATABASE_PASSWORD,
+              database: process.env.DATABASE_NAME,
+            },
+          }
+        : {
+            config: {
+              host: process.env.DEV_DATABASE_HOST,
+              user: process.env.DEV_DATABASE_USER,
+              password: process.env.DEV_DATABASE_PASSWORD,
+              database: process.env.DEV_DATABASE_NAME,
+            },
+          }
+    )
     const results = await dbConnection.query(query)
     await dbConnection.end()
     return results
