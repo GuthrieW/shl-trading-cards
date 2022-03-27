@@ -3,6 +3,7 @@ import isAdmin from '@utils/is-admin'
 import isAdminOrCardTeam from '@utils/is-admin-or-card-team'
 import Router from 'next/router'
 import React, { useState } from 'react'
+import { HamburgerCollapse } from 'react-animated-burgers'
 import IceLevelLogo from '../../../public/images/ice-level.svg'
 import NavLink from '../nav-link'
 
@@ -124,28 +125,62 @@ const adminLinks: AdminLink[] = [
 
 const Header = ({ user }: HeaderProps) => {
   const [showAdminLinks, setShowAdminLinks] = useState<boolean>(false)
+  const [showMenu, setShowMenu] = useState<boolean>(false)
   const userIsAdmin = isAdmin(user)
   const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
 
   return (
     <div className="relative justify-between top-0 w-full h-16 flex flex-row bg-neutral-800">
-      <div className="flex items-center">
+      <div className="flex w-full flex-row-reverse sm:flex-row items-center justify-between sm:justify-start relative ">
+        <div className="flex sm:hidden h-full">
+          <NavLink onClick={() => setShowAdminLinks(!showAdminLinks)}>
+            {user.username}
+          </NavLink>
+        </div>
         <img
           src={IceLevelLogo}
           onClick={() => Router.push('/home')}
-          className="h-16 cursor-pointer"
+          className="h-16 cursor-pointer "
         />
-        {headersLinks.map((header, index) => (
-          <React.Fragment key={index}>
-            {!header.hide ? (
-              <NavLink onClick={() => Router.push(header.href)}>
-                {header.headerText}
-              </NavLink>
-            ) : null}
-          </React.Fragment>
-        ))}
+        <div className="hidden sm:flex h-full w-full">
+          {headersLinks.map((header, index) => (
+            <React.Fragment key={index}>
+              {!header.hide && (
+                <NavLink onClick={() => Router.push(header.href)}>
+                  {header.headerText}
+                </NavLink>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+        <div className="flex sm:hidden h-full">
+          <HamburgerCollapse
+            isActive={showMenu}
+            toggleButton={() => setShowMenu(!showMenu)}
+            barColor="#fff"
+            buttonWidth={30}
+          />
+        </div>
+
+        <div
+          className={`absolute ${
+            showMenu ? 'flex' : 'hidden'
+          } flex-col sm:hidden left-0 top-16 w-full z-50`}
+        >
+          {headersLinks.map((header, index) => (
+            <React.Fragment key={index}>
+              {!header.hide && (
+                <div className="w-full bg-neutral-800 h-12 animate-slide-in-top">
+                  <NavLink onClick={() => Router.push(header.href)}>
+                    {header.headerText}
+                  </NavLink>
+                </div>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
       </div>
-      <ul className="bg-neutral-800 rounded-sm flex flex-row-reverse align-center">
+      <ul className="hidden bg-neutral-800 rounded-sm sm:flex align-center">
         <li className="bg-neutral-800">
           <NavLink onClick={() => setShowAdminLinks(!showAdminLinks)}>
             {user.username}

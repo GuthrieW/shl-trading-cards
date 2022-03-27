@@ -17,6 +17,21 @@
   }
 }
 
+.animate-slide-in-top {
+  position: relative;
+  animation: animatetop 300ms ease-out;
+}
+@keyframes animatetop {
+  from {
+    top: -10px;
+    opacity: 0;
+  }
+  to {
+    top: 0;
+    opacity: 1;
+  }
+}
+
 .badge {
   position: absolute;
   right: -20px;

@@ -137,7 +137,6 @@ type CollectionTableButtons = {
   id: string
   text: string
   onClick: Function
-  className: string
 }
 
 type ColumnData = {

@@ -20,7 +20,9 @@ const AllCardsModal = ({
     title={'View Card'}
     subtitle={`${cardName} - ${cardID}`}
   >
-    {cardImage && <img src={`${pathToCards}${cardImage}`} />}
+    {cardImage && (
+      <img className="rounded-sm" src={`${pathToCards}${cardImage}`} />
+    )}
   </Modal>
 )
 
