@@ -27,8 +27,8 @@ const useUpdateSubscription = (): UseUpdateSubscription => {
       })
     },
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries(UseGetUserKey)
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(`${UseGetUserKey}/${data.data.uid}`)
       },
     }
   )

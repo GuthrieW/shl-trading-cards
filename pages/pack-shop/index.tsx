@@ -1,6 +1,6 @@
 import { useBuyPack } from '@pages/api/mutations'
 import getUidFromSession from '@utils/get-uid-from-session'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { packs, packInfo } from '@constants/packs-map'
 import BuyPackModal from '@components/modals/buy-pack-modal'
 import useToast, { warningToast } from '@hooks/use-toast'
@@ -22,9 +22,6 @@ const PackShop = () => {
   } = useGetUser({
     uid: getUidFromSession(),
   })
-  const [subscription, setSubscription] = useState<number | string>(
-    user.subscription
-  )
 
   const {
     packsBoughtToday,
@@ -94,8 +91,6 @@ const PackShop = () => {
     return null
   }
 
-  console.log('buyPackResponse', buyPackResponse)
-
   return (
     <>
       <NextSeo title="Pack Shop" />
@@ -105,11 +100,8 @@ const PackShop = () => {
           <h1>Base Pack Subscription</h1>
           <select
             className="m-2"
-            value={subscription}
-            onChange={(event) => {
-              handleUpdateSubscription(event)
-              setSubscription(event.target.value)
-            }}
+            value={user.subscription}
+            onChange={handleUpdateSubscription}
           >
             {subscriptionOptions.map((subscriptionOption, index) => (
               <option key={index} value={subscriptionOption.value}>
