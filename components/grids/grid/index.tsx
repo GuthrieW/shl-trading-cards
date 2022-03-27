@@ -16,6 +16,7 @@ const Grid = ({ cards, prepareCell, onCellClick }: GridProps) => (
         return (
           <div className="relative inline-block">
             <img
+              className="w-full h-full"
               onClick={() => onCellClick(cardValues)}
               src={`${pathToCards}${cardValues.image_url}`}
             />
