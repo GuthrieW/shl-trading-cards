@@ -110,20 +110,17 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
       <div className="w-full lg:w-3/4 flex justify-between items-center">
         <div className="flex">
           <DropdownWithCheckboxGroup
-            title="Types"
+            title="Type"
             checkboxes={CardTypeButtons}
             selectedCheckboxIds={selectedRarities}
           />
           <DropdownWithCheckboxGroup
-            title="Rarities"
+            title="Rarity"
             checkboxes={PlayerCardRarityCheckboxes}
             selectedCheckboxIds={selectedRarities}
           />
         </div>
         <div className="flex flex-row items-center">
-          <div className="text-lg mx-6 hidden w-1/2 sm:inline-block">
-            {gridData.length} Cards
-          </div>
           <SearchBar onChange={handleUpdateSearchString} />
         </div>
       </div>

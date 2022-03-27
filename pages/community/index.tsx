@@ -1,6 +1,6 @@
 import ButtonGroup from '@components/buttons/button-group'
 import CommunityTable from '@components/tables/community-table'
-import { useGetAllCards, useGetAllUsersWithCards } from '@pages/api/queries'
+import { useGetAllUsersWithCards } from '@pages/api/queries'
 import { NextSeo } from 'next-seo'
 import React from 'react'
 
@@ -11,19 +11,8 @@ const Community = () => {
     isLoading: getAllUsersIsLoading,
     isError: getAllUsersIsError,
   } = useGetAllUsersWithCards({})
-  const {
-    allCards,
-    isSuccess: getAllCardsIsSuccess,
-    isLoading: getAllCardsIsLoading,
-    isError: getAllCardsIsError,
-  } = useGetAllCards({})
 
-  if (
-    getAllCardsIsLoading ||
-    getAllCardsIsError ||
-    getAllUsersIsLoading ||
-    getAllUsersIsError
-  ) {
+  if (getAllUsersIsLoading || getAllUsersIsError) {
     return null
   }
 
