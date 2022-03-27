@@ -70,12 +70,14 @@ const index = async (
       return
     }
 
-    await queryDatabase(SQL`
+    const result = await queryDatabase(SQL`
       INSERT INTO admin_cards.packs_owned
         (userID, packType, acquisition_method)
       VALUES
         (${uid}, ${packType}, "Pack Shop");
     `)
+
+    console.log('purchase result', result)
 
     response.status(StatusCodes.OK).json({
       purchaseSuccessful: true,
