@@ -56,9 +56,11 @@ const index = async (
 
     const bankResponse = await axios({
       method: POST,
-      url: `https://bank.simulationhockey.com/api/v1/purchase/cards?uid=${uid}&packType=${packType}`,
+      url: `https://bank.simulationhockey.com/api/v1/purchase/cards/${packType}/${uid}`,
       data: {},
     })
+
+    console.log('bankResponse', bankResponse.data)
 
     if (!bankResponse.data.purchaseSuccessful) {
       response.status(StatusCodes.BAD_REQUEST).json({
@@ -78,6 +80,7 @@ const index = async (
     response.status(StatusCodes.OK).json({
       purchaseSuccessful: true,
     })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)
