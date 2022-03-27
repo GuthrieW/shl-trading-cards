@@ -67,7 +67,7 @@ const DropdownWithCheckboxGroup = ({
                   <input
                     type="checkbox"
                     id={checkbox.id}
-                    className="form-checkbox h-4 w-4 text-neutral-800 transition duration-150 ease-in-out"
+                    className="h-4 w-4 text-neutral-800 transition duration-150 ease-in-out"
                     checked={getIsSelected(checkbox, selectedCheckboxIds)}
                     onChange={() => checkbox.onClick()}
                   />

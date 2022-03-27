@@ -110,12 +110,12 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
       <div className="w-full lg:w-3/4 flex justify-between items-center">
         <div className="flex">
           <DropdownWithCheckboxGroup
-            title="Types"
+            title="Type"
             checkboxes={CardTypeButtons}
             selectedCheckboxIds={selectedRarities}
           />
           <DropdownWithCheckboxGroup
-            title="Rarities"
+            title="Rarity"
             checkboxes={PlayerCardRarityCheckboxes}
             selectedCheckboxIds={selectedRarities}
           />
