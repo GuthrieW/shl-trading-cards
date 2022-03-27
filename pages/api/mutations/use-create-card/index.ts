@@ -20,7 +20,6 @@ const useCreateCard = (): UseCreateCard => {
   const queryClient = useQueryClient()
   const { mutate, data, isLoading, isError, isSuccess } = useMutation(
     ({ card }: UseCreateCardRequest) => {
-      console.log('card', card)
       return axios({
         method: POST,
         url: '/api/v2/cards',

@@ -38,8 +38,6 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
     isError: denyCardIsError,
   } = useDenyCard()
 
-  console.log('acceptCardIsSuccess', acceptCardIsSuccess)
-
   useToast({
     successText: 'Card Accepted',
     successDependencies: [acceptCardIsSuccess],

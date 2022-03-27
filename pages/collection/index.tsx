@@ -36,7 +36,6 @@ const Collection = () => {
   )
     return null
 
-  console.log(userCards, user.username)
   return (
     <>
       <NextSeo title="Collection" />

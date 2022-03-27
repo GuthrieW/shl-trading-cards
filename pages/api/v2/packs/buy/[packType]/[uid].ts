@@ -46,8 +46,6 @@ const index = async (
       WHERE userID=${uid};
     `)
 
-    console.log('limit reached', hasReachedLimit[0])
-
     // if (hasReachedLimit[0].packsToday >= 3) {
     //   response.status(StatusCodes.BAD_REQUEST).json({
     //     error: 'Daily Pack Limit Reached',
@@ -56,11 +54,9 @@ const index = async (
     //   return
     // }
 
-    console.log('hasReachedLimit', hasReachedLimit)
-
     const bankResponse = await axios({
       method: POST,
-      url: `http://localhost:9001/api/v1/purchase/cards?uid=${uid}&packType=${packType}`,
+      url: `https://cards.simulationhockey.com/api/v1/purchase/cards?uid=${uid}&packType=${packType}`,
       data: {},
     })
 
