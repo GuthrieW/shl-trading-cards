@@ -3135,6 +3135,11 @@ raw-loader@^2.0.0:
     loader-utils "^1.1.0"
     schema-utils "^1.0.0"
 
+react-animated-burgers@^1.2.8:
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/react-animated-burgers/-/react-animated-burgers-1.2.8.tgz#f99e127f1969f53dfb36c63e459ec441d7864f36"
+  integrity sha512-6Zt47++69CQlVfaPo/NeJWIZ2uz9ZarXwD3rjBSpQ9LrwjT1H2xIHzzkA6YkJH2TPhAS4390ErBNKhREzuGE6g==
+
 react-csv-reader@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/react-csv-reader/-/react-csv-reader-3.4.0.tgz#29fb0659315c69cee56da6ed147ae39f01e526c8"
