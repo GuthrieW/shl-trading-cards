@@ -46,7 +46,8 @@ const LastOpenedPack = () => {
                   width="320"
                   height="440"
                   key={index}
-                  className={`rounded-sm transition-all duration-200 cursor-pointer`}
+                  draggable={false}
+                  className={`rounded-sm transition-all duration-200 cursor-pointer select-none `}
                   style={{
                     boxShadow: `${
                       revealedCards.includes(index)
@@ -66,7 +67,8 @@ const LastOpenedPack = () => {
                   width="320"
                   height="440"
                   key={index}
-                  className={`rounded-sm transition-all duration-200`}
+                  draggable={false}
+                  className={`rounded-sm transition-all duration-200 select-none `}
                   style={{
                     boxShadow: `${
                       revealedCards.includes(index)
