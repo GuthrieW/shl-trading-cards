@@ -23,7 +23,7 @@ const ProcessCardModal = ({
   >
     <div className="flex flex-col items-center justify-end">
       <div className="flex justify-center items-center m-6">
-        <img src={`${pathToCards}${card.image_url}`} />
+        <img className="rounded-sm" src={`${pathToCards}${card.image_url}`} />
       </div>
       <div>
         <Button

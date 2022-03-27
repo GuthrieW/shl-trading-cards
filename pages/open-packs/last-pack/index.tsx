@@ -23,7 +23,7 @@ const LastOpenedPack = () => {
                 width="320"
                 height="440"
                 key={index}
-                className="animate-slide-in-left"
+                className="animate-slide-in-left rounded-sm"
                 src={`${pathToCards}${card.image_url}`}
               />
             ))}

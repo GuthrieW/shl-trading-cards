@@ -22,7 +22,9 @@ const PackShop = () => {
   } = useGetUser({
     uid: getUidFromSession(),
   })
-  const [subscription, setSubscription] = useState<number>(user.subscription)
+  const [subscription, setSubscription] = useState<number | string>(
+    user.subscription
+  )
 
   const {
     packsBoughtToday,
@@ -102,14 +104,13 @@ const PackShop = () => {
           <select
             className="m-2"
             value={subscription}
-            onChange={handleUpdateSubscription}
+            onChange={(event) => {
+              handleUpdateSubscription(event)
+              setSubscription(event.target.value)
+            }}
           >
             {subscriptionOptions.map((subscriptionOption, index) => (
-              <option
-                key={index}
-                value={subscriptionOption.value}
-                onSelect={() => setSubscription(subscriptionOption.value)}
-              >
+              <option key={index} value={subscriptionOption.value}>
                 {subscriptionOption.label}
               </option>
             ))}
