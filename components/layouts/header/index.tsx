@@ -153,6 +153,7 @@ const Header = ({ user }: HeaderProps) => {
             </React.Fragment>
           ))}
         </div>
+
         <div className="flex sm:hidden h-full">
           <HamburgerCollapse
             isActive={showMenu}
@@ -171,7 +172,12 @@ const Header = ({ user }: HeaderProps) => {
             <React.Fragment key={index}>
               {!header.hide && (
                 <div className="w-full bg-neutral-800 h-12 animate-slide-in-top">
-                  <NavLink onClick={() => Router.push(header.href)}>
+                  <NavLink
+                    onClick={() => {
+                      Router.push(header.href)
+                      setShowMenu(false)
+                    }}
+                  >
                     {header.headerText}
                   </NavLink>
                 </div>
