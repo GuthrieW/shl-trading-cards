@@ -17,7 +17,7 @@ const LastOpenedPack = () => {
       <NextSeo title="Last Pack" />
       <div className="m-2">
         <div className="flex justify-center items-center">
-          <div className="grid grid-cols-6 gap-2 overflow-x-auto">
+          <div className="flex flex-col sm:grid sm:grid-cols-3 lg:grid-cols-6  gap-2 overflow-x-auto">
             {latestPackCards.map((card, index) => (
               <img
                 width="320"
