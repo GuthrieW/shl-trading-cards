@@ -121,9 +121,6 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
           />
         </div>
         <div className="flex flex-row items-center">
-          <div className="text-lg mx-6 hidden w-1/2 sm:inline-block">
-            {gridData.length} Cards
-          </div>
           <SearchBar onChange={handleUpdateSearchString} />
         </div>
       </div>
