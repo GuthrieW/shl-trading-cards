@@ -145,7 +145,7 @@ const Header = ({ user }: HeaderProps) => {
           </React.Fragment>
         ))}
       </div>
-      <ul className="bg-neutral-800 rounded-sm flex align-center">
+      <ul className="bg-neutral-800 rounded-sm flex flex-row-reverse align-center">
         <li className="bg-neutral-800">
           <NavLink onClick={() => setShowAdminLinks(!showAdminLinks)}>
             {user.username}

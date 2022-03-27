@@ -74,17 +74,10 @@ const index = async (
 
     await queryDatabase(SQL`
       INSERT INTO admin_cards.packs_owned
-        (userID, packType)
+        (userID, packType, acquisition_method)
       VALUES
-      (${uid}, ${packType});
+        (${uid}, ${packType}, "Pack Shop");
     `)
-
-    // await queryDatabase(SQL`
-    //   INSERT INTO admin_cards.packs_owned
-    //     (userID, packType, acquisition_method)
-    //   VALUES
-    //     (${uid}, ${packType}, "Purchased in pack shop");
-    // `)
 
     response.status(StatusCodes.OK).json({
       purchaseSuccessful: true,

@@ -45,18 +45,11 @@ const index = async (
       return
     }
 
-    // await queryDatabase(SQL`
-    //   INSERT INTO admin_cards.packs_owned
-    //     (userID, packType, acquisition_method)
-    //   VALUES
-    //     (${uid}, ${packType}, "Issued by admin ${issueruid}");
-    // `)
-
     await queryDatabase(SQL`
       INSERT INTO admin_cards.packs_owned
-        (userID, packType)
+        (userID, packType, source)
       VALUES
-        (${uid}, ${packType});
+        (${uid}, ${packType}, "Admin ${issueruid}");
     `)
 
     response.status(StatusCodes.OK).json({
