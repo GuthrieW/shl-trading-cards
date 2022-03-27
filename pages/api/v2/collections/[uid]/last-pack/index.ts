@@ -57,7 +57,7 @@ const index = async (
         WHERE userID=${uid}
         ORDER BY openDate DESC
         LIMIT 1
-      );
+      ) AND pack.userID=${uid};
     `)
 
     response.status(StatusCodes.OK).json(result)
