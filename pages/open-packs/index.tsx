@@ -1,6 +1,6 @@
 import OpenPackModal from '@components/modals/open-pack-modal'
 import packsMap, { packInfo } from '@constants/packs-map'
-import useToast from '@hooks/use-toast'
+import useToast, { warningToast } from '@hooks/use-toast'
 import useOpenPack from '@pages/api/mutations/use-open-pack'
 import { useGetUser } from '@pages/api/queries'
 import useGetUserPacks from '@pages/api/queries/use-get-user-packs'
@@ -50,6 +50,12 @@ const OpenPacks = () => {
   }
 
   const handleOpenPack = (packID: number) => {
+    if (useOpenPackIsLoading) {
+      warningToast({
+        warningText: `Bro chill we're still opening that pack`,
+      })
+      return
+    }
     openPack({ packID: packID })
   }
 

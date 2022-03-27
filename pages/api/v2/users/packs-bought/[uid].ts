@@ -27,7 +27,7 @@ const index = async (
       WHERE userID=${uid};
     `)
 
-    response.status(StatusCodes.OK).json(result[0].packsToday)
+    response.status(StatusCodes.OK).json(result[0]?.packsToday)
     return
   }
 

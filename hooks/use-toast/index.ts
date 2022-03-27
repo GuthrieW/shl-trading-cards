@@ -22,7 +22,7 @@ const useToast = ({
     if (successDependencies.every((dependency) => dependency === true)) {
       toast.success(successText, {
         position: 'bottom-left',
-        autoClose: 5000,
+        autoClose: 2500,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: false,
@@ -38,7 +38,7 @@ const useToast = ({
     ) {
       toast.error(errorText, {
         position: 'bottom-left',
-        autoClose: 5000,
+        autoClose: 2500,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: false,
@@ -50,7 +50,7 @@ const useToast = ({
 export const warningToast = ({ warningText }: WarningToastProps) => {
   toast.warning(warningText, {
     position: 'bottom-left',
-    autoClose: 5000,
+    autoClose: 2500,
     hideProgressBar: false,
     closeOnClick: true,
     draggable: false,

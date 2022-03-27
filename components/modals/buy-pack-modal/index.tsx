@@ -22,7 +22,7 @@ const BuyPackModal = ({
     title={`${pack.label} - ${pack.priceLabel}`}
     subtitle={pack.description}
   >
-    <div className="flex flex-row justify-center items-center">
+    <div className="flex flex-col justify-center items-center">
       <div className="w-1/2 flex flex-col justify-center items-center">
         <img src={pack.imageUrl} />
       </div>

@@ -27,7 +27,7 @@ const OpenPackModal = ({
       title={packTypeData.label}
       subtitle={packTypeData.description}
     >
-      <div className="flex flex-row justify-center items-center">
+      <div className="flex flex-col justify-center items-center">
         <div className="w-1/2 flex flex-col justify-center items-center">
           <img src={packTypeData.imageUrl} />
         </div>

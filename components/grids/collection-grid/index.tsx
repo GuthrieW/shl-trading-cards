@@ -1,15 +1,11 @@
-import Pagination from '@components/tables/pagination'
+import pathToCards from '@constants/path-to-cards'
 import React, { useMemo, useState } from 'react'
-import Grid from '../grid'
-import {
-  useTable,
-  useSortBy,
-  usePagination,
-  useGlobalFilter,
-} from 'react-table'
+
 import MultiSelectButtonGroup from '@components/buttons/multi-select-button-group'
 import SearchBar from '@components/inputs/search-bar'
 import rarityMap from '@constants/rarity-map'
+import CardLightBoxModal from '@components/modals/card-lightbox-modal'
+import { useVirtual } from 'react-virtual'
 
 type CollectionGridProps = {
   gridData: CollectionCard[]
@@ -18,29 +14,10 @@ type CollectionGridProps = {
 const CollectionGrid = ({ gridData }: CollectionGridProps) => {
   const [searchString, setSearchString] = useState<string>('')
   const [selectedRarities, setSelectedRarities] = useState<string[]>([])
+  const [selectedCard, setSelectedCard] = useState<CollectionCard | null>(null)
+  const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
+  const parentRef = React.useRef()
 
-  const columnData: GridColumn[] = [
-    {
-      accessor: 'cardID',
-    },
-    {
-      accessor: 'card_rarity',
-    },
-    {
-      accessor: 'image_url',
-    },
-    {
-      accessor: 'overall',
-    },
-    {
-      accessor: 'player_name',
-    },
-    {
-      accessor: 'quantity',
-    },
-  ]
-
-  const columns = useMemo(() => columnData, [])
   const data = useMemo(() => {
     const lowerCaseSearchString = searchString.toLowerCase()
 
@@ -63,33 +40,20 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
     }
   }, [searchString, selectedRarities, gridData])
 
-  const initialState = useMemo(() => {
-    return { sortBy: [{ id: 'overall', desc: true }] }
-  }, [])
+  // sort by overall
+  const sortedData = useMemo(() => {
+    return data.sort((a, b) => {
+      return b.overall - a.overall
+    })
+  }, [data])
 
-  const {
-    page,
-    prepareRow,
-    pageOptions,
-    pageCount,
-    canPreviousPage,
-    previousPage,
-    canNextPage,
-    nextPage,
-    gotoPage,
-    state: { pageIndex },
-  } = useTable(
-    {
-      columns,
-      data,
-      initialState: { pageIndex: 0, pageSize: 12, ...initialState },
-    },
-    useGlobalFilter,
-    useSortBy,
-    usePagination
-  )
+  const rowVirtualization = useVirtual({
+    size: data.length,
+    overscan: 10,
+    parentRef,
+    estimateSize: React.useCallback(() => 35, []),
+  })
 
-  const gotoLastPage = () => gotoPage(pageCount - 1)
   const handleUpdateSearchString = (event) =>
     setSearchString(event.target.value || '')
 
@@ -147,26 +111,57 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <div className="w-full flex justify-between items-center">
+      <div className="w-full lg:w-3/4 flex justify-between items-center">
         <MultiSelectButtonGroup
           buttons={tableButtons}
           selectedButtonIds={selectedRarities}
         />
-        <SearchBar onChange={handleUpdateSearchString} />
+        <div className="flex flex-row items-center">
+          <div className="text-lg mx-6">{gridData.length} Cards</div>
+          <SearchBar onChange={handleUpdateSearchString} />
+        </div>
       </div>
-      <div className="flex flex-col justify-center items-center">
-        <Grid cards={page} prepareCell={prepareRow} onCellClick={() => {}} />
-        <Pagination
-          pageOptions={pageOptions}
-          pageIndex={pageIndex}
-          canNextPage={canNextPage}
-          nextPage={nextPage}
-          canPreviousPage={canPreviousPage}
-          previousPage={previousPage}
-          gotoPage={gotoPage}
-          gotoLastPage={gotoLastPage}
+      <div
+        className="flex flex-col justify-center items-center"
+        ref={parentRef}
+      >
+        <div
+          className="w-full lg:w-3/4 mx-auto relative m-4 grid grid-cols-3 md:grid-cols-6 gap-4 lg:gap-8"
+          style={{ height: `${rowVirtualization.totalSize}px` }}
+        >
+          {rowVirtualization.virtualItems.map((item, index) => {
+            const card = sortedData[item.index]
+            return (
+              <div
+                className="relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
+                key={index}
+                onClick={() => {
+                  setSelectedCard(card)
+                  setLightBoxIsOpen(true)
+                }}
+              >
+                <img
+                  className="w-full h-full cursor-pointer rounded-sm"
+                  src={`${pathToCards}${card.image_url}`}
+                  alt={card.player_name}
+                />
+                {card.quantity > 1 && (
+                  <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-neutral-800 rounded-full">
+                    {card.quantity}
+                  </span>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+      {lightBoxIsOpen && (
+        <CardLightBoxModal
+          cardName={selectedCard.player_name}
+          cardImage={selectedCard.image_url}
+          setShowModal={() => setLightBoxIsOpen(false)}
         />
-      </div>
+      )}
     </div>
   )
 }
