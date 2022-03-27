@@ -72,7 +72,7 @@ const index = async (
 
     const result = await queryDatabase(SQL`
       INSERT INTO admin_cards.packs_owned
-        (userID, packType, acquisition_method)
+        (userID, packType, source)
       VALUES
         (${uid}, ${packType}, "Pack Shop");
     `)
