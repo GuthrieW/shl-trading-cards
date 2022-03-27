@@ -189,6 +189,7 @@ const index = async (
     response.status(StatusCodes.OK).json({
       openingSuccessful: true,
     })
+    return
   }
 
   response.setHeader('Allowed', allowedMethods)

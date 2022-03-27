@@ -17,7 +17,7 @@ export const UseGetUserPacksKey = 'use-get-user-packs'
 
 const useGetUserPacks = ({ uid }: UseGetUserPacksRequest): UseGetUserPacks => {
   const { data, error, isFetching, isSuccess } = useQuery(
-    UseGetUserPacksKey,
+    `${UseGetUserPacksKey}/${uid}`,
     async () => {
       return await axios({
         method: GET,

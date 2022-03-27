@@ -19,7 +19,7 @@ const useGetLatestPackCards = ({
   uid,
 }: UseGetLatestPackCardsRequest): UseGetLatestPackCards => {
   const { data, error, isFetching, isSuccess } = useQuery(
-    UseGetLatestPackCardsKey,
+    `${UseGetLatestPackCardsKey}/${uid}`,
     async () => {
       return await axios({
         method: GET,

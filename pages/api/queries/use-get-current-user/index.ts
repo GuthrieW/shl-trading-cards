@@ -17,7 +17,7 @@ export const UseGetCurrentUserKey = 'use-get-current-user'
 const useGetCurrentUser = ({}: UseGetCurrentUserRequest): UseGetCurrentUser => {
   const uid = getUidFromSession()
   const { data, error, isFetching, isSuccess } = useQuery(
-    UseGetCurrentUserKey,
+    `${UseGetCurrentUserKey}/${uid}`,
     async () => {
       return await axios({
         method: GET,

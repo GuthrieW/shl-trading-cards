@@ -95,7 +95,7 @@ const PackShop = () => {
     <>
       <NextSeo title="Pack Shop" />
       <div className="m-2">
-        <h1>Pack Shop</h1>
+        <h1 className="text-4xl text-center my-6">Pack Shop</h1>
         <div className="flex flex-row justify-start items-center">
           <h1>Base Pack Subscription</h1>
           <select
