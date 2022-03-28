@@ -48,7 +48,7 @@ const index = async (
 
     console.log(hasReachedLimit)
 
-    if (hasReachedLimit[0].packsToday >= 3) {
+    if (hasReachedLimit.length > 0 && hasReachedLimit[0]?.packsToday >= 3) {
       response.status(StatusCodes.BAD_REQUEST).json({
         error: 'Daily Pack Limit Reached',
         purchaseSuccessful: false,
