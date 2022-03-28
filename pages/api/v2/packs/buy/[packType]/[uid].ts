@@ -46,13 +46,13 @@ const index = async (
       WHERE userID=${uid};
     `)
 
-    // if (hasReachedLimit[0].packsToday >= 3) {
-    //   response.status(StatusCodes.BAD_REQUEST).json({
-    //     error: 'Daily Pack Limit Reached',
-    //     purchaseSuccessful: false,
-    //   })
-    //   return
-    // }
+    if (hasReachedLimit[0].packsToday >= 3) {
+      response.status(StatusCodes.BAD_REQUEST).json({
+        error: 'Daily Pack Limit Reached',
+        purchaseSuccessful: false,
+      })
+      return
+    }
 
     const bankResponse = await axios({
       method: POST,
