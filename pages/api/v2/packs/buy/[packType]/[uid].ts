@@ -46,6 +46,8 @@ const index = async (
       WHERE userID=${uid};
     `)
 
+    console.log(hasReachedLimit)
+
     if (hasReachedLimit[0].packsToday >= 3) {
       response.status(StatusCodes.BAD_REQUEST).json({
         error: 'Daily Pack Limit Reached',
