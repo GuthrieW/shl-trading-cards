@@ -6,6 +6,7 @@ import rarityMap from '@constants/rarity-map'
 import CardLightBoxModal from '@components/modals/card-lightbox-modal'
 import DropdownWithCheckboxGroup from '@components/dropdowns/dropdown-with-checkbox-group'
 import { useVirtual } from 'react-virtual'
+import teamsMap from '@constants/teams-map'
 
 type CollectionGridProps = {
   gridData: CollectionCard[]
@@ -14,6 +15,7 @@ type CollectionGridProps = {
 const CollectionGrid = ({ gridData }: CollectionGridProps) => {
   const [searchString, setSearchString] = useState<string>('')
   const [selectedRarities, setSelectedRarities] = useState<string[]>([])
+  const [selectedTeams, setSelectedTeams] = useState<string[]>([])
   const [selectedCard, setSelectedCard] = useState<CollectionCard | null>(null)
   const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
   const parentRef = React.useRef()
@@ -21,24 +23,27 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
   const data = useMemo(() => {
     const lowerCaseSearchString = searchString.toLowerCase()
 
-    if (searchString !== '' && selectedRarities.length !== 0) {
-      return gridData
-        .filter((card) =>
-          card.player_name.toLowerCase().includes(lowerCaseSearchString)
+    return gridData
+      .filter((card) => {
+        const lowerCaseCardName = card.player_name.toLowerCase()
+        return (
+          lowerCaseCardName.includes(lowerCaseSearchString) ||
+          card.player_name.includes(searchString)
         )
-        .filter((card) => selectedRarities.includes(card.card_rarity))
-    } else if (searchString !== '') {
-      return gridData.filter((card) =>
-        card.player_name.toLowerCase().includes(lowerCaseSearchString)
-      )
-    } else if (selectedRarities.length !== 0) {
-      return gridData.filter((card) =>
-        selectedRarities.includes(card.card_rarity)
-      )
-    } else {
-      return gridData
-    }
-  }, [searchString, selectedRarities, gridData])
+      })
+      .filter((card) => {
+        return (
+          selectedRarities.length === 0 ||
+          selectedRarities.includes(card.card_rarity)
+        )
+      })
+      .filter((card) => {
+        return (
+          selectedTeams.length === 0 ||
+          selectedTeams.includes(card.teamID.toString())
+        )
+      })
+  }, [gridData, searchString, selectedRarities, selectedTeams])
 
   // sort by overall
   const sortedData = useMemo(() => {
@@ -57,67 +62,79 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
   const handleUpdateSearchString = (event) =>
     setSearchString(event.target.value || '')
 
-  const updateSelectedButtonIds = (toggleId) =>
+  const updateSelectedRarityButtonIds = (toggleId) =>
     selectedRarities.includes(toggleId)
       ? setSelectedRarities(
           selectedRarities.filter((rarity) => rarity != toggleId)
         )
       : setSelectedRarities(selectedRarities.concat(toggleId))
 
+  const updateSelectedTeamButtonIds = (toggleId) =>
+    selectedTeams.includes(toggleId)
+      ? setSelectedTeams(selectedTeams.filter((team) => team != toggleId))
+      : setSelectedTeams(selectedTeams.concat(toggleId))
+
   const PlayerCardRarityCheckboxes: CollectionTableButtons[] = [
     {
       id: rarityMap.bronze.label,
       text: rarityMap.bronze.label,
-      onClick: () => updateSelectedButtonIds(rarityMap.bronze.label),
+      onClick: () => updateSelectedRarityButtonIds(rarityMap.bronze.label),
     },
     {
       id: rarityMap.silver.label,
       text: rarityMap.silver.label,
-      onClick: () => updateSelectedButtonIds(rarityMap.silver.label),
+      onClick: () => updateSelectedRarityButtonIds(rarityMap.silver.label),
     },
     {
       id: rarityMap.gold.label,
       text: rarityMap.gold.label,
-      onClick: () => updateSelectedButtonIds(rarityMap.gold.label),
+      onClick: () => updateSelectedRarityButtonIds(rarityMap.gold.label),
     },
     {
       id: rarityMap.ruby.label,
       text: rarityMap.ruby.label,
-      onClick: () => updateSelectedButtonIds(rarityMap.ruby.label),
+      onClick: () => updateSelectedRarityButtonIds(rarityMap.ruby.label),
     },
     {
       id: rarityMap.diamond.label,
       text: rarityMap.diamond.label,
-      onClick: () => updateSelectedButtonIds(rarityMap.diamond.label),
+      onClick: () => updateSelectedRarityButtonIds(rarityMap.diamond.label),
     },
-  ]
-
-  const CardTypeButtons = [
     {
       id: rarityMap.logo.label,
       text: rarityMap.logo.label,
-      onClick: () => updateSelectedButtonIds(rarityMap.logo.label),
+      onClick: () => updateSelectedRarityButtonIds(rarityMap.logo.label),
     },
     {
       id: rarityMap.hallOfFame.label,
-      text: rarityMap.hallOfFame.label,
-      onClick: () => updateSelectedButtonIds(rarityMap.hallOfFame.label),
+      text: 'HoF',
+      onClick: () => updateSelectedRarityButtonIds(rarityMap.hallOfFame.label),
     },
   ]
+
+  const TeamCheckboxes: CollectionTableButtons[] = Object.keys(teamsMap).map(
+    (key) => {
+      return {
+        id: key,
+        text: teamsMap[key].abbreviation,
+        onClick: () => updateSelectedTeamButtonIds(key),
+      }
+    }
+  )
 
   return (
     <div className="flex flex-col justify-center items-center">
       <div className="w-full lg:w-3/4 flex justify-between items-center">
         <div className="flex">
           <DropdownWithCheckboxGroup
-            title="Type"
-            checkboxes={CardTypeButtons}
-            selectedCheckboxIds={selectedRarities}
-          />
-          <DropdownWithCheckboxGroup
             title="Rarity"
             checkboxes={PlayerCardRarityCheckboxes}
             selectedCheckboxIds={selectedRarities}
+          />
+          <DropdownWithCheckboxGroup
+            title="Team"
+            checkboxes={TeamCheckboxes}
+            selectedCheckboxIds={selectedTeams}
           />
         </div>
         <div className="flex flex-row items-center">

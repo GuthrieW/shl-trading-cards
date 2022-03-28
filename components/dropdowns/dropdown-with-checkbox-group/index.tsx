@@ -15,8 +15,7 @@ export type DropdownWithCheckboxGroupProps = {
 const getIsSelected = (
   checkbox: CheckboxProps,
   selectedCheckboxIds: string[]
-) =>
-  selectedCheckboxIds.includes(checkbox.id) || selectedCheckboxIds.length === 0
+) => selectedCheckboxIds.includes(checkbox.id)
 
 const getTotalSelected = (
   checkboxes: CheckboxProps[],

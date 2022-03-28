@@ -38,7 +38,12 @@ const Collection = () => {
 
   return (
     <>
-      <NextSeo title="Collection" />
+      <NextSeo
+        title={`${user.username}'s Collection`}
+        openGraph={{
+          title: `${user.username}'s Collection`,
+        }}
+      />
       <div className="m-2">
         <h1 className="text-4xl text-center my-6">
           {isCurrentUser ? 'Your' : `${user.username}'s`} Collection

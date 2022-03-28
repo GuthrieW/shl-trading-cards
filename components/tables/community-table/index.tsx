@@ -1,6 +1,6 @@
 import SearchBar from '@components/inputs/search-bar'
 import { useRouter } from 'next/router'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   useTable,
   useSortBy,
@@ -69,6 +69,25 @@ const CommunityTable = ({ tableData }: CommunityTableProps) => {
 
   const gotoLastPage = () => gotoPage(pageCount - 1)
   const updateSearchFilter = (event) => setGlobalFilter(event.target.value)
+
+  useEffect(() => {
+    const windowExists = typeof window !== 'undefined'
+    if (windowExists) {
+      // if page index exists in the session storage, use it
+      if (sessionStorage.getItem('pageIndex')) {
+        const pageIndex = parseInt(sessionStorage.getItem('pageIndex'))
+        gotoPage(pageIndex)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    const windowExists = typeof window !== 'undefined'
+    if (windowExists) {
+      // on page change update the session storage
+      sessionStorage.setItem('pageIndex', pageIndex.toString())
+    }
+  }, [pageIndex])
 
   const handleRowClick = (row) => {
     const user: User = row.values
