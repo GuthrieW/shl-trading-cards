@@ -159,7 +159,7 @@ const Home = () => {
             </div>
           )}
         </Card>
-        <Card className="w-full h-full relative">
+        <Card className="w-full h-full relative xl:pb-8">
           <h1 className="text-3xl font-bold mb-2">User Collections</h1>
           {/* TODO: Show list of top user collections in terms of card total */}
           <div className="flex flex-col h-full align-center justify-evenly">
@@ -183,7 +183,7 @@ const Home = () => {
           </div>
         </Card>
         <Card className="w-full h-full relative">
-          <h1 className="text-3xl font-bold mb-2">Your Unopened Packs</h1>
+          <h1 className="text-3xl font-bold mb-2">Unopened Packs</h1>
           {packs.length > 0 ? (
             <>
               <div className="relative w-full h-auto">
@@ -220,7 +220,7 @@ const Home = () => {
             // direct user to buy packs
             <div className="flex flex-col h-full align-center justify-evenly">
               <div className="text-center">
-                <p className="text-xl">You don't have any packs to open.</p>
+                <p className="text-xl">You don't have any packs.</p>
                 <p className="text-xl">
                   Go to the{' '}
                   <a
