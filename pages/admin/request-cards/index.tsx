@@ -1,12 +1,29 @@
 import Button from '@components/buttons/button'
 import useToast, { warningToast } from '@hooks/use-toast'
 import { useCreateCard } from '@pages/api/mutations'
+import { useGetUser } from '@pages/api/queries'
+import getUidFromSession from '@utils/get-uid-from-session'
+import isAdmin from '@utils/is-admin'
+import isAdminOrCardTeam from '@utils/is-admin-or-card-team'
 import { NextSeo } from 'next-seo'
+import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import CSVReader from 'react-csv-reader'
 import { toast } from 'react-toastify'
 
 const RequestCards = () => {
+  const parsedUid = getUidFromSession()
+  const router = useRouter()
+
+  const {
+    user,
+    isSuccess: getUserIsSuccess,
+    isLoading: getUserIsLoading,
+    isError: getUserIsError,
+  } = useGetUser({
+    uid: parsedUid,
+  })
+
   const [csvToUpload, setCsvToUpload] = useState(null)
   const [canSubmitCsv, setCanSubmitCsv] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
@@ -24,6 +41,16 @@ const RequestCards = () => {
   useEffect(() => {
     setCanSubmitCsv(csvToUpload !== null)
   }, [csvToUpload])
+
+  if (getUserIsLoading || getUserIsError) return null
+
+  const userIsAdmin = isAdmin(user)
+  const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
+
+  if (!userIsAdminOrCardTeam) {
+    router.push('/')
+    return null
+  }
 
   const handleSelectCsv = (data, fileInfo) => {
     setNumberOfCardsToUpload(data.length - 1)

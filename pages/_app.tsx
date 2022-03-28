@@ -6,6 +6,7 @@ import { DefaultLayout } from '@components/index'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
 import { ToastContainer } from 'react-toastify'
+import AES from 'crypto-js/aes'
 import 'react-toastify/dist/ReactToastify.css'
 import '../styles/globals.css'
 
@@ -42,14 +43,20 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
           setShowModal(false)
           const { type, uid } = event.data
           if (type == 'uid') {
-            sessionStorage.setItem('uid', uid)
+            sessionStorage.setItem(
+              'token',
+              AES.encrypt(
+                uid.toString,
+                process.env.NEXT_PUBLIC_TOKEN_KEY
+              ).toString()
+            )
           }
         }
       }
     }
 
     if (windowExists) {
-      if (!sessionStorage.getItem('uid')) {
+      if (!sessionStorage.getItem('token')) {
         setShowModal(true)
       }
       window.addEventListener('message', eventHandler)
