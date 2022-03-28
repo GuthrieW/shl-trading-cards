@@ -20,6 +20,8 @@ const ProcessCards = () => {
     uid: parsedUid,
   })
 
+  const { unapprovedCards, isLoading, isError } = useGetUnapprovedCards({})
+
   if (getUserIsLoading || getUserIsError) return null
 
   const userIsAdmin = isAdmin(user)
@@ -29,8 +31,6 @@ const ProcessCards = () => {
     router.push('/')
     return null
   }
-
-  const { unapprovedCards, isLoading, isError } = useGetUnapprovedCards({})
 
   if (isLoading || isError) return null
 

@@ -24,16 +24,6 @@ const RequestCards = () => {
     uid: parsedUid,
   })
 
-  if (getUserIsLoading || getUserIsError) return null
-
-  const userIsAdmin = isAdmin(user)
-  const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
-
-  if (!userIsAdminOrCardTeam) {
-    router.push('/')
-    return null
-  }
-
   const [csvToUpload, setCsvToUpload] = useState(null)
   const [canSubmitCsv, setCanSubmitCsv] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
@@ -51,6 +41,16 @@ const RequestCards = () => {
   useEffect(() => {
     setCanSubmitCsv(csvToUpload !== null)
   }, [csvToUpload])
+
+  if (getUserIsLoading || getUserIsError) return null
+
+  const userIsAdmin = isAdmin(user)
+  const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
+
+  if (!userIsAdminOrCardTeam) {
+    router.push('/')
+    return null
+  }
 
   const handleSelectCsv = (data, fileInfo) => {
     setNumberOfCardsToUpload(data.length - 1)

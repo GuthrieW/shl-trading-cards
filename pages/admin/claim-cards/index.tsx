@@ -20,6 +20,8 @@ const ClaimCards = () => {
     uid: parsedUid,
   })
 
+  const { requestedCards, isLoading, isError } = useGetRequestedCards({})
+
   if (getUserIsLoading || getUserIsError) return null
 
   const userIsAdmin = isAdmin(user)
@@ -29,8 +31,6 @@ const ClaimCards = () => {
     router.push('/')
     return null
   }
-
-  const { requestedCards, isLoading, isError } = useGetRequestedCards({})
 
   if (isLoading || isError) return null
 

@@ -20,6 +20,8 @@ const IssuePacks = () => {
     uid: parsedUid,
   })
 
+  const { users, isSuccess, isLoading, isError } = useGetAllUsers({})
+
   if (getUserIsLoading || getUserIsError) return null
 
   const userIsAdmin = isAdmin(user)
@@ -29,8 +31,6 @@ const IssuePacks = () => {
     router.push('/')
     return null
   }
-
-  const { users, isSuccess, isLoading, isError } = useGetAllUsers({})
 
   if (isLoading || isError) {
     return null

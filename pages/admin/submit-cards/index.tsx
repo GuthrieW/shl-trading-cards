@@ -20,6 +20,10 @@ const SubmitCards = () => {
     uid: parsedUid,
   })
 
+  const { claimedCards, isLoading, isError } = useGetClaimedCards({
+    uid: getUidFromSession(),
+  })
+
   if (getUserIsLoading || getUserIsError) return null
 
   const userIsAdmin = isAdmin(user)
@@ -29,10 +33,6 @@ const SubmitCards = () => {
     router.push('/')
     return null
   }
-
-  const { claimedCards, isLoading, isError } = useGetClaimedCards({
-    uid: getUidFromSession(),
-  })
 
   if (isLoading || isError) return null
 

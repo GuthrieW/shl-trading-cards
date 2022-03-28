@@ -19,6 +19,7 @@ const EditCards = () => {
   } = useGetUser({
     uid: parsedUid,
   })
+  const { allCards, isLoading, isError } = useGetAllCards({})
 
   if (getUserIsLoading || getUserIsError) return null
 
@@ -29,8 +30,6 @@ const EditCards = () => {
     router.push('/')
     return null
   }
-
-  const { allCards, isLoading, isError } = useGetAllCards({})
 
   if (isLoading || isError) return null
 
