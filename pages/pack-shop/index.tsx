@@ -95,8 +95,11 @@ const PackShop = () => {
     <>
       <NextSeo title="Pack Shop" />
       <div className="m-2">
-        <h1 className="text-4xl text-center my-6">Pack Shop</h1>
-        <div className="flex flex-row justify-start items-center">
+        <h1 className="text-4xl text-center mt-6">Pack Shop</h1>
+        <div className="flex flex-wrap justify-center mb-6">
+          Max 3 packs per day
+        </div>
+        <div className="lg:w-3/4 lg:m-auto flex flex-row justify-start items-center">
           <h1>Base Pack Subscription</h1>
           <select
             className="m-2"
@@ -121,6 +124,12 @@ const PackShop = () => {
                 className="cursor-pointer h-96 mx-4 transition ease-linear hover:scale-105 shadow-none hover:shadow-xl"
                 src={pack.imageUrl}
               />
+              <div className="text-center">
+                <h1 className="text-2xl">{pack.label} Pack</h1>
+                <h2 className="text-xl">
+                  Price: ${new Intl.NumberFormat().format(pack.price)}
+                </h2>
+              </div>
             </div>
           ))}
         </div>
