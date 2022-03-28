@@ -46,7 +46,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
             sessionStorage.setItem(
               'token',
               AES.encrypt(
-                uid.toString,
+                uid.toString(),
                 process.env.NEXT_PUBLIC_TOKEN_KEY
               ).toString()
             )

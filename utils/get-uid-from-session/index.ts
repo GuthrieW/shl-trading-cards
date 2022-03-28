@@ -4,7 +4,6 @@ const getUidFromSession = () => {
   if (typeof window !== 'undefined') {
     const token = window.sessionStorage.getItem('token')
 
-    console.log('token', process.env.NEXT_PUBLIC_TOKEN_KEY)
     return token
       ? parseInt(
           CryptoJS.AES.decrypt(
