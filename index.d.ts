@@ -52,6 +52,7 @@ type CollectionCard = {
   card_rarity: string
   player_name: string
   overall: number
+  teamID: number
 }
 
 type SetCard = {
