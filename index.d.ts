@@ -151,3 +151,13 @@ type ColumnData = {
 type GridColumn = {
   accessor: string
 }
+
+type PackData = {
+  packID: number
+  userID: number
+  packType: string
+  opened: number
+  purchaseDate: Date
+  openDate: Date
+  source: string
+}

@@ -159,7 +159,15 @@ const index = async (
       FROM admin_cards.packs_owned
       WHERE packID=${packID};
     `)
-    const pack = packResult[0]
+
+    const pack: PackData = packResult[0]
+
+    if (pack.opened) {
+      response.status(StatusCodes.BAD_REQUEST).json({
+        error: 'Bro chill you already opened that pack',
+      })
+      return
+    }
 
     let pulledCards: Card[] = []
     if (pack.packType === packsMap.base.id) {

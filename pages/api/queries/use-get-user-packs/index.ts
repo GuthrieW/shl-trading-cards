@@ -23,8 +23,13 @@ const useGetUserPacks = ({ uid }: UseGetUserPacksRequest): UseGetUserPacks => {
         method: GET,
         url: `/api/v2/packs/${uid}`,
       })
+    },
+    {
+      refetchOnWindowFocus: true,
+      refetchInterval: 5000,
     }
   )
+
   return {
     userPacks: data?.data || [],
     isSuccess: isSuccess,
