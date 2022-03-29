@@ -76,7 +76,7 @@ const teamsMap = {
     label: 'Calgary Dragons',
     city: 'Calgary',
     team: 'Dragons',
-    abbreviation: 'CAL',
+    abbreviation: 'CGY',
     league: 'SHL',
     conference: 'West',
   },
