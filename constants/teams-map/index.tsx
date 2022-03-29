@@ -67,7 +67,7 @@ const teamsMap = {
     label: 'Baltimore Platoon',
     city: 'Baltimore',
     team: 'Platoon',
-    abbreviation: 'BAL',
+    abbreviation: 'BAP',
     league: 'SHL',
     conference: 'East',
   },
