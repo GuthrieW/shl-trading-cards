@@ -35,5 +35,5 @@ export const getCardsDatabaseName = () => {
 }
 
 export const getUsersDatabaseName = () => {
-  return process.env.NODE_ENV === 'production' ? 'mybb_users' : 'dev_bank'
+  return process.env.NODE_ENV === 'production' ? 'admin_mybb' : 'dev_bank'
 }
