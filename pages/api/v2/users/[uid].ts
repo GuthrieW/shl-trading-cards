@@ -47,6 +47,8 @@ const index = async (
     `)
     )
 
+    console.log('result', result)
+
     response.status(StatusCodes.OK).json(result)
     return
   }
