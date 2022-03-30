@@ -30,7 +30,7 @@ const index = async (
         avatar,
         displaygroup,
         additionalgroups
-      FROM `.append(getUsersDatabaseName()).append(`.mybb_users;
+      FROM `.append(getUsersDatabaseName()).append(SQL`.mybb_users;
     `)
     )
 

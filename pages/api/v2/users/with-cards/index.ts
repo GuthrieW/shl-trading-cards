@@ -34,10 +34,10 @@ const index = async (
       FROM `
         .append(getUsersDatabaseName())
         .append(
-          `.mybb_users
+          SQL`.mybb_users
       INNER JOIN `
         )
-        .append(getCardsDatabaseName()).append(`
+        .append(getCardsDatabaseName()).append(SQL`
       .collection
         ON mybb_users.uid=collection.userID;
     `)

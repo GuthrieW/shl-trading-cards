@@ -48,14 +48,16 @@ const index = async (
       return
     }
 
-    await queryDatabase(
+    const thing = await queryDatabase(
       SQL`
-      INSERT INTO `.append(getCardsDatabaseName()).append(`.packs_owned
+      INSERT INTO `.append(getCardsDatabaseName()).append(SQL`.packs_owned
         (userID, packType, source)
       VALUES
         (${uid}, ${packType}, "Admin ${issueruid}");
     `)
     )
+
+    console.log('thing', thing)
 
     response.status(StatusCodes.OK).json({
       purchaseSuccessful: true,

@@ -120,7 +120,7 @@ const pullBaseCards = async (): Promise<Card[]> => {
     const card = await queryDatabase(
       SQL`
       SELECT cardID
-      FROM `.append(getCardsDatabaseName()).append(`.cards
+      FROM `.append(getCardsDatabaseName()).append(SQL`.cards
       WHERE card_rarity=${rarity}
         AND approved=1
       ORDER BY RAND()
@@ -162,7 +162,7 @@ const index = async (
         opened,
         purchaseDate,
         openDate
-      FROM `.append(getCardsDatabaseName()).append(`.packs_owned
+      FROM `.append(getCardsDatabaseName()).append(SQL`.packs_owned
       WHERE packID=${packID};
     `)
     )
@@ -189,7 +189,7 @@ const index = async (
     pulledCards.map(async (pulledCard) => {
       await queryDatabase(
         SQL`
-        INSERT INTO `.append(getCardsDatabaseName()).append(`.collection
+        INSERT INTO `.append(getCardsDatabaseName()).append(SQL`.collection
           (userID, cardID, packID)
         VALUES
           (${pack.userID}, ${pulledCard.cardID}, ${packID});
@@ -199,7 +199,7 @@ const index = async (
 
     await queryDatabase(
       SQL`
-      UPDATE `.append(getCardsDatabaseName()).append(`.packs_owned
+      UPDATE `.append(getCardsDatabaseName()).append(SQL`.packs_owned
       SET opened=1, openDate=CURRENT_TIMESTAMP
       WHERE packID=${packID};
     `)

@@ -38,10 +38,10 @@ const index = async (
       FROM `
         .append(getUsersDatabaseName())
         .append(
-          `.mybb_users user
+          SQL`.mybb_users user
         LEFT JOIN `
         )
-        .append(getCardsDatabaseName()).append(`.settings settings
+        .append(getCardsDatabaseName()).append(SQL`.settings settings
           ON user.uid=settings.userID
       WHERE user.uid=${uid};
     `)

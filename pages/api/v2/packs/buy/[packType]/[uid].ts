@@ -46,7 +46,7 @@ const index = async (
     const hasReachedLimit = await queryDatabase(
       SQL`
       SELECT packsToday
-      FROM `.append(getCardsDatabaseName()).append(`.packToday
+      FROM `.append(getCardsDatabaseName()).append(SQL`.packToday
       WHERE userID=${uid};
     `)
     )
@@ -79,7 +79,7 @@ const index = async (
 
     const result = await queryDatabase(
       SQL`
-      INSERT INTO `.append(getCardsDatabaseName()).append(`.packs_owned
+      INSERT INTO `.append(getCardsDatabaseName()).append(SQL`.packs_owned
         (userID, packType, source)
       VALUES
         (${uid}, ${packType}, "Pack Shop");

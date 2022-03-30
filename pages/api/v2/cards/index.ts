@@ -48,7 +48,7 @@ const index = async (
         author_userID,
         season,
         author_paid
-      FROM `.append(getCardsDatabaseName()).append(`.cards;
+      FROM `.append(getCardsDatabaseName()).append(SQL`.cards;
     `)
     )
 
@@ -81,7 +81,7 @@ const index = async (
 
     const result = await queryDatabase(
       SQL`
-      INSERT INTO `.append(getCardsDatabaseName()).append(`.cards
+      INSERT INTO `.append(getCardsDatabaseName()).append(SQL`.cards
         (player_name, teamID, playerID, card_rarity, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season, author_paid)
       VALUES
       (${player_name}, ${teamID}, ${playerID}, ${card_rarity}, 0, 0, ${position}, ${overall}, ${high_shots}, ${low_shots}, ${quickness}, ${control}, ${conditioning}, ${skating}, ${shooting}, ${hands}, ${checking}, ${defense}, ${season}, 0);

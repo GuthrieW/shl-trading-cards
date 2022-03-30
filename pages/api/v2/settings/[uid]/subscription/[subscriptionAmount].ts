@@ -58,7 +58,7 @@ const index = async (
 
     const result = await queryDatabase(
       SQL`
-      INSERT INTO `.append(getCardsDatabaseName()).append(`.settings
+      INSERT INTO `.append(getCardsDatabaseName()).append(SQL`.settings
         (userID, subscription)
       VALUES
         (${uid}, ${subscriptionAmount})

@@ -30,7 +30,7 @@ const index = async (
         userID,
         packType,
         purchaseDate
-      FROM `.append(getCardsDatabaseName()).append(`.packs_owned
+      FROM `.append(getCardsDatabaseName()).append(SQL`.packs_owned
       WHERE userID=${uid}
         AND opened=0;
     `)

@@ -27,7 +27,7 @@ const index = async (
     const result = await queryDatabase(
       SQL`
       SELECT packsToday
-      FROM `.append(getCardsDatabaseName()).append(`.packToday
+      FROM `.append(getCardsDatabaseName()).append(SQL`.packToday
       WHERE userID=${uid};
     `)
     )
