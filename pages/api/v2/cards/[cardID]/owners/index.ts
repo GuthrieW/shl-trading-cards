@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
+import {
+  getCardsDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import { GET } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
@@ -22,12 +25,14 @@ const index = async (
   if (method === GET) {
     const { cardID } = query
 
-    const result = await queryDatabase(SQL`
+    const result = await queryDatabase(
+      SQL`
       SELECT userID,
         quantity
-      FROM admin_cards.ownedCards
+      FROM `.append(getCardsDatabaseName()).append(SQL`.ownedCards
       WHERE cardID=${cardID};
     `)
+    )
 
     response.status(StatusCodes.OK).json(result)
     return

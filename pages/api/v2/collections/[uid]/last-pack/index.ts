@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
+import {
+  getCardsDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import { GET } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
@@ -20,7 +23,8 @@ const index = async (
 
   if (method === GET) {
     const { uid } = query
-    const result = await queryDatabase(SQL`
+    const result = await queryDatabase(
+      SQL`
       SELECT collection.userID,
         card.cardID,
         pack.packID,
@@ -46,19 +50,33 @@ const index = async (
         card.author_userID,
         card.season,
         card.author_paid
-      FROM admin_cards.cards as card
-      INNER JOIN admin_cards.collection AS collection
+      FROM `
+        .append(getCardsDatabaseName())
+        .append(
+          SQL`.cards as card
+      INNER JOIN `
+        )
+        .append(getCardsDatabaseName())
+        .append(
+          SQL`.collection AS collection
         ON card.cardID=collection.cardID
-      INNER JOIN admin_cards.packs_owned AS pack
+      INNER JOIN `
+        )
+        .append(getCardsDatabaseName())
+        .append(
+          SQL`.packs_owned AS pack
         ON collection.packID=pack.packID
       WHERE pack.openDate=(
         SELECT openDate
-        FROM admin_cards.packs_owned 
+        FROM `
+        )
+        .append(getCardsDatabaseName()).append(SQL`.packs_owned 
         WHERE userID=${uid}
         ORDER BY openDate DESC
         LIMIT 1
       ) AND pack.userID=${uid};
     `)
+    )
 
     response.status(StatusCodes.OK).json(result)
     return

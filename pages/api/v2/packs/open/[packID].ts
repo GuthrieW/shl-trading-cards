@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
+import {
+  getCardsDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import { POST, rarityMap } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
@@ -114,14 +117,16 @@ const pullBaseCards = async (): Promise<Card[]> => {
   for (let i = 0; i < 6; i++) {
     const rarity: string = getBasePackRarity()
 
-    const card = await queryDatabase(SQL`
+    const card = await queryDatabase(
+      SQL`
       SELECT cardID
-      FROM admin_cards.cards
+      FROM `.append(getCardsDatabaseName()).append(SQL`.cards
       WHERE card_rarity=${rarity}
         AND approved=1
       ORDER BY RAND()
       LIMIT 1;
     `)
+    )
 
     pulledCards.push(card[0])
   }
@@ -149,16 +154,18 @@ const index = async (
       return
     }
 
-    const packResult = await queryDatabase(SQL`
+    const packResult = await queryDatabase(
+      SQL`
       SELECT packID,
         userID,
         packType,
         opened,
         purchaseDate,
         openDate
-      FROM admin_cards.packs_owned
+      FROM `.append(getCardsDatabaseName()).append(SQL`.packs_owned
       WHERE packID=${packID};
     `)
+    )
 
     const pack: PackData = packResult[0]
 
@@ -180,19 +187,23 @@ const index = async (
     }
 
     pulledCards.map(async (pulledCard) => {
-      await queryDatabase(SQL`
-        INSERT INTO admin_cards.collection
+      await queryDatabase(
+        SQL`
+        INSERT INTO `.append(getCardsDatabaseName()).append(SQL`.collection
           (userID, cardID, packID)
         VALUES
           (${pack.userID}, ${pulledCard.cardID}, ${packID});
       `)
+      )
     })
 
-    await queryDatabase(SQL`
-      UPDATE admin_cards.packs_owned
+    await queryDatabase(
+      SQL`
+      UPDATE `.append(getCardsDatabaseName()).append(SQL`.packs_owned
       SET opened=1, openDate=CURRENT_TIMESTAMP
       WHERE packID=${packID};
     `)
+    )
 
     response.status(StatusCodes.OK).json({
       openingSuccessful: true,

@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
+import {
+  getCardsDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import { PATCH } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
@@ -20,11 +23,13 @@ const index = async (
 
   if (method === PATCH) {
     const { cardID, uid } = query
-    const result = await queryDatabase(SQL`
-      UPDATE admin_cards.cards
+    const result = await queryDatabase(
+      SQL`
+      UPDATE `.append(getCardsDatabaseName()).append(SQL`.cards
       SET author_userID=${uid}
       WHERE cardID=${cardID};
     `)
+    )
 
     response.status(StatusCodes.OK).json(result)
     return

@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
+import {
+  getUsersDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import { GET } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
@@ -19,15 +22,17 @@ const index = async (
   const { method } = request
 
   if (method === GET) {
-    const result = await queryDatabase(SQL`
+    const result = await queryDatabase(
+      SQL`
       SELECT
         uid,
         username,
         avatar,
         displaygroup,
         additionalgroups
-      FROM admin_mybb.mybb_users;
+      FROM `.append(getUsersDatabaseName()).append(SQL`.mybb_users;
     `)
+    )
 
     response.status(StatusCodes.OK).json(result)
     return

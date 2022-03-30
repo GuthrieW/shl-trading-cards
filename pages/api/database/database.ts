@@ -29,3 +29,11 @@ export const queryDatabase = async (query): Promise<any> => {
     return { error }
   }
 }
+
+export const getCardsDatabaseName = () => {
+  return process.env.NODE_ENV === 'production' ? 'admin_cards' : 'dev_cards'
+}
+
+export const getUsersDatabaseName = () => {
+  return process.env.NODE_ENV === 'production' ? 'mybb_users' : 'dev_bank'
+}

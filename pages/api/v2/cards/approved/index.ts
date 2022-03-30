@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
+import {
+  getCardsDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import { GET } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
@@ -19,7 +22,8 @@ const index = async (
   const { method, query, body } = request
 
   if (method === GET) {
-    const result = await queryDatabase(SQL`
+    const result = await queryDatabase(
+      SQL`
       SELECT cardID,
         player_name,
         teamID,
@@ -43,9 +47,10 @@ const index = async (
         author_userID,
         season,
         author_paid
-      FROM admin_cards.cards
+      FROM `.append(getCardsDatabaseName()).append(SQL`.cards
       WHERE approved=1;
     `)
+    )
 
     response.status(StatusCodes.OK).json(result)
     return
