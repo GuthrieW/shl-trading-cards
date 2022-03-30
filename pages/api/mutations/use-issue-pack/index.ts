@@ -32,10 +32,6 @@ const useIssuePack = (): UseIssuePack => {
     }
   )
 
-  console.log(data)
-  console.log(isLoading)
-  console.log(isSuccess)
-
   return {
     issuePack: mutate,
     response: data,

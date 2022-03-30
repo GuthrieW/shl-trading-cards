@@ -51,8 +51,6 @@ const index = async (
     `)
     )
 
-    console.log(hasReachedLimit)
-
     if (hasReachedLimit.length > 0 && hasReachedLimit[0]?.packsToday >= 3) {
       response.status(StatusCodes.BAD_REQUEST).json({
         error: 'Daily Pack Limit Reached',
@@ -66,8 +64,6 @@ const index = async (
       url: `http://localhost:9001/api/v1/purchase/cards/${packType}/${uid}`,
       data: {},
     })
-
-    console.log('bankResponse', bankResponse.data)
 
     if (!bankResponse.data.purchaseSuccessful) {
       response.status(StatusCodes.BAD_REQUEST).json({
@@ -85,8 +81,6 @@ const index = async (
         (${uid}, ${packType}, "Pack Shop");
     `)
     )
-
-    console.log('purchase result', result)
 
     response.status(StatusCodes.OK).json({
       purchaseSuccessful: true,

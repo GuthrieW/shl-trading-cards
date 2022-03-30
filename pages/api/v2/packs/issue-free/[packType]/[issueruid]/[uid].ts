@@ -57,8 +57,6 @@ const index = async (
     `)
     )
 
-    console.log('thing', thing)
-
     response.status(StatusCodes.OK).json({
       purchaseSuccessful: true,
     })
