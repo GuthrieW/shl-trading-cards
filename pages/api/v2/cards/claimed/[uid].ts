@@ -49,7 +49,7 @@ const index = async (
         author_userID,
         season,
         author_paid
-      FROM `.append(getCardsDatabaseName()).append(SQL`admin_cards.cards
+      FROM `.append(getCardsDatabaseName()).append(SQL`.cards
       WHERE author_userID=${uid}
         AND image_url IS NULL;
     `)
