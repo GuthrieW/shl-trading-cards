@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
+import {
+  getCardsDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import { POST } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
@@ -45,12 +48,14 @@ const index = async (
       return
     }
 
-    await queryDatabase(SQL`
-      INSERT INTO admin_cards.packs_owned
+    await queryDatabase(
+      SQL`
+      INSERT INTO `.append(getCardsDatabaseName()).append(`.packs_owned
         (userID, packType, source)
       VALUES
         (${uid}, ${packType}, "Admin ${issueruid}");
     `)
+    )
 
     response.status(StatusCodes.OK).json({
       purchaseSuccessful: true,

@@ -1,5 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
+import {
+  getCardsDatabaseName,
+  getUsersDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import { GET } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
@@ -22,7 +26,8 @@ const index = async (
     const { uid } = query
 
     // Get a single user
-    const result = await queryDatabase(SQL`
+    const result = await queryDatabase(
+      SQL`
       SELECT user.uid,
         user.username,
         user.avatar,
@@ -30,11 +35,17 @@ const index = async (
         user.additionalgroups,
         user.displaygroup,
         settings.subscription
-      FROM admin_mybb.mybb_users user
-        LEFT JOIN admin_cards.settings settings
+      FROM `
+        .append(getUsersDatabaseName())
+        .append(
+          `.mybb_users user
+        LEFT JOIN `
+        )
+        .append(getCardsDatabaseName()).append(`.settings settings
           ON user.uid=settings.userID
       WHERE user.uid=${uid};
     `)
+    )
 
     response.status(StatusCodes.OK).json(result)
     return

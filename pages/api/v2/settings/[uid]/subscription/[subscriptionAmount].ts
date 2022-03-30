@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
+import {
+  getCardsDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import { GET, POST } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
@@ -53,13 +56,15 @@ const index = async (
       return
     }
 
-    const result = await queryDatabase(SQL`
-      INSERT INTO admin_cards.settings
+    const result = await queryDatabase(
+      SQL`
+      INSERT INTO `.append(getCardsDatabaseName()).append(`.settings
         (userID, subscription)
       VALUES
         (${uid}, ${subscriptionAmount})
       ON DUPLICATE KEY UPDATE subscription=${subscriptionAmount};
     `)
+    )
 
     response.status(StatusCodes.OK).json({ uid })
     return

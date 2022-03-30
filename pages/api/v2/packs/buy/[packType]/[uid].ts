@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
+import {
+  getCardsDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import { POST } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
@@ -40,11 +43,13 @@ const index = async (
       return
     }
 
-    const hasReachedLimit = await queryDatabase(SQL`
+    const hasReachedLimit = await queryDatabase(
+      SQL`
       SELECT packsToday
-      FROM admin_cards.packToday
+      FROM `.append(getCardsDatabaseName()).append(`.packToday
       WHERE userID=${uid};
     `)
+    )
 
     console.log(hasReachedLimit)
 
@@ -58,7 +63,7 @@ const index = async (
 
     const bankResponse = await axios({
       method: POST,
-      url: `http://bank.simulationhockey.com/api/v1/purchase/cards/${packType}/${uid}`,
+      url: `http://localhost:9001/api/v1/purchase/cards/${packType}/${uid}`,
       data: {},
     })
 
@@ -72,12 +77,14 @@ const index = async (
       return
     }
 
-    const result = await queryDatabase(SQL`
-      INSERT INTO admin_cards.packs_owned
+    const result = await queryDatabase(
+      SQL`
+      INSERT INTO `.append(getCardsDatabaseName()).append(`.packs_owned
         (userID, packType, source)
       VALUES
         (${uid}, ${packType}, "Pack Shop");
     `)
+    )
 
     console.log('purchase result', result)
 

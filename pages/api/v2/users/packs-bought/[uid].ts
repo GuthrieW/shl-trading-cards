@@ -3,7 +3,10 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { GET } from '@constants/index'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
-import { queryDatabase } from '@pages/api/database/database'
+import {
+  getCardsDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import { StatusCodes } from 'http-status-codes'
 
 const allowedMethods = [GET]
@@ -21,11 +24,13 @@ const index = async (
   if (method === GET) {
     const { uid } = query
 
-    const result = await queryDatabase(SQL`
+    const result = await queryDatabase(
+      SQL`
       SELECT packsToday
-      FROM admin_cards.packToday
+      FROM `.append(getCardsDatabaseName()).append(`.packToday
       WHERE userID=${uid};
     `)
+    )
 
     response.status(StatusCodes.OK).json(result[0]?.packsToday)
     return

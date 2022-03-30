@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
+import {
+  getCardsDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import { GET, POST } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
@@ -20,7 +23,8 @@ const index = async (
 
   // Get all cards
   if (method === GET) {
-    const result = await queryDatabase(SQL`
+    const result = await queryDatabase(
+      SQL`
       SELECT cardID,
         player_name,
         teamID,
@@ -44,8 +48,9 @@ const index = async (
         author_userID,
         season,
         author_paid
-      FROM admin_cards.cards;
+      FROM `.append(getCardsDatabaseName()).append(`.cards;
     `)
+    )
 
     response.status(StatusCodes.OK).json(result)
     return
@@ -74,12 +79,14 @@ const index = async (
       defense,
     } = card
 
-    const result = await queryDatabase(SQL`
-      INSERT INTO admin_cards.cards
+    const result = await queryDatabase(
+      SQL`
+      INSERT INTO `.append(getCardsDatabaseName()).append(`.cards
         (player_name, teamID, playerID, card_rarity, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season, author_paid)
       VALUES
       (${player_name}, ${teamID}, ${playerID}, ${card_rarity}, 0, 0, ${position}, ${overall}, ${high_shots}, ${low_shots}, ${quickness}, ${control}, ${conditioning}, ${skating}, ${shooting}, ${hands}, ${checking}, ${defense}, ${season}, 0);
     `)
+    )
 
     response.status(StatusCodes.OK).json(result)
     return

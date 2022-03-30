@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
+import {
+  getCardsDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import { GET } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
@@ -21,15 +24,17 @@ const index = async (
   // Get all of a user's unopened packs
   if (method === GET) {
     const { uid } = query
-    const result = await queryDatabase(SQL`
+    const result = await queryDatabase(
+      SQL`
       SELECT packID,
         userID,
         packType,
         purchaseDate
-      FROM admin_cards.packs_owned
+      FROM `.append(getCardsDatabaseName()).append(`.packs_owned
       WHERE userID=${uid}
         AND opened=0;
     `)
+    )
 
     response.status(StatusCodes.OK).json(result)
     return
