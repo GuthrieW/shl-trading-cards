@@ -48,12 +48,12 @@ const index = async (
       return
     }
 
-    const thing = await queryDatabase(
+    await queryDatabase(
       SQL`
       INSERT INTO `.append(getCardsDatabaseName()).append(SQL`.packs_owned
-        (userID, packType, source)
+        (userID, packType, source, purchaseDate)
       VALUES
-        (${uid}, ${packType}, "Admin ${issueruid}");
+        (${uid}, ${packType}, "Admin ${issueruid}", NOW() - INTERVAL 1 DAY);
     `)
     )
 
