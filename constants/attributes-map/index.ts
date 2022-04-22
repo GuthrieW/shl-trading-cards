@@ -1,4 +1,9 @@
 const attributesMap = {
+  overall: {
+    abbreviation: 'OVR',
+    label: 'Overall',
+    name: 'overall',
+  },
   skating: {
     abbreviation: 'SKT',
     label: 'Skating',

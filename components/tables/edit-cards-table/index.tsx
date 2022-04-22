@@ -128,10 +128,10 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
       sortDescFirst: true,
     },
     {
-      id: 'overall',
-      Header: 'OVR',
-      accessor: 'overall',
-      title: 'Overall',
+      id: attributesMap.overall.name,
+      Header: attributesMap.overall.abbreviation,
+      accessor: attributesMap.overall.name,
+      title: attributesMap.overall.label,
       sortDescFirst: true,
     },
     {
