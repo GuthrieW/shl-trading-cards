@@ -5,6 +5,7 @@ import { UseGetApprovedCardsKey } from '@pages/api/queries/use-get-approved-card
 import { UseGetUnapprovedCardsKey } from '@pages/api/queries/use-get-unapproved-cards'
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
+import { errorToast, successToast } from '@hooks/use-toast'
 
 type UseAcceptCardRequest = {
   cardID: number
@@ -33,6 +34,10 @@ const useAcceptCard = (): UseAcceptCard => {
         queryClient.invalidateQueries(UseGetApprovedCardsKey)
         queryClient.invalidateQueries(UseGetUnapprovedCardsKey)
         queryClient.invalidateQueries(UseGetRequestedCardsKey)
+        successToast({ successText: 'Card Accepted' })
+      },
+      onError: () => {
+        errorToast({ errorText: 'Error Accepting Card' })
       },
     }
   )

@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 import { UseGetUserCardsKey } from '@pages/api/queries/use-get-user-cards'
 import { UseGetUserKey } from '@pages/api/queries/use-get-user'
+import { errorToast, successToast } from '@hooks/use-toast'
 
 type UseBuyPackRequest = {
   uid: number
@@ -31,6 +32,10 @@ const useBuyPack = (): UseBuyPack => {
       onSuccess: () => {
         queryClient.invalidateQueries(UseGetUserCardsKey)
         queryClient.invalidateQueries(UseGetUserKey)
+        successToast({ successText: 'Pack Bought' })
+      },
+      onError: () => {
+        errorToast({ errorText: 'Error Purchasing Pack' })
       },
     }
   )

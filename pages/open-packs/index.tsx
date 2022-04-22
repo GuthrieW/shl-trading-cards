@@ -1,6 +1,6 @@
 import OpenPackModal from '@components/modals/open-pack-modal'
 import packsMap, { packInfo } from '@constants/packs-map'
-import useToast, { warningToast } from '@hooks/use-toast'
+import { warningToast } from '@hooks/use-toast'
 import useOpenPack from '@pages/api/mutations/use-open-pack'
 import { useGetUser } from '@pages/api/queries'
 import useGetUserPacks from '@pages/api/queries/use-get-user-packs'
@@ -36,13 +36,6 @@ const OpenPacks = () => {
     isLoading: useOpenPackIsLoading,
     isError: useOpenPackIsError,
   } = useOpenPack()
-
-  useToast({
-    successText: 'Pack Opened',
-    successDependencies: [useOpenPackIsSuccess],
-    errorText: 'Error Opening Pack',
-    errorDependencies: [useOpenPackIsError],
-  })
 
   const handleSelectedPack = (pack: UserPack) => {
     setModalPack(pack)

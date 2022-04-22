@@ -25,9 +25,6 @@ const index = async (
     const { cardID } = query
     const newCardData: Card = body.card
 
-    console.log('cardID', cardID)
-    console.log('newCardData', newCardData)
-
     const result = await queryDatabase(
       SQL`UPDATE `.append(getCardsDatabaseName())
         .append(SQL`.cards SET player_name=${newCardData.player_name},
@@ -55,8 +52,6 @@ const index = async (
       WHERE cardID=${cardID};
     `)
     )
-
-    console.log('result', result)
 
     response.status(StatusCodes.OK).json(result)
     return

@@ -3,7 +3,7 @@ import Modal from '../modal'
 import Button from '@components/buttons/button'
 import pathToCards from '@constants/path-to-cards'
 import { useSubmitCardImage } from '@pages/api/mutations'
-import useToast, { warningToast } from '@hooks/use-toast'
+import { warningToast } from '@hooks/use-toast'
 
 type SubmitCardModalProps = {
   setShowModal: Function
@@ -16,13 +16,6 @@ const SubmitCardModal = ({ setShowModal, card }: SubmitCardModalProps) => {
 
   const [selectedImage, setSelectedImage] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
-
-  useToast({
-    successText: 'Card Image Submitted',
-    successDependencies: [isSuccess],
-    errorText: 'Error Submitting Card Image',
-    errorDependencies: [isError],
-  })
 
   const convertToBase64 = (file): Promise<string> => {
     return new Promise((resolve) => {

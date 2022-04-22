@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 import { UseGetUserPacksKey } from '@pages/api/queries/use-get-user-packs'
 import { UseGetUserCardsKey } from '@pages/api/queries/use-get-user-cards'
+import { errorToast, successToast } from '@hooks/use-toast'
 
 type UseOpenPackRequest = {
   packID: number
@@ -30,6 +31,10 @@ const useOpenPack = (): UseOpenPack => {
       onSuccess: () => {
         queryClient.invalidateQueries(UseGetUserPacksKey)
         queryClient.invalidateQueries(UseGetUserCardsKey)
+        successToast({ successText: 'Pack Opened' })
+      },
+      onError: () => {
+        errorToast({ errorText: 'Error Opening Pack' })
       },
     }
   )

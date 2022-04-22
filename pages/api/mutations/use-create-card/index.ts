@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
+import { errorToast } from '@hooks/use-toast'
 
 interface UseCreateCardRequest {
   card: CardRequest
@@ -30,6 +31,9 @@ const useCreateCard = (): UseCreateCard => {
       onSuccess: () => {
         queryClient.invalidateQueries(UseGetRequestedCardsKey)
         queryClient.invalidateQueries(UseGetAllCardsKey)
+      },
+      onError: () => {
+        errorToast({ errorText: 'Failed to create card' })
       },
     }
   )

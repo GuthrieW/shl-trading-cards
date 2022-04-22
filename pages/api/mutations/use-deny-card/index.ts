@@ -4,6 +4,7 @@ import { PATCH } from '@constants/http-methods'
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
 import { UseGetUnapprovedCardsKey } from '@pages/api/queries/use-get-unapproved-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
+import { errorToast, successToast } from '@hooks/use-toast'
 
 type UseDenyCardRequest = {
   cardID: number
@@ -31,6 +32,12 @@ const useDenyCard = (): UseDenyCard => {
         queryClient.invalidateQueries(UseGetAllCardsKey)
         queryClient.invalidateQueries(UseGetRequestedCardsKey)
         queryClient.invalidateQueries(UseGetUnapprovedCardsKey)
+        successToast({ successText: 'Card Denied' })
+      },
+      onError: () => {
+        errorToast: () => {
+          errorToast({ errorText: 'Error Denying Card' })
+        }
       },
     }
   )

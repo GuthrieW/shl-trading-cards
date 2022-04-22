@@ -1,7 +1,7 @@
 import ButtonGroup from '@components/buttons/button-group'
 import SearchBar from '@components/inputs/search-bar'
 import ClaimCardModal from '@components/modals/claim-card-modal'
-import useToast, { warningToast } from '@hooks/use-toast'
+import { warningToast } from '@hooks/use-toast'
 import { useClaimCard } from '@pages/api/mutations'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useMemo, useState } from 'react'
@@ -20,13 +20,6 @@ type ClaimCardsTableProps = {
 
 const ClaimCardsTable = ({ tableData }: ClaimCardsTableProps) => {
   const { claimCard, response, isSuccess, isLoading, isError } = useClaimCard()
-
-  useToast({
-    successText: 'Card Claimed',
-    successDependencies: [isSuccess],
-    errorText: 'Error Claiming Card',
-    errorDependencies: [isError],
-  })
 
   const [viewSkaters, setViewSkaters] = useState<boolean>(true)
   const [selectedButtonId, setSelectedButtonId] =
