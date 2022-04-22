@@ -6,6 +6,7 @@ const rarityMap = {
   diamond: { label: 'Diamond', value: 'Diamond', rarity: 135 },
   logo: { label: 'Logo', value: 'Logo', rarity: 450 },
   hallOfFame: { label: 'Hall of Fame', value: 'Hall of Fame', rarity: 15 },
+  misprint: { label: 'Misprint', value: 'Misprint', rarity: 0 },
 }
 
 export default rarityMap
