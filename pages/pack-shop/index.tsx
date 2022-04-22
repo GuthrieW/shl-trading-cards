@@ -14,18 +14,23 @@ import {
   intervalToDuration,
   formatDuration,
   startOfDay,
+  add,
 } from 'date-fns'
-import { utcToZonedTime } from 'date-fns-tz'
+import { utcToZonedTime, getTimezoneOffset } from 'date-fns-tz'
 
 const calculateTimeLeft = (): string => {
-  const tomorrowUtc: Date = startOfTomorrow()
-  const tomorrowInEst: Date = utcToZonedTime(tomorrowUtc, 'America/New_York')
+  const currentTime = new Date()
+  const timeInMilliseconds = currentTime.valueOf()
+
+  const tomorrow: Date = startOfTomorrow()
+  const tomorrowInEst: Date = utcToZonedTime(tomorrow, 'America/New_York')
   const startOfTomorrowInEst: Date = startOfDay(tomorrowInEst)
+  const startOfTomorrowInMilliseconds = startOfTomorrowInEst.valueOf()
 
   return formatDuration(
     intervalToDuration({
-      start: new Date(),
-      end: startOfTomorrowInEst,
+      start: timeInMilliseconds,
+      end: startOfTomorrowInMilliseconds,
     }),
     {
       delimiter: ', ',
