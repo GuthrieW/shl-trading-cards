@@ -18,6 +18,12 @@ import {
 } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 
+const standardTimezoneOffeset = () => {
+  const jan = new Date(new Date().getFullYear(), 0, 1)
+  const jul = new Date(new Date().getFullYear(), 6, 1)
+  return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset())
+}
+
 const calculateTimeLeft = (): string => {
   const tomorrow: Date = startOfTomorrow()
   const tomorrowInEst: Date = utcToZonedTime(tomorrow, 'America/New_York')
@@ -29,7 +35,8 @@ const calculateTimeLeft = (): string => {
     minutes: currentTime.getTimezoneOffset(),
   })
   const estOffset: Date = add(utcOffset, {
-    minutes: -tomorrowInEst.getTimezoneOffset(),
+    hours:
+      currentTime.getTimezoneOffset() < standardTimezoneOffeset() ? -4 : -5,
   })
   const timeInMilliseconds: number = estOffset.valueOf()
 
