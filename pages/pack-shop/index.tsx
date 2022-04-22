@@ -9,18 +9,29 @@ import { useGetUser } from '@pages/api/queries'
 import useUpdateSubscription from '@pages/api/mutations/use-update-subscription'
 import { NextSeo } from 'next-seo'
 import useGetPacksBoughtToday from '@pages/api/queries/use-get-packs-bought-today'
-import { startOfTomorrow, intervalToDuration, formatDuration } from 'date-fns'
+import {
+  startOfTomorrow,
+  intervalToDuration,
+  formatDuration,
+  startOfDay,
+} from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
 
-const calculateTimeLeft = (): string =>
-  formatDuration(
+const calculateTimeLeft = (): string => {
+  const tomorrowUtc: Date = startOfTomorrow()
+  const tomorrowInEst: Date = utcToZonedTime(tomorrowUtc, 'America/New_York')
+  const startOfTomorrowInEst: Date = startOfDay(tomorrowInEst)
+
+  return formatDuration(
     intervalToDuration({
       start: new Date(),
-      end: startOfTomorrow(),
+      end: startOfTomorrowInEst,
     }),
     {
       delimiter: ', ',
     }
   )
+}
 
 const PackShop = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
