@@ -9,10 +9,23 @@ import { useGetUser } from '@pages/api/queries'
 import useUpdateSubscription from '@pages/api/mutations/use-update-subscription'
 import { NextSeo } from 'next-seo'
 import useGetPacksBoughtToday from '@pages/api/queries/use-get-packs-bought-today'
+import { startOfTomorrow, intervalToDuration, formatDuration } from 'date-fns'
+
+const calculateTimeLeft = (): string =>
+  formatDuration(
+    intervalToDuration({
+      start: new Date(),
+      end: startOfTomorrow(),
+    }),
+    {
+      delimiter: ', ',
+    }
+  )
 
 const PackShop = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalPack, setModalPack] = useState<packInfo>(null)
+  const [timeLeft, setTimeLeft] = useState<string>(calculateTimeLeft())
 
   const {
     user,
@@ -60,6 +73,13 @@ const PackShop = () => {
     errorDependencies: [updateSubscriptionIsError],
   })
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTimeLeft(calculateTimeLeft())
+    }, 1000)
+    return () => clearTimeout(timer)
+  })
+
   const handleSelectedPack = (pack: packInfo) => {
     setModalPack(pack)
     setShowModal(true)
@@ -96,8 +116,9 @@ const PackShop = () => {
       <NextSeo title="Pack Shop" />
       <div className="m-2">
         <h1 className="text-4xl text-center mt-6">Pack Shop</h1>
-        <div className="flex flex-wrap justify-center mb-6">
-          Max 3 packs per day
+        <div className="flex flex-col justify-center text-center mb-6">
+          <div>Max 3 packs per day</div>
+          <div>You can buy more in {timeLeft}</div>
         </div>
         <div className="lg:w-3/4 lg:m-auto flex flex-row justify-start items-center">
           <h1>Base Pack Subscription</h1>
