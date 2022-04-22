@@ -1,153 +1,74 @@
-import React, { useEffect, useState } from 'react'
-import { Avatar, Box, Chip, Pagination } from '@mui/material'
+import { useGetUser, useGetUserCards } from '@pages/api/queries'
+import getUidFromSession from '@utils/get-uid-from-session'
+import React from 'react'
 import { useRouter } from 'next/router'
-import styled from 'styled-components'
-import { CollectionGrid, OptionInput, PageHeader } from '@components/index'
-import { useGetUser, useGetUserCards } from '@pages/api/queries/index'
-import { filterOptions } from '@constants/index'
-import { stringInCardName } from '@utils/index'
-
-const CollectionPage = styled.div`
-  margin: 10px;
-`
-
-const getUidForFetching = (routerUid: string | string[]): string => {
-  if (typeof window !== 'undefined') {
-    if (routerUid) {
-      const uidAsString: string = routerUid as string
-      return uidAsString
-    } else {
-      return sessionStorage.getItem('uid')
-    }
-  } else {
-    return null
-  }
-}
+import CollectionGrid from '@components/grids/collection-grid'
+import { NextSeo } from 'next-seo'
 
 const Collection = () => {
-  const [rarityOptions, setRarityOptions] = useState<Rarity[]>(filterOptions)
-  const [searchString, setSearchString] = useState<string>('')
-  const [filteringCards, setFilteringCards] = useState<boolean>(false)
-  const [filteredCards, setFilteredCards] = useState<Card[]>([])
-  const [pageNumber, setPageNumber] = useState<number>(1)
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [currentCard, setCurrentCard] = useState<Card>(null)
-
-  const router = useRouter()
-  const { uid } = router.query
-  const collectionUid = parseInt(getUidForFetching(uid))
-
-  const {
-    user,
-    isLoading: userIsLoading,
-    isError: userIsError,
-  } = useGetUser({
-    uid: collectionUid,
-  })
+  const { query } = useRouter()
+  const parsedUid = parseInt(query.uid as string) || getUidFromSession()
+  const isCurrentUser = parsedUid === getUidFromSession()
 
   const {
     userCards,
-    isLoading: userCardsIsLoading,
-    isError: userCardsIsError,
+    isSuccess: getUserCardsIsSuccess,
+    isLoading: getUserCardsIsLoading,
+    isError: getUserCardsIsError,
   } = useGetUserCards({
-    uid: collectionUid,
+    uid: parsedUid,
   })
 
-  const cardsPerPage = 12
-  const headerDisplay = user ? `${user.username}\'s` : 'My'
+  const {
+    user,
+    isSuccess: getUserIsSuccess,
+    isLoading: getUserIsLoading,
+    isError: getUserIsError,
+  } = useGetUser({
+    uid: parsedUid,
+  })
 
-  useEffect(() => {
-    setFilteringCards(true)
-    setPageNumber(1)
-
-    const selectedRarityNames = rarityOptions
-      .filter((rarityOption) => rarityOption.enabled)
-      .map((filteredRarityOption) => filteredRarityOption.rarity)
-    const allDisabled = selectedRarityNames.length === 0
-
-    let newFilteredCards = userCards
-
-    if (!allDisabled) {
-      newFilteredCards = newFilteredCards.filter((card) =>
-        selectedRarityNames.includes(card.card_rarity)
-      )
-    }
-
-    if (searchString !== '') {
-      newFilteredCards = newFilteredCards.filter((card) =>
-        stringInCardName(card, searchString)
-      )
-    }
-
-    setFilteredCards(newFilteredCards)
-    setFilteringCards(false)
-  }, [searchString, rarityOptions, userCards])
-
-  const handleSearchStringUpdate = (newSearchString) => {
-    setSearchString(newSearchString)
-  }
-
-  const handleRarityOptionsUpdate = (rarityOption, index) => {
-    const rarityOptionsCopy = [...rarityOptions]
-    rarityOptionsCopy[index].enabled = !rarityOption.enabled
-    setRarityOptions(rarityOptionsCopy)
-  }
-
-  const handleOpen = (card) => {
-    setCurrentCard(card)
-    setIsOpen(true)
-  }
-
-  const handleClose = () => {
-    setCurrentCard(null)
-    setIsOpen(false)
-  }
-
-  const handlePageChange = (event, value) => {
-    setPageNumber(value)
-  }
+  if (
+    getUserCardsIsLoading ||
+    getUserIsLoading ||
+    getUserCardsIsError ||
+    getUserIsError
+  )
+    return null
 
   return (
-    <CollectionPage>
-      <PageHeader>{`${headerDisplay} Collection`}</PageHeader>
-      <Box whiteSpace={'nowrap'} overflow={'auto'}>
-        {rarityOptions.map((rarityOption, index) => (
-          <Chip
-            key={rarityOption.rarity}
-            variant={rarityOption.enabled ? 'filled' : 'outlined'}
-            label={rarityOption.rarity}
-            // avatar={<Avatar src={rarityOption.imageUrl} />}
-            onClick={() => handleRarityOptionsUpdate(rarityOption, index)}
-          />
-        ))}
-      </Box>
-      <OptionInput
-        options={filteredCards}
-        loading={userCardsIsLoading || filteringCards}
-        groupBy={(option: Card) => (option ? option.card_rarity : '')}
-        getOptionLabel={(option: Card) => (option ? option.player_name : '')}
-        label={'Enter player name'}
-        onChange={() => {}}
-        onInputChange={(event, newInputValue) => {
-          handleSearchStringUpdate(newInputValue)
+    <>
+      <NextSeo
+        title={`${user.username}'s Collection`}
+        openGraph={{
+          title: `${user.username}'s Collection`,
         }}
-        defaultValue={searchString}
       />
-      <CollectionGrid
-        filteredCards={filteredCards}
-        pageNumber={pageNumber}
-        cardsPerPage={cardsPerPage}
-        handleOpenCard={handleOpen}
-        handleCloseCard={handleClose}
-        open={isOpen}
-        currentCard={currentCard}
-      />
-      <Pagination
-        count={Math.ceil(filteredCards.length / cardsPerPage)}
-        onChange={handlePageChange}
-        page={pageNumber}
-      />
-    </CollectionPage>
+      <div className="m-2">
+        <h1 className="text-4xl text-center my-6">
+          {isCurrentUser ? 'Your' : `${user.username}'s`} Collection
+        </h1>
+        {isCurrentUser && userCards.length === 0 ? (
+          <div className="text-center">
+            <p className="text-xl">
+              You don't have any cards in your collection.
+            </p>
+            <p className="text-xl">
+              Go to the{' '}
+              <a
+                className="text-blue-500 hover:text-blue-600 transition-colors duration-200 my-4"
+                href="/pack-shop"
+              >
+                pack shop
+              </a>{' '}
+              to get some packs!
+            </p>
+          </div>
+        ) : (
+          <CollectionGrid gridData={userCards} />
+        )}
+      </div>
+    </>
   )
 }
 

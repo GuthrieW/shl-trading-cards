@@ -1,4 +1,3 @@
-import users from '@utils/test-data/user.json'
 import { useQuery } from 'react-query'
 import axios from 'axios'
 import { GET } from '@constants/http-methods'
@@ -9,6 +8,7 @@ type UseGetCardOwnersRequest = {
 
 type UseGetCardOwners = {
   cardOwners: User[]
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
@@ -18,18 +18,19 @@ export const UseGetCardOwnersKey = 'use-get-card-owners'
 const useGetCardOwners = ({
   cardID,
 }: UseGetCardOwnersRequest): UseGetCardOwners => {
-  const { data, error, isFetching } = useQuery(
-    UseGetCardOwnersKey,
+  const { data, error, isFetching, isSuccess } = useQuery(
+    `${UseGetCardOwnersKey}/${cardID}`,
     async () => {
       return await axios({
         method: GET,
-        url: `/api/v1/collections/owners/${cardID}`,
+        url: `/api/v2/cards/${cardID}/owners`,
       })
     }
   )
 
   return {
     cardOwners: data?.data || [],
+    isSuccess: isSuccess,
     isLoading: isFetching,
     isError: error,
   }

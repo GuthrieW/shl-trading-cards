@@ -2,18 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { DefaultSeo } from 'next-seo'
 import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
-import Layout from '@components/layout'
-import { createTheme, ThemeProvider } from '@mui/material'
+import { DefaultLayout } from '@components/index'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
 import { ToastContainer } from 'react-toastify'
+import AES from 'crypto-js/aes'
 import 'react-toastify/dist/ReactToastify.css'
-
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-  },
-})
+import '../styles/globals.css'
 
 const AuthModal = () => (
   <iframe
@@ -30,8 +25,15 @@ const AuthModal = () => (
 )
 
 export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
-  const [queryClient] = useState(() => new QueryClient())
   const [showModal, setShowModal] = useState<boolean>(false)
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+      },
+    },
+  })
 
   useEffect(() => {
     const windowExists = typeof window !== 'undefined'
@@ -41,14 +43,20 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
           setShowModal(false)
           const { type, uid } = event.data
           if (type == 'uid') {
-            sessionStorage.setItem('uid', uid)
+            sessionStorage.setItem(
+              'token',
+              AES.encrypt(
+                uid.toString(),
+                process.env.NEXT_PUBLIC_TOKEN_KEY
+              ).toString()
+            )
           }
         }
       }
     }
 
     if (windowExists) {
-      if (!sessionStorage.getItem('uid')) {
+      if (!sessionStorage.getItem('token')) {
         setShowModal(true)
       }
       window.addEventListener('message', eventHandler)
@@ -62,10 +70,11 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   }, [])
 
   return (
-    <ThemeProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        <Hydrate state={pageProps.dehydratedState}>
-          <Layout>
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={pageProps.dehydratedState}>
+        {showModal && <AuthModal />}
+        {!showModal && (
+          <DefaultLayout>
             <ToastContainer
               position="bottom-left"
               autoClose={5000}
@@ -78,8 +87,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
               pauseOnHover={false}
             />
             <DefaultSeo {...SEO} />
-            {showModal && <AuthModal />}
-            {!showModal && <Component {...pageProps} />}
+            <Component {...pageProps} />
             <style global jsx>{`
               body {
                 font-family: 'Raleway', sans-serif;
@@ -91,9 +99,9 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
                 box-sizing: border-box;
               }
             `}</style>
-          </Layout>
-        </Hydrate>
-      </QueryClientProvider>
-    </ThemeProvider>
+          </DefaultLayout>
+        )}
+      </Hydrate>
+    </QueryClientProvider>
   )
 }

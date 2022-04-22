@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from 'axios'
 import { UseGetApprovedCardsKey } from '@pages/api/queries/use-get-approved-cards'
 import { UseGetUnapprovedCardsKey } from '@pages/api/queries/use-get-unapproved-cards'
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
+import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 
 type UseAcceptCardRequest = {
   cardID: number
@@ -12,21 +13,23 @@ type UseAcceptCardRequest = {
 type UseAcceptCard = {
   acceptCard: Function
   response: AxiosResponse
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
 const useAcceptCard = (): UseAcceptCard => {
   const queryClient = useQueryClient()
-  const { mutate, data, error, isLoading } = useMutation(
+  const { mutate, data, error, isLoading, isSuccess } = useMutation(
     ({ cardID }: UseAcceptCardRequest) => {
       return axios({
         method: PATCH,
-        url: `/api/v1/cards/${cardID}/approve`,
+        url: `/api/v2/cards/${cardID}/accept`,
       })
     },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries(UseGetAllCardsKey)
         queryClient.invalidateQueries(UseGetApprovedCardsKey)
         queryClient.invalidateQueries(UseGetUnapprovedCardsKey)
         queryClient.invalidateQueries(UseGetRequestedCardsKey)
@@ -36,6 +39,7 @@ const useAcceptCard = (): UseAcceptCard => {
   return {
     acceptCard: mutate,
     response: data,
+    isSuccess: isSuccess,
     isLoading: isLoading,
     isError: error,
   }

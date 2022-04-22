@@ -1,32 +1,34 @@
-import { UseMutateFunction, useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
 import { UseGetApprovedCardsKey } from '@pages/api/queries/use-get-approved-cards'
+import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 
 type UseEditCardRequest = {
-  cardID: number
-  newCardData: Card
+  card: Card
 }
 
 type UseEditCard = {
   editCard: Function
   response: AxiosResponse
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
 const useEditCard = (): UseEditCard => {
   const queryClient = useQueryClient()
-  const { mutate, data, error, isLoading } = useMutation(
-    ({ cardID, newCardData }: UseEditCardRequest) => {
+  const { mutate, data, error, isLoading, isSuccess } = useMutation(
+    ({ card }: UseEditCardRequest) => {
       return axios({
         method: PATCH,
-        url: `/api/v1/cards/${cardID}`,
-        data: newCardData,
+        url: `/api/v2/cards/${card.cardID}/edit`,
+        data: { card },
       })
     },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries(UseGetAllCardsKey)
         queryClient.invalidateQueries(UseGetApprovedCardsKey)
       },
     }
@@ -35,6 +37,7 @@ const useEditCard = (): UseEditCard => {
   return {
     editCard: mutate,
     response: data,
+    isSuccess: isSuccess,
     isLoading: isLoading,
     isError: error,
   }

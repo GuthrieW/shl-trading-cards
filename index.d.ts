@@ -1,3 +1,4 @@
+// data types
 type Card = {
   cardID: number
   teamID: number
@@ -42,6 +43,16 @@ type CardRequest = {
   control?: number | null
   conditioning?: number | null
   season: number
+}
+
+type CollectionCard = {
+  cardID: number
+  quantity: number
+  image_url: string
+  card_rarity: string
+  player_name: string
+  overall: number
+  teamID: number
 }
 
 type SetCard = {
@@ -89,6 +100,7 @@ type User = {
   usergroup?: number
   additionalgroups?: string
   displaygroup?: number
+  subscription?: number
 }
 
 type Rarity = {
@@ -97,11 +109,55 @@ type Rarity = {
   enabled: boolean
 }
 
-type PackKey = 'regular' | 'challenge-cup'
-type PackLabel = 'Regular' | 'Challenge Cup'
+type PackKey = 'base'
+type PackLabel = 'Base'
 
 type PackType = {
   key: PackKey
   label: PackLabel
   imageUrl: string
+}
+
+type UserPack = {
+  packID: number
+  userID: number
+  packType: string
+  purchaseDate: Date
+}
+
+// table types
+type PlayerTableButtons = {
+  id: PlayerTableButtonId
+  text: string
+  disabled: boolean
+  onClick: Function
+}
+type PlayerTableButtonId = 'skaters' | 'goalies'
+
+type CollectionTableButtons = {
+  id: string
+  text: string
+  onClick: Function
+}
+
+type ColumnData = {
+  id: string
+  Header: string
+  accessor: string
+  title: string
+  sortDescFirst: boolean
+}
+
+type GridColumn = {
+  accessor: string
+}
+
+type PackData = {
+  packID: number
+  userID: number
+  packType: string
+  opened: number
+  purchaseDate: Date
+  openDate: Date
+  source: string
 }

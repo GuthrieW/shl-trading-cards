@@ -5,7 +5,6 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
-import { getUidFromSession } from '@utils/index'
 
 const allowedMethods = [GET]
 const cors = Cors({
@@ -22,16 +21,16 @@ const index = async (
 
   if (method === GET) {
     const result = await queryDatabase(SQL`
-        SELECT 
-          uid,
-          username,
-          avatar,
-          usergroup,
-          additionalgroups,
-          displaygroup
-        FROM admin_mybb.mybb_users
-        WHERE uid=${uid};
-      `)
+      SELECT 
+        uid,
+        username,
+        avatar,
+        usergroup,
+        additionalgroups,
+        displaygroup
+      FROM admin_mybb.mybb_users
+      WHERE uid=${uid};
+    `)
 
     response.status(StatusCodes.OK).json(result)
     return

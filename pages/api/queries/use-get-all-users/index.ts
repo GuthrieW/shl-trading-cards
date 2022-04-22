@@ -4,27 +4,32 @@ import { GET } from '@constants/http-methods'
 
 type GetAllUsersRequest = {}
 
-type UseGetAllUsers = {
+type UseGetallUsers = {
   users: User[]
+  isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
-export const UseGetAllUsersKey = 'use-get-all-users'
+export const UseGetAllUserKey = 'use-get-all-users'
 
-const useGetAllUsers = ({}: GetAllUsersRequest): UseGetAllUsers => {
-  const { data, error, isFetching } = useQuery(UseGetAllUsersKey, async () => {
-    return await axios({
-      method: GET,
-      url: '/api/v1/users',
-    })
-  })
+const useGetallUsers = ({}: GetAllUsersRequest): UseGetallUsers => {
+  const { data, error, isFetching, isSuccess } = useQuery(
+    UseGetAllUserKey,
+    async () => {
+      return await axios({
+        method: GET,
+        url: '/api/v2/users',
+      })
+    }
+  )
 
   return {
     users: data?.data || [],
+    isSuccess: isSuccess,
     isLoading: isFetching,
     isError: error,
   }
 }
 
-export default useGetAllUsers
+export default useGetallUsers

@@ -3,9 +3,7 @@ import Router from 'next/router'
 
 const index = () => {
   if (typeof window !== 'undefined') {
-    Router.push({
-      pathname: '/home',
-    })
+    Router.push('/home')
   }
 
   return null

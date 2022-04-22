@@ -1,6 +1,17 @@
+import CryptoJS from 'crypto-js'
+
 const getUidFromSession = () => {
   if (typeof window !== 'undefined') {
-    return parseInt(sessionStorage.getItem('uid'))
+    const token = window.sessionStorage.getItem('token')
+
+    return token
+      ? parseInt(
+          CryptoJS.AES.decrypt(
+            token,
+            process.env.NEXT_PUBLIC_TOKEN_KEY
+          ).toString(CryptoJS.enc.Utf8)
+        )
+      : parseInt(window.sessionStorage.getItem('uid') || '0')
   } else {
     return null
   }

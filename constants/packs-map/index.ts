@@ -1,16 +1,33 @@
-const packsMap: PackType[] = [
-  {
-    key: 'regular',
-    label: 'Regular',
-    imageUrl:
-      'https://cdn.discordapp.com/attachments/719410556578299954/773048548026875904/s25_Pack.png',
+export type packInfo = {
+  id: string
+  label: string
+  description: string
+  imageUrl: string
+  price: number
+  priceLabel: string
+}
+
+export const packsMap = {
+  base: {
+    id: 'base',
+    label: 'Base',
+    description:
+      'The base trading card pack. Contains 6 cards ranging from Bronze to Hall of Fame rarity.',
+    imageUrl: '/images/base-pack-cover.png',
+    price: 100000,
+    priceLabel: '100k',
   },
-  // {
-  //   key: 'challenge-cup',
-  //   label: 'Challenge Cup',
-  //   imageUrl:
-  //     'https://cdn.discordapp.com/attachments/719410556578299954/776782018352119818/uw_pack.png',
-  // },
+}
+
+export const packs: packInfo[] = [
+  {
+    id: packsMap.base.id,
+    label: packsMap.base.label,
+    description: packsMap.base.description,
+    imageUrl: packsMap.base.imageUrl,
+    price: packsMap.base.price,
+    priceLabel: packsMap.base.priceLabel,
+  },
 ]
 
 export default packsMap
