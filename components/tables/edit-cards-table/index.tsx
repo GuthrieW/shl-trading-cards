@@ -3,7 +3,7 @@ import SearchBar from '@components/inputs/search-bar'
 import EditCardModal from '@components/modals/edit-card-modal'
 import useToast, { warningToast } from '@hooks/use-toast'
 import { useEditCard } from '@pages/api/mutations'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import {
   useTable,
   useSortBy,
@@ -236,12 +236,15 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
     setShowModal(true)
   }
 
-  const handleEditCard = (cardID, newCardData) => {
+  const handleEditCard = (newCardData) => {
     if (isLoading) {
       warningToast({ warningText: 'Already editing a card' })
     }
-    editCard({ cardID, newCardData })
+    const result = editCard({ card: newCardData })
+    console.log('result', result)
   }
+
+  console.log('response', response)
 
   return (
     <div>

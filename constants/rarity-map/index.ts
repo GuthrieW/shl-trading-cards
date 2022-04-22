@@ -1,3 +1,9 @@
+export type Rarity = {
+  label: string
+  value: string
+  rarity: number
+}
+
 const rarityMap = {
   bronze: { label: 'Bronze', value: 'Bronze', rarity: 4500 },
   silver: { label: 'Silver', value: 'Silver', rarity: 3000 },

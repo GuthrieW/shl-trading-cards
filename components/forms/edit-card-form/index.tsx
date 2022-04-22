@@ -1,5 +1,8 @@
 import Button from '@components/buttons/button'
-import React, { useState } from 'react'
+import React from 'react'
+import { Field, Form, Formik } from 'formik'
+import rarityMap from '@constants/rarity-map'
+import positionMap from '@constants/position-map'
 
 type FieldType = 'string_input' | 'number_input' | 'switch' | 'select'
 
@@ -26,260 +29,176 @@ const EditCardForm = ({
   setShowModal,
   onSubmit,
 }: EditCardFormProps) => {
-  const [updatedCard, setUpdatedCard] = useState<Card>(cardData)
+  const TextField = ({ name, label, type, disabled = false }) => (
+    <div className="m-2 flex justify-between">
+      <label htmlFor={name}>{label}</label>
+      <Field id={name} name={name} type={type} disabled={disabled} />
+    </div>
+  )
 
-  const formFields: Field[] = [
-    {
-      field: 'player_name',
-      label: 'Player Name',
-      fieldType: 'string_input',
-    },
-    {
-      field: 'cardID',
-      label: 'Card ID',
-      fieldType: 'number_input',
-    },
-    {
-      field: 'playerID',
-      label: 'Player ID',
-      fieldType: 'number_input',
-    },
-    {
-      field: 'teamID',
-      label: 'Team ID',
-      fieldType: 'number_input',
-    },
-    {
-      field: 'author_userID',
-      label: 'Author ID',
-      fieldType: 'number_input',
-    },
-    {
-      field: 'approved',
-      label: 'Approved',
-      fieldType: 'switch',
-    },
-    {
-      field: 'pullable',
-      label: 'Pullable',
-      fieldType: 'switch',
-    },
-    {
-      field: 'author_paid',
-      label: 'Author Paid',
-      fieldType: 'switch',
-    },
-    {
-      field: 'image_url',
-      label: 'Image',
-      fieldType: 'string_input',
-    },
-    {
-      field: 'rarity',
-      label: 'Rarity',
-      fieldType: 'select',
-      selectOptions: [
-        {
-          label: 'Bronze',
-          value: 'Bronze',
-        },
-        {
-          label: 'Silver',
-          value: 'Silver',
-        },
-        {
-          label: 'Gold',
-          value: 'Gold',
-        },
-        {
-          label: 'Ruby',
-          value: 'Ruby',
-        },
-        {
-          label: 'Diamond',
-          value: 'Diamond',
-        },
-        {
-          label: 'Logo',
-          value: 'Logo',
-        },
-        {
-          label: 'Hall of Fame',
-          value: 'Hall of Fame',
-        },
-      ],
-    },
-    {
-      field: 'season',
-      label: 'Season',
-      fieldType: 'number_input',
-    },
-    {
-      field: 'position',
-      label: 'Position',
-      fieldType: 'select',
-      selectOptions: [
-        {
-          label: 'F',
-          value: 'F',
-        },
-        {
-          label: 'D',
-          value: 'D',
-        },
-        {
-          label: 'G',
-          value: 'G"',
-        },
-      ],
-    },
-    {
-      field: 'overall',
-      label: 'Overall',
-      fieldType: 'number_input',
-    },
-    {
-      field: cardData.position !== 'G' ? 'skating' : 'high_shots',
-      label: cardData.position !== 'G' ? 'Skating' : 'High Shots',
-      fieldType: 'number_input',
-    },
-    {
-      field: cardData.position !== 'G' ? 'shooting' : 'low_shots',
-      label: cardData.position !== 'G' ? 'Shooting' : 'Low Shots',
-      fieldType: 'number_input',
-    },
-    {
-      field: cardData.position !== 'G' ? 'hands' : 'quickness',
-      label: cardData.position !== 'G' ? 'Hands' : 'Quickness',
-      fieldType: 'number_input',
-    },
-    {
-      field: cardData.position !== 'G' ? 'checking' : 'control',
-      label: cardData.position !== 'G' ? 'Checking' : 'Control',
-      fieldType: 'number_input',
-    },
-    {
-      field: cardData.position !== 'G' ? 'defense' : 'conditioning',
-      label: cardData.position !== 'G' ? 'Defense' : 'Conditioning',
-      fieldType: 'number_input',
-    },
-  ]
+  const SelectField = ({ name, label, options, disabled = false }) => (
+    <div className="m-2 flex justify-between">
+      <label htmlFor={name}>{label}</label>
+      <Field id={name} name={name} as="select" disabled={disabled}>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </Field>
+    </div>
+  )
 
   return (
-    <form className="flex flex-col justify-center items-center">
-      {formFields.map((formField) => {
-        if (formField.fieldType === 'number_input') {
-          return (
-            <div className="m-2 flex justify-center">
-              {formField.label}:{' '}
-              <input
-                value={updatedCard[formField.field]}
-                onChange={(event) => {
-                  console.log('Field', formField.field)
-                  console.log('New Value', event.target.value)
-                  setUpdatedCard({
-                    ...updatedCard,
-                    [formField.field]: parseInt(event.target.value),
-                  })
-                }}
-                type="number"
-              />
-            </div>
-          )
+    <Formik
+      initialValues={cardData}
+      onSubmit={(values) => {
+        const newData: Card = {
+          player_name: values?.player_name,
+          cardID: values?.cardID,
+          playerID: values?.playerID,
+          teamID: values?.teamID,
+          author_userID: values?.author_userID,
+          approved: values?.approved,
+          pullable: values?.pullable,
+          author_paid: values?.author_paid,
+          image_url: values?.image_url,
+          card_rarity: values?.card_rarity,
+          season: values?.season,
+          position: values?.position,
+          overall: values?.overall,
+          skating: values?.skating,
+          shooting: values?.shooting,
+          hands: values?.hands,
+          checking: values?.checking,
+          defense: values?.defense,
+          high_shots: values.high_shots,
+          low_shots: values?.low_shots,
+          quickness: values?.quickness,
+          control: values?.control,
+          conditioning: values?.conditioning,
         }
-
-        if (formField.fieldType === 'string_input') {
-          return (
-            <div className="m-2 flex justify-center">
-              {formField.label}:{' '}
-              <input
-                value={updatedCard[formField.field]}
-                onChange={(event) => {
-                  console.log('Field', formField.field)
-                  console.log('New Value', event.target.value)
-                  setUpdatedCard({
-                    ...updatedCard,
-                    [formField.field]: event.target.value,
-                  })
-                }}
-                type="text"
-              />
-            </div>
-          )
-        }
-
-        if (formField.fieldType === 'select') {
-          return (
-            <div className="m-2 flex justify-center">
-              {formField.label}:{' '}
-              <select
-                value={updatedCard[formField.field]}
-                onChange={(event) => {
-                  console.log('Field', formField.field)
-                  console.log('New Value', event.target.value)
-                  setUpdatedCard({
-                    ...updatedCard,
-                    [formField.field]: event.target.value,
-                  })
-                }}
-              >
-                {formField.selectOptions.map((selectOption) => (
-                  <option value={selectOption.value}>
-                    {selectOption.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )
-        }
-
-        if (formField.fieldType === 'switch') {
-          return (
-            <div className="m-2 flex justify-center">
-              <div className="form-check form-switch">
-                <label className="form-check-label inline-block text-gray-800">
-                  {formField.label}
-                </label>
-                <input
-                  value={updatedCard[formField.field]}
-                  onChange={(event) => {
-                    console.log('Field', formField.field)
-                    console.log('New Value', event.target.value)
-                    setUpdatedCard({
-                      ...updatedCard,
-                      [formField.field]: event.target.value,
-                    })
-                  }}
-                  className="form-check-input appearance-none w-9 -ml-10 rounded-full float-left h-5 align-top bg-no-repeat bg-contain bg-gray-300 focus:outline-none cursor-pointer shadow-sm"
-                  type="checkbox"
-                  role="switch"
-                  id="flexSwitchCheckDefault"
-                />
-              </div>
-            </div>
-          )
-        }
-      })}
-      <div className="flex items-center justify-end p-6">
-        <Button
-          disabled={false}
-          className="text-red-500 background-transparent font-bold uppercase px-6 py-3 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 hover:bg-red-100 rounded hover:shadow-lg"
-          onClick={() => setShowModal(false)}
-        >
-          Cancel
-        </Button>
-        <Button
-          disabled={false}
-          className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-          onClick={() => {
-            setShowModal(false)
-            onSubmit({})
+        setShowModal(false)
+        onSubmit(newData)
+        console.log(values)
+      }}
+    >
+      {({ handleSubmit }) => (
+        <Form
+          onSubmit={(event) => {
+            event.preventDefault()
+            handleSubmit()
           }}
         >
-          Update Card
-        </Button>
-      </div>
-    </form>
+          <TextField name="player_name" label="Player Name" type="text" />
+          <TextField name="playerID" label="Player ID" type="number" />
+          <TextField name="teamID" label="Team ID" type="number" />
+          <TextField
+            name="author_userID"
+            label="Author User ID"
+            type="number"
+          />
+          <TextField name="approved" label="Approved" type="number" />
+          <TextField name="pullable" label="Pullable" type="number" />
+          <TextField name="author_paid" label="Author Paid" type="number" />
+          <TextField name="image_url" label="Image URL" type="text" />
+          <SelectField
+            name="card_rarity"
+            label="Rarity"
+            options={Object.values(rarityMap)}
+          />
+
+          <TextField name="season" label="Season" type="number" />
+          <SelectField
+            name="position"
+            label="Position"
+            options={Object.values(positionMap)}
+          />
+          <TextField
+            name="overall"
+            label="Overall"
+            type="number"
+            disabled={false}
+          />
+          <TextField
+            name="skating"
+            label="Skating"
+            type="number"
+            disabled={cardData.position === 'G'}
+          />
+          <TextField
+            name="shooting"
+            label="Shooting"
+            type="number"
+            disabled={cardData.position === 'G'}
+          />
+          <TextField
+            name="hands"
+            label="Hands"
+            type="number"
+            disabled={cardData.position === 'G'}
+          />
+          <TextField
+            name="checking"
+            label="Checking"
+            type="number"
+            disabled={cardData.position === 'G'}
+          />
+          <TextField
+            name="defense"
+            label="Defense"
+            type="number"
+            disabled={cardData.position === 'G'}
+          />
+          <TextField
+            name="high_shots"
+            label="High Shots"
+            type="number"
+            disabled={cardData.position !== 'G'}
+          />
+          <TextField
+            name="low_shots"
+            label="Low Shots"
+            type="number"
+            disabled={cardData.position !== 'G'}
+          />
+          <TextField
+            name="quickness"
+            label="Quickness"
+            type="number"
+            disabled={cardData.position !== 'G'}
+          />
+          <TextField
+            name="control"
+            label="Control"
+            type="number"
+            disabled={cardData.position !== 'G'}
+          />
+          <TextField
+            name="conditioning"
+            label="Conditioning"
+            type="number"
+            disabled={cardData.position !== 'G'}
+          />
+          <div className="flex items-center justify-end p-6">
+            <Button
+              disabled={false}
+              className="text-red-500 background-transparent font-bold uppercase px-6 py-3 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 hover:bg-red-100 rounded hover:shadow-lg"
+              onClick={() => setShowModal(false)}
+            >
+              Cancel
+            </Button>
+            <button
+              type="submit"
+              disabled={false}
+              className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+            >
+              Update Card
+            </button>
+          </div>
+        </Form>
+      )}
+    </Formik>
   )
 }
 
