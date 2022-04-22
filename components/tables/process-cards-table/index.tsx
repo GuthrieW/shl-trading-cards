@@ -12,6 +12,7 @@ import Table from '../table'
 import ProcessCardModal from '@components/modals/process-card-modal'
 import { useAcceptCard, useDenyCard } from '@pages/api/mutations'
 import useToast, { warningToast } from '@hooks/use-toast'
+import attributesMap from '@constants/attributes-map'
 
 type ProcessCardsTableProps = {
   tableData: Card[]
@@ -124,38 +125,76 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
       sortDescFirst: true,
     },
     {
-      id: viewSkaters ? 'skating' : 'high_shots',
-      Header: viewSkaters ? 'SKA' : 'HSHT',
-      accessor: viewSkaters ? 'skating' : 'high_shots',
-      title: viewSkaters ? 'Skating' : 'High Shots',
+      id: viewSkaters
+        ? attributesMap.skating.name
+        : attributesMap.highShots.name,
+      Header: viewSkaters
+        ? attributesMap.skating.abbreviation
+        : attributesMap.highShots.abbreviation,
+      accessor: viewSkaters
+        ? attributesMap.skating.name
+        : attributesMap.highShots.name,
+      title: viewSkaters
+        ? attributesMap.skating.label
+        : attributesMap.highShots.label,
       sortDescFirst: true,
     },
     {
-      id: viewSkaters ? 'shooting' : 'low_shots',
-      Header: viewSkaters ? 'SHT' : 'LSHT',
-      accessor: viewSkaters ? 'shooting' : 'low_shots',
-      title: viewSkaters ? 'Shooting' : 'Low Shots',
+      id: viewSkaters
+        ? attributesMap.shooting.name
+        : attributesMap.lowShots.name,
+      Header: viewSkaters
+        ? attributesMap.shooting.abbreviation
+        : attributesMap.lowShots.abbreviation,
+      accessor: viewSkaters
+        ? attributesMap.shooting.name
+        : attributesMap.lowShots.name,
+      title: viewSkaters
+        ? attributesMap.shooting.label
+        : attributesMap.lowShots.label,
       sortDescFirst: true,
     },
     {
-      id: viewSkaters ? 'hands' : 'quickness',
-      Header: viewSkaters ? 'HND' : 'QUI',
-      accessor: viewSkaters ? 'hands' : 'quickness',
-      title: viewSkaters ? 'Hands' : 'Quickness',
+      id: viewSkaters ? attributesMap.hands.name : attributesMap.quickness.name,
+      Header: viewSkaters
+        ? attributesMap.hands.abbreviation
+        : attributesMap.quickness.abbreviation,
+      accessor: viewSkaters
+        ? attributesMap.hands.name
+        : attributesMap.quickness.name,
+      title: viewSkaters
+        ? attributesMap.hands.label
+        : attributesMap.quickness.label,
       sortDescFirst: true,
     },
     {
-      id: viewSkaters ? 'checking' : 'control',
-      Header: viewSkaters ? 'CHK' : 'CTL',
-      accessor: viewSkaters ? 'checking' : 'control',
-      title: viewSkaters ? 'Checking' : 'Control',
+      id: viewSkaters
+        ? attributesMap.checking.name
+        : attributesMap.control.name,
+      Header: viewSkaters
+        ? attributesMap.checking.abbreviation
+        : attributesMap.control.abbreviation,
+      accessor: viewSkaters
+        ? attributesMap.checking.name
+        : attributesMap.control.name,
+      title: viewSkaters
+        ? attributesMap.checking.label
+        : attributesMap.control.label,
       sortDescFirst: true,
     },
     {
-      id: viewSkaters ? 'defense' : 'conditioning',
-      Header: viewSkaters ? 'DEF' : 'CND',
-      accessor: viewSkaters ? 'defense' : 'conditioning',
-      title: viewSkaters ? 'Defense' : 'Conditioning',
+      id: viewSkaters
+        ? attributesMap.defense.name
+        : attributesMap.conditioning.name,
+      Header: viewSkaters
+        ? attributesMap.defense.abbreviation
+        : attributesMap.conditioning.abbreviation,
+      accessor: viewSkaters
+        ? attributesMap.defense.name
+        : attributesMap.conditioning.name,
+      title: viewSkaters
+        ? attributesMap.defense.label
+        : attributesMap.conditioning.label,
       sortDescFirst: true,
     },
   ]
