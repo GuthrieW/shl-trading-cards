@@ -11,7 +11,7 @@ import Pagination from '../pagination'
 import Table from '../table'
 import ProcessCardModal from '@components/modals/process-card-modal'
 import { useAcceptCard, useDenyCard } from '@pages/api/mutations'
-import useToast, { warningToast } from '@hooks/use-toast'
+import { warningToast } from '@hooks/use-toast'
 import attributesMap from '@constants/attributes-map'
 
 type ProcessCardsTableProps = {
@@ -38,20 +38,6 @@ const ProcessCardsTable = ({ tableData }: ProcessCardsTableProps) => {
     isLoading: denyCardIsLoading,
     isError: denyCardIsError,
   } = useDenyCard()
-
-  useToast({
-    successText: 'Card Accepted',
-    successDependencies: [acceptCardIsSuccess],
-    errorText: 'Error Accepting Card',
-    errorDependencies: [acceptCardIsError],
-  })
-
-  useToast({
-    successText: 'Card Denied',
-    successDependencies: [denyCardIsSuccess],
-    errorText: 'Error Denying Card',
-    errorDependencies: [denyCardIsError],
-  })
 
   const columnData = [
     {

@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
+import { errorToast, successToast } from '@hooks/use-toast'
 
 type UseSubmitCardImageRequest = {
   cardID: number
@@ -29,6 +30,10 @@ const useSubmitCardImage = (): UseSubmitCardImage => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(UseGetAllCardsKey)
+        successToast({ successText: 'Card Image Submitted' })
+      },
+      onError: () => {
+        errorToast({ errorText: 'Error Submitting Card Image' })
       },
     }
   )

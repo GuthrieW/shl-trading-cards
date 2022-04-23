@@ -3,7 +3,7 @@ import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useEffect, useState } from 'react'
 import { packs, packInfo } from '@constants/packs-map'
 import BuyPackModal from '@components/modals/buy-pack-modal'
-import useToast, { warningToast } from '@hooks/use-toast'
+import { warningToast } from '@hooks/use-toast'
 import subscriptionOptions from '@constants/subscription-options'
 import { useGetUser } from '@pages/api/queries'
 import useUpdateSubscription from '@pages/api/mutations/use-update-subscription'
@@ -87,20 +87,6 @@ const PackShop = () => {
     isLoading: updateSubscriptionIsLoading,
     isError: updateSubscriptionIsError,
   } = useUpdateSubscription()
-
-  useToast({
-    successText: 'Pack Bought',
-    successDependencies: [buyPackIsSuccess],
-    errorText: 'Error Purchasing Pack',
-    errorDependencies: [buyPackIsError],
-  })
-
-  useToast({
-    successText: 'Subscription Updated',
-    successDependencies: [updateSubscriptionIsSuccess],
-    errorText: 'Error Updating Subscription',
-    errorDependencies: [updateSubscriptionIsError],
-  })
 
   useEffect(() => {
     const timer = setTimeout(() => {

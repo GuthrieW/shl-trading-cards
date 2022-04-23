@@ -10,7 +10,7 @@ import Table from '../table'
 import React, { useMemo, useState } from 'react'
 import useIssuePack from '@pages/api/mutations/use-issue-pack'
 import IssuePacksModal from '@components/modals/issue-packs-modal'
-import useToast, { warningToast } from '@hooks/use-toast'
+import { warningToast } from '@hooks/use-toast'
 import getUidFromSession from '@utils/get-uid-from-session'
 import packsMap from '@constants/packs-map'
 
@@ -23,13 +23,6 @@ const IssuePacksTable = ({ tableData }: IssuePacksTableProps) => {
   const [modalRow, setModalRow] = useState<User>(null)
 
   const { issuePack, response, isSuccess, isLoading, isError } = useIssuePack()
-
-  useToast({
-    successText: 'Pack Issued',
-    successDependencies: [isSuccess],
-    errorText: 'Error Issuing Pack',
-    errorDependencies: [isError],
-  })
 
   const columnData: ColumnData[] = [
     {

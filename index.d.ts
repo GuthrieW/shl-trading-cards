@@ -103,12 +103,6 @@ type User = {
   subscription?: number
 }
 
-type Rarity = {
-  rarity: string
-  imageUrl: string
-  enabled: boolean
-}
-
 type PackKey = 'base'
 type PackLabel = 'Base'
 

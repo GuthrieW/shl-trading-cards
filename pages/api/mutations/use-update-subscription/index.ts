@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 import { UseGetUserKey } from '@pages/api/queries/use-get-user'
+import { errorToast, successToast } from '@hooks/use-toast'
 
 type UseUpdateSubscriptionRequest = {
   uid: number
@@ -29,6 +30,10 @@ const useUpdateSubscription = (): UseUpdateSubscription => {
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries(`${UseGetUserKey}/${data.data.uid}`)
+        successToast({ successText: 'Subscription Updated' })
+      },
+      onError: () => {
+        errorToast({ errorText: 'Error Updating Subscription' })
       },
     }
   )

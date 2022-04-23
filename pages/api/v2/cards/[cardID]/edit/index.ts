@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
+import {
+  getCardsDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import { PATCH } from '@constants/index'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
@@ -18,14 +21,39 @@ const index = async (
   await middleware(request, response, cors)
   const { method, query, body } = request
 
-  // TODO: implement this method
   if (method === PATCH) {
     const { cardID } = query
-    const { card } = body
+    const newCardData: Card = body.card
 
-    response
-      .status(StatusCodes.NOT_IMPLEMENTED)
-      .json({ error: 'Method not implemented' })
+    const result = await queryDatabase(
+      SQL`UPDATE `.append(getCardsDatabaseName())
+        .append(SQL`.cards SET player_name=${newCardData.player_name},
+        playerID=${newCardData.playerID},
+        teamID=${newCardData.teamID},
+        author_userID=${newCardData.author_userID},
+        approved=${newCardData.approved},
+        pullable=${newCardData.pullable},
+        author_paid=${newCardData.author_paid},
+        image_url=${newCardData.image_url},
+        card_rarity=${newCardData.card_rarity},
+        season=${newCardData.season},
+        position=${newCardData.position},
+        overall=${newCardData.overall},
+        skating=${newCardData.skating},
+        shooting=${newCardData.shooting},
+        hands=${newCardData.hands},
+        checking=${newCardData.checking},
+        defense=${newCardData.defense},
+        high_shots=${newCardData.high_shots},
+        low_shots=${newCardData.low_shots},
+        quickness=${newCardData.quickness},
+        control=${newCardData.control},
+        conditioning=${newCardData.conditioning}
+      WHERE cardID=${cardID};
+    `)
+    )
+
+    response.status(StatusCodes.OK).json(result)
     return
   }
 

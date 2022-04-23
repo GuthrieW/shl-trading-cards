@@ -1,5 +1,5 @@
 import Button from '@components/buttons/button'
-import useToast, { warningToast } from '@hooks/use-toast'
+import { warningToast } from '@hooks/use-toast'
 import { useCreateCard } from '@pages/api/mutations'
 import { useGetUser } from '@pages/api/queries'
 import getUidFromSession from '@utils/get-uid-from-session'
@@ -9,7 +9,6 @@ import { NextSeo } from 'next-seo'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import CSVReader from 'react-csv-reader'
-import { toast } from 'react-toastify'
 
 const RequestCards = () => {
   const parsedUid = getUidFromSession()
@@ -30,13 +29,6 @@ const RequestCards = () => {
   const [numberOfCardsToUpload, setNumberOfCardsToUpload] = useState<number>(0)
 
   const { createCard, response, isLoading, isError } = useCreateCard()
-
-  useToast({
-    successText: '', // Left intentionally blank
-    successDependencies: [false],
-    errorText: 'Failed to create card',
-    errorDependencies: [isError],
-  })
 
   useEffect(() => {
     setCanSubmitCsv(csvToUpload !== null)
