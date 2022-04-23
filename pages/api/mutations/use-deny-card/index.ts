@@ -35,9 +35,7 @@ const useDenyCard = (): UseDenyCard => {
         successToast({ successText: 'Card Denied' })
       },
       onError: () => {
-        errorToast: () => {
-          errorToast({ errorText: 'Error Denying Card' })
-        }
+        errorToast({ errorText: 'Error Denying Card' })
       },
     }
   )

@@ -15,6 +15,7 @@ import {
   formatDuration,
   startOfDay,
   add,
+  isBefore,
 } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
 
@@ -39,6 +40,9 @@ const calculateTimeLeft = (): string => {
       currentTime.getTimezoneOffset() < standardTimezoneOffeset() ? -4 : -5,
   })
   const timeInMilliseconds: number = estOffset.valueOf()
+
+  if (isBefore(startOfTomorrowInMilliseconds, timeInMilliseconds))
+    return "Cal wrote bad code, he's gonna fix it though he promises."
 
   return formatDuration(
     intervalToDuration({
