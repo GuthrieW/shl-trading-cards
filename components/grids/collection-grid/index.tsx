@@ -74,43 +74,15 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
       ? setSelectedTeams(selectedTeams.filter((team) => team != toggleId))
       : setSelectedTeams(selectedTeams.concat(toggleId))
 
-  const PlayerCardRarityCheckboxes: CollectionTableButtons[] = [
-    {
-      id: rarityMap.bronze.label,
-      text: rarityMap.bronze.label,
-      onClick: () => updateSelectedRarityButtonIds(rarityMap.bronze.label),
-    },
-    {
-      id: rarityMap.silver.label,
-      text: rarityMap.silver.label,
-      onClick: () => updateSelectedRarityButtonIds(rarityMap.silver.label),
-    },
-    {
-      id: rarityMap.gold.label,
-      text: rarityMap.gold.label,
-      onClick: () => updateSelectedRarityButtonIds(rarityMap.gold.label),
-    },
-    {
-      id: rarityMap.ruby.label,
-      text: rarityMap.ruby.label,
-      onClick: () => updateSelectedRarityButtonIds(rarityMap.ruby.label),
-    },
-    {
-      id: rarityMap.diamond.label,
-      text: rarityMap.diamond.label,
-      onClick: () => updateSelectedRarityButtonIds(rarityMap.diamond.label),
-    },
-    {
-      id: rarityMap.logo.label,
-      text: rarityMap.logo.label,
-      onClick: () => updateSelectedRarityButtonIds(rarityMap.logo.label),
-    },
-    {
-      id: rarityMap.hallOfFame.label,
-      text: 'HoF',
-      onClick: () => updateSelectedRarityButtonIds(rarityMap.hallOfFame.label),
-    },
-  ]
+  const PlayerCardRarityCheckboxes: CollectionTableButtons[] = Object.values(
+    rarityMap
+  ).map((rarity) => {
+    return {
+      id: rarity.label,
+      text: rarity.label === 'Hall of Fame' ? 'HOF' : rarity.label,
+      onClick: () => updateSelectedRarityButtonIds(rarity.label),
+    }
+  })
 
   const TeamCheckboxes: CollectionTableButtons[] = Object.keys(teamsMap).map(
     (key) => {
