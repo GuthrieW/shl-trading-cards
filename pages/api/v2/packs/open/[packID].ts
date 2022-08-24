@@ -109,6 +109,26 @@ const getBasePackRarity = (): string => {
         rarityMap.logo.rarity
   )
     return rarityMap.logo.label
+  if (
+    num >
+      rarityMap.hallOfFame.rarity +
+        rarityMap.diamond.rarity +
+        rarityMap.ruby.rarity +
+        rarityMap.gold.rarity +
+        rarityMap.silver.rarity +
+        rarityMap.bronze.rarity +
+        rarityMap.logo.rarity &&
+    num <=
+      rarityMap.hallOfFame.rarity +
+        rarityMap.diamond.rarity +
+        rarityMap.ruby.rarity +
+        rarityMap.gold.rarity +
+        rarityMap.silver.rarity +
+        rarityMap.bronze.rarity +
+        rarityMap.logo.rarity +
+        rarityMap.charity.rarity
+  )
+    return rarityMap.charity.label
   return rarityMap.bronze.label
 }
 
