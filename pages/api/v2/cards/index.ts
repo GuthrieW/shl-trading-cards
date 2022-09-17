@@ -64,6 +64,7 @@ const index = async (
       teamID,
       playerID,
       card_rarity,
+      sub_type,
       position,
       overall,
       high_shots,
@@ -82,9 +83,9 @@ const index = async (
     const result = await queryDatabase(
       SQL`
       INSERT INTO `.append(getCardsDatabaseName()).append(SQL`.cards
-        (player_name, teamID, playerID, card_rarity, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season, author_paid)
+        (player_name, teamID, playerID, card_rarity, sub_type, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season, author_paid)
       VALUES
-      (${player_name}, ${teamID}, ${playerID}, ${card_rarity}, 0, 0, ${position}, ${overall}, ${high_shots}, ${low_shots}, ${quickness}, ${control}, ${conditioning}, ${skating}, ${shooting}, ${hands}, ${checking}, ${defense}, ${season}, 0);
+      (${player_name}, ${teamID}, ${playerID}, ${card_rarity}, ${sub_type}, 0, 0, ${position}, ${overall}, ${high_shots}, ${low_shots}, ${quickness}, ${control}, ${conditioning}, ${skating}, ${shooting}, ${hands}, ${checking}, ${defense}, ${season}, 0);
     `)
     )
 

@@ -29,6 +29,7 @@ type CardRequest = {
   teamID?: number
   playerID?: number
   card_rarity: string
+  sub_type: string
   player_name: string
   position: string
   overall: number
