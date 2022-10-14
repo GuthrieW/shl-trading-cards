@@ -103,6 +103,13 @@ const AllCardsTable = ({ tableData }: AllCardsTableProps) => {
       sortDescFirst: true,
     },
     {
+      id: 'sub_type',
+      Header: 'Sub Type',
+      accessor: 'sub_type',
+      title: 'Sub Type',
+      sortDescFirst: true,
+    },
+    {
       id: 'season',
       Header: 'Season',
       accessor: 'season',
