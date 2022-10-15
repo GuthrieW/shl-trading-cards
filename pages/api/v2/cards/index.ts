@@ -30,6 +30,7 @@ const index = async (
         teamID,
         playerID,
         card_rarity,
+        sub_type,
         image_url,
         pullable,
         approved,
