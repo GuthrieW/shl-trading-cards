@@ -5,6 +5,7 @@ type Card = {
   playerID: number
   author_userID: number
   card_rarity: string
+  sub_type: string
   player_name: string
   pullable: boolean
   approved: boolean

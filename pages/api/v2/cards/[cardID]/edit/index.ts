@@ -36,6 +36,7 @@ const index = async (
         author_paid=${newCardData.author_paid},
         image_url=${newCardData.image_url},
         card_rarity=${newCardData.card_rarity},
+        sub_type=${newCardData.sub_type},
         season=${newCardData.season},
         position=${newCardData.position},
         overall=${newCardData.overall},

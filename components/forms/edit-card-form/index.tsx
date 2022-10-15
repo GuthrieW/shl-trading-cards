@@ -65,6 +65,7 @@ const EditCardForm = ({
           author_paid: values?.author_paid,
           image_url: values?.image_url,
           card_rarity: values?.card_rarity,
+          sub_type: values?.sub_type,
           season: values?.season,
           position: values?.position,
           overall: values?.overall,
@@ -102,7 +103,7 @@ const EditCardForm = ({
             label="Rarity"
             options={Object.values(rarityMap)}
           />
-
+          <TextField name="sub_type" label="Sub Type" type="text" />
           <TextField name="season" label="Season" type="number" />
           <SelectField
             name="position"
