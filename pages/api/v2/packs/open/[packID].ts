@@ -21,16 +21,6 @@ const randomIntFromInterval = (maximum: number): number => {
   return num
 }
 
-/**
- * Hall of Fame 0.15%
- * Diamond - 1.35%
- * Ruby - 4%
- * Logo - 4.5%
- * Gold - 15%
- * Silver - 30%
- * Bronze - 45%
- */
-
 const getBasePackRarity = (): string => {
   const num = randomIntFromInterval(10000)
 
@@ -129,6 +119,28 @@ const getBasePackRarity = (): string => {
         rarityMap.charity.rarity
   )
     return rarityMap.charity.label
+  if (
+    num >
+      rarityMap.hallOfFame.rarity +
+        rarityMap.diamond.rarity +
+        rarityMap.ruby.rarity +
+        rarityMap.gold.rarity +
+        rarityMap.silver.rarity +
+        rarityMap.bronze.rarity +
+        rarityMap.logo.rarity +
+        rarityMap.charity.rarity &&
+    num <=
+      rarityMap.hallOfFame.rarity +
+        rarityMap.diamond.rarity +
+        rarityMap.ruby.rarity +
+        rarityMap.gold.rarity +
+        rarityMap.silver.rarity +
+        rarityMap.bronze.rarity +
+        rarityMap.logo.rarity +
+        rarityMap.charity.rarity +
+        rarityMap.award.rarity
+  )
+    return rarityMap.award.label
   return rarityMap.bronze.label
 }
 

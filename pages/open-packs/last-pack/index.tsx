@@ -12,7 +12,7 @@ const LastOpenedPack = () => {
       uid: getUidFromSession(),
     })
 
-  if (isLoading || isError || latestPackCards === []) return null
+  if (isLoading || isError || latestPackCards.length === 0) return null
 
   const updateRevealedCards = (index: number) => {
     if (revealedCards.includes(index)) return
