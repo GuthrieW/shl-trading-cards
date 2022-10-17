@@ -14,7 +14,7 @@ const rarityMap = {
   hallOfFame: { label: 'Hall of Fame', value: 'Hall of Fame', rarity: 15 },
   misprint: { label: 'Misprint', value: 'Misprint', rarity: 0 },
   charity: { label: 'Charity', value: 'Charity', rarity: 35 },
-  award: { label: 'Award', value: 'Award', rarity: 100 },
+  award: { label: 'Awards', value: 'Awards', rarity: 100 },
 }
 
 export default rarityMap
