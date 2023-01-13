@@ -49,7 +49,7 @@ const index = async (
       return
     }
 
-    if (bankResponse.data.bankbalance < 100000 * subAmount) {
+    if (bankResponse.data.bankbalance < 50000 * subAmount) {
       response.status(StatusCodes.BAD_REQUEST).json({
         error: `Bank Balance Insufficient`,
       })

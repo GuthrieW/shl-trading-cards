@@ -14,8 +14,8 @@ export const packsMap = {
     description:
       'The base trading card pack. Contains 6 cards ranging from Bronze to Hall of Fame rarity.',
     imageUrl: '/images/base-pack-cover.png',
-    price: 100000,
-    priceLabel: '100k',
+    price: 50000,
+    priceLabel: '50k',
   },
 }
 
