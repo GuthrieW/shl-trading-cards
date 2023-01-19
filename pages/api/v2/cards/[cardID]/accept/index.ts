@@ -26,7 +26,7 @@ const index = async (
     const result = await queryDatabase(
       SQL`
       UPDATE `.append(getCardsDatabaseName()).append(SQL`.cards
-      SET approved=1
+      SET approved=1, pullable=1
       WHERE cardID=${cardID};
     `)
     )
