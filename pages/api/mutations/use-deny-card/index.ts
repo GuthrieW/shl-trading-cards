@@ -4,7 +4,7 @@ import { PATCH } from '@constants/http-methods'
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
 import { UseGetUnapprovedCardsKey } from '@pages/api/queries/use-get-unapproved-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
-import { errorToast, successToast } from '@hooks/use-toast'
+import { errorToast, successToast } from '@utils/toasts'
 
 type UseDenyCardRequest = {
   cardID: number

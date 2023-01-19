@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 import { UseGetUserCardsKey } from '@pages/api/queries/use-get-user-cards'
 import { UseGetUserKey } from '@pages/api/queries/use-get-user'
-import { errorToast, successToast } from '@hooks/use-toast'
+import { errorToast, successToast } from '@utils/toasts'
 
 type UseBuyPackRequest = {
   uid: number

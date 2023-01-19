@@ -1,6 +1,6 @@
 import Button from '@components/buttons/button'
 import { packInfo } from '@constants/packs-map'
-import { warningToast } from '@hooks/use-toast'
+import { warningToast } from '@utils/toasts'
 import React from 'react'
 import Modal from '../modal'
 

@@ -1,7 +1,7 @@
 import ButtonGroup from '@components/buttons/button-group'
 import SearchBar from '@components/inputs/search-bar'
 import ClaimCardModal from '@components/modals/claim-card-modal'
-import { warningToast } from '@hooks/use-toast'
+import { warningToast } from '@utils/toasts'
 import { useClaimCard } from '@pages/api/mutations'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useMemo, useState } from 'react'

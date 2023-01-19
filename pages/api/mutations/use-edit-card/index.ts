@@ -4,7 +4,7 @@ import { PATCH } from '@constants/http-methods'
 import { UseGetApprovedCardsKey } from '@pages/api/queries/use-get-approved-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 import { toast } from 'react-toastify'
-import { errorToast, successToast } from '@hooks/use-toast'
+import { errorToast, successToast } from '@utils/toasts'
 
 type UseEditCardRequest = {
   card: Card

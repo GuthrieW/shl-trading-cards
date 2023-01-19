@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
-import { errorToast } from '@hooks/use-toast'
+import { errorToast } from '@utils/toasts'
 
 interface UseCreateCardRequest {
   card: CardRequest

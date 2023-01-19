@@ -1,5 +1,5 @@
 import Button from '@components/buttons/button'
-import { warningToast } from '@hooks/use-toast'
+import { warningToast } from '@utils/toasts'
 import { useCreateCard } from '@pages/api/mutations'
 import { useGetUser } from '@pages/api/queries'
 import getUidFromSession from '@utils/get-uid-from-session'

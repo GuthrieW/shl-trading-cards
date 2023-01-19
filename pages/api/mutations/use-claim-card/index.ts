@@ -4,7 +4,7 @@ import { PATCH } from '@constants/http-methods'
 import { UseGetClaimedCardsKey } from '@pages/api/queries/use-get-claimed-cards'
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
-import { errorToast, successToast } from '@hooks/use-toast'
+import { errorToast, successToast } from '@utils/toasts'
 
 type UseClaimCardRequest = {
   cardID: number

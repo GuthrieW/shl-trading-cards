@@ -3,7 +3,7 @@ import Modal from '../modal'
 import Button from '@components/buttons/button'
 import pathToCards from '@constants/path-to-cards'
 import { useSubmitCardImage } from '@pages/api/mutations'
-import { warningToast } from '@hooks/use-toast'
+import { warningToast } from '@utils/toasts'
 
 type SubmitCardModalProps = {
   setShowModal: Function
