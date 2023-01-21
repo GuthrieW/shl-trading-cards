@@ -90,10 +90,12 @@ type Trade = {
   fromID: number
   toID: number
   cardID: number
-  trade_status: string
+  trade_status: TradeStatus
   create_date: Date
-  update_data: Date
+  update_date: Date
 }
+
+type TradeStatus = 'complete' | 'pending' | 'declined'
 
 type User = {
   uid: number
