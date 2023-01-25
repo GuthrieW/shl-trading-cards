@@ -14,14 +14,14 @@ const TradeCard = ({ className, trade, onClick }: TradeCardProps) => {
 
   return (
     <div
-      className={`${className ? className : ''} w-full `}
+      className={`${className ? className : ''} w-full hover:bg-neutral-400`}
       onClick={() => onClick()}
     >
-      <span className="flex justify-start items-center hover:bg-neutral-400 ml-3">
+      <span className="flex justify-start items-center p-1">
         <img
           className="w-10 h-10 rounded-full"
           src="https://simulationhockey.com/uploads/avatars/avatar_2856.jpg"
-          // src={user.avatar}
+          // src={`https://simulationhockey.com/${user.avatar.replace('./', '')}`}
           alt="Rounded avatar"
         />
       </span>

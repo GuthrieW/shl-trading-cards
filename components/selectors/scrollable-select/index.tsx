@@ -10,11 +10,14 @@ const ScrollableSelect = ({
   children,
 }: ScrollableSelectProps) => {
   return (
-    <aside className="w-64" aria-label={`${scrollbarTitle} Scrollbar`}>
-      <div className="overflow-y-auto border">
+    <aside
+      className="w-64 top-16 bottom-0 overflow-y-scroll absolute border-r"
+      aria-label={`${scrollbarTitle} Scrollbar`}
+    >
+      <div className="">
         <ul>
-          {children.map((child) => {
-            return <li>{child}</li>
+          {children.map((child, index) => {
+            return <li key={index}>{child}</li>
           })}
         </ul>
       </div>

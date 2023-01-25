@@ -21,10 +21,6 @@ const Community = () => {
       <NextSeo title="Community" />
       <div className="m-2">
         <h1 className="text-4xl text-center my-6">Community</h1>
-        {/* <div>
-        This should allow people to choose between finding a user and find who owns a card (and how many of that card)
-        <ButtonGroup buttons={} selectedButtonId={} />
-      </div> */}
         <CommunityTable tableData={users} />
       </div>
     </>

@@ -3,40 +3,39 @@ import { errorToast, successToast } from '@utils/toasts'
 import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 
-type UseAcceptTradeRequest = {
+type UseDeclineTradeRequest = {
   tradeID: number
 }
 
-type UseAcceptTrade = {
-  acceptTrade: Function
+type UseDeclineTrade = {
+  declineTrade: Function
   response: AxiosResponse
   isSuccess: boolean
   isLoading: boolean
   isError: any
 }
 
-const useAcceptTrade = (): UseAcceptTrade => {
+const useDeclineTrade = (): UseDeclineTrade => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
-    ({ tradeID }: UseAcceptTradeRequest) => {
+    ({ tradeID }: UseDeclineTradeRequest) => {
       return axios({
         method: POST,
-        url: `api/v2/trades/accept/${tradeID}`,
+        url: `api/v2/trades/decline/${tradeID}`,
       })
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries()
-        successToast({ successText: 'Trade Accepted' })
+        successToast({ successText: 'Trade Declined' })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Declining Trade' })
+        errorToast({ errorText: 'Error Accepting Trade' })
       },
     }
   )
 
   return {
-    acceptTrade: mutate,
+    declineTrade: mutate,
     response: data,
     isSuccess,
     isLoading,
@@ -44,4 +43,4 @@ const useAcceptTrade = (): UseAcceptTrade => {
   }
 }
 
-export default useAcceptTrade
+export default useDeclineTrade

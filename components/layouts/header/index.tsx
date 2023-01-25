@@ -66,7 +66,7 @@ const headersLinks: HeaderLink[] = [
     href: '/trade-hub',
     admin: false,
     cardTeam: false,
-    hide: true,
+    hide: false,
   },
   {
     id: 'ultimate-team',
