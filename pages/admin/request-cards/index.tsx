@@ -59,7 +59,7 @@ const RequestCards = () => {
     csvToUpload.map((row, index) => {
       if (index === 0) return
 
-      const playerData = {
+      const playerData: CardRequest = {
         teamID: parseInt(row[0]),
         playerID: parseInt(row[1]),
         player_name: row[2],

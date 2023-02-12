@@ -29,22 +29,22 @@ type Card = {
 type CardRequest = {
   teamID?: number
   playerID?: number
-  card_rarity: string
-  sub_type: string
-  player_name: string
-  position: string
-  overall: number
-  skating?: number | null
-  shooting?: number | null
-  hands?: number | null
-  checking?: number | null
-  defense?: number | null
-  high_shots?: number | null
-  low_shots?: number | null
-  quickness?: number | null
-  control?: number | null
-  conditioning?: number | null
-  season: number
+  player_name?: string
+  season?: number
+  card_rarity?: string
+  sub_type?: string
+  position?: string
+  overall?: number
+  skating?: number
+  shooting?: number
+  hands?: number
+  checking?: number
+  defense?: number
+  high_shots?: number
+  low_shots?: number
+  quickness?: number
+  control?: number
+  conditioning?: number
 }
 
 type CollectionCard = {
