@@ -6,6 +6,7 @@ import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import axios from 'axios'
+import { Card } from 'index.d'
 
 const randomIntFromInterval = (maximum: number): number => {
   const minimum = 0

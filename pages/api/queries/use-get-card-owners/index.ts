@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query'
 import axios from 'axios'
 import { GET } from '@constants/http-methods'
+import { User } from 'index.d'
 
 type UseGetCardOwnersRequest = {
   cardID: number

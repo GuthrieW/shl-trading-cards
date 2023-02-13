@@ -1,4 +1,5 @@
 import { groups } from '@utils/user-groups'
+import { User } from 'index.d'
 
 const isAdminOrCardTeam = (user: User) => {
   if (user.usergroup) {

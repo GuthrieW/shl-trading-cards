@@ -7,6 +7,7 @@ import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import fs from 'fs'
 import { pathToCardsForUpload } from '@constants/path-to-cards'
+import { Card } from 'index.d'
 
 const allowedMethods = [PATCH]
 const cors = Cors({

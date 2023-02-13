@@ -1,5 +1,5 @@
 // data types
-type Card = {
+export type Card = {
   cardID: number
   teamID: number
   playerID: number
@@ -26,7 +26,7 @@ type Card = {
   author_paid: boolean
 }
 
-type CardRequest = {
+export type CardRequest = {
   teamID?: number
   playerID?: number
   player_name?: string
@@ -47,7 +47,7 @@ type CardRequest = {
   conditioning?: number
 }
 
-type CollectionCard = {
+export type CollectionCard = {
   cardID: number
   quantity: number
   image_url: string
@@ -57,24 +57,24 @@ type CollectionCard = {
   teamID: number
 }
 
-type SetCard = {
+export type SetCard = {
   cardID: number
   setID: number
 }
 
-type Collection = {
+export type Collection = {
   userID: number
   cardID: number
   quantity: number
 }
 
-type CardSet = {
+export type CardSet = {
   setID: number
   name: string
   description: string
 }
 
-type StartingLineup = {
+export type StartingLineup = {
   userID: number
   center: number
   rightwing: number
@@ -84,7 +84,7 @@ type StartingLineup = {
   goalie: number
 }
 
-type Trade = {
+export type Trade = {
   tradeID: number
   tradeAssetID: number
   fromID: number
@@ -95,7 +95,7 @@ type Trade = {
   update_data: Date
 }
 
-type User = {
+export type User = {
   uid: number
   username: string
   avatar?: string
@@ -105,16 +105,16 @@ type User = {
   subscription?: number
 }
 
-type PackKey = 'base'
-type PackLabel = 'Base'
+export type PackKey = 'base'
+export type PackLabel = 'Base'
 
-type PackType = {
+export type PackType = {
   key: PackKey
   label: PackLabel
   imageUrl: string
 }
 
-type UserPack = {
+export type UserPack = {
   packID: number
   userID: number
   packType: string
@@ -122,21 +122,21 @@ type UserPack = {
 }
 
 // table types
-type PlayerTableButtons = {
+export type PlayerTableButtons = {
   id: PlayerTableButtonId
   text: string
   disabled: boolean
   onClick: Function
 }
-type PlayerTableButtonId = 'skaters' | 'goalies'
+export type PlayerTableButtonId = 'skaters' | 'goalies'
 
-type CollectionTableButtons = {
+export type CollectionTableButtons = {
   id: string
   text: string
   onClick: Function
 }
 
-type ColumnData = {
+export type ColumnData = {
   id: string
   Header: string
   accessor: string
@@ -144,11 +144,11 @@ type ColumnData = {
   sortDescFirst: boolean
 }
 
-type GridColumn = {
+export type GridColumn = {
   accessor: string
 }
 
-type PackData = {
+export type PackData = {
   packID: number
   userID: number
   packType: string

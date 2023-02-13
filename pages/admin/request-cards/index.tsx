@@ -9,6 +9,7 @@ import { NextSeo } from 'next-seo'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import CSVReader from 'react-csv-reader'
+import { CardRequest } from 'index.d'
 
 const RequestCards = () => {
   const parsedUid = getUidFromSession()

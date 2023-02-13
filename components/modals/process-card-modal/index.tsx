@@ -2,6 +2,7 @@ import React from 'react'
 import Modal from '../modal'
 import Button from '@components/buttons/button'
 import pathToCards from '@constants/path-to-cards'
+import { Card } from 'index'
 
 type ProcessCardModalProps = {
   setShowModal: Function

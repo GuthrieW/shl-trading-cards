@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query'
 import axios from 'axios'
 import { GET } from '@constants/http-methods'
+import { CollectionCard } from 'index.d'
 
 type UseGetUserCardsRequest = {
   uid: number

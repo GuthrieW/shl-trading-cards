@@ -13,6 +13,7 @@ import {
 import Pagination from '../pagination'
 import Table from '../table'
 import attributesMap from '@constants/attributes-map'
+import { Card, PlayerTableButtonId, PlayerTableButtons } from 'index'
 
 export type EditCardTableProps = {
   tableData: Card[]

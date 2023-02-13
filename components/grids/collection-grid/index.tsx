@@ -7,6 +7,7 @@ import CardLightBoxModal from '@components/modals/card-lightbox-modal'
 import DropdownWithCheckboxGroup from '@components/dropdowns/dropdown-with-checkbox-group'
 import { useVirtual } from 'react-virtual'
 import teamsMap from '@constants/teams-map'
+import { CollectionCard, CollectionTableButtons } from 'index'
 
 type CollectionGridProps = {
   gridData: CollectionCard[]

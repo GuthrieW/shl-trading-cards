@@ -5,6 +5,7 @@ import { UseGetApprovedCardsKey } from '@pages/api/queries/use-get-approved-card
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 import { toast } from 'react-toastify'
 import { errorToast, successToast } from '@utils/toasts'
+import { Card } from 'index.d'
 
 type UseEditCardRequest = {
   card: Card

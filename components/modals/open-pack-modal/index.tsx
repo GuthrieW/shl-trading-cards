@@ -2,6 +2,7 @@ import React from 'react'
 import packsMap, { packInfo } from '@constants/packs-map'
 import Modal from '../modal'
 import Button from '@components/buttons/button'
+import { UserPack } from 'index'
 
 type OpenPackModalProps = {
   onAccept: Function

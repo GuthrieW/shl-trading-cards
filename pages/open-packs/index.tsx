@@ -8,6 +8,7 @@ import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useState } from 'react'
 import Router from 'next/router'
 import { NextSeo } from 'next-seo'
+import { UserPack } from 'index.d'
 
 const OpenPacks = () => {
   const [showModal, setShowModal] = useState<boolean>(false)

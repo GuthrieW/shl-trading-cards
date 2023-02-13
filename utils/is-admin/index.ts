@@ -1,4 +1,5 @@
 import { groups } from '@utils/user-groups'
+import { User } from 'index.d'
 
 const isAdmin = (user: User) => {
   if (user.displaygroup) {

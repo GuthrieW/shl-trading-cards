@@ -1,4 +1,5 @@
 import SearchBar from '@components/inputs/search-bar'
+import { ColumnData, User } from 'index.d'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
 import {

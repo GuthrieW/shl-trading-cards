@@ -14,6 +14,12 @@ import {
 import Pagination from '../pagination'
 import Table from '../table'
 import attributesMap from '@constants/attributes-map'
+import {
+  Card,
+  ColumnData,
+  PlayerTableButtonId,
+  PlayerTableButtons,
+} from 'index'
 
 type ClaimCardsTableProps = {
   tableData: Card[]

@@ -1,5 +1,6 @@
 import { GET } from '@constants/http-methods'
 import axios from 'axios'
+import { User } from 'index.d'
 import { useQuery } from 'react-query'
 
 type UseGetUserRequest = {

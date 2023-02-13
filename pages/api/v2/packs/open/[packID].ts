@@ -9,6 +9,7 @@ import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import packsMap from '@constants/packs-map'
+import { Card, PackData } from 'index.d'
 
 const allowedMethods = []
 const cors = Cors({

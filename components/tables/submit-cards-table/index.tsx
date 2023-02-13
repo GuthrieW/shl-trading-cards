@@ -11,6 +11,7 @@ import Pagination from '../pagination'
 import Table from '../table'
 import SubmitCardModal from '@components/modals/submit-card-modal'
 import attributesMap from '@constants/attributes-map'
+import { Card, PlayerTableButtonId, PlayerTableButtons } from 'index'
 
 type SubmitCardsTableProps = {
   tableData: Card[]

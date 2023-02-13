@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 import { errorToast, successToast } from '@utils/toasts'
+import { PackKey } from 'index.d'
 
 type IssuePackRequest = {
   packType: PackKey

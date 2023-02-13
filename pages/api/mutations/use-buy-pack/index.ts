@@ -4,6 +4,7 @@ import { POST } from '@constants/http-methods'
 import { UseGetUserCardsKey } from '@pages/api/queries/use-get-user-cards'
 import { UseGetUserKey } from '@pages/api/queries/use-get-user'
 import { errorToast, successToast } from '@utils/toasts'
+import { PackKey } from 'index.d'
 
 type UseBuyPackRequest = {
   uid: number

@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-
 import { GET } from '@constants/http-methods'
 import { queryDatabase } from '@pages/api/database/database'
 import { ArgumentParser } from 'argparse'
 import axios, { AxiosResponse } from 'axios'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import teamsMap from '@constants/teams-map'
+import { CardRequest } from '../index.d'
 
 type Position = 'F' | 'D' | 'G'
 

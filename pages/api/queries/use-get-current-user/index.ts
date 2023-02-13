@@ -2,6 +2,7 @@ import { useQuery } from 'react-query'
 import axios from 'axios'
 import { GET } from '@constants/http-methods'
 import getUidFromSession from '@utils/get-uid-from-session'
+import { User } from 'index.d'
 
 type UseGetCurrentUserRequest = {}
 

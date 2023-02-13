@@ -13,6 +13,7 @@ import ProcessCardModal from '@components/modals/process-card-modal'
 import { useAcceptCard, useDenyCard } from '@pages/api/mutations'
 import { warningToast } from '@utils/toasts'
 import attributesMap from '@constants/attributes-map'
+import { Card, PlayerTableButtonId, PlayerTableButtons } from 'index'
 
 type ProcessCardsTableProps = {
   tableData: Card[]
