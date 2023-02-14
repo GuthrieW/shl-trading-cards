@@ -3,7 +3,7 @@ import React from 'react'
 import { Field, Form, Formik } from 'formik'
 import rarityMap from '@constants/rarity-map'
 import positionMap from '@constants/position-map'
-import { Card } from 'index'
+import { Card } from 'index.d'
 
 type FieldType = 'string_input' | 'number_input' | 'switch' | 'select'
 

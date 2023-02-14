@@ -1,8 +1,8 @@
 import React from 'react'
-import packsMap, { packInfo } from '@constants/packs-map'
+import packsMap from '@constants/packs-map'
 import Modal from '../modal'
 import Button from '@components/buttons/button'
-import { UserPack } from 'index'
+import { UserPack } from 'index.d'
 
 type OpenPackModalProps = {
   onAccept: Function

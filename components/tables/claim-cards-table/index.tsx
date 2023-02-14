@@ -19,7 +19,7 @@ import {
   ColumnData,
   PlayerTableButtonId,
   PlayerTableButtons,
-} from 'index'
+} from 'index.d'
 
 type ClaimCardsTableProps = {
   tableData: Card[]

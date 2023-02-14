@@ -1,7 +1,7 @@
 import React from 'react'
 import Modal from '../modal'
 import Button from '@components/buttons/button'
-import { User } from 'index'
+import { User } from 'index.d'
 
 type IssuePacksModalProps = {
   setShowModal: Function

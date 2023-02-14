@@ -13,7 +13,7 @@ import IssuePacksModal from '@components/modals/issue-packs-modal'
 import { warningToast } from '@utils/toasts'
 import getUidFromSession from '@utils/get-uid-from-session'
 import packsMap from '@constants/packs-map'
-import { ColumnData, User } from 'index'
+import { ColumnData, User } from 'index.d'
 
 type IssuePacksTableProps = {
   tableData: User[]
