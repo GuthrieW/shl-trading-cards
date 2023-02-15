@@ -8,13 +8,13 @@ Overall (OV) = Sum of all attributes + 2
 
 Skating (SK) = acceleration + agility + balance + speed + stamina / 5
 
-Shooting (SHT) = screening + gettingOpen + Shooting Accuracy / 3
+Shooting (SHT) = screening + getting open + shooting accuracy / 3
 
-Hands (HND) = passing + pack handling + offensive Read / 3
+Hands (HND) = passing + pack handling + offensive read / 3
 
 Checking (CHK) = checking + hitting + strength / 3
 
-Defense (DEF) = positioning + stickcehcking + defensive read / 3
+Defense (DEF) = positioning + stickchecking + defensive read / 3
 
 ### Defense
 
@@ -22,13 +22,13 @@ Overall (OV) = Sum of all attributes + 2
 
 Skating (SK) = acceleration + agility + balance + speed + stamina / 5
 
-Shooting (SHT) = shooting Range + getting open / 2
+Shooting (SHT) = shooting range + getting open / 2
 
-Hands (HND) = passing + pack handling + offensive Read / 3
+Hands (HND) = passing + puck handling + offensive read / 3
 
 Checking (CHK) = checking + hitting + strength / 3
 
-Defense (DEF) = positioning + stickcehcking + shotblocking + defensive read / 3
+Defense (DEF) = positioning + stickchecking + shotblocking + defensive read / 4
 
 ### Goalie
 
@@ -38,11 +38,11 @@ High Shots (HGH) = blocker + glove / 2
 
 Low Shots (LOW) = low shots + pokecheck /2
 
-Quickness (QCK) = positioning + rebound /2
+Quickness (QCK) = reflexes + skating /2
 
-Control (CTL) = goalie stamina + mentalToughness + recovery / 3
+Control (CTL) = puckhandling + rebound + positioning / 3
 
-Conditioning (CON) = glove + recovery + puckhandling
+Conditioning (CON) = recovery + mental toughness + goalie stamina / 3
 
 ## Rarity Formulas
 

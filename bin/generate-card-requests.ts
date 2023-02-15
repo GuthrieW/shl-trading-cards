@@ -193,10 +193,11 @@ const calculateAttributesAndPosition = (
   if (player.position === 'G') {
     const high_shots = (player.blocker + player.glove) / 2
     const low_shots = (player.lowShots + player.pokeCheck) / 2
-    const quickness = (player.positioning + player.rebound) / 2
+    const quickness = (player.reflexes + player.skating) / 2
     const control =
-      (player.goalieStamina + player.mentalToughness + player.recovery) / 3
-    const conditioning = (player.recovery + player.puckhandling) / 2
+      (player.puckhandling + player.rebound + player.positioning) / 3
+    const conditioning =
+      (player.recovery + player.mentalToughness + player.goalieStamina) / 3
     const overall =
       high_shots + low_shots + quickness + conditioning + conditioning
 
@@ -246,6 +247,24 @@ const teamNameToId = (teamName: string): number => {
     .teamID
 }
 
+const getSameAndHigherRarities = (rarity: string): string => {
+  if (rarity === rarityMap.bronze.value) {
+    return `(card_rarity="${rarityMap.bronze.value}" OR card_rarity="${rarityMap.silver.value}" OR card_rarity="${rarityMap.gold.value}" OR card_rarity="${rarityMap.ruby.value}" OR card_rarity="${rarityMap.diamond.value}")`
+  }
+  if (rarity === rarityMap.silver.value) {
+    return `(card_rarity="${rarityMap.silver.value}" OR card_rarity="${rarityMap.gold.value}" OR card_rarity="${rarityMap.ruby.value}" OR card_rarity="${rarityMap.diamond.value}")`
+  }
+  if (rarity === rarityMap.gold.value) {
+    return `(card_rarity="${rarityMap.gold.value}" OR card_rarity="${rarityMap.ruby.value}" OR card_rarity="${rarityMap.diamond.value}")`
+  }
+  if (rarity === rarityMap.ruby.value) {
+    return `( card_rarity="${rarityMap.ruby.value}" OR card_rarity="${rarityMap.diamond.value}")`
+  }
+  if (rarity === rarityMap.diamond.value) {
+    return `(card_rarity="${rarityMap.diamond.value}")`
+  }
+}
+
 /**
  * check if cards already exist with the same playerId, teamId, player_name and card_rarity
  */
@@ -254,7 +273,6 @@ const checkForDuplicatesAndGenerateCardRequestData = async (
 ): Promise<CardRequest[]> => {
   const unfilteredPlayerRequests: CardRequest[] = await Promise.all(
     players.map(async (player: IndexPlayer) => {
-      // const calculatedPlayerData = calculatePlayerRequestData(player)
       const {
         position,
         overall,
@@ -271,6 +289,8 @@ const checkForDuplicatesAndGenerateCardRequestData = async (
       } = calculateAttributesAndPosition(player)
       const rarity = calculateRarity(position, overall)
       const teamId = teamNameToId(player.team)
+      const raritiesToCheck = getSameAndHigherRarities(rarity)
+
       const playerResult = await queryDatabase(
         SQL`
         SELECT count(*) as amount
@@ -278,7 +298,7 @@ const checkForDuplicatesAndGenerateCardRequestData = async (
         WHERE playerId=${player.id}
           AND teamId=${player.team}
           AND player_name=${player.name}
-          AND card_rarity=${rarity};`
+          AND ${raritiesToCheck};`
       )
 
       return !playerResult.amount
