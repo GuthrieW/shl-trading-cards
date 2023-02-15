@@ -88,12 +88,21 @@ let args: {
 /**
  * get players from the index API for a season
  */
-const getIndexPlayers = async (season: number): Promise<IndexPlayer[]> => {
+const getIndexSkaters = async (season: number): Promise<IndexPlayer[]> => {
   const players: AxiosResponse<IndexPlayer[], any> = await axios({
     method: GET,
     url: `https://index.simulationhockey.com/api/v1/players/ratings?season=${season}`,
   })
-  if (players.status !== 200) throw new Error('Error fetching players')
+  if (players.status !== 200) throw new Error('Error fetching skaters')
+  return players.data
+}
+
+const getIndexGoalies = async (season: number): Promise<IndexPlayer[]> => {
+  const players: AxiosResponse<IndexPlayer[], any> = await axios({
+    method: GET,
+    url: `https://index.simulationhockey.com/api/v1/goalies/ratings?season=${season}`,
+  })
+  if (players.status !== 200) throw new Error('Error fetching goalies')
   return players.data
 }
 
@@ -360,9 +369,10 @@ async function main() {
   if (!args.season) throw new Error('argument --season number required')
   if (!args.season) throw new Error('argument --dryRun required')
 
-  const players: IndexPlayer[] = await getIndexPlayers(args.season)
+  const skaters: IndexPlayer[] = await getIndexSkaters(args.season)
+  const goalies: IndexPlayer[] = await getIndexGoalies(args.season)
   const cardRequests: CardRequest[] =
-    await checkForDuplicatesAndGenerateCardRequestData(players)
+    await checkForDuplicatesAndGenerateCardRequestData([...skaters, ...goalies])
   const cardRequestResult: string = await requestCards(
     cardRequests,
     args.dryRun
