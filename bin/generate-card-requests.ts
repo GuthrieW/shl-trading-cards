@@ -6,15 +6,11 @@ import axios, { AxiosResponse } from 'axios'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import teamsMap from '@constants/teams-map'
 import { CardRequest } from '../index.d'
+import rarityMap from '@constants/rarity-map'
 
 type Position = 'F' | 'D' | 'G'
 
-type IndexPlayer = {
-  id: string
-  league: number
-  season: number
-  name: string
-  team: string
+type IndexSkaterAttributes = {
   screening: number
   gettingOpen: number
   passing: number
@@ -36,16 +32,41 @@ type IndexPlayer = {
   stamina: number
   strength: number
   fighting: number
-  aggression: number
-  bravery: number
-  determination: number
-  teamPlayer: number
-  leadership: number
-  temperament: number
-  professionalism: number
-  position: string
-  appliedTPE: number
 }
+
+type IndexGoalieAttributes = {
+  blocker: number
+  glove: number
+  passing: number
+  pokeCheck: number
+  positioning: number
+  rebound: number
+  recovery: number
+  puckhandling: number
+  lowShots: number
+  reflexes: number
+  skating: number
+  mentalToughness: number
+  goalieStamina: number
+}
+
+type IndexPlayer = IndexSkaterAttributes &
+  IndexGoalieAttributes & {
+    id: string
+    league: number
+    season: number
+    name: string
+    team: string
+    aggression: number
+    bravery: number
+    determination: number
+    teamPlayer: number
+    leadership: number
+    temperament: number
+    professionalism: number
+    position: string
+    appliedTPE: number
+  }
 
 let parser = new ArgumentParser()
 
@@ -77,21 +98,122 @@ const getIndexPlayers = async (season: number): Promise<IndexPlayer[]> => {
 }
 
 /**
- * transform index position (LW, C, RW, LD, RD, G) into shl trading cards positons (F, D, G)
+ * transform an index player into trading card attributes and position
+ * formulas found in the readme
  */
-const indexPositionToCardPosition = (position: string): Position => {
-  switch (position) {
-    case 'C':
-    case 'LW':
-    case 'RW':
-      return 'F'
-    case 'LD':
-    case 'RD':
-      return 'D'
-    case 'G':
-      return 'G'
-    default:
-      return 'F'
+const calculateAttributesAndPosition = (
+  player: IndexPlayer
+): {
+  skating: number
+  shooting: number
+  hands: number
+  checking: number
+  defense: number
+  high_shots: number
+  low_shots: number
+  quickness: number
+  control: number
+  conditioning: number
+  overall: number
+  position: Position
+} => {
+  if (
+    player.position === 'C' ||
+    player.position === 'LW' ||
+    player.position === 'RW'
+  ) {
+    const skating =
+      (player.acceleration +
+        player.agility +
+        player.balance +
+        player.speed +
+        player.stamina) /
+      5
+    const shooting =
+      (player.screening + player.gettingOpen + player.shootingAccuracy) / 3
+    const hands =
+      (player.passing + player.puckhandling + player.offensiveRead) / 3
+    const checking = (player.checking + player.hitting + player.strength) / 3
+    const defense =
+      (player.positioning + player.stickchecking + player.defensiveRead) / 3
+    const overall = skating + shooting + hands + checking + defense + 2
+
+    return {
+      overall,
+      skating,
+      shooting,
+      hands,
+      checking,
+      defense,
+      high_shots: null,
+      low_shots: null,
+      quickness: null,
+      control: null,
+      conditioning: null,
+      position: 'F',
+    }
+  }
+
+  if (player.position === 'LD' || player.position === 'RD') {
+    const skating =
+      (player.acceleration +
+        player.agility +
+        player.balance +
+        player.speed +
+        player.stamina) /
+      5
+    const shooting = (player.shootingRange + player.gettingOpen) / 2
+    const hands =
+      (player.passing + player.puckhandling + player.offensiveRead) / 3
+    const checking = (player.checking + player.hitting + player.strength) / 3
+    const defense =
+      (player.positioning +
+        player.stickchecking +
+        player.shotBlocking +
+        player.defensiveRead) /
+      4
+    const overall = skating + shooting + hands + checking + defense + 2
+
+    return {
+      overall,
+      skating,
+      shooting,
+      hands,
+      checking,
+      defense,
+      high_shots: null,
+      low_shots: null,
+      quickness: null,
+      control: null,
+      conditioning: null,
+      position: 'D',
+    }
+  }
+
+  if (player.position === 'G') {
+    const high_shots = (player.blocker + player.glove) / 2
+    const low_shots = (player.lowShots + player.pokeCheck) / 2
+    const quickness = (player.positioning + player.rebound) / 2
+    const control =
+      (player.goalieStamina + player.mentalToughness + player.recovery) / 3
+    const conditioning = (player.recovery + player.puckhandling) / 2
+    const overall =
+      high_shots + low_shots + quickness + conditioning + conditioning
+
+    return {
+      skating: null,
+      shooting: null,
+      hands: null,
+      checking: null,
+      defense: null,
+      high_shots,
+      low_shots,
+      quickness,
+      control,
+      conditioning,
+      overall,
+      position: 'G',
+    }
   }
 }
 
@@ -100,71 +222,19 @@ const indexPositionToCardPosition = (position: string): Position => {
  */
 const calculateRarity = (position: Position, overall: number): string => {
   if (position === 'F' || position === 'D') {
-    if (overall < 100) {
-      return 'Diamond'
-    } else if (overall > 95 && overall < 90) {
-      return 'Ruby'
-    } else {
-      return 'Gold'
-    }
+    if (overall < 70) return rarityMap.bronze.value
+    if (overall >= 70 && overall < 80) return rarityMap.silver.value
+    if (overall >= 80 && overall < 85) return rarityMap.gold.value
+    if (overall >= 85 && overall < 88) return rarityMap.ruby.value
+    if (overall >= 88) return rarityMap.diamond.value
+    return rarityMap.bronze.label
   } else {
-    if (overall < 100) {
-      return 'Diamond'
-    } else if (overall > 95 && overall < 90) {
-      return 'Ruby'
-    } else {
-      return 'Gold'
-    }
-  }
-}
-
-/**
- * calculate a card's position, rarity, and attriubtes
- */
-const calculatePlayerRequestData = (
-  player: IndexPlayer
-): {
-  position: Position
-  rarity: string
-  overall?: number
-  skating?: number
-  shooting?: number
-  hands?: number
-  checking?: number
-  defense?: number
-  high_shots?: number
-  low_shots?: number
-  quickness?: number
-  control?: number
-  conditioning?: number
-} => {
-  const overall = 0
-  const skating = 0
-  const shooting = 0
-  const hands = 0
-  const checking = 0
-  const defense = 0
-  const high_shots = 0
-  const low_shots = 0
-  const quickness = 0
-  const control = 0
-  const conditioning = 0
-  const position = indexPositionToCardPosition(player.position)
-  const rarity = calculateRarity(position, overall)
-
-  return {
-    position,
-    rarity,
-    skating,
-    shooting,
-    hands,
-    checking,
-    defense,
-    high_shots,
-    low_shots,
-    quickness,
-    control,
-    conditioning,
+    if (overall < 76) return rarityMap.bronze.value
+    if (overall >= 76 && overall < 81) return rarityMap.silver.value
+    if (overall >= 81 && overall < 86) return rarityMap.gold.value
+    if (overall >= 86 && overall < 89) return rarityMap.ruby.value
+    if (overall >= 89) return rarityMap.diamond.value
+    return rarityMap.bronze.label
   }
 }
 
@@ -184,7 +254,22 @@ const checkForDuplicatesAndGenerateCardRequestData = async (
 ): Promise<CardRequest[]> => {
   const unfilteredPlayerRequests: CardRequest[] = await Promise.all(
     players.map(async (player: IndexPlayer) => {
-      const calculatedPlayerData = calculatePlayerRequestData(player)
+      // const calculatedPlayerData = calculatePlayerRequestData(player)
+      const {
+        position,
+        overall,
+        skating,
+        shooting,
+        hands,
+        checking,
+        defense,
+        high_shots,
+        low_shots,
+        quickness,
+        control,
+        conditioning,
+      } = calculateAttributesAndPosition(player)
+      const rarity = calculateRarity(position, overall)
       const teamId = teamNameToId(player.team)
       const playerResult = await queryDatabase(
         SQL`
@@ -193,7 +278,7 @@ const checkForDuplicatesAndGenerateCardRequestData = async (
         WHERE playerId=${player.id}
           AND teamId=${player.team}
           AND player_name=${player.name}
-          AND card_rarity=${calculatedPlayerData.rarity};`
+          AND card_rarity=${rarity};`
       )
 
       return !playerResult.amount
@@ -202,20 +287,20 @@ const checkForDuplicatesAndGenerateCardRequestData = async (
             playerID: Number(player.id),
             player_name: player.name,
             season: player.season,
-            card_rarity: calculatedPlayerData.rarity,
+            card_rarity: rarity,
             sub_type: 'null',
-            position: calculatedPlayerData.position,
-            overall: calculatedPlayerData.overall,
-            skating: calculatedPlayerData.skating,
-            shooting: calculatedPlayerData.shooting,
-            hands: calculatedPlayerData.hands,
-            checking: calculatedPlayerData.checking,
-            defense: calculatedPlayerData.defense,
-            high_shots: calculatedPlayerData.high_shots,
-            low_shots: calculatedPlayerData.low_shots,
-            quickness: calculatedPlayerData.quickness,
-            control: calculatedPlayerData.control,
-            conditioning: calculatedPlayerData.conditioning,
+            position,
+            overall,
+            skating,
+            shooting,
+            hands,
+            checking,
+            defense,
+            high_shots,
+            low_shots,
+            quickness,
+            control,
+            conditioning,
           } as CardRequest)
         : null
     })
