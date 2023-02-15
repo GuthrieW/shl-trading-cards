@@ -280,10 +280,7 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
       warningToast({ warningText: 'Already editing a card' })
     }
     const result = editCard({ card: newCardData })
-    console.log('result', result)
   }
-
-  console.log('response', response)
 
   return (
     <div>

@@ -11,19 +11,16 @@ const TradeHub = () => {
   const uid = getUidFromSession()
   const {
     userTrades,
-    isSuccess: userTradesIsSuccess,
     isLoading: userTradesIsLoading,
     isError: userTradesIsError,
   } = useGetUserTrades({ uid })
   const {
     users,
-    isSuccess: usersIsSuccess,
     isLoading: usersIsLoading,
     isError: usersIsError,
   } = useGetAllUsers({})
   const {
     allCards,
-    isSuccess: allCardsIsSuccess,
     isLoading: allCardsIsLoading,
     isError: allCardsIsError,
   } = useGetAllCards({})
@@ -31,7 +28,7 @@ const TradeHub = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [selectedTrade, setSelectedTrade] = useState<Trade>(null)
 
-  const handleOptionClick = (trade) => {
+  const handleOptionClick = (trade: Trade) => {
     setSelectedTrade(trade)
     setShowModal(true)
   }

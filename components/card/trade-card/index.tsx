@@ -1,4 +1,5 @@
 import { useGetUser } from '@pages/api/queries'
+import getUidFromSession from '@utils/get-uid-from-session'
 import React from 'react'
 
 type TradeCardProps = {
@@ -7,24 +8,71 @@ type TradeCardProps = {
   trade: Trade
 }
 
+const fixAvatar = (avatar: string): string => {
+  if (avatar.startsWith('.')) {
+    return 'https://simulationhockey.com' + avatar?.substring(1)
+  }
+
+  return avatar
+}
+
 const TradeCard = ({ className, trade, onClick }: TradeCardProps) => {
-  const { user, isSuccess, isLoading, isError } = useGetUser({
-    uid: trade.toID,
+  const currentUserId = getUidFromSession()
+  console
+  const {
+    user: toUser,
+    isLoading: toUserIsLoading,
+    isError: toUserIsError,
+  } = useGetUser({
+    uid: trade.recipientid,
+  })
+  const {
+    user: fromUser,
+    isLoading: fromUserIsLoading,
+    isError: fromUserIsError,
+  } = useGetUser({
+    uid: trade.initiatorid,
   })
 
+  if (
+    toUserIsLoading ||
+    toUserIsError ||
+    fromUserIsLoading ||
+    fromUserIsError
+  ) {
+    return null
+  }
+
+  const otherUser = currentUserId === trade.initiatorid ? toUser : fromUser
+
+  console.log('otherUser', otherUser)
   return (
     <div
-      className={`${className ? className : ''} w-full hover:bg-neutral-400`}
+      className={`${
+        className ? className : ''
+      } h-full w-full hover:bg-neutral-400 flex justify-between`}
       onClick={() => onClick()}
+      title={trade.trade_status.toUpperCase()}
     >
-      <span className="flex justify-start items-center p-1">
+      <div className="p-1">
         <img
           className="w-10 h-10 rounded-full"
-          src="https://simulationhockey.com/uploads/avatars/avatar_2856.jpg"
-          // src={`https://simulationhockey.com/${user.avatar.replace('./', '')}`}
+          src={fixAvatar(otherUser?.avatar)}
           alt="Rounded avatar"
         />
-      </span>
+      </div>
+      <div className="h-full flex flex-col m-1">
+        <div
+          className={`inline-block w-2 h-2 rounded-full ${
+            trade.trade_status === 'complete'
+              ? 'bg-green-600'
+              : trade.trade_status === 'pending'
+              ? 'bg-yellow-600'
+              : 'bg-red-600'
+          }`}
+        ></div>
+        <div>{trade.update_date}</div>
+      </div>
     </div>
   )
 }

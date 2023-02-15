@@ -26,7 +26,6 @@ const AuthModal = () => (
 
 export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   const [showModal, setShowModal] = useState<boolean>(false)
-
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -71,7 +70,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Hydrate state={pageProps.dehydratedState}>
+      <Hydrate state={{}}>
         {showModal && <AuthModal />}
         {!showModal && (
           <DefaultLayout>

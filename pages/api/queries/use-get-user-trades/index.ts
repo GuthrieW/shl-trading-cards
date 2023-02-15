@@ -23,13 +23,13 @@ const useGetUserTrades = ({
     async () => {
       return await axios({
         method: GET,
-        url: `/api/v2/trades/${uid}`,
+        url: `/api/v2/trades/user/${uid}`,
       })
     }
   )
 
   return {
-    userTrades: data?.data || [],
+    userTrades: Array.isArray(data?.data[0]) ? data.data[0] : [],
     isSuccess,
     isLoading: isFetching,
     isError: error,

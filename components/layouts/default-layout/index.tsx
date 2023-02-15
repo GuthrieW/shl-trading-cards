@@ -1,8 +1,8 @@
 import { useGetCurrentUser } from '@pages/api/queries'
-import Footer from '../footer'
 import Header from '../header'
 import { getUidFromSession } from '@utils/index'
 import Router from 'next/router'
+import ErrorModal from '@components/modals/error-modal'
 
 const DefaultLayout = ({ children }) => {
   const { user, isLoading, isError } = useGetCurrentUser({
@@ -14,14 +14,12 @@ const DefaultLayout = ({ children }) => {
   }
 
   if (!user.uid) {
-    Router.reload()
+    return <ErrorModal title="Could not find user" subtitle="" />
   } else {
     return (
       <div className="h-full w-full">
         <Header user={user} />
         {children}
-        {/* Talk with Jess about the footer covering pages */}
-        {/* <Footer /> */}
       </div>
     )
   }

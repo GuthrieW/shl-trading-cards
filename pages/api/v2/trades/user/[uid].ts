@@ -21,6 +21,7 @@ const index = async (
   if (method === GET) {
     const { uid } = query
     const result = await queryDatabase(SQL`CALL get_trades_by_user(${uid});`)
+    console.log('result', result)
     response.status(StatusCodes.OK).json(result)
     return
   }
