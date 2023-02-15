@@ -86,7 +86,7 @@ let args: {
 } = parser.parse_args()
 
 /**
- * get players from the index API for a season
+ * get skaters from the index API for a season
  */
 const getIndexSkaters = async (season: number): Promise<IndexPlayer[]> => {
   const players: AxiosResponse<IndexPlayer[], any> = await axios({
@@ -97,6 +97,9 @@ const getIndexSkaters = async (season: number): Promise<IndexPlayer[]> => {
   return players.data
 }
 
+/**
+ * get goalies from the index API for a season
+ */
 const getIndexGoalies = async (season: number): Promise<IndexPlayer[]> => {
   const players: AxiosResponse<IndexPlayer[], any> = await axios({
     method: GET,
