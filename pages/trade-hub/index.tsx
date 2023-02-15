@@ -41,9 +41,9 @@ const TradeHub = () => {
     <>
       <NextSeo title="Trades" />
       <ScrollableSelect scrollbarTitle="Trades">
-        {userTrades.map((trade) => (
+        {[...userTrades, ...userTrades].map((trade) => (
           <TradeCard
-            key={trade.tradeID}
+            key={trade.tradeid}
             onClick={handleOptionClick}
             trade={trade}
             className={'border-t'}

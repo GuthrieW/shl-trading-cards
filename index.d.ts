@@ -94,6 +94,20 @@ type Trade = {
   update_date: Date
 }
 
+type TradeDetails = {
+  tradeID: number
+  initiatorID: number
+  recipientID: number
+  trade_status: TradeStatus
+  ownedcardid: number
+  cardID: number
+  image_url: string
+  toID: number
+  fromID: numer
+  create_date: Date
+  update_date: Date
+}
+
 type User = {
   uid: number
   username: string

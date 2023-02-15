@@ -23,6 +23,7 @@ const index = async (
     const result = await queryDatabase(
       SQL`CALL get_trade_details_by_tradeID(${id});`
     )
+    console.log('result', result)
     response.status(StatusCodes.OK).json(result)
     return
   }
