@@ -1,14 +1,14 @@
-import { NextApiRequest, NextApiResponse } from 'next'
+import { POST } from '@constants/http-methods'
 import middleware from '@pages/api/database/middleware'
+import { NextApiRequest, NextApiResponse } from 'next'
 import Cors from 'cors'
-import { GET } from '@constants/index'
+import { queryDatabase } from '@pages/api/database/database'
 import SQL from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
-import { queryDatabase } from '@pages/api/database/database'
 
-const allowedMethods = [GET]
+const allowedMethods = [POST]
 const cors = Cors({
-  methods: allowedMethods,
+  method: allowedMethods,
 })
 
 const index = async (
@@ -18,11 +18,13 @@ const index = async (
   await middleware(request, response, cors)
   const { method, query } = request
 
-  if (method === GET) {
-    const { uid } = query
-    const result = await queryDatabase(SQL`CALL get_trades_by_user(${uid});`)
-    response.status(StatusCodes.OK).json(result)
+  if (method === POST) {
+    response.status(StatusCodes.NOT_IMPLEMENTED).end()
     return
+    // const { id } = query
+    // const result = await queryDatabase(SQL``)
+    // response.status(StatusCodes.OK).json(result)
+    // return
   }
 
   response.setHeader('Allowed', allowedMethods)

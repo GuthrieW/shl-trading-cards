@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 
 type UseDeclineTradeRequest = {
-  tradeID: number
+  id: number
 }
 
 type UseDeclineTrade = {
@@ -18,10 +18,10 @@ type UseDeclineTrade = {
 const useDeclineTrade = (): UseDeclineTrade => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
-    ({ tradeID }: UseDeclineTradeRequest) => {
+    ({ id }: UseDeclineTradeRequest) => {
       return axios({
         method: POST,
-        url: `api/v2/trades/decline/${tradeID}`,
+        url: `api/v2/trades/decline/${id}`,
       })
     },
     {
@@ -29,7 +29,7 @@ const useDeclineTrade = (): UseDeclineTrade => {
         successToast({ successText: 'Trade Declined' })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Accepting Trade' })
+        errorToast({ errorText: 'Error Declining Trade' })
       },
     }
   )

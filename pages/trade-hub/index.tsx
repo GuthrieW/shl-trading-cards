@@ -33,6 +33,11 @@ const TradeHub = () => {
     setShowModal(true)
   }
 
+  const closeModal = () => {
+    setShowModal(false)
+    setSelectedTrade(null)
+  }
+
   if (usersIsLoading || allCardsIsLoading || userTradesIsLoading) {
     return null
   }
@@ -44,7 +49,9 @@ const TradeHub = () => {
         {[...userTrades, ...userTrades].map((trade) => (
           <TradeCard
             key={trade.tradeid}
-            onClick={handleOptionClick}
+            onClick={() => {
+              handleOptionClick(trade)
+            }}
             trade={trade}
             className={'border-t'}
           />
@@ -54,7 +61,7 @@ const TradeHub = () => {
       {showModal && (
         <TradeViewerModal
           userId={uid}
-          setShowModal={setShowModal}
+          closeModal={closeModal}
           trade={selectedTrade}
         />
       )}

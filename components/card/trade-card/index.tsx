@@ -19,7 +19,6 @@ const fixAvatar = (avatar: string): string => {
 
 const TradeCard = ({ className, trade, onClick }: TradeCardProps) => {
   const currentUserId = getUidFromSession()
-  console
   const {
     user: toUser,
     isLoading: toUserIsLoading,

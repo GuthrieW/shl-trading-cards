@@ -6,7 +6,7 @@ type InfoCardProps = {
 }
 
 const InfoCard = ({ children, className }: InfoCardProps) => (
-  <div className={`${className ? className : ''} rounded-md shadow-md p-4 m-4`}>
+  <div className={`rounded-md shadow-md p-4 m-4 ${className ? className : ''}`}>
     {children}
   </div>
 )

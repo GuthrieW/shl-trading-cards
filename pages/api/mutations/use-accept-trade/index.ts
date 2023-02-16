@@ -4,7 +4,7 @@ import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 
 type UseAcceptTradeRequest = {
-  tradeID: number
+  id: number
 }
 
 type UseAcceptTrade = {
@@ -18,10 +18,10 @@ type UseAcceptTrade = {
 const useAcceptTrade = (): UseAcceptTrade => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
-    ({ tradeID }: UseAcceptTradeRequest) => {
+    ({ id }: UseAcceptTradeRequest) => {
       return axios({
         method: POST,
-        url: `api/v2/trades/accept/${tradeID}`,
+        url: `api/v2/trades/accept/${id}`,
       })
     },
     {
