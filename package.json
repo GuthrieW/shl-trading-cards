@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev -p 9000",
     "build": "next build",
-    "start": "next start -p 9000"
+    "start": "next start -p 9000",
+    "generate-card-requests": "ts-node --esm ./bin/generate-card-requests.ts"
   },
   "dependencies": {
     "@emotion/babel-plugin": "^11.3.0",
