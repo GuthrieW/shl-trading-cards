@@ -1,4 +1,6 @@
+import Button from '@components/buttons/button'
 import TradeCard from '@components/card/trade-card'
+import SelectUserModal from '@components/modals/select-user-modal'
 import TradeViewerModal from '@components/modals/trade-viewer-modal'
 import ScrollableSelect from '@components/selectors/scrollable-select'
 import { useGetAllCards, useGetAllUsers } from '@pages/api/queries'
@@ -25,17 +27,27 @@ const TradeHub = () => {
     isError: allCardsIsError,
   } = useGetAllCards({})
 
-  const [showModal, setShowModal] = useState<boolean>(false)
+  const [showTradeModal, setShowTradeModal] = useState<boolean>(false)
   const [selectedTrade, setSelectedTrade] = useState<Trade>(null)
 
-  const handleOptionClick = (trade: Trade) => {
+  const [showUsersModal, setShowUsersModal] = useState<boolean>(false)
+
+  const handleSelectTrade = (trade: Trade) => {
+    setShowTradeModal(true)
     setSelectedTrade(trade)
-    setShowModal(true)
   }
 
-  const closeModal = () => {
-    setShowModal(false)
+  const closeTradeModal = () => {
+    setShowTradeModal(false)
     setSelectedTrade(null)
+  }
+
+  const handleCreateNewTrade = () => {
+    setShowUsersModal(true)
+  }
+
+  const closeUsersModal = () => {
+    setShowUsersModal(false)
   }
 
   if (usersIsLoading || allCardsIsLoading || userTradesIsLoading) {
@@ -50,21 +62,34 @@ const TradeHub = () => {
           <TradeCard
             key={trade.tradeid}
             onClick={() => {
-              handleOptionClick(trade)
+              handleSelectTrade(trade)
             }}
             trade={trade}
             className={'border-t'}
           />
         ))}
       </ScrollableSelect>
-      <div></div>
-      {showModal && (
+      <div className="w-full h-full ml-64">
+        <div className="flex">
+          <Button
+            onClick={() => {
+              handleCreateNewTrade()
+            }}
+            disabled={false}
+            type={'submit'}
+          >
+            New Trade
+          </Button>
+        </div>
+      </div>
+      {showTradeModal && (
         <TradeViewerModal
           userId={uid}
-          closeModal={closeModal}
+          closeModal={closeTradeModal}
           trade={selectedTrade}
         />
       )}
+      {showUsersModal && <SelectUserModal setShowModal={closeUsersModal} />}
     </>
   )
 }
