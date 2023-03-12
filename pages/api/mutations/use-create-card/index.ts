@@ -5,7 +5,7 @@ import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-ca
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 import { errorToast } from '@utils/toasts'
 
-interface UseCreateCardRequest {
+type UseCreateCardRequest = {
   card: CardRequest
 }
 
@@ -41,9 +41,9 @@ const useCreateCard = (): UseCreateCard => {
   return {
     createCard: mutate,
     response: data,
-    isSuccess: isSuccess,
-    isLoading: isLoading,
-    isError: isError,
+    isSuccess,
+    isLoading,
+    isError,
   }
 }
 
