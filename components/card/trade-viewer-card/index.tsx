@@ -5,19 +5,18 @@ import useAcceptTrade from '@pages/api/mutations/use-accept-trade'
 import useDeclineTrade from '@pages/api/mutations/use-decline-trade'
 import useGetTradeDetails from '@pages/api/queries/use-get-trade-details'
 import React from 'react'
-import Modal from '../modal'
 
-type TradeViewerModalProps = {
-  closeModal: Function
+type TradeViewerCardProps = {
   trade: Trade
+  closeTrade: Function
   userId: number
 }
 
-const TradeViewerModal = ({
+const TradeViewerCard = ({
   userId,
-  closeModal,
+  closeTrade,
   trade,
-}: TradeViewerModalProps) => {
+}: TradeViewerCardProps) => {
   const {
     acceptTrade,
     isSuccess: acceptTradeIsSuccess,
@@ -39,50 +38,42 @@ const TradeViewerModal = ({
   const isSentByMe = trade.initiatorid === userId
 
   if (acceptTradeIsSuccess || declineTradeIsSuccess) {
-    closeModal()
+    closeTrade()
   }
 
   if (isLoading) return null
 
   return (
-    <Modal
-      setShowModal={() => {
-        closeModal()
-      }}
-      title={'Trade Title'}
-      subtitle={'Trade Subtitle'}
-    >
-      <div>
-        <div className="w-full h-1/2 relative">
-          <p>You send:</p>
-          <InfoCard className="flex flex-row p-1 m-1">
-            {myCards.map((card) => (
-              <img
-                key={card.ownedcardid}
-                className="w-full h-full rounded-sm mx-1"
-                src={`${pathToCards}${card.image_url}`}
-                alt={String(card.cardID)}
-                loading="lazy"
-              />
-            ))}
-          </InfoCard>
-        </div>
-        <div className="w-full h-1/2 relative">
-          <p>They send:</p>
-          <InfoCard className="flex flex-row p-1 m-1 mb-2">
-            {theirCards.map((card) => (
-              <img
-                key={card.ownedcardid}
-                className="w-full h-full rounded-sm mx-1"
-                src={`${pathToCards}${card.image_url}`}
-                alt={String(card.cardID)}
-                loading="lazy"
-              />
-            ))}
-          </InfoCard>
-        </div>
+    <div className="flex flex-col">
+      <div className="w-1/2 h-1/2 relative">
+        <p>You send:</p>
+        <InfoCard className="flex flex-row p-1 m-1">
+          {myCards.map((card) => (
+            <img
+              key={card.ownedcardid}
+              className="w-full h-full rounded-sm mx-1"
+              src={`${pathToCards}${card.image_url}`}
+              alt={String(card.cardID)}
+              loading="lazy"
+            />
+          ))}
+        </InfoCard>
       </div>
-      <div className="w-full flex items-end justify-end">
+      <div className="w-1/2 h-1/2 relative">
+        <p>They send:</p>
+        <InfoCard className="flex flex-row p-1 m-1 mb-2">
+          {theirCards.map((card) => (
+            <img
+              key={card.ownedcardid}
+              className="w-full h-full rounded-sm mx-1"
+              src={`${pathToCards}${card.image_url}`}
+              alt={String(card.cardID)}
+              loading="lazy"
+            />
+          ))}
+        </InfoCard>
+      </div>
+      <div className="w-full flex items-end justify-start">
         {isSentByMe && (
           <Button
             onClick={() => {
@@ -106,8 +97,8 @@ const TradeViewerModal = ({
           Decline
         </Button>
       </div>
-    </Modal>
+    </div>
   )
 }
 
-export default TradeViewerModal
+export default TradeViewerCard

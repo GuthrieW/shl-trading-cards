@@ -1,7 +1,7 @@
 import Button from '@components/buttons/button'
 import TradeCard from '@components/card/trade-card'
+import TradeViewerCard from '@components/card/trade-viewer-card'
 import SelectUserModal from '@components/modals/select-user-modal'
-import TradeViewerModal from '@components/modals/trade-viewer-modal'
 import ScrollableSelect from '@components/selectors/scrollable-select'
 import { useGetAllCards, useGetAllUsers } from '@pages/api/queries'
 import useGetUserTrades from '@pages/api/queries/use-get-user-trades'
@@ -27,18 +27,25 @@ const TradeHub = () => {
     isError: allCardsIsError,
   } = useGetAllCards({})
 
-  const [showTradeModal, setShowTradeModal] = useState<boolean>(false)
+  const [showTrade, setShowTrade] = useState<boolean>(false)
   const [selectedTrade, setSelectedTrade] = useState<Trade>(null)
 
   const [showUsersModal, setShowUsersModal] = useState<boolean>(false)
 
   const handleSelectTrade = (trade: Trade) => {
-    setShowTradeModal(true)
-    setSelectedTrade(trade)
+    if (selectedTrade?.tradeid === trade?.tradeid) {
+      setShowTrade(false)
+      setSelectedTrade(null)
+      console.log('setting to true')
+    } else {
+      console.log('setting to false')
+      setShowTrade(true)
+      setSelectedTrade(trade)
+    }
   }
 
-  const closeTradeModal = () => {
-    setShowTradeModal(false)
+  const closeTrade = () => {
+    setShowTrade(false)
     setSelectedTrade(null)
   }
 
@@ -69,26 +76,25 @@ const TradeHub = () => {
           />
         ))}
       </ScrollableSelect>
-      <div className="w-full h-full ml-64">
-        <div className="flex">
-          <Button
-            onClick={() => {
-              handleCreateNewTrade()
-            }}
-            disabled={false}
-            type={'submit'}
-          >
-            New Trade
-          </Button>
-        </div>
+      <div className="h-full absolute left-64 right-0">
+        {showTrade ? (
+          <TradeViewerCard
+            userId={uid}
+            closeTrade={closeTrade}
+            trade={selectedTrade}
+          />
+        ) : (
+          <div className="h-full flex justify-center items-center">
+            <Button
+              type="button"
+              disabled={showUsersModal}
+              onClick={handleCreateNewTrade}
+            >
+              New Trade
+            </Button>
+          </div>
+        )}
       </div>
-      {showTradeModal && (
-        <TradeViewerModal
-          userId={uid}
-          closeModal={closeTradeModal}
-          trade={selectedTrade}
-        />
-      )}
       {showUsersModal && <SelectUserModal setShowModal={closeUsersModal} />}
     </>
   )
