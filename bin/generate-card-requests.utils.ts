@@ -27,21 +27,27 @@ export const calculateAttributesAndPosition = (
     player.position === 'LW' ||
     player.position === 'RW'
   ) {
-    const skating =
+    const skating: number = Math.ceil(
       (player.acceleration +
         player.agility +
         player.balance +
         player.speed +
         player.stamina) /
-      5
-    const shooting =
+        5
+    )
+    const shooting: number = Math.ceil(
       (player.screening + player.gettingOpen + player.shootingAccuracy) / 3
-    const hands =
+    )
+    const hands: number = Math.ceil(
       (player.passing + player.puckhandling + player.offensiveRead) / 3
-    const checking = (player.checking + player.hitting + player.strength) / 3
-    const defense =
+    )
+    const checking: number = Math.ceil(
+      (player.checking + player.hitting + player.strength) / 3
+    )
+    const defense: number = Math.ceil(
       (player.positioning + player.stickchecking + player.defensiveRead) / 3
-    const overall = skating + shooting + hands + checking + defense + 2
+    )
+    const overall: number = skating + shooting + hands + checking + defense + 2
 
     return {
       overall,
@@ -60,24 +66,31 @@ export const calculateAttributesAndPosition = (
   }
 
   if (player.position === 'LD' || player.position === 'RD') {
-    const skating =
+    const skating: number = Math.ceil(
       (player.acceleration +
         player.agility +
         player.balance +
         player.speed +
         player.stamina) /
-      5
-    const shooting = (player.shootingRange + player.gettingOpen) / 2
-    const hands =
+        5
+    )
+    const shooting: number = Math.ceil(
+      (player.shootingRange + player.gettingOpen) / 2
+    )
+    const hands: number = Math.ceil(
       (player.passing + player.puckhandling + player.offensiveRead) / 3
-    const checking = (player.checking + player.hitting + player.strength) / 3
-    const defense =
+    )
+    const checking: number = Math.ceil(
+      (player.checking + player.hitting + player.strength) / 3
+    )
+    const defense: number = Math.ceil(
       (player.positioning +
         player.stickchecking +
         player.shotBlocking +
         player.defensiveRead) /
-      4
-    const overall = skating + shooting + hands + checking + defense + 2
+        4
+    )
+    const overall: number = skating + shooting + hands + checking + defense + 2
 
     return {
       overall,
@@ -96,13 +109,17 @@ export const calculateAttributesAndPosition = (
   }
 
   if (player.position === 'G') {
-    const high_shots = (player.blocker + player.glove) / 2
-    const low_shots = (player.lowShots + player.pokeCheck) / 2
-    const quickness = (player.reflexes + player.skating) / 2
-    const control =
+    const high_shots: number = Math.ceil((player.blocker + player.glove) / 2)
+    const low_shots: number = Math.ceil(
+      (player.lowShots + player.pokeCheck) / 2
+    )
+    const quickness: number = Math.ceil((player.reflexes + player.skating) / 2)
+    const control: number = Math.ceil(
       (player.puckhandling + player.rebound + player.positioning) / 3
-    const conditioning =
+    )
+    const conditioning: number = Math.ceil(
       (player.recovery + player.mentalToughness + player.goalieStamina) / 3
+    )
     const overall =
       high_shots + low_shots + quickness + conditioning + conditioning
 
@@ -130,19 +147,19 @@ export const getSameAndHigherRaritiesQueryFragment = (
   rarity: string
 ): string => {
   if (rarity === rarityMap.bronze.value) {
-    return `(card_rarity="${rarityMap.bronze.value}" OR card_rarity="${rarityMap.silver.value}" OR card_rarity="${rarityMap.gold.value}" OR card_rarity="${rarityMap.ruby.value}" OR card_rarity="${rarityMap.diamond.value}")`
+    return `(card_rarity='${rarityMap.bronze.value}' OR card_rarity='${rarityMap.silver.value}' OR card_rarity='${rarityMap.gold.value}' OR card_rarity='${rarityMap.ruby.value}' OR card_rarity='${rarityMap.diamond.value}')`
   }
   if (rarity === rarityMap.silver.value) {
-    return `(card_rarity="${rarityMap.silver.value}" OR card_rarity="${rarityMap.gold.value}" OR card_rarity="${rarityMap.ruby.value}" OR card_rarity="${rarityMap.diamond.value}")`
+    return `(card_rarity='${rarityMap.silver.value}' OR card_rarity='${rarityMap.gold.value}' OR card_rarity='${rarityMap.ruby.value}' OR card_rarity='${rarityMap.diamond.value}')`
   }
   if (rarity === rarityMap.gold.value) {
-    return `(card_rarity="${rarityMap.gold.value}" OR card_rarity="${rarityMap.ruby.value}" OR card_rarity="${rarityMap.diamond.value}")`
+    return `(card_rarity='${rarityMap.gold.value}' OR card_rarity='${rarityMap.ruby.value}' OR card_rarity='${rarityMap.diamond.value}')`
   }
   if (rarity === rarityMap.ruby.value) {
-    return `( card_rarity="${rarityMap.ruby.value}" OR card_rarity="${rarityMap.diamond.value}")`
+    return `( card_rarity='${rarityMap.ruby.value}' OR card_rarity='${rarityMap.diamond.value}')`
   }
   if (rarity === rarityMap.diamond.value) {
-    return `(card_rarity="${rarityMap.diamond.value}")`
+    return `(card_rarity='${rarityMap.diamond.value}')`
   }
 }
 

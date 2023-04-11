@@ -177,7 +177,7 @@ async function checkForDuplicatesAndGenerateCardRequestData(
         FROM admin_cards.cards 
         WHERE playerId=${player.id}
           AND teamId=${player.team}
-          AND player_name=${player.name}
+          AND player_name='${player.name}'
           AND ${raritiesToCheck};`
         )
 
@@ -230,7 +230,7 @@ async function requestCards(
   isDryRun: boolean
 ): Promise<string> {
   const cardRows: string[] = cardRequests.map((cardRequest: CardRequest) => {
-    return `(${cardRequest.player_name}, ${cardRequest.teamID}, ${cardRequest.playerID}, ${cardRequest.card_rarity}, ${cardRequest.sub_type}, 0, 0, ${cardRequest.position}, ${cardRequest.overall}, ${cardRequest.high_shots}, ${cardRequest.low_shots}, ${cardRequest.quickness}, ${cardRequest.control}, ${cardRequest.conditioning}, ${cardRequest.skating}, ${cardRequest.shooting}, ${cardRequest.hands}, ${cardRequest.checking}, ${cardRequest.defense}, ${cardRequest.season}, 0)`
+    return `('${cardRequest.player_name}', ${cardRequest.teamID}, ${cardRequest.playerID}, '${cardRequest.card_rarity}', '${cardRequest.sub_type}', 0, 0, '${cardRequest.position}', ${cardRequest.overall}, ${cardRequest.high_shots}, ${cardRequest.low_shots}, ${cardRequest.quickness}, ${cardRequest.control}, ${cardRequest.conditioning}, ${cardRequest.skating}, ${cardRequest.shooting}, ${cardRequest.hands}, ${cardRequest.checking}, ${cardRequest.defense}, ${cardRequest.season}, 0)`
   })
 
   const insertQuery: SQLStatement = SQL`
