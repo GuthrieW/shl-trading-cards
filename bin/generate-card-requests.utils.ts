@@ -1,5 +1,5 @@
-import rarityMap from '@constants/rarity-map'
-import teamsMap from '@constants/teams-map'
+import rarityMap from '../constants/rarity-map'
+import teamsMap from '../constants/teams-map'
 import { IndexPlayer, Position } from './generate-card-requests'
 
 /**

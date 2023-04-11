@@ -130,7 +130,7 @@ const teamsMap = {
     label: 'New Orleans Specters',
     city: 'New Orleans',
     team: 'Specters',
-    abbreviation: 'NOLA',
+    abbreviation: 'NOL',
     league: 'SHL',
     conference: 'West',
   },
