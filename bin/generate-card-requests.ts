@@ -106,7 +106,7 @@ void main()
 
 async function main() {
   if (!args.season) throw new Error('argument --season number required')
-  if (!args.season) throw new Error('argument --dryRun required')
+  if (!args.dryRun) throw new Error('argument --dryRun required')
 
   const skaters: IndexPlayer[] = await getIndexSkaters(args.season)
   const goalies: IndexPlayer[] = await getIndexGoalies(args.season)
@@ -223,7 +223,7 @@ async function checkForDuplicatesAndGenerateCardRequestData(
 }
 
 /**
- * send card requests to the trading cards API
+ * send card requests to the trading cards database
  */
 async function requestCards(
   cardRequests: CardRequest[],
