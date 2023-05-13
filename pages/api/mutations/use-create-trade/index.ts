@@ -3,7 +3,17 @@ import { errorToast } from '@utils/toasts'
 import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 
-type UseCreateTradeRequest = {}
+export type TradeAsset = {
+  ownedCardId: string
+  toId: string
+  fromId: string
+}
+
+type UseCreateTradeRequest = {
+  initiatorId: string
+  recipientId: string
+  tradeAssets: TradeAsset[]
+}
 
 type UseCreateTrade = {
   createTrade: Function
@@ -16,11 +26,15 @@ type UseCreateTrade = {
 const useCreateTrade = (): UseCreateTrade => {
   const queryClient = useQueryClient()
   const { mutate, data, isLoading, isError, isSuccess } = useMutation(
-    ({}: UseCreateTradeRequest) => {
+    ({ initiatorId, recipientId, tradeAssets }: UseCreateTradeRequest) => {
       return axios({
         method: POST,
         url: '/api/v2/trade',
-        data: {},
+        data: {
+          initiatorId,
+          recipientId,
+          tradeAssets,
+        },
       })
     },
     {

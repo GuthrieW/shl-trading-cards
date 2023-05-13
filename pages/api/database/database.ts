@@ -35,5 +35,6 @@ export const getCardsDatabaseName = () => {
 }
 
 export const getUsersDatabaseName = () => {
-  return process.env.NODE_ENV === 'production' ? 'admin_mybb' : 'dev_bank'
+  // TODO: DO NOT MERGE THIS CHANGE
+  return process.env.NODE_ENV === 'production' ? 'admin_mybb' : 'admin_mybb'
 }

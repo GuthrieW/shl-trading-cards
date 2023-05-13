@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import Modal from '../modal'
 import Button from '@components/buttons/button'
 import { useGetAllUsersWithCards } from '@pages/api/queries'
 import AutoCompleteSearchBar from '@components/inputs/autocomplete-search-bar'
 import { Router, useRouter } from 'next/router'
+import getUidFromSession from '@utils/get-uid-from-session'
 
 type SelectUserModalProps = {
   setShowModal: Function
@@ -17,6 +18,19 @@ const SelectUserModal = ({ setShowModal }: SelectUserModalProps) => {
     isLoading: getAllUsersIsLoading,
     isError: getAllUsersIsError,
   } = useGetAllUsersWithCards({})
+
+  // filter out current user so people don't trying to trade with themselves
+  const filteredUsers: User[] = useMemo(() => {
+    if (!users) return users
+
+    const currentUserId = getUidFromSession()
+    console.log('users', users)
+    const userIndex = users.findIndex((user) => user.uid !== currentUserId)
+
+    if (userIndex === -1) return users
+
+    return users.splice(userIndex, 1)
+  }, [users])
 
   const handleSelectUser = (selectedUser: User) => {
     router.push(`/trade-hub/${selectedUser.uid}`)
@@ -33,7 +47,10 @@ const SelectUserModal = ({ setShowModal }: SelectUserModalProps) => {
       subtitle={'Select a user to trade with'}
     >
       <div>
-        <AutoCompleteSearchBar onSelect={handleSelectUser} options={users} />
+        <AutoCompleteSearchBar
+          onSelect={handleSelectUser}
+          options={filteredUsers}
+        />
       </div>
     </Modal>
   )

@@ -10,7 +10,7 @@ type TradeCardProps = {
 }
 
 const fixAvatar = (avatar: string): string => {
-  if (avatar.startsWith('.')) {
+  if (avatar?.startsWith('.')) {
     return 'https://simulationhockey.com' + avatar?.substring(1)
   }
 

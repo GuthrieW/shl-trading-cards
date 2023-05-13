@@ -19,12 +19,10 @@ const index = async (
   const { method, query } = request
 
   if (method === POST) {
-    response.status(StatusCodes.NOT_IMPLEMENTED).end()
+    const { id } = query
+    const result = await queryDatabase(SQL`call accept_trade(${id})`)
+    response.status(StatusCodes.OK).json(result)
     return
-    // const { id } = query
-    // const result = await queryDatabase(SQL``)
-    // response.status(StatusCodes.OK).json(result)
-    // return
   }
 
   response.setHeader('Allowed', allowedMethods)

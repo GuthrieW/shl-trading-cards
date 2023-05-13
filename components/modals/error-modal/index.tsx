@@ -8,7 +8,7 @@ type ErrorModalProps = {
 
 const ErrorModal = ({ title, subtitle }: ErrorModalProps) => (
   <Modal setShowModal={null} title={title} subtitle={subtitle}>
-    <p className="text-red-700">Could not find user</p>
+    <p className="text-red-700">{title}</p>
   </Modal>
 )
 

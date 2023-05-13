@@ -1,6 +1,6 @@
 import SearchBar from '@components/inputs/search-bar'
 import { useRouter } from 'next/router'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import {
   useTable,
   useSortBy,
