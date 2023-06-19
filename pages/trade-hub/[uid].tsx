@@ -33,6 +33,8 @@ const NewTrade = () => {
     isLoading: currentUserIsLoading,
     isError: currentUserIsError,
   } = useGetCurrentUser({})
+  // need to create a new query that uses collection instead of this query
+  // just select all cards owned by a user on the collection table
   const {
     userCards: currentUserCards,
     isLoading: currentUserCardsIsLoading,
@@ -43,6 +45,8 @@ const NewTrade = () => {
     isLoading: otherUserIsLoading,
     isError: otherUserIsError,
   } = useGetUser({ uid: routeUid })
+  // need to create a new query that uses collection instead of this query
+  // just select all cards owned by a user on the collection table
   const {
     userCards: otherUserCards,
     isLoading: otherUserCardsIsLoading,
