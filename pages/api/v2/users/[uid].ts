@@ -25,6 +25,7 @@ const index = async (
   if (method === GET) {
     const { uid } = query
 
+    console.log('uid', uid)
     // Get a single user
     const result = await queryDatabase(
       SQL`
@@ -46,6 +47,8 @@ const index = async (
       WHERE user.uid=${uid};
     `)
     )
+
+    console.log('resul', result)
     response.status(StatusCodes.OK).json(result)
     return
   }

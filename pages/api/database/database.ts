@@ -1,6 +1,6 @@
 import mysql from 'serverless-mysql'
 
-const dbConnection = mysql(
+const config =
   process.env.NODE_ENV === 'production'
     ? {
         config: {
@@ -18,7 +18,13 @@ const dbConnection = mysql(
           database: process.env.DEV_DATABASE_NAME,
         },
       }
-)
+if (process.env.NODE_ENV !== 'production') {
+  console.log('dbconfig', config)
+} else {
+  console.log('dbconfig', 'production')
+}
+
+const dbConnection = mysql(config)
 
 export const queryDatabase = async (query): Promise<any> => {
   try {

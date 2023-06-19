@@ -29,7 +29,7 @@ const useCreateTrade = (): UseCreateTrade => {
     ({ initiatorId, recipientId, tradeAssets }: UseCreateTradeRequest) => {
       return axios({
         method: POST,
-        url: '/api/v2/trade',
+        url: '/api/v2/trades',
         data: {
           initiatorId,
           recipientId,

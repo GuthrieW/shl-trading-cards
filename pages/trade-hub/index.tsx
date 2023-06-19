@@ -1,5 +1,6 @@
 import Button from '@components/buttons/button'
-import TradeCard from '@components/card/trade-card'
+import TradeCard, { TradeCardProps } from '@components/card/trade-card'
+import NewTradeCard from '@components/card/trade-card/new-trade-card'
 import TradeViewerCard from '@components/card/trade-viewer-card'
 import SelectUserModal from '@components/modals/select-user-modal'
 import ScrollableSelect from '@components/selectors/scrollable-select'
@@ -36,9 +37,7 @@ const TradeHub = () => {
     if (selectedTrade?.tradeid === trade?.tradeid) {
       setShowTrade(false)
       setSelectedTrade(null)
-      console.log('setting to true')
     } else {
-      console.log('setting to false')
       setShowTrade(true)
       setSelectedTrade(trade)
     }
@@ -65,34 +64,37 @@ const TradeHub = () => {
     <>
       <NextSeo title="Trades" />
       <ScrollableSelect scrollbarTitle="Trades">
-        {[...userTrades, ...userTrades].map((trade) => (
-          <TradeCard
-            key={trade.tradeid}
-            onClick={() => {
-              handleSelectTrade(trade)
-            }}
-            trade={trade}
-            className={'border-t'}
-          />
-        ))}
+        <NewTradeCard
+          key={'new-trade'}
+          onClick={handleCreateNewTrade}
+          trade={{
+            tradeid: null,
+            initiatorid: null,
+            recipientid: null,
+            trade_status: 'pending',
+            update_date: null,
+          }}
+        />
+        <>
+          {[...userTrades, ...userTrades].map((trade) => (
+            <TradeCard
+              key={trade.tradeid}
+              onClick={() => {
+                handleSelectTrade(trade)
+              }}
+              trade={trade}
+              className={'border-t'}
+            />
+          ))}
+        </>
       </ScrollableSelect>
       <div className="h-full absolute left-64 right-0">
-        {showTrade ? (
+        {showTrade && (
           <TradeViewerCard
             userId={uid}
             closeTrade={closeTrade}
             trade={selectedTrade}
           />
-        ) : (
-          <div className="h-full flex justify-center items-center">
-            <Button
-              type="button"
-              disabled={showUsersModal}
-              onClick={handleCreateNewTrade}
-            >
-              New Trade
-            </Button>
-          </div>
         )}
       </div>
       {showUsersModal && <SelectUserModal setShowModal={closeUsersModal} />}

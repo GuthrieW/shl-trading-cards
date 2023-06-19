@@ -13,7 +13,13 @@ const DefaultLayout = ({ children }) => {
     return null
   }
 
+  console.log('user', user)
   if (!user.uid) {
+    let subtitle = ''
+    if (getUidFromSession() === 2856) {
+      subtitle =
+        'Cal you need to run the tunnnel script to connect to the DB locally'
+    }
     return <ErrorModal title="Could not find user" subtitle="" />
   } else {
     return (
