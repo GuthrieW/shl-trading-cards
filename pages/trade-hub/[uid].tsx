@@ -1,5 +1,4 @@
 import Button from '@components/buttons/button'
-import CollectionGrid from '@components/grids/collection-grid'
 import TradeGrid from '@components/grids/trade-grid'
 import pathToCards from '@constants/path-to-cards'
 import useCreateTrade, {
@@ -23,9 +22,11 @@ const NewTrade = () => {
     CollectionCard[]
   >([])
   const [otherUserTrading, setOtherUserTrading] = useState<CollectionCard[]>([])
+  const [collectionToView, toggleCollectionViewer] = useState<boolean>(true)
 
   if (routeUid === currentUserId) {
-    return <p>You cannot trade with yourself</p>
+    router.push('/trade-hub')
+    return null
   }
 
   const {
@@ -69,36 +70,36 @@ const NewTrade = () => {
     otherUserCardsIsLoading ||
     otherUserCardsIsError
   ) {
-    return <p>Something bad happened</p>
+    return null
   }
 
   const onAddCardToTrade = (
     cardToToggle: CollectionCard,
     isCurrentUser: boolean
-  ) => {
-    if (isCurrentUser) {
-      setCurrentUserTrading([...currentUserTrading, cardToToggle])
-    } else {
-      setOtherUserTrading([...otherUserTrading, cardToToggle])
-    }
+  ): void => {
+    isCurrentUser
+      ? setCurrentUserTrading([...currentUserTrading, cardToToggle])
+      : setOtherUserTrading([...otherUserTrading, cardToToggle])
   }
 
   const onRemoveCardFromTrade = (
     cardToToggle: CollectionCard,
     isCurrentUser: boolean
-  ) => {
-    console.log('removing')
+  ): void => {
     if (isCurrentUser) {
-      const newArr = currentUserTrading.filter(
-        (card) => card.cardID !== cardToToggle.cardID
+      setCurrentUserTrading(
+        currentUserTrading.filter((card) => card.cardID !== cardToToggle.cardID)
       )
-      setCurrentUserTrading(newArr)
     } else {
-      const newArr = otherUserTrading.filter(
-        (card) => card.cardID !== cardToToggle.cardID
+      setOtherUserTrading(
+        otherUserTrading.filter((card) => card.cardID !== cardToToggle.cardID)
       )
-      setOtherUserTrading(newArr)
     }
+  }
+
+  if (createTradeIsSuccess) {
+    router.push('/trade-hub')
+    return null
   }
 
   return (
@@ -107,6 +108,12 @@ const NewTrade = () => {
       <div className="flex flex-col">
         <div className="flex flex-row justify-between mr-1">
           <p>New Trade</p>
+          <Button
+            disabled={false}
+            onClick={() => toggleCollectionViewer(!collectionToView)}
+          >
+            Toggle Collection
+          </Button>
           <Button
             disabled={
               !(currentUserTrading.length > 0 && otherUserTrading.length > 0)
@@ -139,59 +146,77 @@ const NewTrade = () => {
           </Button>
         </div>
         <div className="flex flex-row">
-          <div className="w-1/2">
-            <p>{currentUserDetails.username} trades:</p>
-            <div className="w-full grid grid-cols-3 gap-4">
-              {currentUserTrading.map((card, index) => (
-                <div
-                  className="relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
-                  key={index}
-                  onClick={() => onRemoveCardFromTrade(card, true)}
-                >
-                  <img
-                    className="w-full h-full cursor-pointer rounded-sm"
-                    src={`${pathToCards}${card.image_url}`}
-                    alt={card.player_name}
-                    loading="lazy"
-                  />
+          <div className="w-1/5">
+            <div className="flex flex-col h-screen">
+              <div className="h-1/2 overflow-auto">
+                <p>{currentUserDetails.username} trades:</p>
+                <div className="w-full grid grid-cols-3 gap-4">
+                  {currentUserTrading.map((card, index) => (
+                    <div
+                      className="relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
+                      key={index}
+                      onClick={() => onRemoveCardFromTrade(card, true)}
+                    >
+                      <img
+                        className="w-full h-full cursor-pointer rounded-sm"
+                        src={`${pathToCards}${card.image_url}`}
+                        alt={card.player_name}
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+              <div className="h-1/2 overflow-auto">
+                <p>{otherUserDetails.username} trades:</p>
+                <div className="w-full grid grid-cols-3 gap-4">
+                  {otherUserTrading.map((card, index) => (
+                    <div
+                      className="relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
+                      key={index}
+                      onClick={() => onRemoveCardFromTrade(card, false)}
+                    >
+                      <img
+                        className="w-full h-full cursor-pointer rounded-sm"
+                        src={`${pathToCards}${card.image_url}`}
+                        alt={card.player_name}
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <p>{currentUserDetails.username}'s collection:</p>
-            <TradeGrid
-              gridData={currentUserCards.filter(
-                (card) => !currentUserTrading.includes(card)
-              )}
-              onSelect={onAddCardToTrade}
-              isCurrentUser={true}
-            />
           </div>
-          <div className="w-1/2">
-            <p>{otherUserDetails.username} trades:</p>
-            <div className="w-full grid grid-cols-3 gap-4">
-              {otherUserTrading.map((card, index) => (
-                <div
-                  className="relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
-                  key={index}
-                  onClick={() => onRemoveCardFromTrade(card, false)}
-                >
-                  <img
-                    className="w-full h-full cursor-pointer rounded-sm"
-                    src={`${pathToCards}${card.image_url}`}
-                    alt={card.player_name}
-                    loading="lazy"
-                  />
-                </div>
-              ))}
-            </div>
-            <p>{otherUserDetails.username}'s collection:</p>
-            <TradeGrid
-              gridData={otherUserCards.filter(
-                (card) => !otherUserTrading.includes(card)
-              )}
-              onSelect={onAddCardToTrade}
-              isCurrentUser={false}
-            />
+          <div className="w-4/5">
+            {collectionToView && (
+              <div className="flex flex-col">
+                <p className="flex self-center">
+                  {currentUserDetails.username}'s collection:
+                </p>
+                <TradeGrid
+                  gridData={currentUserCards.filter(
+                    (card) => !currentUserTrading.includes(card)
+                  )}
+                  onSelect={onAddCardToTrade}
+                  isCurrentUser={true}
+                />
+              </div>
+            )}
+            {!collectionToView && (
+              <div className="flex flex-col">
+                <p className="flex self-center">
+                  {otherUserDetails.username}'s collection:
+                </p>
+                <TradeGrid
+                  gridData={otherUserCards.filter(
+                    (card) => !otherUserTrading.includes(card)
+                  )}
+                  onSelect={onAddCardToTrade}
+                  isCurrentUser={false}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

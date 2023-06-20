@@ -2,6 +2,7 @@ import Button from '@components/buttons/button'
 import TradeCard, { TradeCardProps } from '@components/card/trade-card'
 import NewTradeCard from '@components/card/trade-card/new-trade-card'
 import TradeViewerCard from '@components/card/trade-viewer-card'
+import CardSearchForm from '@components/forms/card-search-form'
 import SelectUserModal from '@components/modals/select-user-modal'
 import ScrollableSelect from '@components/selectors/scrollable-select'
 import { useGetAllCards, useGetAllUsers } from '@pages/api/queries'
@@ -71,7 +72,7 @@ const TradeHub = () => {
             tradeid: null,
             initiatorid: null,
             recipientid: null,
-            trade_status: 'pending',
+            trade_status: 'PENDING',
             update_date: null,
           }}
         />
@@ -89,12 +90,14 @@ const TradeHub = () => {
         </>
       </ScrollableSelect>
       <div className="h-full absolute left-64 right-0">
-        {showTrade && (
+        {showTrade ? (
           <TradeViewerCard
             userId={uid}
             closeTrade={closeTrade}
             trade={selectedTrade}
           />
+        ) : (
+          <CardSearchForm />
         )}
       </div>
       {showUsersModal && <SelectUserModal setShowModal={closeUsersModal} />}

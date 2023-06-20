@@ -66,15 +66,15 @@ const TradeCard = ({ className, trade, onClick }: TradeCardProps) => {
         <div
           title={trade.trade_status.toUpperCase()}
           className={`inline-block w-2 h-2 rounded-full ${
-            trade.trade_status === 'complete'
+            trade.trade_status === 'COMPLETE'
               ? 'bg-green-600'
-              : trade.trade_status === 'pending'
+              : trade.trade_status === 'PENDING'
               ? 'bg-yellow-600'
               : 'bg-red-600'
           }`}
         ></div>
         <div className="text-sm">
-          {trade.trade_status === 'pending' ? 'Initiated' : 'Resolved'} on:{' '}
+          {trade.trade_status === 'PENDING' ? 'Initiated' : 'Resolved'} on:{' '}
           {dayjs(trade.update_date).format('DD/MM/YYYY')}
         </div>
       </div>
