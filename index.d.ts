@@ -57,6 +57,16 @@ type CollectionCard = {
   teamID: number
 }
 
+type TradeCard = {
+  cardID: number
+  ownedCardID: number
+  image_url: string
+  card_rarity: string
+  player_name: string
+  overall: number
+  teamID: number
+}
+
 type SetCard = {
   cardID: number
   setID: number
@@ -92,6 +102,7 @@ type Trade = {
   recipientid: number
   trade_status: TradeStatus
   update_date: Date
+  create_date: Date
 }
 
 type TradeDetails = {

@@ -7,8 +7,8 @@ import React, { useMemo, useState, useRef, useCallback } from 'react'
 import { useVirtual } from 'react-virtual'
 
 type TradeGridProps = {
-  gridData: CollectionCard[]
-  onSelect: (cardToToggle: CollectionCard, isCurrentUser: boolean) => void
+  gridData: TradeCard[]
+  onSelect: (cardToToggle: TradeCard, isCurrentUser: boolean) => void
   isCurrentUser: boolean
 }
 
@@ -92,8 +92,8 @@ const TradeGrid = ({ gridData, onSelect, isCurrentUser }: TradeGridProps) => {
   )
 
   return (
-    <div className="flex flex-col justify-center items-center m-1">
-      <div className="w-full lg:w-3/4 flex justify-between items-center">
+    <div className="flex flex-col justify-center items-center">
+      <div className="w-full flex justify-between items-center">
         <div className="flex">
           <DropdownWithCheckboxGroup
             title="Rarity"
@@ -115,7 +115,7 @@ const TradeGrid = ({ gridData, onSelect, isCurrentUser }: TradeGridProps) => {
         ref={parentRef}
       >
         <div
-          className="w-full grid grid-cols-3 gap-4"
+          className="w-full grid grid-cols-4 gap-3"
           style={{ height: `${rowVirtualization.totalSize}px` }}
         >
           {rowVirtualization.virtualItems.map((item, index) => {

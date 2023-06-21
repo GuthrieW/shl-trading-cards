@@ -1,4 +1,5 @@
 import { POST } from '@constants/http-methods'
+import { UseGetUserTradesKey } from '@pages/api/queries/use-get-user-trades'
 import { errorToast, successToast } from '@utils/toasts'
 import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
@@ -26,6 +27,7 @@ const useDeclineTrade = (): UseDeclineTrade => {
     },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries(UseGetUserTradesKey)
         successToast({ successText: 'Trade Declined' })
       },
       onError: () => {

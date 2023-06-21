@@ -19,18 +19,12 @@ const index = async (
   await middleware(request, response, cors)
   const { method, query, body } = request
 
-  console.log('method', method)
-  console.log('body', body)
-
   if (method === POST) {
-    console.log('inside of POST')
     const { initiatorId, recipientId, tradeAssets } = body
-    console.log('body', body)
     const createTradeResult = await queryDatabase(
       SQL`call create_trade(${initiatorId},${recipientId})`
     )
     const newTrade = createTradeResult[0][0]
-    console.log('trade created', createTradeResult)
     const tradeAssetsResults = await Promise.all(
       tradeAssets.map(async (asset: TradeAsset) => {
         return await queryDatabase(
@@ -38,8 +32,6 @@ const index = async (
         )
       })
     )
-
-    console.log('trade assets added', tradeAssetsResults)
 
     response
       .status(StatusCodes.OK)

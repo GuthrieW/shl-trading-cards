@@ -24,7 +24,6 @@ const SelectUserModal = ({ setShowModal }: SelectUserModalProps) => {
     if (!users) return users
 
     const currentUserId = getUidFromSession()
-    console.log('users', users)
     const userIndex = users.findIndex((user) => user.uid !== currentUserId)
 
     if (userIndex === -1) return users

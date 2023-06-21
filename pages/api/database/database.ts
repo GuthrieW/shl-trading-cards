@@ -18,11 +18,10 @@ const config =
           database: process.env.DEV_DATABASE_NAME,
         },
       }
-if (process.env.NODE_ENV !== 'production') {
-  console.log('dbconfig', config)
-} else {
-  console.log('dbconfig', 'production')
-}
+
+process.env.NODE_ENV !== 'production'
+  ? console.log('dbconfig', config)
+  : console.log('dbconfig', 'production')
 
 const dbConnection = mysql(config)
 

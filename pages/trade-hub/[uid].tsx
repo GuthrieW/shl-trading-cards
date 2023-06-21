@@ -4,24 +4,26 @@ import pathToCards from '@constants/path-to-cards'
 import useCreateTrade, {
   TradeAsset,
 } from '@pages/api/mutations/use-create-trade'
-import {
-  useGetCurrentUser,
-  useGetUser,
-  useGetUserCards,
-} from '@pages/api/queries'
+import { useGetCurrentUser, useGetUser } from '@pages/api/queries'
+import useGetUserCardsForTrades from '@pages/api/queries/use-get-user-cards-for-trades'
 import getUidFromSession from '@utils/get-uid-from-session'
 import { NextSeo } from 'next-seo'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
+const CollectionLayout = ({ username, children }) => (
+  <div className="flex flex-col">
+    <h1 className="flex self-center">{username}'s collection</h1>
+    <>{children}</>
+  </div>
+)
+
 const NewTrade = () => {
   const router = useRouter()
   const routeUid = parseInt(router.query.uid as string)
   const currentUserId = getUidFromSession()
-  const [currentUserTrading, setCurrentUserTrading] = useState<
-    CollectionCard[]
-  >([])
-  const [otherUserTrading, setOtherUserTrading] = useState<CollectionCard[]>([])
+  const [currentUserTrading, setCurrentUserTrading] = useState<TradeCard[]>([])
+  const [otherUserTrading, setOtherUserTrading] = useState<TradeCard[]>([])
   const [collectionToView, toggleCollectionViewer] = useState<boolean>(true)
 
   if (routeUid === currentUserId) {
@@ -34,25 +36,21 @@ const NewTrade = () => {
     isLoading: currentUserIsLoading,
     isError: currentUserIsError,
   } = useGetCurrentUser({})
-  // need to create a new query that uses collection instead of this query
-  // just select all cards owned by a user on the collection table
   const {
-    userCards: currentUserCards,
+    userCardsForTrades: currentUserCards,
     isLoading: currentUserCardsIsLoading,
     isError: currentUserCardsIsError,
-  } = useGetUserCards({ uid: currentUserId })
+  } = useGetUserCardsForTrades({ uid: currentUserId })
   const {
     user: otherUserDetails,
     isLoading: otherUserIsLoading,
     isError: otherUserIsError,
   } = useGetUser({ uid: routeUid })
-  // need to create a new query that uses collection instead of this query
-  // just select all cards owned by a user on the collection table
   const {
-    userCards: otherUserCards,
+    userCardsForTrades: otherUserCards,
     isLoading: otherUserCardsIsLoading,
     isError: otherUserCardsIsError,
-  } = useGetUserCards({ uid: routeUid })
+  } = useGetUserCardsForTrades({ uid: routeUid })
   const {
     createTrade,
     isSuccess: createTradeIsSuccess,
@@ -73,8 +71,10 @@ const NewTrade = () => {
     return null
   }
 
+  console.log('currentUserCards', currentUserCards)
+
   const onAddCardToTrade = (
-    cardToToggle: CollectionCard,
+    cardToToggle: TradeCard,
     isCurrentUser: boolean
   ): void => {
     isCurrentUser
@@ -83,16 +83,20 @@ const NewTrade = () => {
   }
 
   const onRemoveCardFromTrade = (
-    cardToToggle: CollectionCard,
+    cardToToggle: TradeCard,
     isCurrentUser: boolean
   ): void => {
     if (isCurrentUser) {
       setCurrentUserTrading(
-        currentUserTrading.filter((card) => card.cardID !== cardToToggle.cardID)
+        currentUserTrading.filter(
+          (card) => card.ownedCardID !== cardToToggle.ownedCardID
+        )
       )
     } else {
       setOtherUserTrading(
-        otherUserTrading.filter((card) => card.cardID !== cardToToggle.cardID)
+        otherUserTrading.filter(
+          (card) => card.ownedCardID !== cardToToggle.ownedCardID
+        )
       )
     }
   }
@@ -106,94 +110,101 @@ const NewTrade = () => {
     <div>
       <NextSeo title="New Trade" />
       <div className="flex flex-col">
-        <div className="flex flex-row justify-between mr-1">
-          <p>New Trade</p>
-          <Button
-            disabled={false}
-            onClick={() => toggleCollectionViewer(!collectionToView)}
-          >
-            Toggle Collection
-          </Button>
-          <Button
-            disabled={
-              !(currentUserTrading.length > 0 && otherUserTrading.length > 0)
-            }
-            onClick={() => {
-              const tradeAssets: TradeAsset[] = []
-              currentUserTrading.forEach((card) => {
-                tradeAssets.push({
-                  ownedCardId: String(card.cardID),
-                  toId: String(otherUserDetails.uid),
-                  fromId: String(currentUserDetails.uid),
-                })
-              })
-              otherUserTrading.forEach((card) => {
-                tradeAssets.push({
-                  ownedCardId: String(card.cardID),
-                  toId: String(otherUserDetails.uid),
-                  fromId: String(currentUserDetails.uid),
-                })
-              })
-
-              createTrade({
-                initiatorId: currentUserDetails.uid,
-                recipientId: otherUserDetails.uid,
-                tradeAssets,
-              })
-            }}
-          >
-            Submit Trade
-          </Button>
-        </div>
         <div className="flex flex-row">
-          <div className="w-1/5">
-            <div className="flex flex-col h-screen">
-              <div className="h-1/2 overflow-auto">
-                <p>{currentUserDetails.username} trades:</p>
-                <div className="w-full grid grid-cols-3 gap-4">
-                  {currentUserTrading.map((card, index) => (
-                    <div
-                      className="relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
-                      key={index}
-                      onClick={() => onRemoveCardFromTrade(card, true)}
-                    >
-                      <img
-                        className="w-full h-full cursor-pointer rounded-sm"
-                        src={`${pathToCards}${card.image_url}`}
-                        alt={card.player_name}
-                        loading="lazy"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="h-1/2 overflow-auto">
-                <p>{otherUserDetails.username} trades:</p>
-                <div className="w-full grid grid-cols-3 gap-4">
-                  {otherUserTrading.map((card, index) => (
-                    <div
-                      className="relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
-                      key={index}
-                      onClick={() => onRemoveCardFromTrade(card, false)}
-                    >
-                      <img
-                        className="w-full h-full cursor-pointer rounded-sm"
-                        src={`${pathToCards}${card.image_url}`}
-                        alt={card.player_name}
-                        loading="lazy"
-                      />
-                    </div>
-                  ))}
-                </div>
+          <div className="flex flex-col w-1/5 h-screen m-1 border-r">
+            <div className="h-1/3 overflow-auto">
+              <p>
+                {currentUserDetails.username} trades{' '}
+                {`(${currentUserTrading.length})`}:
+              </p>
+              <div className="w-full grid grid-cols-3 gap-3">
+                {currentUserTrading.map((card, index) => (
+                  <div
+                    className="relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
+                    key={index}
+                    onClick={() => onRemoveCardFromTrade(card, true)}
+                  >
+                    <img
+                      className="w-full h-full cursor-pointer rounded-sm"
+                      src={`${pathToCards}${card.image_url}`}
+                      alt={card.player_name}
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
+            <div className="h-1/3 overflow-auto">
+              <p>
+                {otherUserDetails.username} trades{' '}
+                {`(${otherUserTrading.length})`}:
+              </p>
+              <div className="w-full grid grid-cols-3 gap-4">
+                {otherUserTrading.map((card, index) => (
+                  <div
+                    className="relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
+                    key={index}
+                    onClick={() => onRemoveCardFromTrade(card, false)}
+                  >
+                    <img
+                      className="w-full h-full cursor-pointer rounded-sm"
+                      src={`${pathToCards}${card.image_url}`}
+                      alt={card.player_name}
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="h-1/3 flex flex-col justify-center mx-1">
+              <Button
+                disabled={
+                  createTradeIsLoading ||
+                  !(
+                    currentUserTrading.length > 0 && otherUserTrading.length > 0
+                  )
+                }
+                onClick={() => {
+                  const tradeAssets: TradeAsset[] = []
+                  currentUserTrading.forEach((card) => {
+                    tradeAssets.push({
+                      ownedCardId: String(card.ownedCardID),
+                      toId: String(otherUserDetails.uid),
+                      fromId: String(currentUserDetails.uid),
+                    })
+                  })
+                  otherUserTrading.forEach((card) => {
+                    tradeAssets.push({
+                      ownedCardId: String(card.ownedCardID),
+                      toId: String(currentUserDetails.uid),
+                      fromId: String(otherUserDetails.uid),
+                    })
+                  })
+
+                  createTrade({
+                    initiatorId: currentUserDetails.uid,
+                    recipientId: otherUserDetails.uid,
+                    tradeAssets,
+                  })
+                }}
+              >
+                Submit Trade
+              </Button>
+            </div>
           </div>
-          <div className="w-4/5">
+          <div className="w-4/5 m-1">
+            <Button
+              disabled={createTradeIsLoading}
+              onClick={() => toggleCollectionViewer(!collectionToView)}
+            >
+              Swap to{' '}
+              {collectionToView
+                ? otherUserDetails.username
+                : currentUserDetails.username}
+              's collection
+            </Button>
             {collectionToView && (
-              <div className="flex flex-col">
-                <p className="flex self-center">
-                  {currentUserDetails.username}'s collection:
-                </p>
+              <CollectionLayout username={currentUserDetails.username}>
                 <TradeGrid
                   gridData={currentUserCards.filter(
                     (card) => !currentUserTrading.includes(card)
@@ -201,13 +212,10 @@ const NewTrade = () => {
                   onSelect={onAddCardToTrade}
                   isCurrentUser={true}
                 />
-              </div>
+              </CollectionLayout>
             )}
             {!collectionToView && (
-              <div className="flex flex-col">
-                <p className="flex self-center">
-                  {otherUserDetails.username}'s collection:
-                </p>
+              <CollectionLayout username={otherUserDetails.username}>
                 <TradeGrid
                   gridData={otherUserCards.filter(
                     (card) => !otherUserTrading.includes(card)
@@ -215,7 +223,7 @@ const NewTrade = () => {
                   onSelect={onAddCardToTrade}
                   isCurrentUser={false}
                 />
-              </div>
+              </CollectionLayout>
             )}
           </div>
         </div>

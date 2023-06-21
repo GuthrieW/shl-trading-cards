@@ -2,19 +2,12 @@ import { useGetUser } from '@pages/api/queries'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React from 'react'
 import dayjs from 'dayjs'
+import fixAvatar from '@utils/fix-avatar-url'
 
 export type TradeCardProps = {
   className?: string
   onClick?: Function
   trade: Trade
-}
-
-const fixAvatar = (avatar: string): string => {
-  if (avatar?.startsWith('.')) {
-    return 'https://simulationhockey.com' + avatar?.substring(1)
-  }
-
-  return avatar
 }
 
 const TradeCard = ({ className, trade, onClick }: TradeCardProps) => {
@@ -74,8 +67,11 @@ const TradeCard = ({ className, trade, onClick }: TradeCardProps) => {
           }`}
         ></div>
         <div className="text-sm">
-          {trade.trade_status === 'PENDING' ? 'Initiated' : 'Resolved'} on:{' '}
-          {dayjs(trade.update_date).format('DD/MM/YYYY')}
+          {trade.trade_status === 'PENDING'
+            ? `Offered on ${dayjs(trade.create_date).format('DD/MM/YYYY')}`
+            : `${
+                trade.trade_status === 'COMPLETE' ? 'Accepted' : 'Declined'
+              } on ${dayjs(trade.update_date).format('DD/MM/YYYY')}`}
         </div>
       </div>
     </div>

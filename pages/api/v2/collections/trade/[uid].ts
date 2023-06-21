@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import {
   getCardsDatabaseName,
-  getUsersDatabaseName,
   queryDatabase,
 } from '@pages/api/database/database'
 import { GET } from '@constants/index'
@@ -22,27 +21,44 @@ const index = async (
   await middleware(request, response, cors)
   const { method, query } = request
 
+  // Get all of the unique cards in a user's collection
   if (method === GET) {
     const { uid } = query
-
     const result = await queryDatabase(
       SQL`
-      SELECT user.uid,
-        user.username,
-        user.avatar,
-        user.usergroup,
-        user.additionalgroups,
-        user.displaygroup,
-        settings.subscription
+      SELECT collectionCard.cardID,
+        collectionCard.ownedCardID,
+        card.player_name,
+        card.teamID,
+        card.playerID,
+        card.card_rarity,
+        card.image_url,
+        card.pullable,
+        card.approved,
+        card.position,
+        card.overall,
+        card.high_shots,
+        card.low_shots,
+        card.quickness,
+        card.control,
+        card.conditioning,
+        card.skating,
+        card.shooting,
+        card.hands,
+        card.checking,
+        card.defense,
+        card.author_userID,
+        card.season,
+        card.author_paid
       FROM `
-        .append(getUsersDatabaseName())
+        .append(getCardsDatabaseName())
         .append(
-          SQL`.mybb_users user
+          SQL`.collection collectionCard
         LEFT JOIN `
         )
-        .append(getCardsDatabaseName()).append(SQL`.settings settings
-          ON user.uid=settings.userID
-      WHERE user.uid=${uid};
+        .append(getCardsDatabaseName()).append(SQL`.cards card
+          ON collectionCard.cardID=card.cardID
+      WHERE collectionCard.userID=${uid};
     `)
     )
 

@@ -74,7 +74,7 @@ const TradeViewerCard = ({
         </InfoCard>
       </div>
       <div className="w-full flex items-end justify-start">
-        {isSentByMe && (
+        {!isSentByMe && trade.trade_status === 'PENDING' && (
           <Button
             onClick={() => {
               acceptTrade({ id: trade.tradeid })
@@ -86,16 +86,18 @@ const TradeViewerCard = ({
             Accept
           </Button>
         )}
-        <Button
-          onClick={() => {
-            declineTrade({ id: trade.tradeid })
-          }}
-          className="text-red-500 background-transparent font-bold uppercase px-6 py-3 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 hover:bg-red-100 rounded hover:shadow-lg"
-          type="button"
-          disabled={acceptTradeIsLoading || declineTradeIsLoading}
-        >
-          Decline
-        </Button>
+        {trade.trade_status === 'PENDING' && (
+          <Button
+            onClick={() => {
+              declineTrade({ id: trade.tradeid })
+            }}
+            className="text-red-500 background-transparent font-bold uppercase px-6 py-3 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 hover:bg-red-100 rounded hover:shadow-lg"
+            type="button"
+            disabled={acceptTradeIsLoading || declineTradeIsLoading}
+          >
+            Decline
+          </Button>
+        )}
       </div>
     </div>
   )

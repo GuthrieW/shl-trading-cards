@@ -24,8 +24,6 @@ const AutoCompleteSearchBar = ({
     [searchText]
   )
 
-  console.log(filteredOptions)
-
   const onChange = (event) => {
     setSearchText(event.target.value)
   }

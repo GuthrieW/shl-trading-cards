@@ -13,7 +13,6 @@ const DefaultLayout = ({ children }) => {
     return null
   }
 
-  console.log('user', user)
   if (!user.uid) {
     let subtitle = ''
     if (getUidFromSession() === 2856) {

@@ -1,11 +1,9 @@
-import Button from '@components/buttons/button'
-import TradeCard, { TradeCardProps } from '@components/card/trade-card'
+import TradeCard from '@components/card/trade-card'
 import NewTradeCard from '@components/card/trade-card/new-trade-card'
 import TradeViewerCard from '@components/card/trade-viewer-card'
 import CardSearchForm from '@components/forms/card-search-form'
 import SelectUserModal from '@components/modals/select-user-modal'
 import ScrollableSelect from '@components/selectors/scrollable-select'
-import { useGetAllCards, useGetAllUsers } from '@pages/api/queries'
 import useGetUserTrades from '@pages/api/queries/use-get-user-trades'
 import getUidFromSession from '@utils/get-uid-from-session'
 import { NextSeo } from 'next-seo'
@@ -18,16 +16,6 @@ const TradeHub = () => {
     isLoading: userTradesIsLoading,
     isError: userTradesIsError,
   } = useGetUserTrades({ uid })
-  const {
-    users,
-    isLoading: usersIsLoading,
-    isError: usersIsError,
-  } = useGetAllUsers({})
-  const {
-    allCards,
-    isLoading: allCardsIsLoading,
-    isError: allCardsIsError,
-  } = useGetAllCards({})
 
   const [showTrade, setShowTrade] = useState<boolean>(false)
   const [selectedTrade, setSelectedTrade] = useState<Trade>(null)
@@ -57,7 +45,7 @@ const TradeHub = () => {
     setShowUsersModal(false)
   }
 
-  if (usersIsLoading || allCardsIsLoading || userTradesIsLoading) {
+  if (userTradesIsLoading) {
     return null
   }
 
@@ -66,6 +54,7 @@ const TradeHub = () => {
       <NextSeo title="Trades" />
       <ScrollableSelect scrollbarTitle="Trades">
         <NewTradeCard
+          className="cursor-pointer"
           key={'new-trade'}
           onClick={handleCreateNewTrade}
           trade={{
@@ -74,6 +63,7 @@ const TradeHub = () => {
             recipientid: null,
             trade_status: 'PENDING',
             update_date: null,
+            create_date: null,
           }}
         />
         <>
@@ -84,7 +74,7 @@ const TradeHub = () => {
                 handleSelectTrade(trade)
               }}
               trade={trade}
-              className={'border-t'}
+              className="border-t cursor-pointer"
             />
           ))}
         </>

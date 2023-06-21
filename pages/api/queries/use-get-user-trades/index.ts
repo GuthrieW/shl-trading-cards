@@ -19,7 +19,7 @@ const useGetUserTrades = ({
   uid,
 }: UseGetUserTradesRequest): UseGetUserTrades => {
   const { data, error, isFetching, isSuccess } = useQuery(
-    `${UseGetUserTradesKey}/${uid}`,
+    UseGetUserTradesKey,
     async () => {
       return await axios({
         method: GET,
