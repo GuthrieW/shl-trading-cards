@@ -10,12 +10,9 @@ import useUpdateSubscription from '@pages/api/mutations/use-update-subscription'
 import { NextSeo } from 'next-seo'
 import useGetPacksBoughtToday from '@pages/api/queries/use-get-packs-bought-today'
 
-// const calculateTimeLeft = (): string => {}
-
 const PackShop = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalPack, setModalPack] = useState<packInfo>(null)
-  // const [timeLeft, setTimeLeft] = useState<string>(calculateTimeLeft())
 
   const {
     user,
@@ -49,19 +46,12 @@ const PackShop = () => {
     isError: updateSubscriptionIsError,
   } = useUpdateSubscription()
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setTimeLeft(calculateTimeLeft())
-  //   }, 1000)
-  //   return () => clearTimeout(timer)
-  // })
-
-  const handleSelectedPack = (pack: packInfo) => {
+  const handleSelectedPack = (pack: packInfo): void => {
     setModalPack(pack)
     setShowModal(true)
   }
 
-  const handleBuyPack = (packId) => {
+  const handleBuyPack = (packId): void => {
     if (buyBackIsLoading) {
       warningToast({ warningText: 'Already buying a pack' })
       return
@@ -71,7 +61,7 @@ const PackShop = () => {
     setShowModal(false)
   }
 
-  const handleUpdateSubscription = (event) => {
+  const handleUpdateSubscription = (event): void => {
     updateSubscription({
       uid: getUidFromSession(),
       subscriptionAmount: event.target.value,

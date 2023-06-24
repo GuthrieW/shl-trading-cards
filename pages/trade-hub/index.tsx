@@ -10,19 +10,18 @@ import { NextSeo } from 'next-seo'
 import React, { useState } from 'react'
 
 const TradeHub = () => {
-  const uid = getUidFromSession()
+  const [showTrade, setShowTrade] = useState<boolean>(false)
+  const [selectedTrade, setSelectedTrade] = useState<Trade>(null)
+  const [showUsersModal, setShowUsersModal] = useState<boolean>(false)
+
+  const uid: number = getUidFromSession()
   const {
     userTrades,
     isLoading: userTradesIsLoading,
     isError: userTradesIsError,
   } = useGetUserTrades({ uid })
 
-  const [showTrade, setShowTrade] = useState<boolean>(false)
-  const [selectedTrade, setSelectedTrade] = useState<Trade>(null)
-
-  const [showUsersModal, setShowUsersModal] = useState<boolean>(false)
-
-  const handleSelectTrade = (trade: Trade) => {
+  const handleSelectTrade = (trade: Trade): void => {
     if (selectedTrade?.tradeid === trade?.tradeid) {
       setShowTrade(false)
       setSelectedTrade(null)
@@ -32,18 +31,13 @@ const TradeHub = () => {
     }
   }
 
-  const closeTrade = () => {
+  const closeTrade = (): void => {
     setShowTrade(false)
     setSelectedTrade(null)
   }
 
-  const handleCreateNewTrade = () => {
-    setShowUsersModal(true)
-  }
-
-  const closeUsersModal = () => {
-    setShowUsersModal(false)
-  }
+  const handleCreateNewTrade = (): void => setShowUsersModal(true)
+  const closeUsersModal = (): void => setShowUsersModal(false)
 
   if (userTradesIsLoading) {
     return null
@@ -67,7 +61,7 @@ const TradeHub = () => {
           }}
         />
         <>
-          {[...userTrades, ...userTrades].map((trade) => (
+          {userTrades.map((trade) => (
             <TradeCard
               key={trade.tradeid}
               onClick={() => {

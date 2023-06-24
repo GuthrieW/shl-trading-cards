@@ -10,7 +10,7 @@ type IssuePackRequest = {
 }
 
 type UseIssuePack = {
-  issuePack: Function
+  issuePack: (IssuePackRequest) => void
   response: AxiosResponse
   isSuccess: boolean
   isLoading: boolean
@@ -20,8 +20,8 @@ type UseIssuePack = {
 const useIssuePack = (): UseIssuePack => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
-    ({ packType, issuerID, receiverID }: IssuePackRequest) => {
-      return axios({
+    async ({ packType, issuerID, receiverID }: IssuePackRequest) => {
+      return await axios({
         method: POST,
         url: `/api/v2/packs/issue-free/${packType}/${issuerID}/${receiverID}`,
         data: {},

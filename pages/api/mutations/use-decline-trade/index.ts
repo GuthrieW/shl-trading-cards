@@ -9,7 +9,7 @@ type UseDeclineTradeRequest = {
 }
 
 type UseDeclineTrade = {
-  declineTrade: Function
+  declineTrade: (UseDeclineTradeRequest) => void
   response: AxiosResponse
   isSuccess: boolean
   isLoading: boolean
@@ -19,8 +19,8 @@ type UseDeclineTrade = {
 const useDeclineTrade = (): UseDeclineTrade => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
-    ({ id }: UseDeclineTradeRequest) => {
-      return axios({
+    async ({ id }: UseDeclineTradeRequest) => {
+      return await axios({
         method: POST,
         url: `api/v2/trades/decline/${id}`,
       })

@@ -10,7 +10,7 @@ type UseUpdateSubscriptionRequest = {
 }
 
 type UseUpdateSubscription = {
-  updateSubscription: Function
+  updateSubscription: (UseUpdateSubscriptionRequest) => void
   response: AxiosResponse
   isSuccess: boolean
   isLoading: boolean
@@ -20,8 +20,8 @@ type UseUpdateSubscription = {
 const useUpdateSubscription = (): UseUpdateSubscription => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
-    ({ uid, subscriptionAmount }: UseUpdateSubscriptionRequest) => {
-      return axios({
+    async ({ uid, subscriptionAmount }: UseUpdateSubscriptionRequest) => {
+      return await axios({
         method: POST,
         url: `/api/v2/settings/${uid}/subscription/${subscriptionAmount}`,
         data: {},

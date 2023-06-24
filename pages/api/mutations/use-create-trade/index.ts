@@ -16,7 +16,7 @@ type UseCreateTradeRequest = {
 }
 
 type UseCreateTrade = {
-  createTrade: Function
+  createTrade: (UseCreateTradeRequest) => void
   response: AxiosResponse
   isSuccess: boolean
   isLoading: boolean
@@ -26,8 +26,12 @@ type UseCreateTrade = {
 const useCreateTrade = (): UseCreateTrade => {
   const queryClient = useQueryClient()
   const { mutate, data, isLoading, isError, isSuccess } = useMutation(
-    ({ initiatorId, recipientId, tradeAssets }: UseCreateTradeRequest) => {
-      return axios({
+    async ({
+      initiatorId,
+      recipientId,
+      tradeAssets,
+    }: UseCreateTradeRequest) => {
+      return await axios({
         method: POST,
         url: '/api/v2/trades',
         data: {

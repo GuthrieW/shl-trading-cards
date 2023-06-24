@@ -11,7 +11,7 @@ type UseEditCardRequest = {
 }
 
 type UseEditCard = {
-  editCard: Function
+  editCard: (UseEditCardRequest) => void
   response: AxiosResponse
   isSuccess: boolean
   isLoading: boolean
@@ -21,8 +21,8 @@ type UseEditCard = {
 const useEditCard = (): UseEditCard => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
-    ({ card }: UseEditCardRequest) => {
-      return axios({
+    async ({ card }: UseEditCardRequest) => {
+      return await axios({
         method: PATCH,
         url: `/api/v2/cards/${card.cardID}/edit`,
         data: { card },

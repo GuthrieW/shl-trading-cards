@@ -13,18 +13,20 @@ import { useState } from 'react'
 
 const CollectionLayout = ({ username, children }) => (
   <div className="flex flex-col">
-    <h1 className="flex self-center">{username}'s collection</h1>
+    <h1 className="flex self-center text-lg font-medium">
+      {username}'s collection
+    </h1>
     <>{children}</>
   </div>
 )
 
 const NewTrade = () => {
-  const router = useRouter()
-  const routeUid = parseInt(router.query.uid as string)
-  const currentUserId = getUidFromSession()
   const [currentUserTrading, setCurrentUserTrading] = useState<TradeCard[]>([])
   const [otherUserTrading, setOtherUserTrading] = useState<TradeCard[]>([])
   const [collectionToView, toggleCollectionViewer] = useState<boolean>(true)
+  const router = useRouter()
+  const routeUid = parseInt(router.query.uid as string)
+  const currentUserId = getUidFromSession()
 
   if (routeUid === currentUserId) {
     router.push('/trade-hub')
@@ -71,8 +73,6 @@ const NewTrade = () => {
     return null
   }
 
-  console.log('currentUserCards', currentUserCards)
-
   const onAddCardToTrade = (
     cardToToggle: TradeCard,
     isCurrentUser: boolean
@@ -86,19 +86,17 @@ const NewTrade = () => {
     cardToToggle: TradeCard,
     isCurrentUser: boolean
   ): void => {
-    if (isCurrentUser) {
-      setCurrentUserTrading(
-        currentUserTrading.filter(
-          (card) => card.ownedCardID !== cardToToggle.ownedCardID
+    isCurrentUser
+      ? setCurrentUserTrading(
+          currentUserTrading.filter(
+            (card: TradeCard) => card.ownedCardID !== cardToToggle.ownedCardID
+          )
         )
-      )
-    } else {
-      setOtherUserTrading(
-        otherUserTrading.filter(
-          (card) => card.ownedCardID !== cardToToggle.ownedCardID
+      : setOtherUserTrading(
+          otherUserTrading.filter(
+            (card: TradeCard) => card.ownedCardID !== cardToToggle.ownedCardID
+          )
         )
-      )
-    }
   }
 
   if (createTradeIsSuccess) {
@@ -117,7 +115,7 @@ const NewTrade = () => {
                 {currentUserDetails.username} trades{' '}
                 {`(${currentUserTrading.length})`}:
               </p>
-              <div className="w-full grid grid-cols-3 gap-3">
+              <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 ">
                 {currentUserTrading.map((card, index) => (
                   <div
                     className="relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
@@ -139,7 +137,7 @@ const NewTrade = () => {
                 {otherUserDetails.username} trades{' '}
                 {`(${otherUserTrading.length})`}:
               </p>
-              <div className="w-full grid grid-cols-3 gap-4">
+              <div className="w-full grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 ">
                 {otherUserTrading.map((card, index) => (
                   <div
                     className="relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
@@ -156,7 +154,7 @@ const NewTrade = () => {
                 ))}
               </div>
             </div>
-            <div className="h-1/3 flex flex-col justify-center mx-1">
+            <div className="h-1/3 flex flex-col justify-center mx-1 bottom-0">
               <Button
                 disabled={
                   createTradeIsLoading ||

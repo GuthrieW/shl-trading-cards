@@ -11,7 +11,7 @@ type UseBuyPackRequest = {
 }
 
 type UseBuyPack = {
-  buyPack: Function
+  buyPack: (request: UseBuyPackRequest) => void
   response: AxiosResponse
   isSuccess: boolean
   isLoading: boolean

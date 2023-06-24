@@ -9,7 +9,7 @@ type UseAcceptTradeRequest = {
 }
 
 type UseAcceptTrade = {
-  acceptTrade: Function
+  acceptTrade: (UseAcceptTradeRequest) => void
   response: AxiosResponse
   isSuccess: boolean
   isLoading: boolean

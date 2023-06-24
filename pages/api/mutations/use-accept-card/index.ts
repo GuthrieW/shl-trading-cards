@@ -12,7 +12,7 @@ type UseAcceptCardRequest = {
 }
 
 type UseAcceptCard = {
-  acceptCard: Function
+  acceptCard: (UseAcceptCardRequest) => void
   response: AxiosResponse
   isSuccess: boolean
   isLoading: boolean
@@ -22,8 +22,8 @@ type UseAcceptCard = {
 const useAcceptCard = (): UseAcceptCard => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
-    ({ cardID }: UseAcceptCardRequest) => {
-      return axios({
+    async ({ cardID }: UseAcceptCardRequest) => {
+      return await axios({
         method: PATCH,
         url: `/api/v2/cards/${cardID}/accept`,
       })

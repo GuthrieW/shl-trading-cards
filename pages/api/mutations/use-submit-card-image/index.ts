@@ -10,7 +10,7 @@ type UseSubmitCardImageRequest = {
 }
 
 type UseSubmitCardImage = {
-  submitCardImage: Function
+  submitCardImage: (UseSubmitCardImageRequest) => void
   response: AxiosResponse
   isSuccess: boolean
   isLoading: boolean
@@ -20,8 +20,8 @@ type UseSubmitCardImage = {
 const useSubmitCardImage = (): UseSubmitCardImage => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
-    ({ cardID, image }: UseSubmitCardImageRequest) => {
-      return axios({
+    async ({ cardID, image }: UseSubmitCardImageRequest) => {
+      return await axios({
         method: PATCH,
         url: `/api/v2/cards/${cardID}/image`,
         data: { image },
