@@ -1,5 +1,6 @@
 import SubmitCardsTable from '@components/tables/submit-cards-table'
-import { useGetClaimedCards, useGetUser } from '@pages/api/queries'
+import useGetUser from '@pages/api/queries/use-get-user'
+import useGetClaimedCards from '@pages/api/queries/use-get-claimed-cards'
 import getUidFromSession from '@utils/get-uid-from-session'
 import isAdmin from '@utils/is-admin'
 import isAdminOrCardTeam from '@utils/is-admin-or-card-team'

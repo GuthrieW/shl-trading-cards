@@ -4,7 +4,8 @@ import pathToCards from '@constants/path-to-cards'
 import useCreateTrade, {
   TradeAsset,
 } from '@pages/api/mutations/use-create-trade'
-import { useGetCurrentUser, useGetUser } from '@pages/api/queries'
+import useGetUser from '@pages/api/queries/use-get-user'
+import useGetCurrentUser from '@pages/api/queries/use-get-current-user'
 import useGetUserCardsForTrades from '@pages/api/queries/use-get-user-cards-for-trades'
 import getUidFromSession from '@utils/get-uid-from-session'
 import { NextSeo } from 'next-seo'

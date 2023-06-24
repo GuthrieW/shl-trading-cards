@@ -1,5 +1,6 @@
 import IssuePacksTable from '@components/tables/issue-packs-table'
-import { useGetAllUsers, useGetUser } from '@pages/api/queries'
+import useGetAllUsers from '@pages/api/queries/use-get-all-users'
+import useGetUser from '@pages/api/queries/use-get-user'
 import getUidFromSession from '@utils/get-uid-from-session'
 import isAdmin from '@utils/is-admin'
 import isAdminOrCardTeam from '@utils/is-admin-or-card-team'

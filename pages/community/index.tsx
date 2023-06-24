@@ -1,6 +1,5 @@
-import ButtonGroup from '@components/buttons/button-group'
 import CommunityTable from '@components/tables/community-table'
-import { useGetAllUsersWithCards } from '@pages/api/queries'
+import useGetAllUsersWithCards from '@pages/api/queries/use-get-all-users-with-cards'
 import { NextSeo } from 'next-seo'
 import React from 'react'
 

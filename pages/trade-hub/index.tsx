@@ -1,5 +1,5 @@
 import TradeCard from '@components/card/trade-card'
-import NewTradeCard from '@components/card/trade-card/new-trade-card'
+import NewTradeCard from '@components/card/new-trade-card'
 import TradeViewerCard from '@components/card/trade-viewer-card'
 import CardSearchForm from '@components/forms/card-search-form'
 import SelectUserModal from '@components/modals/select-user-modal'

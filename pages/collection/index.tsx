@@ -1,4 +1,5 @@
-import { useGetUser, useGetUserCards } from '@pages/api/queries'
+import useGetUser from '@pages/api/queries/use-get-user'
+import useGetUserCards from '@pages/api/queries/use-get-user-cards'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React from 'react'
 import { useRouter } from 'next/router'

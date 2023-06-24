@@ -1,5 +1,6 @@
 import ProcessCardsTable from '@components/tables/process-cards-table'
-import { useGetUnapprovedCards, useGetUser } from '@pages/api/queries'
+import useGetUser from '@pages/api/queries/use-get-user'
+import useGetUnapprovedCards from '@pages/api/queries/use-get-unapproved-cards'
 import getUidFromSession from '@utils/get-uid-from-session'
 import isAdmin from '@utils/is-admin'
 import isAdminOrCardTeam from '@utils/is-admin-or-card-team'

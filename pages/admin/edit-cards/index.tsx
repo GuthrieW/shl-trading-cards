@@ -1,5 +1,6 @@
 import EditCardsTable from '@components/tables/edit-cards-table'
-import { useGetAllCards, useGetUser } from '@pages/api/queries'
+import useGetAllCards from '@pages/api/queries/use-get-all-cards'
+import useGetUser from '@pages/api/queries/use-get-user'
 import getUidFromSession from '@utils/get-uid-from-session'
 import isAdmin from '@utils/is-admin'
 import isAdminOrCardTeam from '@utils/is-admin-or-card-team'
