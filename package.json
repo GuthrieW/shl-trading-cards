@@ -20,6 +20,7 @@
     "classnames": "^2.3.1",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
+    "csv-parse": "^5.4.0",
     "dayjs": "^1.11.7",
     "dotenv": "^8.2.0",
     "formik": "^2.2.9",
