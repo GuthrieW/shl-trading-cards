@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import Modal from './modal'
 import Button from '@components/buttons/button'
-import pathToCards from '@constants/path-to-cards'
-import { useSubmitCardImage } from '@pages/api/mutations'
+import useSubmitCardImage from '@pages/api/mutations/use-submit-card-image'
 import { warningToast } from '@utils/toasts'
 
 type SubmitCardModalProps = {

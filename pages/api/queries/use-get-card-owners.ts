@@ -1,30 +1,46 @@
 import { useQuery } from 'react-query'
 import axios from 'axios'
-import { GET } from '@constants/http-methods'
+import { POST } from '@constants/http-methods'
+
+export type CardOwner = {
+  username: string
+  uid: number
+  quantity: number
+}
 
 type UseGetCardOwnersRequest = {
-  cardID: number
+  name: string
+  rarities: string[]
+  teams: string[]
 }
 
 type UseGetCardOwners = {
-  cardOwners: User[]
+  cardOwners: { card: Card; users: TradeUser[] }[]
   isSuccess: boolean
   isLoading: boolean
   isError: any
+  refetch: () => void
 }
 
 export const UseGetCardOwnersKey = 'use-get-card-owners'
 
 const useGetCardOwners = ({
-  cardID,
+  name,
+  rarities,
+  teams,
 }: UseGetCardOwnersRequest): UseGetCardOwners => {
-  const { data, error, isFetching, isSuccess } = useQuery(
-    `${UseGetCardOwnersKey}/${cardID}`,
+  const { data, error, isFetching, isSuccess, refetch } = useQuery(
+    UseGetCardOwnersKey,
     async () => {
       return await axios({
-        method: GET,
-        url: `/api/v2/cards/${cardID}/owners`,
+        method: POST,
+        url: `/api/v2/cards/owners`,
+        data: { name, rarities, teams },
       })
+    },
+    {
+      enabled: false,
+      refetchOnWindowFocus: false,
     }
   )
 
@@ -33,6 +49,7 @@ const useGetCardOwners = ({
     isSuccess: isSuccess,
     isLoading: isFetching,
     isError: error,
+    refetch,
   }
 }
 

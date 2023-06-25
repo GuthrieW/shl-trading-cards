@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react'
 import Modal from './modal'
-import Button from '@components/buttons/button'
 import useGetAllUsersWithCards from '@pages/api/queries/use-get-all-users-with-cards'
 import AutoCompleteSearchBar from '@components/inputs/autocomplete-search-bar'
-import { Router, useRouter } from 'next/router'
+import Router from 'next/router'
 import getUidFromSession from '@utils/get-uid-from-session'
 
 type SelectUserModalProps = {
@@ -11,7 +10,6 @@ type SelectUserModalProps = {
 }
 
 const SelectUserModal = ({ setShowModal }: SelectUserModalProps) => {
-  const router = useRouter()
   const {
     users,
     isSuccess: getAllUsersIsSuccess,
@@ -32,7 +30,7 @@ const SelectUserModal = ({ setShowModal }: SelectUserModalProps) => {
   }, [users])
 
   const handleSelectUser = (selectedUser: User) => {
-    router.push(`/trade-hub/${selectedUser.uid}`)
+    Router.push(`/trade-hub/${selectedUser.uid}`)
   }
 
   if (getAllUsersIsLoading || getAllUsersIsError) {

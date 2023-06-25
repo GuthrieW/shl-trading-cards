@@ -9,8 +9,8 @@ import useGetCurrentUser from '@pages/api/queries/use-get-current-user'
 import useGetUserCardsForTrades from '@pages/api/queries/use-get-user-cards-for-trades'
 import getUidFromSession from '@utils/get-uid-from-session'
 import { NextSeo } from 'next-seo'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
+import Router from 'next/router'
 
 const CollectionLayout = ({ username, children }) => (
   <div className="flex flex-col">
@@ -24,13 +24,12 @@ const CollectionLayout = ({ username, children }) => (
 const NewTrade = () => {
   const [currentUserTrading, setCurrentUserTrading] = useState<TradeCard[]>([])
   const [otherUserTrading, setOtherUserTrading] = useState<TradeCard[]>([])
-  const [collectionToView, toggleCollectionViewer] = useState<boolean>(true)
-  const router = useRouter()
-  const routeUid = parseInt(router.query.uid as string)
+  const [collectionToView, toggleCollectionViewer] = useState<boolean>(false)
+  const routeUid = parseInt(Router.query.uid as string)
   const currentUserId = getUidFromSession()
 
   if (routeUid === currentUserId) {
-    router.push('/trade-hub')
+    Router.push('/trade-hub')
     return null
   }
 
@@ -101,7 +100,7 @@ const NewTrade = () => {
   }
 
   if (createTradeIsSuccess) {
-    router.push('/trade-hub')
+    Router.push('/trade-hub')
     return null
   }
 

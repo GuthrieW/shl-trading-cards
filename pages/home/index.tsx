@@ -5,12 +5,11 @@ import useGetUserCards from '@pages/api/queries/use-get-user-cards'
 import useGetUserPacks from '@pages/api/queries/use-get-user-packs'
 import getUidFromSession from '@utils/get-uid-from-session'
 import { NextSeo } from 'next-seo'
-import Router, { useRouter } from 'next/router'
+import Router from 'next/router'
 import React, { useMemo } from 'react'
 
 const Home = () => {
-  const { query } = useRouter()
-  const parsedUid = parseInt(query.uid as string) || getUidFromSession()
+  const parsedUid = parseInt(Router.query.uid as string) || getUidFromSession()
 
   const {
     userCards,

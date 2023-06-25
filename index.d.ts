@@ -129,6 +129,11 @@ type User = {
   subscription?: number
 }
 
+type TradeUser = {
+  username: string
+  userID: number
+}
+
 type PackKey = 'base'
 type PackLabel = 'Base'
 

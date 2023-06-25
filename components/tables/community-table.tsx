@@ -1,5 +1,4 @@
 import SearchBar from '@components/inputs/search-bar'
-import { useRouter } from 'next/router'
 import React, { useEffect, useMemo } from 'react'
 import {
   useTable,
@@ -9,14 +8,13 @@ import {
 } from 'react-table'
 import Pagination from './pagination'
 import Table from './table'
+import Router from 'next/router'
 
 type CommunityTableProps = {
   tableData: User[]
 }
 
 const CommunityTable = ({ tableData }: CommunityTableProps) => {
-  const router = useRouter()
-
   const columnData: ColumnData[] = [
     {
       id: 'uid',
@@ -91,7 +89,7 @@ const CommunityTable = ({ tableData }: CommunityTableProps) => {
 
   const handleRowClick = (row) => {
     const user: User = row.values
-    router.push({
+    Router.push({
       pathname: '/collection/',
       query: { uid: user.uid },
     })

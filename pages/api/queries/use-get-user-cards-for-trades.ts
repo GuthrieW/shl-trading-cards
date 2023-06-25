@@ -28,8 +28,6 @@ const useGetUserCardsForTrades = ({
     }
   )
 
-  console.log('data', data)
-
   return {
     userCardsForTrades: data?.data || [],
     isSuccess: isSuccess,

@@ -5,12 +5,11 @@ import getUidFromSession from '@utils/get-uid-from-session'
 import isAdmin from '@utils/is-admin'
 import isAdminOrCardTeam from '@utils/is-admin-or-card-team'
 import { NextSeo } from 'next-seo'
-import { useRouter } from 'next/router'
+import Router from 'next/router'
 import React from 'react'
 
 const EditCards = () => {
   const parsedUid = getUidFromSession()
-  const router = useRouter()
 
   const {
     user,
@@ -28,7 +27,7 @@ const EditCards = () => {
   const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
 
   if (!userIsAdminOrCardTeam) {
-    router.push('/')
+    Router.push('/')
     return null
   }
 

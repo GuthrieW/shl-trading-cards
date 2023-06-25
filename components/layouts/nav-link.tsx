@@ -1,5 +1,4 @@
 import React, { MouseEventHandler } from 'react'
-import { useRouter } from 'next/router'
 
 type NavLinkProps = {
   children: any

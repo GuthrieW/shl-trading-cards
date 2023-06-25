@@ -1,6 +1,6 @@
 import useGetCurrentUser from '@pages/api/queries/use-get-current-user'
 import Header from './header'
-import { getUidFromSession } from '@utils/index'
+import getUidFromSession from '@utils/get-uid-from-session'
 import ErrorModal from '@components/modals/error-modal'
 
 const DefaultLayout = ({ children }) => {

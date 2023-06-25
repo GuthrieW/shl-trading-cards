@@ -4,7 +4,7 @@ import isAdminOrCardTeam from '@utils/is-admin-or-card-team'
 import Router from 'next/router'
 import React, { useState } from 'react'
 import { HamburgerCollapse } from 'react-animated-burgers'
-import IceLevelLogo from '../../../public/images/ice-level.svg'
+import IceLevelLogo from '../../public/images/ice-level.svg'
 import NavLink from './nav-link'
 
 type HeaderProps = {

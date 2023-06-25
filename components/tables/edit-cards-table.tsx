@@ -2,7 +2,7 @@ import ButtonGroup from '@components/buttons/button-group'
 import SearchBar from '@components/inputs/search-bar'
 import EditCardModal from '@components/modals/edit-card-modal'
 import { warningToast } from '@utils/toasts'
-import { useEditCard } from '@pages/api/mutations'
+import useEditCard from '@pages/api/mutations/use-edit-card'
 import React, { useMemo, useState } from 'react'
 import {
   useTable,
