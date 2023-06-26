@@ -1,64 +1,18 @@
-import { useBuyPack } from '@pages/api/mutations'
+import useBuyPack from '@pages/api/mutations/use-buy-pack'
 import getUidFromSession from '@utils/get-uid-from-session'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { packs, packInfo } from '@constants/packs-map'
 import BuyPackModal from '@components/modals/buy-pack-modal'
 import { warningToast } from '@utils/toasts'
 import subscriptionOptions from '@constants/subscription-options'
-import { useGetUser } from '@pages/api/queries'
+import useGetUser from '@pages/api/queries/use-get-user'
 import useUpdateSubscription from '@pages/api/mutations/use-update-subscription'
 import { NextSeo } from 'next-seo'
 import useGetPacksBoughtToday from '@pages/api/queries/use-get-packs-bought-today'
-import {
-  startOfTomorrow,
-  intervalToDuration,
-  formatDuration,
-  startOfDay,
-  add,
-  isBefore,
-} from 'date-fns'
-import { utcToZonedTime } from 'date-fns-tz'
-
-const standardTimezoneOffeset = () => {
-  const jan = new Date(new Date().getFullYear(), 0, 1)
-  const jul = new Date(new Date().getFullYear(), 6, 1)
-  return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset())
-}
-
-const calculateTimeLeft = (): string => {
-  const tomorrow: Date = startOfTomorrow()
-  const tomorrowInEst: Date = utcToZonedTime(tomorrow, 'America/New_York')
-  const startOfTomorrowInEst: Date = startOfDay(tomorrowInEst)
-  const startOfTomorrowInMilliseconds: number = startOfTomorrowInEst.valueOf()
-
-  const currentTime: Date = new Date()
-  const utcOffset: Date = add(currentTime, {
-    minutes: currentTime.getTimezoneOffset(),
-  })
-  const estOffset: Date = add(utcOffset, {
-    hours:
-      currentTime.getTimezoneOffset() < standardTimezoneOffeset() ? -4 : -5,
-  })
-  const timeInMilliseconds: number = estOffset.valueOf()
-
-  if (isBefore(startOfTomorrowInMilliseconds, timeInMilliseconds))
-    return "Cal wrote bad code, he's gonna fix it though he promises."
-
-  return formatDuration(
-    intervalToDuration({
-      start: timeInMilliseconds,
-      end: startOfTomorrowInMilliseconds,
-    }),
-    {
-      delimiter: ', ',
-    }
-  )
-}
 
 const PackShop = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalPack, setModalPack] = useState<packInfo>(null)
-  const [timeLeft, setTimeLeft] = useState<string>(calculateTimeLeft())
 
   const {
     user,
@@ -92,19 +46,12 @@ const PackShop = () => {
     isError: updateSubscriptionIsError,
   } = useUpdateSubscription()
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setTimeLeft(calculateTimeLeft())
-    }, 1000)
-    return () => clearTimeout(timer)
-  })
-
-  const handleSelectedPack = (pack: packInfo) => {
+  const handleSelectedPack = (pack: packInfo): void => {
     setModalPack(pack)
     setShowModal(true)
   }
 
-  const handleBuyPack = (packId) => {
+  const handleBuyPack = (packId): void => {
     if (buyBackIsLoading) {
       warningToast({ warningText: 'Already buying a pack' })
       return
@@ -114,7 +61,7 @@ const PackShop = () => {
     setShowModal(false)
   }
 
-  const handleUpdateSubscription = (event) => {
+  const handleUpdateSubscription = (event): void => {
     updateSubscription({
       uid: getUidFromSession(),
       subscriptionAmount: event.target.value,
@@ -137,7 +84,7 @@ const PackShop = () => {
         <h1 className="text-4xl text-center mt-6">Pack Shop</h1>
         <div className="flex flex-col justify-center text-center mb-6">
           <div>Max 3 packs per day</div>
-          <div>You can buy more in {timeLeft}</div>
+          <div>A new set of packs can be purchased at midnight EST</div>
         </div>
         <div className="lg:w-3/4 lg:m-auto flex flex-row justify-start items-center">
           <h1>Base Pack Subscription</h1>

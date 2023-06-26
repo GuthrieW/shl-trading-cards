@@ -4,7 +4,7 @@ import {
   getUsersDatabaseName,
   queryDatabase,
 } from '@pages/api/database/database'
-import { GET } from '@constants/index'
+import { GET } from '@constants/http-methods'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'

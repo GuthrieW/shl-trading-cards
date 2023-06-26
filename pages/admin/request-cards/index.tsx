@@ -1,18 +1,17 @@
 import Button from '@components/buttons/button'
 import { warningToast } from '@utils/toasts'
-import { useCreateCard } from '@pages/api/mutations'
-import { useGetUser } from '@pages/api/queries'
+import useCreateCard from '@pages/api/mutations/use-create-card'
+import useGetUser from '@pages/api/queries/use-get-user'
 import getUidFromSession from '@utils/get-uid-from-session'
-import isAdmin from '@utils/is-admin'
-import isAdminOrCardTeam from '@utils/is-admin-or-card-team'
+import isAdmin from '@utils/user-groups/is-admin'
+import isAdminOrCardTeam from '@utils/user-groups/is-admin-or-card-team'
 import { NextSeo } from 'next-seo'
-import { useRouter } from 'next/router'
+import Router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import CSVReader from 'react-csv-reader'
 
 const RequestCards = () => {
   const parsedUid = getUidFromSession()
-  const router = useRouter()
 
   const {
     user,
@@ -40,7 +39,7 @@ const RequestCards = () => {
   const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
 
   if (!userIsAdminOrCardTeam) {
-    router.push('/')
+    Router.push('/')
     return null
   }
 

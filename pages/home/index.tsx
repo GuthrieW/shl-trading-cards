@@ -1,37 +1,15 @@
-import Card from '@components/card/card'
+import InfoCard from '@components/card/info-card'
 import packsMap from '@constants/packs-map'
 import pathToCards from '@constants/path-to-cards'
-import {
-  useGetAllUsersWithCards,
-  useGetUserCards,
-  useGetUserPacks,
-} from '@pages/api/queries'
+import useGetUserCards from '@pages/api/queries/use-get-user-cards'
+import useGetUserPacks from '@pages/api/queries/use-get-user-packs'
 import getUidFromSession from '@utils/get-uid-from-session'
 import { NextSeo } from 'next-seo'
-import Router, { useRouter } from 'next/router'
+import Router from 'next/router'
 import React, { useMemo } from 'react'
 
-// const homeBoxes = [
-//   {
-//     title: 'See Your Cards',
-//     href: `/collection?uid=${getUidFromSession()}`,
-//     content: '',
-//   },
-//   {
-//     title: 'View Other Collections',
-//     href: '/community',
-//     content: '',
-//   },
-//   {
-//     title: 'Open Your Packs',
-//     href: '/open-packs',
-//     content: '',
-//   },
-// ]
-
 const Home = () => {
-  const { query } = useRouter()
-  const parsedUid = parseInt(query.uid as string) || getUidFromSession()
+  const parsedUid = parseInt(Router.query.uid as string) || getUidFromSession()
 
   const {
     userCards,
@@ -76,16 +54,6 @@ const Home = () => {
   return (
     <>
       <NextSeo title="Home" />
-      {/* Keeping the background video in here in case we ever want to bring it back */}
-      {/* <video
-      className="fixed -z-10 top-0  opacity-75"
-      autoPlay
-      loop
-      playsInline
-      muted
-    >
-      <source src={'/videos/home-background.mp4'} type={'video/mp4'} />
-    </video> */}
       <div
         className="w-full bg-cover bg-center bg-no-repeat hidden lg:block"
         style={{
@@ -94,7 +62,7 @@ const Home = () => {
         }}
       ></div>
       <div className="w-3/4 m-auto h-full flex flex-col xl:grid xl:grid-cols-3 gap-4">
-        <Card className="w-full h-full relative">
+        <InfoCard className="w-full h-full relative">
           <h1 className="text-3xl font-bold mb-2">Your Cards</h1>
           {cards.length > 0 ? (
             <>
@@ -158,8 +126,8 @@ const Home = () => {
               </div>
             </div>
           )}
-        </Card>
-        <Card className="w-full h-full relative xl:pb-8">
+        </InfoCard>
+        <InfoCard className="w-full h-full relative xl:pb-8">
           <h1 className="text-3xl font-bold mb-2">User Collections</h1>
           {/* TODO: Show list of top user collections in terms of card total */}
           <div className="flex flex-col h-full align-center justify-evenly">
@@ -181,8 +149,8 @@ const Home = () => {
               </button>
             </div>
           </div>
-        </Card>
-        <Card className="w-full h-full relative">
+        </InfoCard>
+        <InfoCard className="w-full h-full relative">
           <h1 className="text-3xl font-bold mb-2">Unopened Packs</h1>
           {packs.length > 0 ? (
             <>
@@ -244,7 +212,7 @@ const Home = () => {
               </div>
             </div>
           )}
-        </Card>
+        </InfoCard>
       </div>
     </>
   )

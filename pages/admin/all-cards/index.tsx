@@ -1,16 +1,16 @@
 import AllCardsTable from '@components/tables/all-cards-table'
-import { useGetAllCards, useGetUser } from '@pages/api/queries'
+import useGetAllCards from '@pages/api/queries/use-get-all-cards'
+import useGetUser from '@pages/api/queries/use-get-user'
 import getUidFromSession from '@utils/get-uid-from-session'
-import isAdmin from '@utils/is-admin'
-import isAdminOrCardTeam from '@utils/is-admin-or-card-team'
+import isAdmin from '@utils/user-groups/is-admin'
+import isAdminOrCardTeam from '@utils/user-groups/is-admin-or-card-team'
 
 import { NextSeo } from 'next-seo'
-import { useRouter } from 'next/router'
+import Router from 'next/router'
 import React from 'react'
 
 const AllCards = () => {
   const parsedUid = getUidFromSession()
-  const router = useRouter()
 
   const {
     user,
@@ -29,7 +29,7 @@ const AllCards = () => {
   const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
 
   if (!userIsAdminOrCardTeam) {
-    router.push('/')
+    Router.push('/')
     return null
   }
 

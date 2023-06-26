@@ -1,6 +1,6 @@
 import middleware from '@pages/api/database/middleware'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { GET } from '@constants/index'
+import { GET } from '@constants/http-methods'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import {

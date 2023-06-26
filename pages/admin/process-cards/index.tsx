@@ -1,15 +1,15 @@
 import ProcessCardsTable from '@components/tables/process-cards-table'
-import { useGetUnapprovedCards, useGetUser } from '@pages/api/queries'
+import useGetUser from '@pages/api/queries/use-get-user'
+import useGetUnapprovedCards from '@pages/api/queries/use-get-unapproved-cards'
 import getUidFromSession from '@utils/get-uid-from-session'
-import isAdmin from '@utils/is-admin'
-import isAdminOrCardTeam from '@utils/is-admin-or-card-team'
+import isAdmin from '@utils/user-groups/is-admin'
+import isAdminOrCardTeam from '@utils/user-groups/is-admin-or-card-team'
 import { NextSeo } from 'next-seo'
-import { useRouter } from 'next/router'
+import Router from 'next/router'
 import React from 'react'
 
 const ProcessCards = () => {
   const parsedUid = getUidFromSession()
-  const router = useRouter()
 
   const {
     user,
@@ -28,7 +28,7 @@ const ProcessCards = () => {
   const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
 
   if (!userIsAdminOrCardTeam) {
-    router.push('/')
+    Router.push('/')
     return null
   }
 

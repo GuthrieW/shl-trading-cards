@@ -1,13 +1,13 @@
-import { useGetUser, useGetUserCards } from '@pages/api/queries'
+import useGetUser from '@pages/api/queries/use-get-user'
+import useGetUserCards from '@pages/api/queries/use-get-user-cards'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React from 'react'
-import { useRouter } from 'next/router'
 import CollectionGrid from '@components/grids/collection-grid'
 import { NextSeo } from 'next-seo'
+import Router from 'next/router'
 
 const Collection = () => {
-  const { query } = useRouter()
-  const parsedUid = parseInt(query.uid as string) || getUidFromSession()
+  const parsedUid = parseInt(Router.query.uid as string) || getUidFromSession()
   const isCurrentUser = parsedUid === getUidFromSession()
 
   const {

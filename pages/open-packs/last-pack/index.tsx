@@ -1,7 +1,8 @@
-import { useGetLatestPackCards } from '@pages/api/queries'
+import useGetLatestPackCards from '@pages/api/queries/use-get-latest-pack-cards'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useState } from 'react'
-import { pathToCards, rarityMap } from '@constants/index'
+import pathToCards from '@constants/path-to-cards'
+import rarityMap from '@constants/rarity-map'
 import { NextSeo } from 'next-seo'
 import ReactCardFlip from 'react-card-flip'
 
@@ -20,18 +21,9 @@ const LastOpenedPack = () => {
   }
 
   const cardRarityShadows = [
-    {
-      id: rarityMap.ruby.label,
-      color: '#e0115f',
-    },
-    {
-      id: rarityMap.diamond.label,
-      color: '#45ACA5',
-    },
-    {
-      id: rarityMap.hallOfFame.label,
-      color: '#FFD700',
-    },
+    { id: rarityMap.ruby.label, color: '#e0115f' },
+    { id: rarityMap.diamond.label, color: '#45ACA5' },
+    { id: rarityMap.hallOfFame.label, color: '#FFD700' },
   ]
 
   return (
