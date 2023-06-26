@@ -27,50 +27,52 @@ const index = async (
   if (method === POST) {
     const { uid, packType } = query
 
-    if (!uid) {
-      response.status(StatusCodes.BAD_REQUEST).json({
-        error: 'Missing User ID',
-        purchaseSuccessful: false,
-      })
-      return
-    }
+    if (process.env.APP_ENV === 'production') {
+      if (!uid) {
+        response.status(StatusCodes.BAD_REQUEST).json({
+          error: 'Missing User ID',
+          purchaseSuccessful: false,
+        })
+        return
+      }
 
-    if (!packType) {
-      response.status(StatusCodes.BAD_REQUEST).json({
-        error: 'Missing Pack Type',
-        purchaseSuccessful: false,
-      })
-      return
-    }
+      if (!packType) {
+        response.status(StatusCodes.BAD_REQUEST).json({
+          error: 'Missing Pack Type',
+          purchaseSuccessful: false,
+        })
+        return
+      }
 
-    const hasReachedLimit = await queryDatabase(
-      SQL`
+      const hasReachedLimit = await queryDatabase(
+        SQL`
       SELECT packsToday
       FROM `.append(getCardsDatabaseName()).append(SQL`.packToday
       WHERE userID=${uid};
     `)
-    )
+      )
 
-    if (hasReachedLimit.length > 0 && hasReachedLimit[0]?.packsToday >= 3) {
-      response.status(StatusCodes.BAD_REQUEST).json({
-        error: 'Daily Pack Limit Reached',
-        purchaseSuccessful: false,
+      if (hasReachedLimit.length > 0 && hasReachedLimit[0]?.packsToday >= 3) {
+        response.status(StatusCodes.BAD_REQUEST).json({
+          error: 'Daily Pack Limit Reached',
+          purchaseSuccessful: false,
+        })
+        return
+      }
+
+      const bankResponse = await axios({
+        method: POST,
+        url: `http://localhost:9001/api/v1/purchase/cards/${packType}/${uid}`,
+        data: {},
       })
-      return
-    }
 
-    const bankResponse = await axios({
-      method: POST,
-      url: `http://localhost:9001/api/v1/purchase/cards/${packType}/${uid}`,
-      data: {},
-    })
-
-    if (!bankResponse.data.purchaseSuccessful) {
-      response.status(StatusCodes.BAD_REQUEST).json({
-        error: 'Insufficient Bank Balance',
-        purchaseSuccessful: false,
-      })
-      return
+      if (!bankResponse.data.purchaseSuccessful) {
+        response.status(StatusCodes.BAD_REQUEST).json({
+          error: 'Insufficient Bank Balance',
+          purchaseSuccessful: false,
+        })
+        return
+      }
     }
 
     const result = await queryDatabase(

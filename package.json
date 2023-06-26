@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 9000",
+    "dev": "APP_ENV=development next dev -p 9000",
     "build": "next build",
-    "start": "next start -p 9000"
+    "start": "APP_ENV=production next start -p 9000",
+    "start:dev": "APP_ENV=development next start -p 6500"
   },
   "dependencies": {
     "@emotion/babel-plugin": "^11.3.0",

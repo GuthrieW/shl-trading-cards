@@ -1,6 +1,6 @@
 import getUidFromSession from '@utils/get-uid-from-session'
-import isAdmin from '@utils/is-admin'
-import isAdminOrCardTeam from '@utils/is-admin-or-card-team'
+import isAdmin from '@utils/user-groups/is-admin'
+import isAdminOrCardTeam from '@utils/user-groups/is-admin-or-card-team'
 import Router from 'next/router'
 import React, { useState } from 'react'
 import { HamburgerCollapse } from 'react-animated-burgers'

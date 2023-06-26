@@ -1,7 +1,7 @@
 import mysql from 'serverless-mysql'
 
 const config =
-  process.env.NODE_ENV === 'production'
+  process.env.APP_ENV === 'production'
     ? {
         config: {
           host: process.env.DATABASE_HOST,
@@ -19,7 +19,8 @@ const config =
         },
       }
 
-process.env.NODE_ENV !== 'production'
+console.log('env', process.env.APP_ENV)
+process.env.APP_ENV !== 'production'
   ? console.log('dbconfig', config)
   : console.log('dbconfig', 'production')
 
@@ -36,10 +37,10 @@ export const queryDatabase = async (query): Promise<any> => {
 }
 
 export const getCardsDatabaseName = () => {
-  return process.env.NODE_ENV === 'production' ? 'admin_cards' : 'dev_cards'
+  return process.env.APP_ENV === 'production' ? 'admin_cards' : 'dev_cards'
 }
 
 export const getUsersDatabaseName = () => {
   // TODO: DO NOT MERGE THIS CHANGE
-  return process.env.NODE_ENV === 'production' ? 'admin_mybb' : 'admin_mybb'
+  return process.env.APP_ENV === 'production' ? 'admin_mybb' : 'admin_mybb'
 }
