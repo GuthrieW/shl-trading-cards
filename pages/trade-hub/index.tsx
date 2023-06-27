@@ -1,13 +1,13 @@
-import TradeCard from '@components/card/trade-card'
-import NewTradeCard from '@components/card/new-trade-card'
-import TradeViewerCard from '@components/card/trade-viewer-card'
+import TradeCard from '@components/cards/trade-card'
+import NewTradeCard from '@components/cards/new-trade-card'
+import TradeViewerCard from '@components/cards/trade-viewer-card'
 import CardSearchForm from '@components/forms/card-search-form'
 import SelectUserModal from '@components/modals/select-user-modal'
 import ScrollableSelect from '@components/selectors/scrollable-select'
 import useGetUserTrades from '@pages/api/queries/use-get-user-trades'
 import getUidFromSession from '@utils/get-uid-from-session'
 import { NextSeo } from 'next-seo'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 const TradeHub = () => {
   const [showTrade, setShowTrade] = useState<boolean>(false)
@@ -20,6 +20,15 @@ const TradeHub = () => {
     isLoading: userTradesIsLoading,
     isError: userTradesIsError,
   } = useGetUserTrades({ uid })
+
+  const trades: Trade[] = useMemo(
+    () =>
+      userTrades.sort(
+        (a: Trade, b: Trade) =>
+          Number(new Date(a.update_date)) - Number(new Date(b.update_date))
+      ),
+    [userTrades]
+  )
 
   const handleSelectTrade = (trade: Trade): void => {
     if (selectedTrade?.tradeid === trade?.tradeid) {

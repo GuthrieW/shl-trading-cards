@@ -1,5 +1,5 @@
 import Button from '@components/buttons/button'
-import CardOwnerCard from '@components/card/card-owner-card'
+import CardOwnerCard from '@components/cards/card-owner-card'
 import DropdownWithCheckboxGroup from '@components/dropdowns/dropdown-with-checkbox-group'
 import SearchBar from '@components/inputs/search-bar'
 import rarityMap from '@constants/rarity-map'
@@ -15,9 +15,7 @@ const CardSearchForm = () => {
   const { cardOwners, isLoading, isError, refetch } = useGetCardOwners({
     name: searchString,
     teams: selectedTeams.map((team) => teamsMap[team].teamID),
-    rarities: selectedRarities.map(
-      (rarity) => rarityMap[rarity.toLowerCase()].label
-    ),
+    rarities: selectedRarities,
   })
 
   const handleUpdateSearchString = (event) =>

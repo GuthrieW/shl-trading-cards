@@ -28,8 +28,10 @@ const useGetUserTrades = ({
     }
   )
 
+  const trades = Array.isArray(data?.data[0]) ? data.data[0] : []
+
   return {
-    userTrades: Array.isArray(data?.data[0]) ? data.data[0] : [],
+    userTrades: trades,
     isSuccess,
     isLoading: isFetching,
     isError: error,

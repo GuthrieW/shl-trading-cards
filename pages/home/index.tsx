@@ -1,4 +1,4 @@
-import InfoCard from '@components/card/info-card'
+import InfoCard from '@components/cards/info-card'
 import packsMap from '@constants/packs-map'
 import pathToCards from '@constants/path-to-cards'
 import useGetUserCards from '@pages/api/queries/use-get-user-cards'

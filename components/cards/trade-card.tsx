@@ -36,9 +36,7 @@ const TradeCard = ({ className, trade, onClick }: TradeCardProps) => {
     return null
   }
 
-  const otherUser = currentUserId === trade.initiatorid ? fromUser : toUser
-  // this one below is actually correct but I'm using the one above for testing
-  // const otherUser = currentUserId === trade.initiatorid ? toUser : fromUser
+  const otherUser = currentUserId === trade.initiatorid ? toUser : fromUser
 
   return (
     <div
@@ -68,10 +66,18 @@ const TradeCard = ({ className, trade, onClick }: TradeCardProps) => {
         ></div>
         <div className="text-sm">
           {trade.trade_status === 'PENDING'
-            ? `Offered on ${dayjs(trade.create_date).format('DD/MM/YYYY')}`
+            ? `Offered on ${
+                trade.create_date
+                  ? dayjs(trade.create_date).format('DD/MM/YYYY')
+                  : 'N/A'
+              }`
             : `${
                 trade.trade_status === 'COMPLETE' ? 'Accepted' : 'Declined'
-              } on ${dayjs(trade.update_date).format('DD/MM/YYYY')}`}
+              } on ${
+                trade.update_date
+                  ? dayjs(trade.update_date).format('DD/MM/YYYY')
+                  : 'N/A'
+              }`}
         </div>
       </div>
     </div>

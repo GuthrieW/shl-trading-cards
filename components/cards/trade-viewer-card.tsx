@@ -1,5 +1,5 @@
 import Button from '@components/buttons/button'
-import InfoCard from '@components/card/info-card'
+import InfoCard from '@components/cards/info-card'
 import pathToCards from '@constants/path-to-cards'
 import useAcceptTrade from '@pages/api/mutations/use-accept-trade'
 import useDeclineTrade from '@pages/api/mutations/use-decline-trade'
