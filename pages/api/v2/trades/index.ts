@@ -24,6 +24,7 @@ const index = async (
     const createTradeResult = await queryDatabase(
       SQL`call create_trade(${initiatorId},${recipientId})`
     )
+    console.log('createTradeResult', createTradeResult)
     const newTrade = createTradeResult[0][0]
     const tradeAssetsResults = await Promise.all(
       tradeAssets.map(async (asset: TradeAsset) => {
