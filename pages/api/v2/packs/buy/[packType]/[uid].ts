@@ -27,7 +27,7 @@ const index = async (
   if (method === POST) {
     const { uid, packType } = query
 
-    if (process.env.APP_ENV === 'production') {
+    if (process.env.APP_ENV !== 'development') {
       if (!uid) {
         response.status(StatusCodes.BAD_REQUEST).json({
           error: 'Missing User ID',

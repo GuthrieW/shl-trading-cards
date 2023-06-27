@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "APP_ENV=development next dev -p 9000",
     "build": "next build",
-    "start": "APP_ENV=production next start -p 9000",
+    "start": "next start -p 9000",
     "start:dev": "APP_ENV=development next start -p 6500"
   },
   "dependencies": {
