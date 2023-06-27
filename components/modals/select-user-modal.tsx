@@ -22,11 +22,7 @@ const SelectUserModal = ({ setShowModal }: SelectUserModalProps) => {
     if (!users) return users
 
     const currentUserId = getUidFromSession()
-    const userIndex = users.findIndex((user) => user.uid !== currentUserId)
-
-    if (userIndex === -1) return users
-
-    return users.splice(userIndex, 1)
+    return users.filter((user) => user.uid !== currentUserId)
   }, [users])
 
   const handleSelectUser = (selectedUser: User) => {
