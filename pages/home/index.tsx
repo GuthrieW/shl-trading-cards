@@ -1,4 +1,6 @@
+import Button from '@components/buttons/button'
 import InfoCard from '@components/cards/info-card'
+import Drawer from '@components/drawers/drawer'
 import packsMap from '@constants/packs-map'
 import pathToCards from '@constants/path-to-cards'
 import useGetUserCards from '@pages/api/queries/use-get-user-cards'
@@ -6,11 +8,11 @@ import useGetUserPacks from '@pages/api/queries/use-get-user-packs'
 import getUidFromSession from '@utils/get-uid-from-session'
 import { NextSeo } from 'next-seo'
 import Router from 'next/router'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 
 const Home = () => {
   const parsedUid = parseInt(Router.query.uid as string) || getUidFromSession()
-
+  const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false)
   const {
     userCards,
     isSuccess: getUserCardsIsSuccess,
@@ -61,6 +63,9 @@ const Home = () => {
           backgroundImage: `url(https://simulationhockey.com/tradingcards/header/header1.png)`,
         }}
       ></div>
+      <Button onClick={() => setDrawerIsOpen(!drawerIsOpen)} disabled={false}>
+        Drawer
+      </Button>
       <div className="w-3/4 m-auto h-full flex flex-col xl:grid xl:grid-cols-3 gap-4">
         <InfoCard className="w-full h-full relative">
           <h1 className="text-3xl font-bold mb-2">Your Cards</h1>
@@ -214,6 +219,15 @@ const Home = () => {
           )}
         </InfoCard>
       </div>
+      <Drawer
+        isOpen={drawerIsOpen}
+        closeDrawer={() => setDrawerIsOpen(!drawerIsOpen)}
+      >
+        <p className="text-gray-100">
+          Look I made you some content! Daddy made you your favorite open wide.
+          Here comes the content... It's a beautiful day to stay inside!
+        </p>
+      </Drawer>
     </>
   )
 }

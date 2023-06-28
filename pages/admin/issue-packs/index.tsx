@@ -25,7 +25,6 @@ const IssuePacks = () => {
   if (getUserIsLoading || getUserIsError) return null
 
   const userIsAdmin = isAdmin(user)
-  const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
 
   if (!userIsAdmin) {
     Router.push('/')

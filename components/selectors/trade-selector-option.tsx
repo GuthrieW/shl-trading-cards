@@ -4,13 +4,17 @@ import React from 'react'
 import dayjs from 'dayjs'
 import fixAvatar from '@utils/fix-avatar-url'
 
-export type TradeCardProps = {
+export type TradeSelectorOptionProps = {
   className?: string
   onClick?: Function
   trade: Trade
 }
 
-const TradeCard = ({ className, trade, onClick }: TradeCardProps) => {
+const TradeSelectorOption = ({
+  className,
+  trade,
+  onClick,
+}: TradeSelectorOptionProps) => {
   const currentUserId = getUidFromSession()
   const {
     user: toUser,
@@ -72,7 +76,11 @@ const TradeCard = ({ className, trade, onClick }: TradeCardProps) => {
                   : 'N/A'
               }`
             : `${
-                trade.trade_status === 'COMPLETE' ? 'Accepted' : 'Declined'
+                trade.trade_status === 'COMPLETE'
+                  ? 'Accepted'
+                  : trade.declineUserID === currentUserId
+                  ? 'Cancelled'
+                  : 'Declined'
               } on ${
                 trade.update_date
                   ? dayjs(trade.update_date).format('DD/MM/YYYY')
@@ -83,4 +91,4 @@ const TradeCard = ({ className, trade, onClick }: TradeCardProps) => {
     </div>
   )
 }
-export default TradeCard
+export default TradeSelectorOption

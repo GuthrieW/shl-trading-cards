@@ -76,6 +76,14 @@ const headersLinks: HeaderLink[] = [
     cardTeam: false,
     hide: true,
   },
+  {
+    id: 'admin',
+    headerText: 'Admin',
+    href: '/admin',
+    admin: true,
+    cardTeam: true,
+    hide: false,
+  },
 ]
 
 const adminLinks: AdminLink[] = [
@@ -126,7 +134,6 @@ const adminLinks: AdminLink[] = [
 const Header = ({ user }: HeaderProps) => {
   const [showAdminLinks, setShowAdminLinks] = useState<boolean>(false)
   const [showMenu, setShowMenu] = useState<boolean>(false)
-  const userIsAdmin = isAdmin(user)
   const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
 
   return (

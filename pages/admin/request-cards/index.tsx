@@ -35,7 +35,6 @@ const RequestCards = () => {
 
   if (getUserIsLoading || getUserIsError) return null
 
-  const userIsAdmin = isAdmin(user)
   const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
 
   if (!userIsAdminOrCardTeam) {

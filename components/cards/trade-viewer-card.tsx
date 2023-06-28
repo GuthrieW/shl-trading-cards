@@ -4,6 +4,7 @@ import pathToCards from '@constants/path-to-cards'
 import useAcceptTrade from '@pages/api/mutations/use-accept-trade'
 import useDeclineTrade from '@pages/api/mutations/use-decline-trade'
 import useGetTradeDetails from '@pages/api/queries/use-get-trade-details'
+import getUidFromSession from '@utils/get-uid-from-session'
 import React from 'react'
 
 type TradeViewerCardProps = {
@@ -21,15 +22,13 @@ const TradeViewerCard = ({
     acceptTrade,
     isSuccess: acceptTradeIsSuccess,
     isLoading: acceptTradeIsLoading,
-    isError: acceptTradeIsError,
   } = useAcceptTrade()
   const {
     declineTrade,
     isSuccess: declineTradeIsSuccess,
     isLoading: declineTradeIsLoading,
-    isError: declineTradeIsError,
   } = useDeclineTrade()
-  const { tradeDetails, isSuccess, isLoading, isError } = useGetTradeDetails({
+  const { tradeDetails, isLoading } = useGetTradeDetails({
     id: trade.tradeid,
   })
 
@@ -89,13 +88,13 @@ const TradeViewerCard = ({
         {trade.trade_status === 'PENDING' && (
           <Button
             onClick={() => {
-              declineTrade({ id: trade.tradeid })
+              declineTrade({ id: trade.tradeid, decliningUid: userId })
             }}
             className="text-red-500 background-transparent font-bold uppercase px-6 py-3 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 hover:bg-red-100 rounded hover:shadow-lg"
             type="button"
             disabled={acceptTradeIsLoading || declineTradeIsLoading}
           >
-            Decline
+            {trade.initiatorid === userId ? 'Cancel' : 'Decline'}
           </Button>
         )}
       </div>

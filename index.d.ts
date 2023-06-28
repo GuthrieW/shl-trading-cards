@@ -100,6 +100,7 @@ type Trade = {
   tradeid: number
   initiatorid: number
   recipientid: number
+  declineUserID: number
   trade_status: TradeStatus
   update_date: Date
   create_date: Date

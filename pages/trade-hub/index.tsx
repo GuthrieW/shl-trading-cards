@@ -1,9 +1,9 @@
-import TradeCard from '@components/cards/trade-card'
-import NewTradeCard from '@components/cards/new-trade-card'
 import TradeViewerCard from '@components/cards/trade-viewer-card'
 import CardSearchForm from '@components/forms/card-search-form'
 import SelectUserModal from '@components/modals/select-user-modal'
+import NewTradeSelectorOption from '@components/selectors/new-trade-selector-option'
 import ScrollableSelect from '@components/selectors/scrollable-select'
+import TradeSelectorOption from '@components/selectors/trade-selector-option'
 import useGetUserTrades from '@pages/api/queries/use-get-user-trades'
 import getUidFromSession from '@utils/get-uid-from-session'
 import { NextSeo } from 'next-seo'
@@ -15,11 +15,9 @@ const TradeHub = () => {
   const [showUsersModal, setShowUsersModal] = useState<boolean>(false)
 
   const uid: number = getUidFromSession()
-  const {
-    userTrades,
-    isLoading: userTradesIsLoading,
-    isError: userTradesIsError,
-  } = useGetUserTrades({ uid })
+  const { userTrades, isLoading: userTradesIsLoading } = useGetUserTrades({
+    uid,
+  })
 
   const trades: Trade[] = useMemo(
     () =>
@@ -56,7 +54,7 @@ const TradeHub = () => {
     <>
       <NextSeo title="Trades" />
       <ScrollableSelect scrollbarTitle="Trades">
-        <NewTradeCard
+        <NewTradeSelectorOption
           className="cursor-pointer"
           key={'new-trade'}
           onClick={handleCreateNewTrade}
@@ -67,11 +65,12 @@ const TradeHub = () => {
             trade_status: 'PENDING',
             update_date: null,
             create_date: null,
+            declineUserID: null,
           }}
         />
         <>
-          {userTrades.map((trade) => (
-            <TradeCard
+          {trades.map((trade) => (
+            <TradeSelectorOption
               key={trade.tradeid}
               onClick={() => {
                 handleSelectTrade(trade)

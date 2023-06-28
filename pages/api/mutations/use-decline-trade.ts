@@ -7,6 +7,7 @@ import { invalidateQueries } from './invalidate-queries'
 
 type UseDeclineTradeRequest = {
   id: number
+  decliningUid: number
 }
 
 type UseDeclineTrade = {
@@ -20,10 +21,10 @@ type UseDeclineTrade = {
 const useDeclineTrade = (): UseDeclineTrade => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
-    async ({ id }: UseDeclineTradeRequest) => {
+    async ({ id, decliningUid }: UseDeclineTradeRequest) => {
       return await axios({
         method: POST,
-        url: `api/v2/trades/decline/${id}`,
+        url: `api/v2/trades/decline/${id}/${decliningUid}`,
       })
     },
     {
