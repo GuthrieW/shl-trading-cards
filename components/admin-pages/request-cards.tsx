@@ -1,27 +1,17 @@
 import Button from '@components/buttons/button'
 import { warningToast } from '@utils/toasts'
 import useCreateCard from '@pages/api/mutations/use-create-card'
-import useGetUser from '@pages/api/queries/use-get-user'
-import getUidFromSession from '@utils/get-uid-from-session'
-import isAdmin from '@utils/user-groups/is-admin'
 import isAdminOrCardTeam from '@utils/user-groups/is-admin-or-card-team'
 import { NextSeo } from 'next-seo'
 import Router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import CSVReader from 'react-csv-reader'
 
-const RequestCards = () => {
-  const parsedUid = getUidFromSession()
+export type RequestCardsProps = {
+  user: User
+}
 
-  const {
-    user,
-    isSuccess: getUserIsSuccess,
-    isLoading: getUserIsLoading,
-    isError: getUserIsError,
-  } = useGetUser({
-    uid: parsedUid,
-  })
-
+const RequestCards = ({ user }: RequestCardsProps) => {
   const [csvToUpload, setCsvToUpload] = useState(null)
   const [canSubmitCsv, setCanSubmitCsv] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
@@ -32,8 +22,6 @@ const RequestCards = () => {
   useEffect(() => {
     setCanSubmitCsv(csvToUpload !== null)
   }, [csvToUpload])
-
-  if (getUserIsLoading || getUserIsError) return null
 
   const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
 
@@ -87,7 +75,6 @@ const RequestCards = () => {
     <>
       <NextSeo title="Request Cards" />
       <div className="m-2 flex flex-col">
-        <h1>Request Cards</h1>
         <div className="flex flex-col justify-center items-center">
           <div className="w-1/3">
             <div className="flex justify-start items-center">

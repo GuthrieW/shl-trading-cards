@@ -1,6 +1,4 @@
-import Button from '@components/buttons/button'
 import InfoCard from '@components/cards/info-card'
-import Drawer from '@components/drawers/drawer'
 import packsMap from '@constants/packs-map'
 import pathToCards from '@constants/path-to-cards'
 import useGetUserCards from '@pages/api/queries/use-get-user-cards'
@@ -15,7 +13,6 @@ const Home = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false)
   const {
     userCards,
-    isSuccess: getUserCardsIsSuccess,
     isLoading: getUserCardsIsLoading,
     isError: getUserCardsIsError,
   } = useGetUserCards({
@@ -24,21 +21,20 @@ const Home = () => {
 
   const {
     userPacks,
-    isSuccess: getUserPacksIsSuccess,
     isLoading: getUserPacksIsLoading,
     isError: getUserPacksIsError,
   } = useGetUserPacks({
     uid: parsedUid,
   })
 
-  const cards = useMemo(() => {
-    return userCards
-      .sort((a, b) => {
-        return b.overall - a.overall
-      })
-      .slice(0, 5)
-      .reverse()
-  }, [userCards])
+  const cards = useMemo(
+    () =>
+      userCards
+        .sort((a, b) => b.overall - a.overall)
+        .slice(0, 5)
+        .reverse(),
+    [userCards]
+  )
 
   const packs = useMemo(() => {
     return userPacks.slice(0, 5).reverse()
@@ -63,9 +59,6 @@ const Home = () => {
           backgroundImage: `url(https://simulationhockey.com/tradingcards/header/header1.png)`,
         }}
       ></div>
-      <Button onClick={() => setDrawerIsOpen(!drawerIsOpen)} disabled={false}>
-        Drawer
-      </Button>
       <div className="w-3/4 m-auto h-full flex flex-col xl:grid xl:grid-cols-3 gap-4">
         <InfoCard className="w-full h-full relative">
           <h1 className="text-3xl font-bold mb-2">Your Cards</h1>
@@ -219,15 +212,6 @@ const Home = () => {
           )}
         </InfoCard>
       </div>
-      <Drawer
-        isOpen={drawerIsOpen}
-        closeDrawer={() => setDrawerIsOpen(!drawerIsOpen)}
-      >
-        <p className="text-gray-100">
-          Look I made you some content! Daddy made you your favorite open wide.
-          Here comes the content... It's a beautiful day to stay inside!
-        </p>
-      </Drawer>
     </>
   )
 }

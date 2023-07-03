@@ -8,11 +8,11 @@ type NavLinkProps = {
 const NavLink = ({ children, onClick }: NavLinkProps) => (
   <div
     onClick={onClick}
-    className={`flex items-center mx-2 text-gray-100 cursor-pointer h-full border-b-4 border-neutral-800 ${
-      onClick ? 'hover:border-b-4 hover:border-b-white' : ''
+    className={`h-8 flex items-center rounded mx-1 text-gray-200 cursor-pointer ${
+      onClick ? 'hover:bg-neutral-700 hover:text-gray-300' : ''
     }`}
   >
-    {children}
+    <span className="p-1 flex items-center">{children}</span>
   </div>
 )
 
