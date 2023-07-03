@@ -57,7 +57,7 @@ const CardSearchForm = () => {
     <div className="m-1">
       <p>Card Search</p>
       <div className="flex flex-col justify-center items-center">
-        <div className="w-full flex justify-between items-center">
+        <div className="w-full flex justify-start items-center">
           <div className="flex">
             <DropdownWithCheckboxGroup
               title="Rarity"
@@ -69,27 +69,33 @@ const CardSearchForm = () => {
               checkboxes={TeamCheckboxes}
               selectedCheckboxIds={selectedTeams}
             />
-            <SearchBar
-              onChange={handleUpdateSearchString}
-              disabled={isLoading || isError}
-            />
-          </div>
-          <div className="flex flex-row items-center">
-            <Button disabled={isLoading || isError} onClick={() => refetch()}>
-              Submit
-            </Button>
+            <div className="flex items-center m-1">
+              <SearchBar
+                onChange={handleUpdateSearchString}
+                disabled={isLoading || isError}
+              />
+            </div>
+
+            <div className="flex items-center m-1">
+              <Button disabled={isLoading || isError} onClick={() => refetch()}>
+                Submit
+              </Button>
+            </div>
           </div>
         </div>
       </div>
       <div className="flex justify-center items-center">
-        <div className="w-3/4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {cardOwners.length !== 0 &&
-            cardOwners.map((cardWithUsers) =>
+        {cardOwners.length !== 0 ? (
+          <div className="w-3/4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {cardOwners.map((cardWithUsers) =>
               cardWithUsers.users.map((user) => (
                 <CardOwnerCard card={cardWithUsers.card} user={user} />
               ))
             )}
-        </div>
+          </div>
+        ) : (
+          <p>No results</p>
+        )}
       </div>
     </div>
   )

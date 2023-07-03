@@ -44,7 +44,6 @@ const MobileHeader = ({ headerItems, user }: MobileHeaderProps) => {
           </span>
         </div>
       </div>
-
       <Drawer isOpen={drawerIsOpen} closeDrawer={() => setDrawerIsOpen(false)}>
         {headerItems.map(({ icon, headerText, href }: HeaderLink) => (
           <DrawerItem

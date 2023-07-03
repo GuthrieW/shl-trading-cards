@@ -1,4 +1,4 @@
-export type packInfo = {
+export type PackInfo = {
   id: string
   label: string
   description: string
@@ -19,7 +19,7 @@ export const packsMap = {
   },
 }
 
-export const packs: packInfo[] = [
+export const packs: PackInfo[] = [
   {
     id: packsMap.base.id,
     label: packsMap.base.label,

@@ -8,11 +8,13 @@ import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useState } from 'react'
 import Router from 'next/router'
 import { NextSeo } from 'next-seo'
+import { useResponsive } from '@hooks/useResponsive'
 
 const OpenPacks = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalPack, setModalPack] = useState<UserPack>(null)
 
+  const { isMobile, isTablet, isDesktop } = useResponsive()
   const {
     user,
     isSuccess: getCurrentUserIsSuccess,
@@ -88,14 +90,18 @@ const OpenPacks = () => {
           <>
             <p>Number of packs: {userPacks.length}</p>
             <p>Subscribed: {user.subscription ? user.subscription : 'No'}</p>
-            <div className="h-full flex flex-row items-center justify-start overflow-x-auto overflow-y-hidden">
+            <div
+              className={`grid grid-cols-${isMobile ? 2 : isTablet ? 2 : 4}`}
+            >
               {userPacks.map((pack, index) => (
-                <img
-                  key={index}
-                  onClick={() => handleSelectedPack(pack)}
-                  className="select-none my-2 cursor-pointer h-96 mx-4 transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
-                  src={packsMap.base.imageUrl}
-                />
+                <div className="flex justify-center items-center">
+                  <img
+                    key={index}
+                    onClick={() => handleSelectedPack(pack)}
+                    className="select-none my-2 cursor-pointer h-96 mx-4 transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
+                    src={packsMap.base.imageUrl}
+                  />
+                </div>
               ))}
             </div>
           </>

@@ -90,7 +90,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
             <style global jsx>{`
               body {
                 font-family: 'Raleway', sans-serif;
-                background-color: '#E9ECEF';
+                background-color: rgb(245, 245, 245);
               }
               * {
                 margin: 0;

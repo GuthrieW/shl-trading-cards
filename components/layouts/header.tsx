@@ -18,7 +18,6 @@ const Header = ({ headerItems, user }: HeaderProps) => (
         onClick={() => Router.push('/home')}
         className="h-6 ml-2 cursor-pointer"
       />
-
       <div className="flex flex-row justify-center items-center h-full">
         {headerItems.map(({ headerText, href }: HeaderLink) => (
           <NavLink key={href} onClick={() => Router.push(href)}>
@@ -28,7 +27,7 @@ const Header = ({ headerItems, user }: HeaderProps) => (
       </div>
       <div className="flex items-center h-full mr-2">
         <span
-          className="p-1 cursor-pointer rounded hover:bg-neutral-700 hover:text-gray-300"
+          className="p-1 mr-2 cursor-pointer rounded hover:bg-neutral-700 hover:text-gray-300"
           onClick={() =>
             Router.push(
               `https://simulationhockey.com/member.php?action=profile&uid=${user.uid}`

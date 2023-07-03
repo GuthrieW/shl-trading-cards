@@ -13,18 +13,18 @@ const ScrollableSelect = ({
   const restOptions = children.slice(1)
   return (
     <>
-      <aside className="w-64 top-16 border-r">{firstOption}</aside>
+      <aside className="w-64 top-16 border-r border-neutral-400">
+        {firstOption}
+      </aside>
       <aside
-        className="w-64 top-28 bottom-0 overflow-y-scroll absolute border-r"
+        className="w-64 top-28 bottom-0 overflow-y-scroll absolute border-r border-neutral-400"
         aria-label={`${scrollbarTitle} Scrollbar`}
       >
-        <div>
-          <ul>
-            {restOptions.map((child, index) => {
-              return <li key={index}>{child}</li>
-            })}
-          </ul>
-        </div>
+        <ul>
+          {restOptions.map((child, index) => {
+            return <li key={index}>{child}</li>
+          })}
+        </ul>
       </aside>
     </>
   )

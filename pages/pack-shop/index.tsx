@@ -1,7 +1,7 @@
 import useBuyPack from '@pages/api/mutations/use-buy-pack'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useState } from 'react'
-import { packs, packInfo } from '@constants/packs-map'
+import { packs, PackInfo } from '@constants/packs-map'
 import BuyPackModal from '@components/modals/buy-pack-modal'
 import { warningToast } from '@utils/toasts'
 import subscriptionOptions from '@constants/subscription-options'
@@ -12,41 +12,24 @@ import useGetPacksBoughtToday from '@pages/api/queries/use-get-packs-bought-toda
 
 const PackShop = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [modalPack, setModalPack] = useState<packInfo>(null)
+  const [modalPack, setModalPack] = useState<PackInfo>(null)
 
   const {
     user,
-    isSuccess: getUserIsSuccess,
     isLoading: getUserIsLoading,
     isError: getUserIsError,
   } = useGetUser({
     uid: getUidFromSession(),
   })
-
   const {
     packsBoughtToday,
-    isSuccess: packsBoughtTodayIsSuccess,
     isLoading: packsBoughtTodayIsLoading,
     isError: packsBoughtTodayIsError,
   } = useGetPacksBoughtToday({ uid: getUidFromSession() })
+  const { buyPack, isLoading: buyBackIsLoading } = useBuyPack()
+  const { updateSubscription } = useUpdateSubscription()
 
-  const {
-    buyPack,
-    response: buyPackResponse,
-    isLoading: buyBackIsLoading,
-    isError: buyPackIsError,
-    isSuccess: buyPackIsSuccess,
-  } = useBuyPack()
-
-  const {
-    updateSubscription,
-    response: updateSubscriptionResponse,
-    isSuccess: updateSubscriptionIsSuccess,
-    isLoading: updateSubscriptionIsLoading,
-    isError: updateSubscriptionIsError,
-  } = useUpdateSubscription()
-
-  const handleSelectedPack = (pack: packInfo): void => {
+  const handleSelectedPack = (pack: PackInfo): void => {
     setModalPack(pack)
     setShowModal(true)
   }
@@ -100,7 +83,24 @@ const PackShop = () => {
             ))}
           </select>
         </div>
-        <div className="my-2 h-auto flex flex-row items-center justify-center">
+        <div className="grid grid-cols-3">
+          {packs.map((pack: PackInfo, index: number) => (
+            <div className="my-2 h-auto flex flex-col items-center justify-center">
+              <img
+                onClick={() => handleSelectedPack(pack)}
+                className="cursor-pointer h-96 mx-4 transition ease-linear hover:scale-105 shadow-none hover:shadow-xl"
+                src={pack.imageUrl}
+              />
+              <div className="text-center">
+                <h1 className="text-2xl">{pack.label} Pack</h1>
+                <h2 className="text-xl">
+                  Price: ${new Intl.NumberFormat().format(pack.price)}
+                </h2>
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* <div className="my-2 h-auto flex flex-row items-center justify-center">
           {packs.map((pack: packInfo, index: number) => (
             <div
               key={index}
@@ -119,7 +119,7 @@ const PackShop = () => {
               </div>
             </div>
           ))}
-        </div>
+        </div> */}
         {showModal && (
           <BuyPackModal
             onAccept={handleBuyPack}

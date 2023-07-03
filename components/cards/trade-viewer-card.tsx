@@ -4,7 +4,6 @@ import pathToCards from '@constants/path-to-cards'
 import useAcceptTrade from '@pages/api/mutations/use-accept-trade'
 import useDeclineTrade from '@pages/api/mutations/use-decline-trade'
 import useGetTradeDetails from '@pages/api/queries/use-get-trade-details'
-import getUidFromSession from '@utils/get-uid-from-session'
 import React from 'react'
 
 type TradeViewerCardProps = {

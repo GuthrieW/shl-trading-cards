@@ -55,7 +55,7 @@ const TradeHub = () => {
       <NextSeo title="Trades" />
       <ScrollableSelect scrollbarTitle="Trades">
         <NewTradeSelectorOption
-          className="cursor-pointer"
+          className="cursor-pointer border-t-1 border-neutral-400"
           key={'new-trade'}
           onClick={handleCreateNewTrade}
           trade={{
@@ -76,7 +76,7 @@ const TradeHub = () => {
                 handleSelectTrade(trade)
               }}
               trade={trade}
-              className="border-t cursor-pointer"
+              className="border-t-1 border-neutral-400 cursor-pointer"
             />
           ))}
         </>

@@ -49,7 +49,7 @@ const Table = ({
             <tr
               {...row.getRowProps()}
               key={index}
-              className="hover:bg-gray-300"
+              className="hover:bg-gray-300 cursor-pointer"
               onClick={() => onRowClick(row)}
             >
               {row.cells.map((cell, index) => (
