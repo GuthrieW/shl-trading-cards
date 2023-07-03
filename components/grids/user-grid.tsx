@@ -21,8 +21,7 @@ const UserGrid = ({ gridData }: UserGridProps) => {
         .filter((user) => user.uid !== getUidFromSession())
         .sort((a, b) =>
           a.username.toLowerCase().localeCompare(b.username.toLowerCase())
-        )
-        .slice(0, 25),
+        ),
     [searchString]
   )
 
@@ -31,7 +30,11 @@ const UserGrid = ({ gridData }: UserGridProps) => {
       <div className="flex justify-start w-64">
         <SearchBar onChange={(event) => setSearchString(event.target.value)} />
       </div>
-      <div className={`grid grid-cols-${isMobile ? 2 : isTablet ? 3 : 5}`}>
+      <div
+        className={`grid ${
+          isMobile ? 'grid-cols-2' : isTablet ? 'grid-cols-3' : 'grid-cols-5'
+        }`}
+      >
         {users.map((user) => (
           <UserCard user={user} />
         ))}

@@ -91,17 +91,23 @@ const OpenPacks = () => {
             <p>Number of packs: {userPacks.length}</p>
             <p>Subscribed: {user.subscription ? user.subscription : 'No'}</p>
             <div
-              className={`grid grid-cols-${isMobile ? 2 : isTablet ? 2 : 5}`}
+              className={`grid ${
+                isMobile
+                  ? 'grid-cols-2'
+                  : isTablet
+                  ? 'grid-cols-3'
+                  : 'grid-cols-5'
+              }`}
             >
               {userPacks.map((pack, index) => (
-                <div className="flex justify-center items-center">
-                  <img
-                    key={index}
-                    onClick={() => handleSelectedPack(pack)}
-                    className="select-none my-2 cursor-pointer h-96 mx-4 transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
-                    src={packsMap.base.imageUrl}
-                  />
-                </div>
+                // <div key={index} className="flex justify-center items-center">
+                <img
+                  key={index}
+                  onClick={() => handleSelectedPack(pack)}
+                  className="select-none my-2 cursor-pointer h-96 mx-4 transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
+                  src={packsMap.base.imageUrl}
+                />
+                // </div>
               ))}
             </div>
           </>
