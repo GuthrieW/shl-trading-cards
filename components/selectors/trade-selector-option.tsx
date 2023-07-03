@@ -42,6 +42,9 @@ const TradeSelectorOption = ({
 
   const otherUser = currentUserId === trade.initiatorid ? toUser : fromUser
 
+  console.log('currentUserId', currentUserId)
+  console.log(trade.declineUserID)
+
   return (
     <div
       className={`${

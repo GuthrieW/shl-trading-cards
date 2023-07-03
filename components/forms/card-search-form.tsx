@@ -33,24 +33,20 @@ const CardSearchForm = () => {
       ? setSelectedTeams(selectedTeams.filter((team) => team != toggleId))
       : setSelectedTeams(selectedTeams.concat(toggleId))
 
-  const PlayerCardRarityCheckboxes: CollectionTableButtons[] = Object.values(
+  const playerCardRarityCheckboxes: CollectionTableButtons[] = Object.values(
     rarityMap
-  ).map((rarity) => {
-    return {
-      id: rarity.label,
-      text: rarity.label === 'Hall of Fame' ? 'HOF' : rarity.label,
-      onClick: () => updateSelectedRarityButtonIds(rarity.label),
-    }
-  })
+  ).map((rarity) => ({
+    id: rarity.label,
+    text: rarity.label === 'Hall of Fame' ? 'HOF' : rarity.label,
+    onClick: () => updateSelectedRarityButtonIds(rarity.label),
+  }))
 
-  const TeamCheckboxes: CollectionTableButtons[] = Object.keys(teamsMap).map(
-    (key) => {
-      return {
-        id: key,
-        text: teamsMap[key].abbreviation,
-        onClick: () => updateSelectedTeamButtonIds(key),
-      }
-    }
+  const teamCheckboxes: CollectionTableButtons[] = Object.keys(teamsMap).map(
+    (key) => ({
+      id: key,
+      text: teamsMap[key].abbreviation,
+      onClick: () => updateSelectedTeamButtonIds(key),
+    })
   )
 
   return (
@@ -61,12 +57,12 @@ const CardSearchForm = () => {
           <div className="flex">
             <DropdownWithCheckboxGroup
               title="Rarity"
-              checkboxes={PlayerCardRarityCheckboxes}
+              checkboxes={playerCardRarityCheckboxes}
               selectedCheckboxIds={selectedRarities}
             />
             <DropdownWithCheckboxGroup
               title="Team"
-              checkboxes={TeamCheckboxes}
+              checkboxes={teamCheckboxes}
               selectedCheckboxIds={selectedTeams}
             />
             <div className="flex items-center m-1">

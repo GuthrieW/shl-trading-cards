@@ -1,5 +1,5 @@
 import Button from '@components/buttons/button'
-import { packInfo } from '@constants/packs-map'
+import { PackInfo } from '@constants/packs-map'
 import { warningToast } from '@utils/toasts'
 import React from 'react'
 import Modal from './modal'
@@ -7,7 +7,7 @@ import Modal from './modal'
 type BuyPackModalProps = {
   onAccept: Function
   setShowModal: Function
-  pack: packInfo
+  pack: PackInfo
   limitReached: boolean
 }
 

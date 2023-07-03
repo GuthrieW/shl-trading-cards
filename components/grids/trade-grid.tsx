@@ -71,7 +71,7 @@ const TradeGrid = ({ gridData, onSelect, isCurrentUser }: TradeGridProps) => {
       ? setSelectedTeams(selectedTeams.filter((team) => team != toggleId))
       : setSelectedTeams(selectedTeams.concat(toggleId))
 
-  const PlayerCardRarityCheckboxes: CollectionTableButtons[] = Object.values(
+  const playerCardRarityCheckboxes: CollectionTableButtons[] = Object.values(
     rarityMap
   ).map((rarity) => {
     return {
@@ -81,7 +81,7 @@ const TradeGrid = ({ gridData, onSelect, isCurrentUser }: TradeGridProps) => {
     }
   })
 
-  const TeamCheckboxes: CollectionTableButtons[] = Object.keys(teamsMap).map(
+  const teamCheckboxes: CollectionTableButtons[] = Object.keys(teamsMap).map(
     (key) => {
       return {
         id: key,
@@ -97,12 +97,12 @@ const TradeGrid = ({ gridData, onSelect, isCurrentUser }: TradeGridProps) => {
         <div className="flex">
           <DropdownWithCheckboxGroup
             title="Rarity"
-            checkboxes={PlayerCardRarityCheckboxes}
+            checkboxes={playerCardRarityCheckboxes}
             selectedCheckboxIds={selectedRarities}
           />
           <DropdownWithCheckboxGroup
             title="Team"
-            checkboxes={TeamCheckboxes}
+            checkboxes={teamCheckboxes}
             selectedCheckboxIds={selectedTeams}
           />
         </div>

@@ -91,7 +91,7 @@ const OpenPacks = () => {
             <p>Number of packs: {userPacks.length}</p>
             <p>Subscribed: {user.subscription ? user.subscription : 'No'}</p>
             <div
-              className={`grid grid-cols-${isMobile ? 2 : isTablet ? 2 : 4}`}
+              className={`grid grid-cols-${isMobile ? 2 : isTablet ? 2 : 5}`}
             >
               {userPacks.map((pack, index) => (
                 <div className="flex justify-center items-center">

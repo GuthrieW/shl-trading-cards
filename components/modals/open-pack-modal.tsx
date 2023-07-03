@@ -1,5 +1,5 @@
 import React from 'react'
-import packsMap, { packInfo } from '@constants/packs-map'
+import packsMap, { PackInfo } from '@constants/packs-map'
 import Modal from './modal'
 import Button from '@components/buttons/button'
 

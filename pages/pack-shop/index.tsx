@@ -100,26 +100,6 @@ const PackShop = () => {
             </div>
           ))}
         </div>
-        {/* <div className="my-2 h-auto flex flex-row items-center justify-center">
-          {packs.map((pack: packInfo, index: number) => (
-            <div
-              key={index}
-              className="flex flex-col items-center justify-center"
-            >
-              <img
-                onClick={() => handleSelectedPack(pack)}
-                className="cursor-pointer h-96 mx-4 transition ease-linear hover:scale-105 shadow-none hover:shadow-xl"
-                src={pack.imageUrl}
-              />
-              <div className="text-center">
-                <h1 className="text-2xl">{pack.label} Pack</h1>
-                <h2 className="text-xl">
-                  Price: ${new Intl.NumberFormat().format(pack.price)}
-                </h2>
-              </div>
-            </div>
-          ))}
-        </div> */}
         {showModal && (
           <BuyPackModal
             onAccept={handleBuyPack}

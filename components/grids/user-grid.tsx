@@ -22,7 +22,7 @@ const UserGrid = ({ gridData }: UserGridProps) => {
         .sort((a, b) =>
           a.username.toLowerCase().localeCompare(b.username.toLowerCase())
         )
-        .slice(0, 100),
+        .slice(0, 25),
     [searchString]
   )
 

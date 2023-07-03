@@ -73,7 +73,7 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
       ? setSelectedTeams(selectedTeams.filter((team) => team != toggleId))
       : setSelectedTeams(selectedTeams.concat(toggleId))
 
-  const PlayerCardRarityCheckboxes: CollectionTableButtons[] = Object.values(
+  const playerCardRarityCheckboxes: CollectionTableButtons[] = Object.values(
     rarityMap
   ).map((rarity) => {
     return {
@@ -83,7 +83,7 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
     }
   })
 
-  const TeamCheckboxes: CollectionTableButtons[] = Object.keys(teamsMap).map(
+  const teamCheckboxes: CollectionTableButtons[] = Object.keys(teamsMap).map(
     (key) => {
       return {
         id: key,
@@ -99,12 +99,12 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
         <div className="flex">
           <DropdownWithCheckboxGroup
             title="Rarity"
-            checkboxes={PlayerCardRarityCheckboxes}
+            checkboxes={playerCardRarityCheckboxes}
             selectedCheckboxIds={selectedRarities}
           />
           <DropdownWithCheckboxGroup
             title="Team"
-            checkboxes={TeamCheckboxes}
+            checkboxes={teamCheckboxes}
             selectedCheckboxIds={selectedTeams}
           />
         </div>
