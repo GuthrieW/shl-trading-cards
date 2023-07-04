@@ -3,6 +3,7 @@ import React from 'react'
 import IceLevelLogo from '../../public/images/ice-level.svg'
 import NavLink from './nav-link'
 import { HeaderLink } from '.'
+import Image from 'next/image'
 
 type HeaderProps = {
   headerItems: HeaderLink[]
@@ -12,12 +13,15 @@ type HeaderProps = {
 const Header = ({ headerItems, user }: HeaderProps) => (
   <div className="relative top-0 h-16 w-full bg-neutral-800 text-gray-200">
     <div className="h-full w-full flex flex-row justify-between items-center mx-2">
-      <img
-        src={IceLevelLogo}
-        alt="Ice Level Logo"
-        onClick={() => Router.push('/home')}
-        className="h-6 ml-2 cursor-pointer"
-      />
+      <div className="cursor-pointer">
+        <Image
+          src={IceLevelLogo}
+          alt="Ice Level Logo"
+          onClick={() => Router.push('/home')}
+          width={96}
+          height={72}
+        />
+      </div>
       <div className="flex flex-row justify-center items-center h-full">
         {headerItems.map(({ headerText, href }: HeaderLink) => (
           <NavLink key={href} onClick={() => Router.push(href)}>

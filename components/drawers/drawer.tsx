@@ -4,6 +4,7 @@ import { useClickListener } from '@hooks/useClickListener'
 import { useRef } from 'react'
 import IceLevelLogo from '../../public/images/ice-level.svg'
 import Router from 'next/router'
+import Image from 'next/image'
 
 export type DrawerProps = {
   title?: string
@@ -27,12 +28,15 @@ const Drawer = ({ children, title, isOpen, closeDrawer }: DrawerProps) => {
         {title ? (
           <p>{title}</p>
         ) : (
-          <img
-            src={IceLevelLogo}
-            alt="Ice Level Logo"
-            onClick={() => Router.push('/home')}
-            className="h-6 cursor-pointer"
-          />
+          <div className="cursor-pointer">
+            <Image
+              src={IceLevelLogo}
+              alt="Ice Level Logo"
+              onClick={() => Router.push('/home')}
+              width={96}
+              height={72}
+            />
+          </div>
         )}
         <IconButton disabled={false} onClick={() => closeDrawer()}>
           <XIcon />

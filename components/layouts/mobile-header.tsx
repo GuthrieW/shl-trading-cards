@@ -6,6 +6,7 @@ import { HeaderLink } from '.'
 import DrawerItem from '@components/drawers/drawer-item'
 import Router from 'next/router'
 import IceLevelLogo from '../../public/images/ice-level.svg'
+import Image from 'next/image'
 
 export type MobileHeaderProps = {
   headerItems: HeaderLink[]
@@ -26,12 +27,15 @@ const MobileHeader = ({ headerItems, user }: MobileHeaderProps) => {
           >
             <MenuIcon />
           </IconButton>
-          <img
-            src={IceLevelLogo}
-            alt="Ice Level Logo"
-            onClick={() => Router.push('/home')}
-            className="h-6 ml-2 cursor-pointer"
-          />
+          <div className="cursor-pointer">
+            <Image
+              src={IceLevelLogo}
+              alt="Ice Level Logo"
+              onClick={() => Router.push('/home')}
+              width={96}
+              height={72}
+            />
+          </div>
           <span
             className="p-1 mr-2 cursor-pointer rounded hover:bg-neutral-700 hover:text-gray-300"
             onClick={() =>
