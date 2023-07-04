@@ -3,13 +3,13 @@ import {
   getCardsDatabaseName,
   queryDatabase,
 } from '@pages/api/database/database'
-import { GET } from '@constants/http-methods'
+import { POST } from '@constants/http-methods'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 
-const allowedMethods = [GET]
+const allowedMethods = [POST]
 const cors = Cors({
   methods: allowedMethods,
 })
@@ -19,13 +19,12 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { method, query } = request
+  const { method, query, body } = request
 
-  // Get all of the cards in a user's collection
-  if (method === GET) {
+  if (method === POST) {
     const { uid } = query
-    const result = await queryDatabase(
-      SQL`
+    const { name, teams, rarities, page } = body
+    const queryString = SQL`
       SELECT ownedCard.quantity,
         ownedCard.cardID,
         card.player_name,
@@ -51,18 +50,48 @@ const index = async (
         card.season,
         card.author_paid
       FROM `
-        .append(getCardsDatabaseName())
-        .append(
-          SQL`.ownedCards ownedCard
+      .append(getCardsDatabaseName())
+      .append(
+        SQL`.ownedCards ownedCard
         LEFT JOIN `
-        )
-        .append(getCardsDatabaseName()).append(SQL`.cards card
+      )
+      .append(getCardsDatabaseName()).append(SQL`.cards card
           ON ownedCard.cardID=card.cardID
-      WHERE ownedCard.userID=${uid};
+      WHERE ownedCard.userID=${uid}
     `)
-    )
 
-    response.status(StatusCodes.OK).json(result)
+    if (name.length !== 0) {
+      queryString.append(` AND player_name LIKE "%${name}%"`)
+    }
+
+    if (teams.length !== 0) {
+      queryString.append(' AND (')
+      teams.forEach((team, index) =>
+        index === 0
+          ? queryString.append(SQL`teamID=${team}`)
+          : queryString.append(SQL` OR teamID=${team}`)
+      )
+      queryString.append(')')
+    }
+
+    if (rarities.length !== 0) {
+      queryString.append(' AND (')
+      rarities.forEach((rarity, index) =>
+        index === 0
+          ? queryString.append(SQL`card_rarity=${rarity}`)
+          : queryString.append(SQL` OR card_rarity=${rarity}`)
+      )
+      queryString.append(')')
+    }
+
+    queryString.append(` ORDER BY overall DESC;`)
+
+    const result = await queryDatabase(queryString)
+
+    response.status(StatusCodes.OK).json({
+      cards: result.slice(page * 25, page * 25 + 25),
+      total: Math.ceil(result.length / 25),
+    })
     return
   }
 

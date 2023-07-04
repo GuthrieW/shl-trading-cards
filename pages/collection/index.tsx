@@ -5,19 +5,11 @@ import React from 'react'
 import CollectionGrid from '@components/grids/collection-grid'
 import { NextSeo } from 'next-seo'
 import Router from 'next/router'
+import CardGrid from '@components/grids/card-grid'
 
 const Collection = () => {
   const parsedUid = parseInt(Router.query.uid as string) || getUidFromSession()
   const isCurrentUser = parsedUid === getUidFromSession()
-
-  const {
-    userCards,
-    isSuccess: getUserCardsIsSuccess,
-    isLoading: getUserCardsIsLoading,
-    isError: getUserCardsIsError,
-  } = useGetUserCards({
-    uid: parsedUid,
-  })
 
   const {
     user,
@@ -28,13 +20,7 @@ const Collection = () => {
     uid: parsedUid,
   })
 
-  if (
-    getUserCardsIsLoading ||
-    getUserIsLoading ||
-    getUserCardsIsError ||
-    getUserIsError
-  )
-    return null
+  if (getUserIsLoading || getUserIsError) return null
 
   return (
     <>
@@ -48,25 +34,7 @@ const Collection = () => {
         <h1 className="text-4xl text-center my-6">
           {isCurrentUser ? 'Your' : `${user.username}'s`} Collection
         </h1>
-        {isCurrentUser && userCards.length === 0 ? (
-          <div className="text-center">
-            <p className="text-xl">
-              You don't have any cards in your collection.
-            </p>
-            <p className="text-xl">
-              Go to the{' '}
-              <a
-                className="text-blue-500 hover:text-blue-600 transition-colors duration-200 my-4"
-                href="/pack-shop"
-              >
-                pack shop
-              </a>{' '}
-              to get some packs!
-            </p>
-          </div>
-        ) : (
-          <CollectionGrid gridData={userCards} />
-        )}
+        <CollectionGrid />
       </div>
     </>
   )

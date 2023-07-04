@@ -1,62 +1,43 @@
 import pathToCards from '@constants/path-to-cards'
-import React, { useMemo, useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import SearchBar from '@components/inputs/search-bar'
 import rarityMap from '@constants/rarity-map'
 import CardLightBoxModal from '@components/modals/card-lightbox-modal'
 import DropdownWithCheckboxGroup from '@components/dropdowns/dropdown-with-checkbox-group'
-import { useVirtual } from 'react-virtual'
 import teamsMap from '@constants/teams-map'
+import useGetUserCards from '@pages/api/queries/use-get-user-cards'
+import getUidFromSession from '@utils/get-uid-from-session'
+import { useResponsive } from '@hooks/useResponsive'
+import GridPagination from './grid-pagination'
 
-type CollectionGridProps = {
-  gridData: CollectionCard[]
-}
+type CollectionGridProps = {}
 
-const CollectionGrid = ({ gridData }: CollectionGridProps) => {
+const CollectionGrid = ({}: CollectionGridProps) => {
   const [searchString, setSearchString] = useState<string>('')
   const [selectedRarities, setSelectedRarities] = useState<string[]>([])
   const [selectedTeams, setSelectedTeams] = useState<string[]>([])
   const [selectedCard, setSelectedCard] = useState<CollectionCard | null>(null)
+  const [currentPage, setCurrentPage] = useState<number>(0)
   const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
-  const parentRef = useRef()
+  const { isMobile, isTablet } = useResponsive()
 
-  const data = useMemo(() => {
-    const lowerCaseSearchString = searchString.toLowerCase()
-
-    return gridData
-      .filter((card) => {
-        const lowerCaseCardName = card.player_name.toLowerCase()
-        return (
-          lowerCaseCardName.includes(lowerCaseSearchString) ||
-          card.player_name.includes(searchString)
-        )
-      })
-      .filter((card) => {
-        return (
-          selectedRarities.length === 0 ||
-          selectedRarities.includes(card.card_rarity)
-        )
-      })
-      .filter((card) => {
-        return (
-          selectedTeams.length === 0 ||
-          selectedTeams.includes(card.teamID.toString())
-        )
-      })
-  }, [gridData, searchString, selectedRarities, selectedTeams])
-
-  // sort by overall
-  const sortedData = useMemo(() => {
-    return data.sort((a, b) => {
-      return b.overall - a.overall
-    })
-  }, [data])
-
-  const rowVirtualization = useVirtual({
-    size: data.length,
-    overscan: 10,
-    parentRef,
-    estimateSize: React.useCallback(() => 35, []),
+  const { userCards, maxPages, isLoading, isError, refetch } = useGetUserCards({
+    uid: getUidFromSession(),
+    name: searchString,
+    teams: selectedTeams,
+    rarities: selectedRarities,
+    page: currentPage,
   })
+
+  useEffect(
+    () => refetch(),
+    [searchString, selectedRarities, selectedTeams, currentPage]
+  )
+
+  useEffect(
+    () => updateCurrentPage(0),
+    [searchString, selectedRarities, selectedTeams]
+  )
 
   const handleUpdateSearchString = (event) =>
     setSearchString(event.target.value || '')
@@ -75,54 +56,64 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
 
   const playerCardRarityCheckboxes: CollectionTableButtons[] = Object.values(
     rarityMap
-  ).map((rarity) => {
-    return {
-      id: rarity.label,
-      text: rarity.label === 'Hall of Fame' ? 'HOF' : rarity.label,
-      onClick: () => updateSelectedRarityButtonIds(rarity.label),
-    }
-  })
+  ).map((rarity) => ({
+    id: rarity.label,
+    text: rarity.label === 'Hall of Fame' ? 'HOF' : rarity.label,
+    onClick: () => updateSelectedRarityButtonIds(rarity.label),
+  }))
 
   const teamCheckboxes: CollectionTableButtons[] = Object.keys(teamsMap).map(
-    (key) => {
-      return {
-        id: key,
-        text: teamsMap[key].abbreviation,
-        onClick: () => updateSelectedTeamButtonIds(key),
-      }
-    }
+    (key) => ({
+      id: key,
+      text: teamsMap[key].abbreviation,
+      onClick: () => updateSelectedTeamButtonIds(key),
+    })
   )
+
+  const updateCurrentPage = (pageNumber: number) => setCurrentPage(pageNumber)
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <div className="w-full lg:w-3/4 flex justify-between items-center">
-        <div className="flex">
-          <DropdownWithCheckboxGroup
-            title="Rarity"
-            checkboxes={playerCardRarityCheckboxes}
-            selectedCheckboxIds={selectedRarities}
+      <div className="w-full flex justify-between items-center">
+        <DropdownWithCheckboxGroup
+          title="Rarity"
+          checkboxes={playerCardRarityCheckboxes}
+          selectedCheckboxIds={selectedRarities}
+        />
+        <DropdownWithCheckboxGroup
+          title="Team"
+          checkboxes={teamCheckboxes}
+          selectedCheckboxIds={selectedTeams}
+        />
+        {!isMobile && (
+          <GridPagination
+            updateCurrentPage={updateCurrentPage}
+            currentPage={currentPage}
+            maxPages={maxPages}
           />
-          <DropdownWithCheckboxGroup
-            title="Team"
-            checkboxes={teamCheckboxes}
-            selectedCheckboxIds={selectedTeams}
-          />
-        </div>
+        )}
+
         <div className="flex flex-row items-center">
           <SearchBar onChange={handleUpdateSearchString} />
         </div>
       </div>
+      {isMobile && (
+        <GridPagination
+          updateCurrentPage={updateCurrentPage}
+          currentPage={currentPage}
+          maxPages={maxPages}
+        />
+      )}
       <div
-        className="flex flex-col justify-center items-center"
-        ref={parentRef}
+        className={`grid gap-3 ${
+          isMobile ? 'grid-cols-2' : isTablet ? 'grid-cols-3' : 'grid-cols-5'
+        }`}
       >
-        <div
-          className="w-full lg:w-3/4 mx-auto relative m-4 grid grid-cols-3 md:grid-cols-6 gap-4 lg:gap-8"
-          style={{ height: `${rowVirtualization.totalSize}px` }}
-        >
-          {rowVirtualization.virtualItems.map((item, index) => {
-            const card = sortedData[item.index]
-            return (
+        {isLoading && userCards.length !== 0 ? (
+          <p>Loading...</p>
+        ) : (
+          <>
+            {userCards?.map((card, index) => (
               <div
                 className="relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
                 key={index}
@@ -143,9 +134,9 @@ const CollectionGrid = ({ gridData }: CollectionGridProps) => {
                   </span>
                 )}
               </div>
-            )
-          })}
-        </div>
+            ))}
+          </>
+        )}
       </div>
       {lightBoxIsOpen && (
         <CardLightBoxModal

@@ -26,7 +26,7 @@ const UserGrid = ({ gridData }: UserGridProps) => {
   )
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full mx-2">
       <div className="flex justify-start w-64">
         <SearchBar onChange={(event) => setSearchString(event.target.value)} />
       </div>
