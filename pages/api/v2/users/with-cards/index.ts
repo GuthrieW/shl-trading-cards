@@ -50,10 +50,18 @@ const index = async (
 
     const result = await queryDatabase(queryString)
 
-    response.status(StatusCodes.OK).json({
-      users: result.slice(page * 25, page * 25 + 25),
-      total: Math.ceil(result.length / 25),
-    })
+    if (page === -1) {
+      response.status(StatusCodes.OK).json({
+        users: result,
+        total: result.length,
+      })
+    } else {
+      response.status(StatusCodes.OK).json({
+        users: result.slice(page * 25, page * 25 + 25),
+        total: Math.ceil(result.length / 25),
+      })
+    }
+
     return
   }
 

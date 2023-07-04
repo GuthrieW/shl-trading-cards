@@ -10,13 +10,16 @@ import React, { useMemo, useState } from 'react'
 
 const Home = () => {
   const parsedUid = parseInt(Router.query.uid as string) || getUidFromSession()
-  const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false)
   const {
     userCards,
     isLoading: getUserCardsIsLoading,
     isError: getUserCardsIsError,
   } = useGetUserCards({
     uid: parsedUid,
+    name: '',
+    rarities: [],
+    teams: [],
+    page: 0,
   })
 
   const {

@@ -12,10 +12,9 @@ type SelectUserModalProps = {
 const SelectUserModal = ({ setShowModal }: SelectUserModalProps) => {
   const {
     users,
-    isSuccess: getAllUsersIsSuccess,
     isLoading: getAllUsersIsLoading,
     isError: getAllUsersIsError,
-  } = useGetAllUsersWithCards({})
+  } = useGetAllUsersWithCards({ name: '', page: -1 })
 
   // filter out current user so people don't trying to trade with themselves
   const filteredUsers: User[] = useMemo(() => {
