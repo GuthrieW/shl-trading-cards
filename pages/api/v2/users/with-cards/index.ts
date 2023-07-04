@@ -4,13 +4,13 @@ import {
   getUsersDatabaseName,
   queryDatabase,
 } from '@pages/api/database/database'
-import { GET } from '@constants/http-methods'
+import { POST } from '@constants/http-methods'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 
-const allowedMethods = [GET]
+const allowedMethods = [POST]
 const cors = Cors({
   methods: allowedMethods,
 })
@@ -20,11 +20,11 @@ const index = async (
   response: NextApiResponse
 ): Promise<void> => {
   await middleware(request, response, cors)
-  const { method } = request
+  const { method, body } = request
 
-  if (method === GET) {
-    const result = await queryDatabase(
-      SQL`
+  if (method === POST) {
+    const { page, name } = body
+    const queryString = SQL`
       SELECT DISTINCT collection.userID,
         mybb_users.uid,
         mybb_users.username,
@@ -32,18 +32,28 @@ const index = async (
         mybb_users.displaygroup,
         mybb_users.additionalgroups
       FROM `
-        .append(getUsersDatabaseName())
-        .append(
-          SQL`.mybb_users
+      .append(getUsersDatabaseName())
+      .append(
+        SQL`.mybb_users
       INNER JOIN `
-        )
-        .append(getCardsDatabaseName()).append(SQL`
+      )
+      .append(getCardsDatabaseName()).append(SQL`
       .collection
-        ON mybb_users.uid=collection.userID;
+        ON mybb_users.uid=collection.userID
     `)
-    )
 
-    response.status(StatusCodes.OK).json(result)
+    if (name.length !== 0) {
+      queryString.append(` WHERE username LIKE "%${name}%"`)
+    }
+
+    queryString.append(` ORDER BY username ASC;`)
+
+    const result = await queryDatabase(queryString)
+
+    response.status(StatusCodes.OK).json({
+      users: result.slice(page * 25, page * 25 + 25),
+      total: Math.ceil(result.length / 25),
+    })
     return
   }
 

@@ -1,36 +1,46 @@
 import { useQuery } from 'react-query'
 import axios from 'axios'
-import { GET } from '@constants/http-methods'
+import { POST } from '@constants/http-methods'
 
-type GetAllUsersWithCardsRequest = {}
+type GetAllUsersWithCardsRequest = {
+  name: string
+  page: number
+}
 
 type UseGetAllUsersWithCards = {
   users: User[]
+  maxPages: number
   isSuccess: boolean
   isLoading: boolean
   isError: any
+  refetch: () => void
 }
 
 export const UseGetAllUsersWithCardsKey = 'use-get-all-users-with-cards'
 
-const useGetAllUsersWithCards =
-  ({}: GetAllUsersWithCardsRequest): UseGetAllUsersWithCards => {
-    const { data, error, isFetching, isSuccess } = useQuery(
-      UseGetAllUsersWithCardsKey,
-      async () => {
-        return await axios({
-          method: GET,
-          url: '/api/v2/users/with-cards',
-        })
-      }
-    )
-
-    return {
-      users: data?.data || [],
-      isSuccess: isSuccess,
-      isLoading: isFetching,
-      isError: error,
+const useGetAllUsersWithCards = ({
+  name,
+  page,
+}: GetAllUsersWithCardsRequest): UseGetAllUsersWithCards => {
+  const { data, error, isFetching, isSuccess, refetch } = useQuery(
+    UseGetAllUsersWithCardsKey,
+    async () => {
+      return await axios({
+        method: POST,
+        url: '/api/v2/users/with-cards',
+        data: { name, page },
+      })
     }
+  )
+
+  return {
+    users: data?.data?.users || [],
+    maxPages: data?.data?.total || 0,
+    isSuccess: isSuccess,
+    isLoading: isFetching,
+    isError: error,
+    refetch,
   }
+}
 
 export default useGetAllUsersWithCards

@@ -75,16 +75,19 @@ const CollectionGrid = ({}: CollectionGridProps) => {
   return (
     <div className="flex flex-col justify-center items-center">
       <div className="w-full flex justify-between items-center">
-        <DropdownWithCheckboxGroup
-          title="Rarity"
-          checkboxes={playerCardRarityCheckboxes}
-          selectedCheckboxIds={selectedRarities}
-        />
-        <DropdownWithCheckboxGroup
-          title="Team"
-          checkboxes={teamCheckboxes}
-          selectedCheckboxIds={selectedTeams}
-        />
+        <div className="flex">
+          <DropdownWithCheckboxGroup
+            title="Rarity"
+            checkboxes={playerCardRarityCheckboxes}
+            selectedCheckboxIds={selectedRarities}
+          />
+          <DropdownWithCheckboxGroup
+            title="Team"
+            checkboxes={teamCheckboxes}
+            selectedCheckboxIds={selectedTeams}
+          />
+        </div>
+
         {!isMobile && (
           <GridPagination
             updateCurrentPage={updateCurrentPage}
