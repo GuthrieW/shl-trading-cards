@@ -3,6 +3,7 @@ import CardSearchForm from '@components/forms/card-search-form'
 import SelectUserModal from '@components/modals/select-user-modal'
 import NewTradeSelectorOption from '@components/selectors/new-trade-selector-option'
 import ScrollableSelect from '@components/selectors/scrollable-select'
+import TradeSelectFilters from '@components/selectors/trade-select-filters'
 import TradeSelectorOption from '@components/selectors/trade-selector-option'
 import useGetUserTrades from '@pages/api/queries/use-get-user-trades'
 import getUidFromSession from '@utils/get-uid-from-session'
@@ -13,20 +14,33 @@ const TradeHub = () => {
   const [showTrade, setShowTrade] = useState<boolean>(false)
   const [selectedTrade, setSelectedTrade] = useState<Trade>(null)
   const [showUsersModal, setShowUsersModal] = useState<boolean>(false)
+  const [selectedStatuses, setSelectedStatuses] = useState<TradeStatus[]>([])
+  const [isFiltering, setIsFiltering] = useState<boolean>(true)
+  // const [searchString, setSearchString] = useState<string>('')
 
   const uid: number = getUidFromSession()
   const { userTrades, isLoading: userTradesIsLoading } = useGetUserTrades({
     uid,
   })
 
-  const trades: Trade[] = useMemo(
-    () =>
-      userTrades.sort(
-        (a: Trade, b: Trade) =>
-          Number(new Date(b.update_date)) - Number(new Date(a.update_date))
-      ),
-    [userTrades]
-  )
+  const trades: Trade[] = useMemo(() => {
+    let filteredTrades = userTrades
+    if (selectedStatuses.length !== 0) {
+      filteredTrades = filteredTrades.filter((trade) =>
+        selectedStatuses.includes(trade.trade_status)
+      )
+    }
+
+    filteredTrades = filteredTrades.sort(
+      (a: Trade, b: Trade) =>
+        Number(new Date(b.update_date)) - Number(new Date(a.update_date))
+    )
+
+    setIsFiltering(false)
+    console.log('done filtering')
+    return filteredTrades
+  }, [userTradesIsLoading, selectedStatuses])
+  // }, [userTrades, searchString, selectedStatuses])
 
   const handleSelectTrade = (trade: Trade): void => {
     if (selectedTrade?.tradeid === trade?.tradeid) {
@@ -46,14 +60,21 @@ const TradeHub = () => {
   const handleCreateNewTrade = (): void => setShowUsersModal(true)
   const closeUsersModal = (): void => setShowUsersModal(false)
 
-  if (userTradesIsLoading) {
-    return null
-  }
-
   return (
     <>
       <NextSeo title="Trades" />
       <ScrollableSelect scrollbarTitle="Trades">
+        <TradeSelectFilters
+          key={'select-filters'}
+          statuses={selectedStatuses}
+          updateStatuses={(statuses) => {
+            setIsFiltering(true)
+            setSelectedStatuses(statuses)
+          }}
+          // username={searchString}
+          // updateUsername={setSearchString}
+          disabled={isFiltering}
+        />
         <NewTradeSelectorOption
           className="cursor-pointer border-t-1 border-neutral-400"
           key={'new-trade'}

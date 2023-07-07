@@ -3,11 +3,49 @@ import getUidFromSession from '@utils/get-uid-from-session'
 import React from 'react'
 import dayjs from 'dayjs'
 import fixAvatar from '@utils/fix-avatar-url'
+import IconButton from '@components/buttons/icon-button'
+import { CheckIcon, RefreshIcon, XIcon } from '@heroicons/react/outline'
 
 export type TradeSelectorOptionProps = {
   className?: string
   onClick?: Function
   trade: Trade
+}
+
+const getTradeIconAndColor = (
+  tradeStatus: TradeStatus
+): { color: string; icon: JSX.Element; text: string } => {
+  if (tradeStatus === 'COMPLETE') {
+    return {
+      color: 'bg-green-600',
+      icon: <CheckIcon className="h-3 w-3 stroke-[3px]" />,
+      text: 'Complete',
+    }
+  }
+
+  if (tradeStatus === 'PENDING') {
+    return {
+      color: 'bg-yellow-600',
+      icon: <RefreshIcon className="h-3 w-3 stroke-[3px]" />,
+      text: 'Pending',
+    }
+  }
+
+  if (tradeStatus === 'DECLINED') {
+    return {
+      color: 'bg-red-600',
+      icon: <XIcon className="h-3 w-3 stroke-[3px]" />,
+      text: 'Declined',
+    }
+  }
+
+  if (tradeStatus === 'AUTO_DECLINED') {
+    return {
+      color: 'bg-red-600',
+      icon: <XIcon className="h-3 w-3 stroke-[3px]" />,
+      text: 'Voided',
+    }
+  }
 }
 
 const TradeSelectorOption = ({
@@ -42,14 +80,7 @@ const TradeSelectorOption = ({
 
   const otherUser = currentUserId === trade.initiatorid ? toUser : fromUser
 
-  const tradeColor =
-    trade.trade_status === 'COMPLETE'
-      ? 'text-green-600'
-      : trade.trade_status === 'PENDING'
-      ? 'text-yellow-600'
-      : 'text-red-600'
-  const tradeText =
-    trade.trade_status === 'AUTO_DECLINED' ? 'VOIDED' : trade.trade_status
+  const tradeData = getTradeIconAndColor(trade.trade_status)
 
   return (
     <div
@@ -63,12 +94,12 @@ const TradeSelectorOption = ({
           alt="Rounded avatar"
           title={otherUser.username}
         />
-        <span
-          title={tradeText}
-          className={`rounded outline outline-1 p-1 text-xs ${tradeColor}`}
+        <div
+          title={tradeData.text}
+          className={`rounded text-white p-1 font-bold ${tradeData.color}`}
         >
-          {tradeText}
-        </span>
+          {tradeData.icon}
+        </div>
       </div>
       <div className="flex flex-row justify-between items-center mt-1 mx-1">
         <span className="text-xs">{otherUser.username}</span>
@@ -79,13 +110,7 @@ const TradeSelectorOption = ({
                   ? dayjs(trade.create_date).format('DD/MM/YYYY')
                   : 'N/A'
               }`
-            : `${
-                trade.trade_status === 'COMPLETE'
-                  ? 'Accepted'
-                  : trade.declineUserID === currentUserId
-                  ? 'Cancelled'
-                  : 'Declined'
-              } on ${
+            : `${tradeData.text} on ${
                 trade.update_date
                   ? dayjs(trade.update_date).format('DD/MM/YYYY')
                   : 'N/A'
@@ -97,53 +122,3 @@ const TradeSelectorOption = ({
 }
 
 export default TradeSelectorOption
-
-/**
- * 
-// className={`${
-//   className ? className : ''
-// } h-full w-full hover:bg-neutral-400 flex justify-between border-b-2`}
-// onClick={() => onClick(trade)}
-// >
-// <div className="p-1 flex flex-row">
-//   <img
-//     className="w-10 h-10 rounded-full"
-//     src={fixAvatar(otherUser?.avatar)}
-//     alt="Rounded avatar"
-//     title={otherUser.username}
-//   />
-// </div>
-// <div className="flex flex-col justify-between items-end mt-1 mr-1">
-//   <div
-//     title={trade.trade_status.toUpperCase()}
-//     className={`inline-block w-2 h-2 rounded-full ${
-//       trade.trade_status === 'COMPLETE'
-//         ? 'bg-green-600'
-//         : trade.trade_status === 'PENDING'
-//         ? 'bg-yellow-600'
-//         : 'bg-red-600'
-//     }`}
-//   ></div>
-//   <div className="text-sm">
-//     {trade.trade_status === 'PENDING'
-//       ? `Offered on ${
-//           trade.create_date
-//             ? dayjs(trade.create_date).format('DD/MM/YYYY')
-//             : 'N/A'
-//         }`
-//       : `${
-//           trade.trade_status === 'COMPLETE'
-//             ? 'Accepted'
-//             : trade.declineUserID === currentUserId
-//             ? 'Cancelled'
-//             : 'Declined'
-//         } on ${
-//           trade.update_date
-//             ? dayjs(trade.update_date).format('DD/MM/YYYY')
-//             : 'N/A'
-//         }`}
-//   </div>
-// </div>
-// </div>
-
-*/

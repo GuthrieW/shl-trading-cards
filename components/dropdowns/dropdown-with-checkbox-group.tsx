@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 type CheckboxProps = {
   id: string
@@ -10,6 +10,7 @@ export type DropdownWithCheckboxGroupProps = {
   title: string
   checkboxes: CheckboxProps[]
   selectedCheckboxIds: string[]
+  disabled?: boolean
 }
 
 const getIsSelected = (
@@ -30,8 +31,9 @@ const DropdownWithCheckboxGroup = ({
   title,
   checkboxes,
   selectedCheckboxIds,
+  disabled = false,
 }: DropdownWithCheckboxGroupProps) => {
-  const [isOpen, setIsOpen] = React.useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
   const toggleIsOpen = () => setIsOpen(!isOpen)
 
@@ -48,7 +50,7 @@ const DropdownWithCheckboxGroup = ({
             {totalSelected}
           </span>
         )}
-        <span className="ml-2">{title}</span>
+        <span className="ml-2 text-sm">{title}</span>
         <svg className="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20">
           <path
             fillRule="evenodd"
@@ -68,7 +70,12 @@ const DropdownWithCheckboxGroup = ({
                     id={checkbox.id}
                     className="h-4 w-4 text-neutral-800 transition duration-150 ease-in-out"
                     checked={getIsSelected(checkbox, selectedCheckboxIds)}
-                    onChange={() => checkbox.onClick()}
+                    onChange={() => {
+                      console.log('isDisabled', disabled)
+                      if (!disabled) {
+                        checkbox.onClick()
+                      }
+                    }}
                   />
                   <label
                     htmlFor={checkbox.id}

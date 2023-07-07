@@ -13,9 +13,7 @@ const NewTradeSelectorOption = ({
   onClick,
 }: NewTradeSelectorOptionProps) => (
   <div
-    className={`${
-      className ? className : ''
-    } h-full w-full hover:bg-neutral-400 flex justify-between border-b-2`}
+    className={`h-full w-full hover:bg-neutral-400 flex justify-between border-b-2 ${className}`}
     onClick={() => onClick(trade)}
   >
     <div className="flex justify-center items-center p-1 w-12 h-12 rounded-full">

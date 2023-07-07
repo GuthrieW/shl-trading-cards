@@ -3,7 +3,7 @@ import React from 'react'
 
 type ScrollableSelectProps = {
   scrollbarTitle: string
-  children: JSX.Element[]
+  children: JSX.Element[] | JSX.Element
 }
 
 const ScrollableSelect = ({
@@ -11,22 +11,33 @@ const ScrollableSelect = ({
   children,
 }: ScrollableSelectProps) => {
   const { isMobile, isTablet, isDesktop } = useResponsive()
+  if (!Array.isArray(children)) {
+    return <>{children}</>
+  }
   const firstOption = children[0]
-  const restOptions = children.slice(1)
+  const secondOption = children[1]
+  const restOptions = children.slice(2)
 
   return (
     <>
       <aside
         className={`${
           isDesktop ? 'w-64' : 'w-32'
-        } top-16 border-r border-neutral-400`}
+        } top-16  border-r border-neutral-400 h-12`}
       >
         {firstOption}
       </aside>
       <aside
         className={`${
           isDesktop ? 'w-64' : 'w-32'
-        } top-28 bottom-0 overflow-y-scroll absolute border-r border-neutral-400`}
+        } top-32 border-r border-neutral-400 h-12`}
+      >
+        {secondOption}
+      </aside>
+      <aside
+        className={`${
+          isDesktop ? 'w-64' : 'w-32'
+        } top-40 bottom-0 absolute border-r border-neutral-400 overflow-y-auto no-scrollbar`}
         aria-label={`${scrollbarTitle} Scrollbar`}
       >
         <ul>
