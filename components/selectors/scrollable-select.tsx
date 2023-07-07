@@ -1,3 +1,4 @@
+import { useResponsive } from '@hooks/useResponsive'
 import React from 'react'
 
 type ScrollableSelectProps = {
@@ -9,15 +10,23 @@ const ScrollableSelect = ({
   scrollbarTitle,
   children,
 }: ScrollableSelectProps) => {
+  const { isMobile, isTablet, isDesktop } = useResponsive()
   const firstOption = children[0]
   const restOptions = children.slice(1)
+
   return (
     <>
-      <aside className="w-64 top-16 border-r border-neutral-400">
+      <aside
+        className={`${
+          isDesktop ? 'w-64' : 'w-32'
+        } top-16 border-r border-neutral-400`}
+      >
         {firstOption}
       </aside>
       <aside
-        className="w-64 top-28 bottom-0 overflow-y-scroll absolute border-r border-neutral-400"
+        className={`${
+          isDesktop ? 'w-64' : 'w-32'
+        } top-28 bottom-0 overflow-y-scroll absolute border-r border-neutral-400`}
         aria-label={`${scrollbarTitle} Scrollbar`}
       >
         <ul>

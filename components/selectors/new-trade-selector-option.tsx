@@ -18,7 +18,7 @@ const NewTradeSelectorOption = ({
     } h-full w-full hover:bg-neutral-400 flex justify-between border-b-2`}
     onClick={() => onClick(trade)}
   >
-    <div className="p-1 w-12 h-12 rounded-full">
+    <div className="flex justify-center items-center p-1 w-12 h-12 rounded-full">
       <PlusIcon fill="black" stroke="black" />
     </div>
     <div className="flex w-full justify-center items-center">

@@ -31,8 +31,8 @@ const TradeViewerCard = ({
     id: trade.tradeid,
   })
 
-  const myCards = tradeDetails.filter((asset) => asset.toID === userId)
-  const theirCards = tradeDetails.filter((asset) => asset.toID !== userId)
+  const myCards = tradeDetails.filter((asset) => asset.fromID === userId)
+  const theirCards = tradeDetails.filter((asset) => asset.toID === userId)
   const isSentByMe = trade.initiatorid === userId
 
   if (acceptTradeIsSuccess || declineTradeIsSuccess) {

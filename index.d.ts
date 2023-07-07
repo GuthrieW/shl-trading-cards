@@ -94,7 +94,7 @@ type StartingLineup = {
   goalie: number
 }
 
-type TradeStatus = 'COMPLETE' | 'PENDING' | 'DECLINED'
+type TradeStatus = 'COMPLETE' | 'PENDING' | 'DECLINED' | 'AUTO_DECLINED'
 
 type Trade = {
   tradeid: number

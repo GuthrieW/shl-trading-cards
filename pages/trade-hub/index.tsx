@@ -23,7 +23,7 @@ const TradeHub = () => {
     () =>
       userTrades.sort(
         (a: Trade, b: Trade) =>
-          Number(new Date(a.update_date)) - Number(new Date(b.update_date))
+          Number(new Date(b.update_date)) - Number(new Date(a.update_date))
       ),
     [userTrades]
   )
@@ -76,7 +76,6 @@ const TradeHub = () => {
                 handleSelectTrade(trade)
               }}
               trade={trade}
-              className="border-t-1 border-neutral-400 cursor-pointer"
             />
           ))}
         </>
