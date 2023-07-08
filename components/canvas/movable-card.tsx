@@ -4,12 +4,22 @@ import { useGesture } from 'react-use-gesture'
 import pathToCards from '@constants/path-to-cards'
 import styles from './card-viewer.module.css'
 import rarityMap from '@constants/rarity-map'
+import { useResponsive } from '@hooks/useResponsive'
 
 export type MovableCard = {
   card: Card
 }
 
 const MovableCard = ({ card }: MovableCard) => {
+  const { isMobile, isTablet, isDesktop } = useResponsive()
+  const dimensions: { width: number; height: number } = isMobile
+    ? { width: 211, height: 290 }
+    : isTablet
+    ? { width: 200, height: 276 }
+    : isDesktop
+    ? { width: 142, height: 195 }
+    : { width: 320, height: 440 }
+
   useEffect(() => {
     const preventDefault = (e: Event) => e.preventDefault()
     document.addEventListener('gesturestart', preventDefault)
@@ -66,7 +76,7 @@ const MovableCard = ({ card }: MovableCard) => {
   return (
     <animated.div
       ref={domTarget}
-      className={styles.card}
+      className="relative overflow-hidden cursor-grab touch-none will-change-transform transition-shadow shadow-lg rounded hover:shadow-xl"
       style={{
         margin: '5px',
         boxShadow: getShadow(card.card_rarity),
