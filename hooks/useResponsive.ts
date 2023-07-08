@@ -7,6 +7,7 @@ export const useResponsive = () => {
   const [isMobile, setIsMobile] = useState<boolean>(false)
   const [isTablet, setIsTablet] = useState<boolean>(false)
   const [isDesktop, setIsDesktop] = useState<boolean>(false)
+  const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false)
 
   useEffect(() => {
     handleResize()
@@ -21,6 +22,7 @@ export const useResponsive = () => {
       setIsMobile(true)
       setIsTablet(false)
       setIsDesktop(false)
+      setIsLargeScreen(false)
       return
     }
 
@@ -28,12 +30,22 @@ export const useResponsive = () => {
       setIsMobile(false)
       setIsTablet(true)
       setIsDesktop(false)
+      setIsLargeScreen(false)
+      return
+    }
+
+    if (window.innerWidth <= 1024) {
+      setIsMobile(false)
+      setIsTablet(false)
+      setIsDesktop(true)
+      setIsLargeScreen(false)
       return
     }
 
     setIsMobile(false)
     setIsTablet(false)
-    setIsDesktop(true)
+    setIsDesktop(false)
+    setIsLargeScreen(true)
     return
   }
 
@@ -41,5 +53,6 @@ export const useResponsive = () => {
     isMobile,
     isTablet,
     isDesktop,
+    isLargeScreen,
   }
 }

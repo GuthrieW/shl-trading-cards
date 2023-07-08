@@ -5,9 +5,6 @@ import pathToCards from '@constants/path-to-cards'
 import styles from './card-viewer.module.css'
 import rarityMap from '@constants/rarity-map'
 
-const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20
-const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20
-
 export type MovableCard = {
   card: Card
 }

@@ -1,4 +1,5 @@
 import DropdownWithCheckboxGroup from '@components/dropdowns/dropdown-with-checkbox-group'
+import TradingCard from '@components/images/trading-card'
 import SearchBar from '@components/inputs/search-bar'
 import pathToCards from '@constants/path-to-cards'
 import rarityMap from '@constants/rarity-map'
@@ -126,11 +127,10 @@ const TradeGrid = ({ gridData, onSelect, isCurrentUser }: TradeGridProps) => {
                 key={index}
                 onClick={() => onSelect(card, isCurrentUser)}
               >
-                <img
-                  className="w-full h-full cursor-pointer rounded-sm"
-                  src={`${pathToCards}${card.image_url}`}
-                  alt={card.player_name}
-                  loading="lazy"
+                <TradingCard
+                  source={card.image_url}
+                  rarity={card.card_rarity}
+                  playerName={card.player_name}
                 />
               </div>
             )

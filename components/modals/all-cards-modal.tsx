@@ -1,6 +1,6 @@
-import pathToCards from '@constants/path-to-cards'
 import React from 'react'
 import Modal from './modal'
+import TradingCard from '@components/images/trading-card'
 
 type AllCardsModalProps = {
   setShowModal: Function
@@ -21,7 +21,8 @@ const AllCardsModal = ({
     subtitle={`${cardName} - ${cardID}`}
   >
     {cardImage && (
-      <img className="rounded-sm" src={`${pathToCards}${cardImage}`} />
+      <TradingCard source={cardImage} rarity={null} playerName={cardName} />
+      // <img className="rounded-sm" src={`${pathToCards}${cardImage}`} />
     )}
   </Modal>
 )

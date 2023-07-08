@@ -5,6 +5,7 @@ import NewTradeSelectorOption from '@components/selectors/new-trade-selector-opt
 import ScrollableSelect from '@components/selectors/scrollable-select'
 import TradeSelectFilters from '@components/selectors/trade-select-filters'
 import TradeSelectorOption from '@components/selectors/trade-selector-option'
+import { useResponsive } from '@hooks/useResponsive'
 import useGetUserTrades from '@pages/api/queries/use-get-user-trades'
 import getUidFromSession from '@utils/get-uid-from-session'
 import { NextSeo } from 'next-seo'
@@ -17,6 +18,8 @@ const TradeHub = () => {
   const [selectedStatuses, setSelectedStatuses] = useState<TradeStatus[]>([])
   const [isFiltering, setIsFiltering] = useState<boolean>(true)
   // const [searchString, setSearchString] = useState<string>('')
+
+  const { isMobile, isTablet } = useResponsive()
 
   const uid: number = getUidFromSession()
   const { userTrades, isLoading: userTradesIsLoading } = useGetUserTrades({
@@ -61,7 +64,7 @@ const TradeHub = () => {
   const closeUsersModal = (): void => setShowUsersModal(false)
 
   return (
-    <>
+    <div className="h-full w-full">
       <NextSeo title="Trades" />
       <ScrollableSelect scrollbarTitle="Trades">
         <TradeSelectFilters
@@ -101,7 +104,11 @@ const TradeHub = () => {
           ))}
         </>
       </ScrollableSelect>
-      <div className="h-full absolute left-64 right-0">
+      <div
+        className={`h-full absolute right-0 ${
+          isMobile || isTablet ? 'left-32' : 'left-64'
+        }`}
+      >
         {showTrade ? (
           <TradeViewerCard
             userId={uid}
@@ -113,7 +120,7 @@ const TradeHub = () => {
         )}
       </div>
       {showUsersModal && <SelectUserModal setShowModal={closeUsersModal} />}
-    </>
+    </div>
   )
 }
 

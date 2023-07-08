@@ -10,7 +10,7 @@ const ScrollableSelect = ({
   scrollbarTitle,
   children,
 }: ScrollableSelectProps) => {
-  const { isMobile, isTablet, isDesktop } = useResponsive()
+  const { isDesktop, isLargeScreen } = useResponsive()
   if (!Array.isArray(children)) {
     return <>{children}</>
   }
@@ -22,21 +22,21 @@ const ScrollableSelect = ({
     <>
       <aside
         className={`${
-          isDesktop ? 'w-64' : 'w-32'
+          isDesktop || isLargeScreen ? 'w-64' : 'w-32'
         } top-16  border-r border-neutral-400 h-12`}
       >
         {firstOption}
       </aside>
       <aside
         className={`${
-          isDesktop ? 'w-64' : 'w-32'
+          isDesktop || isLargeScreen ? 'w-64' : 'w-32'
         } top-32 border-r border-neutral-400 h-12`}
       >
         {secondOption}
       </aside>
       <aside
         className={`${
-          isDesktop ? 'w-64' : 'w-32'
+          isDesktop || isLargeScreen ? 'w-64' : 'w-32'
         } top-40 bottom-0 absolute border-r border-neutral-400 overflow-y-auto no-scrollbar`}
         aria-label={`${scrollbarTitle} Scrollbar`}
       >

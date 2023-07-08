@@ -1,5 +1,4 @@
-import pathToCards from '@constants/path-to-cards'
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import SearchBar from '@components/inputs/search-bar'
 import rarityMap from '@constants/rarity-map'
 import CardLightBoxModal from '@components/modals/card-lightbox-modal'
@@ -9,6 +8,7 @@ import useGetUserCards from '@pages/api/queries/use-get-user-cards'
 import getUidFromSession from '@utils/get-uid-from-session'
 import { useResponsive } from '@hooks/useResponsive'
 import GridPagination from './grid-pagination'
+import TradingCard from '@components/images/trading-card'
 
 type CollectionGridProps = {}
 
@@ -125,11 +125,11 @@ const CollectionGrid = ({}: CollectionGridProps) => {
                   setLightBoxIsOpen(true)
                 }}
               >
-                <img
+                <TradingCard
                   className="w-full h-full cursor-pointer rounded-sm"
-                  src={`${pathToCards}${card.image_url}`}
-                  alt={card.player_name}
-                  loading="lazy"
+                  source={card.image_url}
+                  rarity={card.card_rarity}
+                  playerName={card.player_name}
                 />
                 {card.quantity > 1 && (
                   <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 sm:translate-x-1/2 -translate-y-1/2 bg-neutral-800 rounded-full">

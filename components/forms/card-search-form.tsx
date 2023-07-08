@@ -82,7 +82,7 @@ const CardSearchForm = () => {
       </div>
       <div className="flex justify-center items-center">
         {cardOwners.length !== 0 ? (
-          <div className="w-3/4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div className="h-full w-3/4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 overflow-y-scroll">
             {cardOwners.map((cardWithUsers) =>
               cardWithUsers.users.map((user) => (
                 <CardOwnerCard card={cardWithUsers.card} user={user} />

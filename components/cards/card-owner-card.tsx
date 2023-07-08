@@ -1,5 +1,5 @@
 import Button from '@components/buttons/button'
-import pathToCards from '@constants/path-to-cards'
+import TradingCard from '@components/images/trading-card'
 import Router from 'next/router'
 import React from 'react'
 
@@ -9,20 +9,21 @@ type CardOwnerCardProps = {
 }
 
 const CardOwnerCard = ({ card, user }: CardOwnerCardProps) => (
-  <div className="w-full flex flex-col justify-between m-1">
-    <img
-      className="rounded-sm h-72 m-1"
-      src={`${pathToCards}${card.image_url}`}
-      alt={card.player_name}
-      loading="lazy"
+  <div className="w-full flex flex-col justify-between items-center m-1">
+    <TradingCard
+      source={card.image_url}
+      rarity={card.card_rarity}
+      playerName={card.player_name}
     />
 
-    <Button
-      disabled={false}
-      onClick={() => Router.push(`/trade-hub/${user.userID}`)}
-    >
-      Trade With {user.username}
-    </Button>
+    <div className="mt-1">
+      <Button
+        disabled={false}
+        onClick={() => Router.push(`/trade-hub/${user.userID}`)}
+      >
+        Trade with {user.username}
+      </Button>
+    </div>
   </div>
 )
 

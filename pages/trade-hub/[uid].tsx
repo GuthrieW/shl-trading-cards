@@ -1,6 +1,5 @@
 import Button from '@components/buttons/button'
 import TradeGrid from '@components/grids/trade-grid'
-import pathToCards from '@constants/path-to-cards'
 import useCreateTrade, {
   TradeAsset,
 } from '@pages/api/mutations/use-create-trade'
@@ -11,6 +10,7 @@ import getUidFromSession from '@utils/get-uid-from-session'
 import { NextSeo } from 'next-seo'
 import { useState } from 'react'
 import Router from 'next/router'
+import TradingCard from '@components/images/trading-card'
 
 const CollectionLayout = ({ username, children }) => (
   <div className="flex flex-col">
@@ -122,11 +122,11 @@ const NewTrade = () => {
                     key={index}
                     onClick={() => onRemoveCardFromTrade(card, true)}
                   >
-                    <img
+                    <TradingCard
                       className="w-full h-full cursor-pointer rounded-sm"
-                      src={`${pathToCards}${card.image_url}`}
-                      alt={card.player_name}
-                      loading="lazy"
+                      source={card.image_url}
+                      rarity={card.card_rarity}
+                      playerName={card.player_name}
                     />
                   </div>
                 ))}
@@ -144,11 +144,10 @@ const NewTrade = () => {
                     key={index}
                     onClick={() => onRemoveCardFromTrade(card, false)}
                   >
-                    <img
-                      className="w-full h-full cursor-pointer rounded-sm"
-                      src={`${pathToCards}${card.image_url}`}
-                      alt={card.player_name}
-                      loading="lazy"
+                    <TradingCard
+                      source={card.image_url}
+                      rarity={card.card_rarity}
+                      playerName={card.player_name}
                     />
                   </div>
                 ))}

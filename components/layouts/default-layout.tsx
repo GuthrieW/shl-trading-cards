@@ -77,7 +77,7 @@ const headersLinks: HeaderLink[] = [
 ]
 
 const DefaultLayout = ({ children }) => {
-  const { isDesktop } = useResponsive()
+  const { isDesktop, isLargeScreen } = useResponsive()
   const { user, isLoading, isError } = useGetCurrentUser({
     uid: getUidFromSession(),
   })
@@ -98,7 +98,7 @@ const DefaultLayout = ({ children }) => {
 
   return (
     <div className="h-full w-full">
-      {isDesktop ? (
+      {isDesktop || isLargeScreen ? (
         <Header headerItems={filteredLinks} user={user} />
       ) : (
         <MobileHeader headerItems={filteredLinks} user={user} />
