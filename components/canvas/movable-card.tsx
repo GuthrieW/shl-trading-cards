@@ -5,6 +5,7 @@ import pathToCards from '@constants/path-to-cards'
 import styles from './card-viewer.module.css'
 import rarityMap from '@constants/rarity-map'
 import { useResponsive } from '@hooks/useResponsive'
+import TradingCard from '@components/images/trading-card'
 
 export type MovableCard = {
   card: Card
@@ -69,17 +70,15 @@ const MovableCard = ({ card }: MovableCard) => {
     const foundRarity = cardRarityShadows.find(
       (shadow) => shadow.id === cardRarity
     )?.color
-    console.log('foundRarity', foundRarity)
     return `0 0 20px 10px ${foundRarity}`
   }
 
   return (
     <animated.div
       ref={domTarget}
-      className="relative overflow-hidden cursor-grab touch-none will-change-transform transition-shadow shadow-lg rounded hover:shadow-xl"
+      className="relative overflow-hidden cursor-grab touch-none will-change-transform transition-shadow"
       style={{
         margin: '5px',
-        boxShadow: getShadow(card.card_rarity),
         touchAction: 'auto',
         transition: 'box-shadow 0.5s, opacity 0.5s',
         transform: 'perspective(600px)',
@@ -92,6 +91,7 @@ const MovableCard = ({ card }: MovableCard) => {
       }}
     >
       <img
+        className="shadow-lg rounded hover:shadow-xl"
         style={{
           pointerEvents: 'none',
           boxShadow: getShadow(card.card_rarity),
