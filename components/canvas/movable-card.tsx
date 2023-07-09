@@ -78,6 +78,8 @@ const MovableCard = ({ card }: MovableCard) => {
       ref={domTarget}
       className="relative overflow-hidden cursor-grab touch-none will-change-transform transition-shadow"
       style={{
+        width: dimensions.width,
+        height: dimensions.height,
         margin: '5px',
         touchAction: 'auto',
         transition: 'box-shadow 0.5s, opacity 0.5s',

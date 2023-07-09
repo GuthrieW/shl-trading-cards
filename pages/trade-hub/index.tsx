@@ -40,7 +40,6 @@ const TradeHub = () => {
     )
 
     setIsFiltering(false)
-    console.log('done filtering')
     return filteredTrades
   }, [userTradesIsLoading, selectedStatuses])
   // }, [userTrades, searchString, selectedStatuses])
