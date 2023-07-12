@@ -21,6 +21,23 @@ const index = async (
 
   if (method === POST) {
     const { initiatorId, recipientId, tradeAssets } = body
+    if (initiatorId === '4491') {
+      response
+        .status(StatusCodes.BAD_REQUEST)
+        .send(
+          'Andrei you are not allowed to make a trade until your bank account is back above $0'
+        )
+      return
+    }
+    if (recipientId === '4491') {
+      response
+        .status(StatusCodes.BAD_REQUEST)
+        .send(
+          'Andrei is not allowed to make a trade until his bank account is back above $0'
+        )
+      return
+    }
+
     if (initiatorId === recipientId) {
       response
         .status(StatusCodes.BAD_REQUEST)
