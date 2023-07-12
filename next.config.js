@@ -5,7 +5,6 @@ module.exports = {
       {
         protocol: 'https',
         hostname: 'simulationhockey.com',
-        port: '',
         pathname: '/tradingcards/**',
       },
     ],
