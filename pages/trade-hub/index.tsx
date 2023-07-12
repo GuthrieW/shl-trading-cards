@@ -17,7 +17,6 @@ const TradeHub = () => {
   const [showUsersModal, setShowUsersModal] = useState<boolean>(false)
   const [selectedStatuses, setSelectedStatuses] = useState<TradeStatus[]>([])
   const [isFiltering, setIsFiltering] = useState<boolean>(true)
-  // const [searchString, setSearchString] = useState<string>('')
 
   const { isMobile, isTablet } = useResponsive()
 
@@ -42,7 +41,6 @@ const TradeHub = () => {
     setIsFiltering(false)
     return filteredTrades
   }, [userTradesIsLoading, selectedStatuses])
-  // }, [userTrades, searchString, selectedStatuses])
 
   const handleSelectTrade = (trade: Trade): void => {
     if (selectedTrade?.tradeid === trade?.tradeid) {
@@ -73,8 +71,6 @@ const TradeHub = () => {
             setIsFiltering(true)
             setSelectedStatuses(statuses)
           }}
-          // username={searchString}
-          // updateUsername={setSearchString}
           disabled={isFiltering}
         />
         <NewTradeSelectorOption
@@ -104,7 +100,7 @@ const TradeHub = () => {
         </>
       </ScrollableSelect>
       <div
-        className={`h-full absolute right-0 ${
+        className={`h-full absolute top-16 right-0 ${
           isMobile || isTablet ? 'left-32' : 'left-64'
         }`}
       >
