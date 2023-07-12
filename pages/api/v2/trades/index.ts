@@ -25,7 +25,9 @@ const index = async (
       response
         .status(StatusCodes.BAD_REQUEST)
         .send('You cannot trade with yourself')
+      return
     }
+
     const createTradeResult = await queryDatabase(
       SQL`call create_trade(${initiatorId},${recipientId})`
     )
