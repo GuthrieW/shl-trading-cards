@@ -21,6 +21,11 @@ const index = async (
 
   if (method === POST) {
     const { initiatorId, recipientId, tradeAssets } = body
+    if (initiatorId === recipientId) {
+      response
+        .status(StatusCodes.BAD_REQUEST)
+        .send('You cannot trade with yourself')
+    }
     const createTradeResult = await queryDatabase(
       SQL`call create_trade(${initiatorId},${recipientId})`
     )

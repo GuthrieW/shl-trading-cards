@@ -35,7 +35,8 @@ const TradeHub = () => {
 
     filteredTrades = filteredTrades.sort(
       (a: Trade, b: Trade) =>
-        Number(new Date(b.update_date)) - Number(new Date(a.update_date))
+        Number(new Date(b.update_date || b.create_date)) -
+        Number(new Date(a.update_date || a.create_date))
     )
 
     setIsFiltering(false)
