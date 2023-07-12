@@ -28,7 +28,7 @@ const TradingCard = ({
     <Image
       width={dimensions.width}
       height={dimensions.height}
-      src={`${pathToCards}${source}`}
+      src={source}
       alt={`${rarity} ${playerName}`}
       className={`w-full h-full cursor-pointer rounded-sm mx-1 ${className}`}
       loading="lazy"
