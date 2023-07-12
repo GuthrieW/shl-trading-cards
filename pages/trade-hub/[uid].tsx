@@ -11,6 +11,7 @@ import { NextSeo } from 'next-seo'
 import { useState } from 'react'
 import Router from 'next/router'
 import TradingCard from '@components/images/trading-card'
+import { warningToast } from '@utils/toasts'
 
 const CollectionLayout = ({ username, children }) => (
   <div className="flex flex-col">
@@ -77,9 +78,19 @@ const NewTrade = () => {
     cardToToggle: TradeCard,
     isCurrentUser: boolean
   ): void => {
-    isCurrentUser
-      ? setCurrentUserTrading([...currentUserTrading, cardToToggle])
-      : setOtherUserTrading([...otherUserTrading, cardToToggle])
+    if (isCurrentUser) {
+      if (currentUserTrading.length === 10) {
+        warningToast({ warningText: 'Cannot trade more than 10 cards' })
+        return
+      }
+      setCurrentUserTrading([...currentUserTrading, cardToToggle])
+    } else {
+      if (otherUserTrading.length === 10) {
+        warningToast({ warningText: 'Cannot trade more than 10 cards' })
+        return
+      }
+      setOtherUserTrading([...otherUserTrading, cardToToggle])
+    }
   }
 
   const onRemoveCardFromTrade = (
