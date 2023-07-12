@@ -9,6 +9,10 @@ export type TradingCardProps = {
   className?: string
 }
 
+const customLoader = (src: string) => {
+  return `https://simulationhockey.com/tradingcards/${src}`
+}
+
 const TradingCard = ({
   source,
   playerName,
@@ -26,6 +30,7 @@ const TradingCard = ({
 
   return (
     <Image
+      loader={() => customLoader(source)}
       width={dimensions.width}
       height={dimensions.height}
       src={`${pathToCards}${source}`}
