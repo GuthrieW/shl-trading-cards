@@ -1,21 +1,28 @@
-import { useQuery } from 'react-query'
+import { useQuery, useQueryClient } from 'react-query'
 import axios from 'axios'
 import { POST } from '@constants/http-methods'
+import { invalidateQueries } from '../mutations/invalidate-queries'
+import { errorToast } from '@utils/toasts'
 
 export type CardOwner = {
   username: string
-  uid: number
-  quantity: number
+  userID: string
+  cardID: string
+  player_name: string
+  card_rarity: string
+  image_url: string
 }
 
 type UseGetCardOwnersRequest = {
   name: string
   rarities: string[]
   teams: string[]
+  page: number
 }
 
 type UseGetCardOwners = {
-  cardOwners: { card: Card; users: TradeUser[] }[]
+  cardOwners: CardOwner[]
+  total: number
   isSuccess: boolean
   isLoading: boolean
   isError: any
@@ -28,24 +35,31 @@ const useGetCardOwners = ({
   name,
   rarities,
   teams,
+  page,
 }: UseGetCardOwnersRequest): UseGetCardOwners => {
+  const queryClient = useQueryClient()
   const { data, error, isFetching, isSuccess, refetch } = useQuery(
     UseGetCardOwnersKey,
     async () => {
       return await axios({
         method: POST,
         url: `/api/v2/cards/owners`,
-        data: { name, rarities, teams },
+        data: { name, rarities, teams, page },
       })
     },
     {
+      onSuccess: () => {
+        invalidateQueries(queryClient, [])
+      },
+      onError: () => {},
       enabled: false,
       refetchOnWindowFocus: false,
     }
   )
 
   return {
-    cardOwners: data?.data || [],
+    cardOwners: data?.data.cards || [],
+    total: data?.data.total || 0,
     isSuccess: isSuccess,
     isLoading: isFetching,
     isError: error,

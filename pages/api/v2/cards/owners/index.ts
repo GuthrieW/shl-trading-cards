@@ -28,94 +28,81 @@ const index = async (
       name,
       teams,
       rarities,
-    }: { name: string; teams: string[]; rarities: string[] } = body
+      page,
+    }: { name: string; teams: string[]; rarities: string[]; page: number } =
+      body
 
-    if (name === '') {
-      response.status(StatusCodes.OK).json([])
+    const query = SQL`
+    SELECT 
+      user.username,
+      user.uid AS userID,
+      card.cardID,
+      card.player_name,
+      card.card_rarity,
+      card.image_url,
+      card.teamID,
+      card.overall
+    FROM `
+      .append(getCardsDatabaseName())
+      .append(
+        `.ownedCards ownedCard
+    LEFT JOIN `
+      )
+      .append(getCardsDatabaseName())
+      .append(
+        SQL`.cards card
+      ON ownedCard.cardID = card.cardID
+    LEFT JOIN `
+      )
+      .append(getUsersDatabaseName()).append(SQL`.mybb_users user
+      ON ownedCard.userID = user.uid `)
+
+    if (name.length === 0 && teams.length === 0 && rarities.length === 0) {
+      response.status(StatusCodes.OK).send('At least one parameter required')
       return
     }
 
-    const searchQuery = SQL`
-      SELECT cardID,
-        player_name,
-        image_url,
-        card_rarity,
-        position,
-        overall,
-        high_shots,
-        low_shots,
-        quickness,
-        control,
-        conditioning,
-        skating,
-        shooting,
-        hands,
-        checking,
-        defense,
-        season
-      FROM `
-      .append(getCardsDatabaseName())
-      .append(
-        SQL`.cards
-      WHERE player_name LIKE "%`
-          .append(name)
-          .append(SQL`%"`)
-      )
+    if (name.length !== 0 || teams.length !== 0 || rarities.length !== 0) {
+      query.append(' WHERE')
+    }
+
+    let isFirstWhere = true
+
+    if (name.length !== 0) {
+      isFirstWhere ? (isFirstWhere = false) : query.append(' AND')
+      query.append(` player_name LIKE "%${name}%"`)
+    }
+
     if (teams.length !== 0) {
-      searchQuery.append(' AND (')
+      isFirstWhere ? (isFirstWhere = false) : query.append(' AND')
+      query.append(' (')
       teams.forEach((team, index) =>
         index === 0
-          ? searchQuery.append(SQL`teamID=${team}`)
-          : searchQuery.append(SQL` OR teamID=${team}`)
+          ? query.append(SQL`card.teamID=${team}`)
+          : query.append(SQL` OR card.teamID=${team}`)
       )
-      searchQuery.append(')')
+      query.append(')')
     }
 
     if (rarities.length !== 0) {
-      searchQuery.append(' AND (')
+      isFirstWhere ? (isFirstWhere = false) : query.append(' AND')
+      query.append(' (')
       rarities.forEach((rarity, index) =>
         index === 0
-          ? searchQuery.append(SQL`card_rarity=${rarity}`)
-          : searchQuery.append(SQL` OR card_rarity=${rarity}`)
+          ? query.append(SQL`card_rarity=${rarity}`)
+          : query.append(SQL` OR card_rarity=${rarity}`)
       )
-      searchQuery.append(')')
+      query.append(')')
     }
-    searchQuery.append(';')
 
-    const cardsMatchingQuery = await queryDatabase(searchQuery)
+    query.append(` ORDER BY overall DESC`)
 
-    const cardsWithOwners: {
-      card: Card
-      users: { quantity: number; uid: number; username: string }[]
-    }[] = await Promise.all(
-      await cardsMatchingQuery.map(async (card) => {
-        const cardOwners = await queryDatabase(
-          SQL`
-          SELECT ownedCards.userID, ownedCards.quantity, u.username 
-          FROM `
-            .append(getCardsDatabaseName())
-            .append(
-              `.ownedCards 
-          LEFT JOIN `
-            )
-            .append(getUsersDatabaseName())
-            .append(`.mybb_users u ON ownedCards.userID=u.uid 
-          WHERE ownedCards.cardID=${card.cardID};
-          `)
-        )
+    const result = await queryDatabase(query)
 
-        return {
-          card: card,
-          users: cardOwners,
-        }
-      })
-    )
-
-    const filteredCardsWithOwners = cardsWithOwners.filter(
-      (cardJoinedWithUser) => cardJoinedWithUser.users.length !== 0
-    )
-
-    response.status(StatusCodes.OK).json(filteredCardsWithOwners)
+    response.status(StatusCodes.OK).json({
+      cards: result.slice(page * 25, page * 25 + 25),
+      total: Math.ceil(result.length / 25),
+    })
     return
   }
 
