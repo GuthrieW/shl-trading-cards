@@ -54,7 +54,7 @@ const CardSearchForm = () => {
       <p>Card Search</p>
       <div className="flex flex-col justify-center items-center">
         <div className="w-full flex justify-start items-center">
-          <div className="flex">
+          <div className="flex flex-wrap">
             <DropdownWithCheckboxGroup
               title="Rarity"
               checkboxes={playerCardRarityCheckboxes}
