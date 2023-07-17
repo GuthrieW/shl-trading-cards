@@ -9,6 +9,7 @@ import getUidFromSession from '@utils/get-uid-from-session'
 import { useResponsive } from '@hooks/useResponsive'
 import GridPagination from './grid-pagination'
 import TradingCard from '@components/images/trading-card'
+import { PropagateLoader } from 'react-spinners'
 
 type CollectionGridProps = {}
 
@@ -112,8 +113,10 @@ const CollectionGrid = ({}: CollectionGridProps) => {
           isMobile ? 'grid-cols-2' : isTablet ? 'grid-cols-3' : 'grid-cols-5'
         }`}
       >
-        {isLoading && userCards.length !== 0 ? (
-          <p>Loading...</p>
+        {isLoading ? (
+          <div className="flex justify-center">
+            <PropagateLoader />
+          </div>
         ) : (
           <>
             {userCards?.map((card, index) => (
