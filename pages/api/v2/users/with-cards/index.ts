@@ -25,31 +25,40 @@ const index = async (
   if (method === POST) {
     const { page, name } = body
     const queryString = SQL`
-      SELECT DISTINCT collection.userID,
-        mybb_users.uid,
-        mybb_users.username,
-        mybb_users.avatar,
-        mybb_users.displaygroup,
-        mybb_users.additionalgroups
-      FROM `
-      .append(getUsersDatabaseName())
-      .append(
-        SQL`.mybb_users
-      INNER JOIN `
-      )
-      .append(getCardsDatabaseName()).append(SQL`
-      .collection
-        ON mybb_users.uid=collection.userID
-    `)
+    SELECT 
+      u.uid, 
+      u.username,
+      u.avatar,
+      u.displaygroup,
+      u.additionalgroups
+    FROM `
+      .append(getCardsDatabaseName())
+      .append(SQL`.user_info u`)
 
     if (name.length !== 0) {
-      queryString.append(` WHERE username LIKE "%${name}%"`)
+      queryString
+        .append(
+          ` WHERE u.username LIKE "%${name}%"
+      AND u.uid IN
+      (select distinct userID from `
+        )
+        .append(getCardsDatabaseName())
+        .append(`.collection)`)
+    } else {
+      queryString
+        .append(
+          ` WHERE u.uid IN
+      (select distinct userID from `
+        )
+        .append(getCardsDatabaseName())
+        .append(`.collection)`)
     }
 
     queryString.append(` ORDER BY username ASC;`)
 
     const result = await queryDatabase(queryString)
 
+    console.log('result', result)
     if (page === -1) {
       response.status(StatusCodes.OK).json({
         users: result,
