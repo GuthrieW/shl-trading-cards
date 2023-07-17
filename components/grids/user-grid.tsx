@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react'
 import CommunityTable from '@components/tables/community-table'
 import useGetAllUsersWithCards from '@pages/api/queries/use-get-all-users-with-cards'
 import GridPagination from './grid-pagination'
+import { PropagateLoader } from 'react-spinners'
 
 export type UserGridProps = {}
 
@@ -34,21 +35,21 @@ const UserGrid = ({}: UserGridProps) => {
         currentPage={currentPage}
         maxPages={maxPages}
       />
-      <div
-        className={`grid ${
-          isMobile ? 'grid-cols-2' : isTablet ? 'grid-cols-3' : 'grid-cols-5'
-        }`}
-      >
-        {isLoading && users.length !== 0 ? (
-          <p>Loading...</p>
-        ) : (
-          <>
-            {users.map((user) => (
-              <UserCard user={user} />
-            ))}
-          </>
-        )}
-      </div>
+      {isLoading ? (
+        <div className="flex justify-center">
+          <PropagateLoader />
+        </div>
+      ) : (
+        <div
+          className={`grid ${
+            isMobile ? 'grid-cols-2' : isTablet ? 'grid-cols-3' : 'grid-cols-5'
+          }`}
+        >
+          {users.map((user) => (
+            <UserCard user={user} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

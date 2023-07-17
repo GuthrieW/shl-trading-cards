@@ -8,6 +8,7 @@ import TradeSelectorOption from '@components/selectors/trade-selector-option'
 import { useResponsive } from '@hooks/useResponsive'
 import useGetUserTrades from '@pages/api/queries/use-get-user-trades'
 import getUidFromSession from '@utils/get-uid-from-session'
+import { warningToast } from '@utils/toasts'
 import { NextSeo } from 'next-seo'
 import React, { useMemo, useState } from 'react'
 
@@ -44,6 +45,10 @@ const TradeHub = () => {
   }, [userTradesIsLoading, selectedStatuses])
 
   const handleSelectTrade = (trade: Trade): void => {
+    if (showUsersModal) {
+      warningToast({ warningText: 'Already creating a new trade' })
+      return
+    }
     if (selectedTrade?.tradeid === trade?.tradeid) {
       setShowTrade(false)
       setSelectedTrade(null)
@@ -75,6 +80,7 @@ const TradeHub = () => {
           disabled={isFiltering}
         />
         <NewTradeSelectorOption
+          disabled={showUsersModal}
           className="cursor-pointer border-t-1 border-neutral-400"
           key={'new-trade'}
           onClick={handleCreateNewTrade}
