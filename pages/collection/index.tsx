@@ -1,11 +1,9 @@
 import useGetUser from '@pages/api/queries/use-get-user'
-import useGetUserCards from '@pages/api/queries/use-get-user-cards'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React from 'react'
 import CollectionGrid from '@components/grids/collection-grid'
 import { NextSeo } from 'next-seo'
 import Router from 'next/router'
-import CardGrid from '@components/grids/card-grid'
 
 const Collection = () => {
   const parsedUid = parseInt(Router.query.uid as string) || getUidFromSession()

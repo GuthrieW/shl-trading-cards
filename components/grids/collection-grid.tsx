@@ -5,17 +5,16 @@ import CardLightBoxModal from '@components/modals/card-lightbox-modal'
 import DropdownWithCheckboxGroup from '@components/dropdowns/dropdown-with-checkbox-group'
 import teamsMap from '@constants/teams-map'
 import useGetUserCards from '@pages/api/queries/use-get-user-cards'
-import getUidFromSession from '@utils/get-uid-from-session'
 import { useResponsive } from '@hooks/useResponsive'
 import GridPagination from './grid-pagination'
 import TradingCard from '@components/images/trading-card'
 import { PropagateLoader } from 'react-spinners'
 
 type CollectionGridProps = {
-  uid: number
+  userId: number
 }
 
-const CollectionGrid = ({ uid }: CollectionGridProps) => {
+const CollectionGrid = ({ userId }: CollectionGridProps) => {
   const [searchString, setSearchString] = useState<string>('')
   const [selectedRarities, setSelectedRarities] = useState<string[]>([])
   const [selectedTeams, setSelectedTeams] = useState<string[]>([])
@@ -25,7 +24,7 @@ const CollectionGrid = ({ uid }: CollectionGridProps) => {
   const { isMobile, isTablet } = useResponsive()
 
   const { userCards, maxPages, isLoading, isError, refetch } = useGetUserCards({
-    uid,
+    uid: userId,
     name: searchString,
     teams: selectedTeams,
     rarities: selectedRarities,
