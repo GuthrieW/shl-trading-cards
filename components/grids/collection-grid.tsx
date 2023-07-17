@@ -11,9 +11,11 @@ import GridPagination from './grid-pagination'
 import TradingCard from '@components/images/trading-card'
 import { PropagateLoader } from 'react-spinners'
 
-type CollectionGridProps = {}
+type CollectionGridProps = {
+  uid: number
+}
 
-const CollectionGrid = ({}: CollectionGridProps) => {
+const CollectionGrid = ({ uid }: CollectionGridProps) => {
   const [searchString, setSearchString] = useState<string>('')
   const [selectedRarities, setSelectedRarities] = useState<string[]>([])
   const [selectedTeams, setSelectedTeams] = useState<string[]>([])
@@ -23,7 +25,7 @@ const CollectionGrid = ({}: CollectionGridProps) => {
   const { isMobile, isTablet } = useResponsive()
 
   const { userCards, maxPages, isLoading, isError, refetch } = useGetUserCards({
-    uid: getUidFromSession(),
+    uid,
     name: searchString,
     teams: selectedTeams,
     rarities: selectedRarities,

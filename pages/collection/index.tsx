@@ -34,7 +34,7 @@ const Collection = () => {
         <h1 className="text-4xl text-center my-6">
           {isCurrentUser ? 'Your' : `${user.username}'s`} Collection
         </h1>
-        <CollectionGrid />
+        <CollectionGrid userId={parsedUid} />
       </div>
     </>
   )
