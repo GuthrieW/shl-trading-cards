@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { DefaultSeo } from 'next-seo'
 import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
-import { DefaultLayout } from '@components/index'
+import DefaultLayout from '@components/layouts/default-layout'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
 import { ToastContainer } from 'react-toastify'
@@ -26,7 +26,6 @@ const AuthModal = () => (
 
 export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   const [showModal, setShowModal] = useState<boolean>(false)
-
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -71,7 +70,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Hydrate state={pageProps.dehydratedState}>
+      <Hydrate state={{}}>
         {showModal && <AuthModal />}
         {!showModal && (
           <DefaultLayout>
@@ -91,7 +90,7 @@ export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
             <style global jsx>{`
               body {
                 font-family: 'Raleway', sans-serif;
-                background-color: '#E9ECEF';
+                background-color: rgb(245, 245, 245);
               }
               * {
                 margin: 0;

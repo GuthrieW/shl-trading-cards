@@ -1,18 +1,20 @@
 import OpenPackModal from '@components/modals/open-pack-modal'
-import packsMap, { packInfo } from '@constants/packs-map'
+import packsMap from '@constants/packs-map'
 import { warningToast } from '@utils/toasts'
 import useOpenPack from '@pages/api/mutations/use-open-pack'
-import { useGetUser } from '@pages/api/queries'
+import useGetUser from '@pages/api/queries/use-get-user'
 import useGetUserPacks from '@pages/api/queries/use-get-user-packs'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useState } from 'react'
 import Router from 'next/router'
 import { NextSeo } from 'next-seo'
+import { useResponsive } from '@hooks/useResponsive'
 
 const OpenPacks = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalPack, setModalPack] = useState<UserPack>(null)
 
+  const { isMobile, isTablet, isDesktop } = useResponsive()
   const {
     user,
     isSuccess: getCurrentUserIsSuccess,
@@ -88,14 +90,24 @@ const OpenPacks = () => {
           <>
             <p>Number of packs: {userPacks.length}</p>
             <p>Subscribed: {user.subscription ? user.subscription : 'No'}</p>
-            <div className="h-full flex flex-row items-center justify-start overflow-x-auto overflow-y-hidden">
+            <div
+              className={`grid ${
+                isMobile
+                  ? 'grid-cols-2'
+                  : isTablet
+                  ? 'grid-cols-3'
+                  : 'grid-cols-5'
+              }`}
+            >
               {userPacks.map((pack, index) => (
+                // <div key={index} className="flex justify-center items-center">
                 <img
                   key={index}
                   onClick={() => handleSelectedPack(pack)}
                   className="select-none my-2 cursor-pointer h-96 mx-4 transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
                   src={packsMap.base.imageUrl}
                 />
+                // </div>
               ))}
             </div>
           </>

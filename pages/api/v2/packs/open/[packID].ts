@@ -3,7 +3,8 @@ import {
   getCardsDatabaseName,
   queryDatabase,
 } from '@pages/api/database/database'
-import { POST, rarityMap } from '@constants/index'
+import { POST } from '@constants/http-methods'
+import rarityMap from '@constants/rarity-map'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'

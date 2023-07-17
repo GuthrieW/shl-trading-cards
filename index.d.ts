@@ -57,6 +57,16 @@ type CollectionCard = {
   teamID: number
 }
 
+type TradeCard = {
+  cardID: number
+  ownedCardID: number
+  image_url: string
+  card_rarity: string
+  player_name: string
+  overall: number
+  teamID: number
+}
+
 type SetCard = {
   cardID: number
   setID: number
@@ -84,15 +94,30 @@ type StartingLineup = {
   goalie: number
 }
 
+type TradeStatus = 'COMPLETE' | 'PENDING' | 'DECLINED' | 'AUTO_DECLINED'
+
 type Trade = {
-  tradeID: number
-  tradeAssetID: number
-  fromID: number
-  toID: number
-  cardID: number
-  trade_status: string
+  tradeid: number
+  initiatorid: number
+  recipientid: number
+  declineUserID: number
+  trade_status: TradeStatus
+  update_date: Date
   create_date: Date
-  update_data: Date
+}
+
+type TradeDetails = {
+  tradeID: number
+  initiatorID: number
+  recipientID: number
+  trade_status: TradeStatus
+  ownedcardid: number
+  cardID: number
+  image_url: string
+  toID: number
+  fromID: numer
+  create_date: Date
+  update_date: Date
 }
 
 type User = {
@@ -103,6 +128,11 @@ type User = {
   additionalgroups?: string
   displaygroup?: number
   subscription?: number
+}
+
+type TradeUser = {
+  username: string
+  userID: number
 }
 
 type PackKey = 'base'

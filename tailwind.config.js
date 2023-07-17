@@ -7,7 +7,19 @@ module.exports = {
     './tailwind-components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontSize: {
+        sm: '14px',
+        md: '16px',
+        lg: '20px',
+        xl: '24px',
+      },
+      screen: {
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+      },
+    },
   },
   plugins: [],
 }
