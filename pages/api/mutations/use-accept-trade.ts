@@ -4,6 +4,7 @@ import { errorToast, successToast } from '@utils/toasts'
 import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { invalidateQueries } from './invalidate-queries'
+import { UseGetUserCardsForTradesKey } from '../queries/use-get-user-cards-for-trades'
 
 type UseAcceptTradeRequest = {
   id: number
@@ -28,7 +29,10 @@ const useAcceptTrade = (): UseAcceptTrade => {
     },
     {
       onSuccess: () => {
-        invalidateQueries(queryClient, [UseGetUserTradesKey])
+        invalidateQueries(queryClient, [
+          UseGetUserTradesKey,
+          UseGetUserCardsForTradesKey,
+        ])
         successToast({ successText: 'Trade Accepted' })
       },
       onError: () => {
