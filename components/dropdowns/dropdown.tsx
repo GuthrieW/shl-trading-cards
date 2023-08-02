@@ -1,6 +1,3 @@
-import { ChevronDownIcon } from '@heroicons/react/outline'
-import { useState } from 'react'
-
 export type DropdownOption = {
   text: string
   onClick: () => void
@@ -11,23 +8,23 @@ export type DropdownProps = {
   options: DropdownOption[]
 }
 
-const Dropdown = ({ title, options }: DropdownProps) => {
-  const [showOptions, setShowOptions] = useState<boolean>(false)
-
-  const handleClick = (onClick: () => void) => {
-    onClick()
-    setShowOptions(false)
-  }
-
-  return (
-    <select className="h-8 p-2 flex flex-row justify-center items-center rounded bg-neutral-800 text-gray-200 hover:bg-neutral-700 hover:text-gray-300">
-      {[...options].map(({ text, onClick }, index) => (
-        <option selected={index === 0} onClick={() => handleClick(onClick)}>
-          {text}
-        </option>
-      ))}
-    </select>
-  )
-}
+const Dropdown = ({ title, options }: DropdownProps) => (
+  <select
+    onChange={(event) => {
+      const foundOption = options.find(
+        (option) => option.text === event.target.value
+      )
+      if (foundOption) {
+        foundOption.onClick()
+      }
+    }}
+    className="h-8 p-2 flex flex-row justify-center items-center rounded bg-neutral-800 text-gray-200 hover:bg-neutral-700 hover:text-gray-300"
+    defaultValue={options[0].text}
+  >
+    {[...options].map(({ text }, index) => (
+      <option key={text}>{text}</option>
+    ))}
+  </select>
+)
 
 export default Dropdown
