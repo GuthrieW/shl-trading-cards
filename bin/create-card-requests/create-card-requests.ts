@@ -25,8 +25,8 @@ parser.addArgument('--dryRun', {
 })
 
 let args: {
-  season?: number
-  dryRun?: boolean
+  season: number
+  dryRun: boolean
 } = parser.parseArgs()
 
 void main()

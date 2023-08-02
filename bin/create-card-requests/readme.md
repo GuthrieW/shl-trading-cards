@@ -8,7 +8,7 @@ This script creates new card requests for the provided season and inserts them i
 
 - season: number - The season to pull users from and create requests for
 
-`ts-node ./bin/create-card-requests/exec.ts --dryRun=true --season=69`
+`ts-node ./bin/create-card-requests/create-card-requests.ts --dryRun=true --season=69`
 
 ## Attribute Formulas
 

@@ -1,23 +1,38 @@
 import mysql from 'serverless-mysql'
 
-const config =
-  process.env.APP_ENV === 'production'
-    ? {
-        config: {
-          host: process.env.DATABASE_HOST,
-          user: process.env.DATABASE_USER,
-          password: process.env.DATABASE_PASSWORD,
-          database: process.env.DATABASE_NAME,
-        },
-      }
-    : {
-        config: {
-          host: process.env.DEV_DATABASE_HOST,
-          user: process.env.DEV_DATABASE_USER,
-          password: process.env.DEV_DATABASE_PASSWORD,
-          database: process.env.DEV_DATABASE_NAME,
-        },
-      }
+let config
+if (process.env.APP_ENV === 'production') {
+  config = {
+    config: {
+      host: process.env.DATABASE_HOST,
+      user: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
+    },
+  }
+}
+
+if (process.env.APP_ENV === 'development') {
+  config = {
+    config: {
+      host: process.env.DEV_DATABASE_HOST,
+      user: process.env.DEV_DATABASE_USER,
+      password: process.env.DEV_DATABASE_PASSWORD,
+      database: process.env.DEV_DATABASE_NAME,
+    },
+  }
+}
+
+if (process.env.APP_ENV === 'script') {
+  config = {
+    config: {
+      host: 'localhost',
+      user: 'admin_cards',
+      password: 'CTRFcardMaster99!',
+      database: 'admin_cards',
+    },
+  }
+}
 
 console.log('env', process.env.APP_ENV)
 process.env.APP_ENV !== 'production'

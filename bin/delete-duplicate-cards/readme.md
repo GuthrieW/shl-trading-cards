@@ -13,4 +13,4 @@ Instances where duplicates are approved and exist within a user's collection sho
 - card_rarity Misprint
 - pullable 0
 
-`ts-node ./bin/delete-duplicate-cards/exec.ts`
+`ts-node ./bin/delete-duplicate-cards/delete-duplicate-cards.ts`

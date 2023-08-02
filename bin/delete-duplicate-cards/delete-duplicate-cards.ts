@@ -14,13 +14,12 @@ parser.addArgument('--dryRun', {
 })
 
 let args: {
-  season: number
   dryRun: boolean
 } = parser.parseArgs()
 
 void main()
   .then(async () => {
-    console.log('Finished generating card requests')
+    console.log('Finished deleting cards')
     process.exit(0)
   })
   .catch((error) => {
@@ -29,16 +28,15 @@ void main()
   })
 
 async function main() {
-  if (!args.season) throw new Error('argument --season required')
-  if (!args.season) throw new Error('argument --dryRun required')
+  if (!args.dryRun) throw new Error('argument --dryRun required')
 
   const deleteRequests: DeleteRequest[] =
     await checkForDuplicatesAndGenerateDeleteQueries()
-  const deleteRequestsResult: string[] = await deleteCards(
-    deleteRequests,
-    args.dryRun
-  )
-  console.log(JSON.stringify(deleteRequestsResult, null, 2))
+  // const deleteRequestsResult: string[] = await deleteCards(
+  //   deleteRequests,
+  //   args.dryRun
+  // )
+  // console.log(JSON.stringify(deleteRequestsResult, null, 2))
 }
 
 /**
@@ -47,6 +45,8 @@ async function main() {
 async function checkForDuplicatesAndGenerateDeleteQueries(): Promise<
   DeleteRequest[]
 > {
+  const query = SQL`SELECT count(*) as c, player_name, card_rarity FROM admin_cards.cards GROUP BY player_name, card_rarity HAVING c > 1;`
+  const duplicates: AxiosResponse<Card[], any> = await queryDatabase(query)
   return null
 }
 
