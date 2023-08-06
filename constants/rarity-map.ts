@@ -15,6 +15,11 @@ const rarityMap = {
   misprint: { label: 'Misprint', value: 'Misprint', rarity: 0 },
   charity: { label: 'Charity', value: 'Charity', rarity: 35 },
   award: { label: 'Awards', value: 'Awards', rarity: 100 },
+  twoThousandClub: {
+    label: '2000 TPE Club',
+    value: '2000 TPE Club',
+    rarity: 0,
+  },
 }
 
 export default rarityMap

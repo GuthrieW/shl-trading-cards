@@ -9,6 +9,8 @@ import { useResponsive } from '@hooks/useResponsive'
 import GridPagination from './grid-pagination'
 import TradingCard from '@components/images/trading-card'
 import { PropagateLoader } from 'react-spinners'
+import { generateRarityCheckboxes } from '@components/dropdowns/generate-rarity-checkboxes'
+import { generateTeamCheckboxes } from '@components/dropdowns/generate-team-checkboxes'
 
 type CollectionGridProps = {
   userId: number
@@ -56,20 +58,11 @@ const CollectionGrid = ({ userId }: CollectionGridProps) => {
       ? setSelectedTeams(selectedTeams.filter((team) => team != toggleId))
       : setSelectedTeams(selectedTeams.concat(toggleId))
 
-  const playerCardRarityCheckboxes: CollectionTableButtons[] = Object.values(
-    rarityMap
-  ).map((rarity) => ({
-    id: rarity.label,
-    text: rarity.label === 'Hall of Fame' ? 'HOF' : rarity.label,
-    onClick: () => updateSelectedRarityButtonIds(rarity.label),
-  }))
+  const playerCardRarityCheckboxes: CollectionTableButtons[] =
+    generateRarityCheckboxes(updateSelectedRarityButtonIds)
 
-  const teamCheckboxes: CollectionTableButtons[] = Object.keys(teamsMap).map(
-    (key) => ({
-      id: key,
-      text: teamsMap[key].abbreviation,
-      onClick: () => updateSelectedTeamButtonIds(key),
-    })
+  const teamCheckboxes: CollectionTableButtons[] = generateTeamCheckboxes(
+    updateSelectedTeamButtonIds
   )
 
   const updateCurrentPage = (pageNumber: number) => setCurrentPage(pageNumber)

@@ -3,6 +3,7 @@ import { ArgumentParser } from 'argparse'
 import SQL from 'sql-template-strings'
 import fs from 'fs'
 import { UsersWithPayments } from './pay-card-creators.d'
+import rarityMap from '@constants/rarity-map'
 
 const BASE_CARD_PAY: number = 250000
 const AWARDS_CARD_PAY: number = 500000
@@ -65,11 +66,14 @@ function calculateAuthorPayments(cardsToPayout: Card[]): UsersWithPayments {
       }
     }
 
-    if (cardToPayout.card_rarity === 'Hall of Fame') {
+    if (cardToPayout.card_rarity === rarityMap.hallOfFame.label) {
       usersWithPayments[cardToPayout.author_userID].hallOfFame += 1
       usersWithPayments[cardToPayout.author_userID].amountToPayAuthor +=
         HALL_OF_FAME_CARD_PAY
-    } else if (cardToPayout.card_rarity === 'Awards') {
+    } else if (
+      cardToPayout.card_rarity === rarityMap.award.label ||
+      cardToPayout.card_rarity === rarityMap.twoThousandClub.label
+    ) {
       usersWithPayments[cardToPayout.author_userID].awards += 1
       usersWithPayments[cardToPayout.author_userID].amountToPayAuthor +=
         AWARDS_CARD_PAY

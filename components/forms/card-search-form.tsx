@@ -1,6 +1,8 @@
 import Button from '@components/buttons/button'
 import CardOwnerCard from '@components/cards/card-owner-card'
 import DropdownWithCheckboxGroup from '@components/dropdowns/dropdown-with-checkbox-group'
+import { generateRarityCheckboxes } from '@components/dropdowns/generate-rarity-checkboxes'
+import { generateTeamCheckboxes } from '@components/dropdowns/generate-team-checkboxes'
 import GridPagination from '@components/grids/grid-pagination'
 import SearchBar from '@components/inputs/search-bar'
 import rarityMap from '@constants/rarity-map'
@@ -44,20 +46,11 @@ const CardSearchForm = () => {
       ? setSelectedTeams(selectedTeams.filter((team) => team != toggleId))
       : setSelectedTeams(selectedTeams.concat(toggleId))
 
-  const playerCardRarityCheckboxes: CollectionTableButtons[] = Object.values(
-    rarityMap
-  ).map((rarity) => ({
-    id: rarity.label,
-    text: rarity.label === 'Hall of Fame' ? 'HOF' : rarity.label,
-    onClick: () => updateSelectedRarityButtonIds(rarity.label),
-  }))
+  const playerCardRarityCheckboxes: CollectionTableButtons[] =
+    generateRarityCheckboxes(updateSelectedRarityButtonIds)
 
-  const teamCheckboxes: CollectionTableButtons[] = Object.keys(teamsMap).map(
-    (key) => ({
-      id: key,
-      text: teamsMap[key].abbreviation,
-      onClick: () => updateSelectedTeamButtonIds(key),
-    })
+  const teamCheckboxes: CollectionTableButtons[] = generateTeamCheckboxes(
+    updateSelectedTeamButtonIds
   )
 
   return (
