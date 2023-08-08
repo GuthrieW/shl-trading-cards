@@ -19,6 +19,26 @@ export const packsMap = {
   },
 }
 
+export const packCovers = {
+  base: {
+    old: '/images/base-pack-cover.png',
+    cgy: '/images/base-pack-cgy.png',
+    min: '/images/base-pack-min.png',
+    tex: '/images/base-pack-tex.png',
+    tor: '/images/base-pack-tor.png',
+  },
+}
+
+export const basePackCovers = [
+  packCovers.base.cgy,
+  packCovers.base.min,
+  packCovers.base.tex,
+  packCovers.base.tor,
+]
+
+export const getBasePackCover = () =>
+  basePackCovers[Math.floor(Math.random() * basePackCovers.length)]
+
 export const packs: PackInfo[] = [
   {
     id: packsMap.base.id,

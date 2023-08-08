@@ -1,5 +1,5 @@
 import InfoCard from '@components/cards/info-card'
-import packsMap from '@constants/packs-map'
+import packsMap, { getBasePackCover } from '@constants/packs-map'
 import pathToCards from '@constants/path-to-cards'
 import useGetUserCards from '@pages/api/queries/use-get-user-cards'
 import useGetUserPacks from '@pages/api/queries/use-get-user-packs'
@@ -169,7 +169,7 @@ const Home = () => {
                         left: `${index * 10}%`,
                         top: `0`,
                       }}
-                      src={packsMap[pack.packType].imageUrl}
+                      src={getBasePackCover()}
                     />
                   )
                 })}

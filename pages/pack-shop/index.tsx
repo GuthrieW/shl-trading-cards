@@ -1,7 +1,7 @@
 import useBuyPack from '@pages/api/mutations/use-buy-pack'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useState } from 'react'
-import { packs, PackInfo } from '@constants/packs-map'
+import { packs, PackInfo, getBasePackCover } from '@constants/packs-map'
 import BuyPackModal from '@components/modals/buy-pack-modal'
 import { warningToast } from '@utils/toasts'
 import subscriptionOptions from '@constants/subscription-options'
@@ -89,7 +89,7 @@ const PackShop = () => {
               <img
                 onClick={() => handleSelectedPack(pack)}
                 className="cursor-pointer h-96 mx-4 transition ease-linear hover:scale-105 shadow-none hover:shadow-xl"
-                src={pack.imageUrl}
+                src={getBasePackCover()}
               />
               <div className="text-center">
                 <h1 className="text-2xl">{pack.label} Pack</h1>

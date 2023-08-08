@@ -1,5 +1,9 @@
 import OpenPackModal from '@components/modals/open-pack-modal'
-import packsMap from '@constants/packs-map'
+import packsMap, {
+  basePackCovers,
+  getBasePackCover,
+  packCovers,
+} from '@constants/packs-map'
 import { warningToast } from '@utils/toasts'
 import useOpenPack from '@pages/api/mutations/use-open-pack'
 import useGetUser from '@pages/api/queries/use-get-user'
@@ -100,14 +104,12 @@ const OpenPacks = () => {
               }`}
             >
               {userPacks.map((pack, index) => (
-                // <div key={index} className="flex justify-center items-center">
                 <img
                   key={index}
                   onClick={() => handleSelectedPack(pack)}
                   className="select-none my-2 cursor-pointer h-96 mx-4 transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
-                  src={packsMap.base.imageUrl}
+                  src={getBasePackCover()}
                 />
-                // </div>
               ))}
             </div>
           </>
