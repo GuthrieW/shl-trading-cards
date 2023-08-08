@@ -26,6 +26,7 @@ export const packCovers = {
     min: '/images/base-pack-min.png',
     tex: '/images/base-pack-tex.png',
     tor: '/images/base-pack-tor.png',
+    meme: '/images/base-pack-meme.png',
   },
 }
 
@@ -36,8 +37,18 @@ export const basePackCovers = [
   packCovers.base.tor,
 ]
 
-export const getBasePackCover = () =>
-  basePackCovers[Math.floor(Math.random() * basePackCovers.length)]
+export const getBasePackCover = () => {
+  const minimum = 0
+  const maximum = 100000
+  const memeCoverChance =
+    Math.floor(Math.random() * maximum - minimum + 1) + minimum
+
+  if (memeCoverChance === 10) {
+    return packCovers.base.meme
+  }
+
+  return basePackCovers[Math.floor(Math.random() * basePackCovers.length)]
+}
 
 export const packs: PackInfo[] = [
   {

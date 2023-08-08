@@ -1,5 +1,5 @@
 import Button from '@components/buttons/button'
-import { PackInfo } from '@constants/packs-map'
+import { PackInfo, getBasePackCover } from '@constants/packs-map'
 import { warningToast } from '@utils/toasts'
 import React from 'react'
 import Modal from './modal'
@@ -24,7 +24,7 @@ const BuyPackModal = ({
   >
     <div className="flex flex-col justify-center items-center">
       <div className="w-1/2 flex flex-col justify-center items-center">
-        <img className="select-none" src={pack.imageUrl} />
+        <img className="select-none" src={getBasePackCover()} />
       </div>
       <div className="flex items-center justify-end p-6">
         <Button
