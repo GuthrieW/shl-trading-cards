@@ -1,5 +1,5 @@
 import React from 'react'
-import packsMap, { PackInfo } from '@constants/packs-map'
+import packsMap, { PackInfo, getBasePackCover } from '@constants/packs-map'
 import Modal from './modal'
 import Button from '@components/buttons/button'
 
@@ -29,7 +29,7 @@ const OpenPackModal = ({
     >
       <div className="flex flex-col justify-center items-center">
         <div className="w-1/2 flex flex-col justify-center items-center">
-          <img className="select-none" src={packTypeData.imageUrl} />
+          <img className="select-none" src={getBasePackCover()} />
         </div>
         <div className="flex items-center justify-end p-6">
           <Button
