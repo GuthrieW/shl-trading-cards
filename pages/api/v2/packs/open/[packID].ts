@@ -29,13 +29,25 @@ const getBasePackRarity = (): string => {
     return rarityMap.hallOfFame.label
   if (
     num > rarityMap.hallOfFame.rarity &&
-    num <= rarityMap.hallOfFame.rarity + rarityMap.diamond.rarity
+    num <= rarityMap.hallOfFame.rarity + rarityMap.twoThousandClub.rarity
+  )
+    return rarityMap.twoThousandClub.label
+  if (
+    num > rarityMap.hallOfFame.rarity + rarityMap.twoThousandClub.rarity &&
+    num <=
+      rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
+        rarityMap.diamond.rarity
   )
     return rarityMap.diamond.label
   if (
-    num > rarityMap.hallOfFame.rarity + rarityMap.diamond.rarity &&
+    num >
+      rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
+        rarityMap.diamond.rarity &&
     num <=
       rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
         rarityMap.diamond.rarity +
         rarityMap.ruby.rarity
   )
@@ -43,10 +55,12 @@ const getBasePackRarity = (): string => {
   if (
     num >
       rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
         rarityMap.diamond.rarity +
         rarityMap.ruby.rarity &&
     num <=
       rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
         rarityMap.diamond.rarity +
         rarityMap.ruby.rarity +
         rarityMap.gold.rarity
@@ -55,11 +69,13 @@ const getBasePackRarity = (): string => {
   if (
     num >
       rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
         rarityMap.diamond.rarity +
         rarityMap.ruby.rarity +
         rarityMap.gold.rarity &&
     num <=
       rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
         rarityMap.diamond.rarity +
         rarityMap.ruby.rarity +
         rarityMap.gold.rarity +
@@ -69,12 +85,14 @@ const getBasePackRarity = (): string => {
   if (
     num >
       rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
         rarityMap.diamond.rarity +
         rarityMap.ruby.rarity +
         rarityMap.gold.rarity +
         rarityMap.silver.rarity &&
     num <=
       rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
         rarityMap.diamond.rarity +
         rarityMap.ruby.rarity +
         rarityMap.gold.rarity +
@@ -85,6 +103,7 @@ const getBasePackRarity = (): string => {
   if (
     num >
       rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
         rarityMap.diamond.rarity +
         rarityMap.ruby.rarity +
         rarityMap.gold.rarity +
@@ -92,6 +111,7 @@ const getBasePackRarity = (): string => {
         rarityMap.bronze.rarity &&
     num <=
       rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
         rarityMap.diamond.rarity +
         rarityMap.ruby.rarity +
         rarityMap.gold.rarity +
@@ -103,6 +123,7 @@ const getBasePackRarity = (): string => {
   if (
     num >
       rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
         rarityMap.diamond.rarity +
         rarityMap.ruby.rarity +
         rarityMap.gold.rarity +
@@ -111,6 +132,7 @@ const getBasePackRarity = (): string => {
         rarityMap.logo.rarity &&
     num <=
       rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
         rarityMap.diamond.rarity +
         rarityMap.ruby.rarity +
         rarityMap.gold.rarity +
@@ -123,6 +145,7 @@ const getBasePackRarity = (): string => {
   if (
     num >
       rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
         rarityMap.diamond.rarity +
         rarityMap.ruby.rarity +
         rarityMap.gold.rarity +
@@ -132,6 +155,7 @@ const getBasePackRarity = (): string => {
         rarityMap.charity.rarity &&
     num <=
       rarityMap.hallOfFame.rarity +
+        rarityMap.twoThousandClub.rarity +
         rarityMap.diamond.rarity +
         rarityMap.ruby.rarity +
         rarityMap.gold.rarity +

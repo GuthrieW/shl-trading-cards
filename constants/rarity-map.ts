@@ -5,7 +5,7 @@ export type Rarity = {
 }
 
 const rarityMap = {
-  bronze: { label: 'Bronze', value: 'Bronze', rarity: 4350 }, // subtracted 50 for charity cards
+  bronze: { label: 'Bronze', value: 'Bronze', rarity: 4300 }, // subtracted 50 for charity cards
   silver: { label: 'Silver', value: 'Silver', rarity: 3000 },
   gold: { label: 'Gold', value: 'Gold', rarity: 1500 },
   ruby: { label: 'Ruby', value: 'Ruby', rarity: 400 },
@@ -18,7 +18,7 @@ const rarityMap = {
   twoThousandClub: {
     label: '2000 TPE Club',
     value: '2000 TPE Club',
-    rarity: 0,
+    rarity: 50,
   },
 }
 
