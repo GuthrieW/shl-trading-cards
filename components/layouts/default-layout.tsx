@@ -16,6 +16,7 @@ import {
   PlayIcon,
   UsersIcon,
 } from '@heroicons/react/outline'
+import useGetNumberOfPendingTrades from '@pages/api/queries/use-get-number-of-pending-trades'
 
 const headersLinks: HeaderLink[] = [
   {
@@ -78,9 +79,11 @@ const headersLinks: HeaderLink[] = [
 
 const DefaultLayout = ({ children }) => {
   const { isDesktop, isLargeScreen } = useResponsive()
+  const uid = getUidFromSession()
   const { user, isLoading, isError } = useGetCurrentUser({
-    uid: getUidFromSession(),
+    uid,
   })
+  const { numberOfPendingTrades } = useGetNumberOfPendingTrades({ uid })
 
   const userIsAdminOrCardTeam = isAdminOrCardTeam(user)
   const filteredLinks = headersLinks.filter((link) => {
@@ -99,9 +102,17 @@ const DefaultLayout = ({ children }) => {
   return (
     <div className="h-full w-full">
       {isDesktop || isLargeScreen ? (
-        <Header headerItems={filteredLinks} user={user} />
+        <Header
+          numberOfPendingTrades={numberOfPendingTrades}
+          headerItems={filteredLinks}
+          user={user}
+        />
       ) : (
-        <MobileHeader headerItems={filteredLinks} user={user} />
+        <MobileHeader
+          numberOfPendingTrades={numberOfPendingTrades}
+          headerItems={filteredLinks}
+          user={user}
+        />
       )}
       {children}
     </div>

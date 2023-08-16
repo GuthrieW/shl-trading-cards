@@ -6,11 +6,12 @@ import { HeaderLink } from '.'
 import Image from 'next/image'
 
 type HeaderProps = {
+  numberOfPendingTrades: number
   headerItems: HeaderLink[]
   user: User
 }
 
-const Header = ({ headerItems, user }: HeaderProps) => (
+const Header = ({ numberOfPendingTrades, headerItems, user }: HeaderProps) => (
   <div className="relative top-0 h-16 w-full bg-neutral-800 text-gray-200">
     <div className="h-full w-full flex flex-row justify-between items-center mx-2">
       <div className="cursor-pointer">
@@ -25,7 +26,9 @@ const Header = ({ headerItems, user }: HeaderProps) => (
       <div className="flex flex-row justify-center items-center h-full">
         {headerItems.map(({ headerText, href }: HeaderLink) => (
           <NavLink key={href} onClick={() => Router.push(href)}>
-            {headerText}
+            {`${headerText}${
+              headerText === 'Trade Hub' ? ` (${numberOfPendingTrades})` : ''
+            }`}
           </NavLink>
         ))}
       </div>

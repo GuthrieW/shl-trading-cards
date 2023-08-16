@@ -5,6 +5,7 @@ import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { invalidateQueries } from './invalidate-queries'
 import { UseGetUserCardsForTradesKey } from '../queries/use-get-user-cards-for-trades'
+import { UseGetNumberOfPendingTradesKey } from '../queries/use-get-number-of-pending-trades'
 
 type UseAcceptTradeRequest = {
   id: number
@@ -32,6 +33,7 @@ const useAcceptTrade = (): UseAcceptTrade => {
         invalidateQueries(queryClient, [
           UseGetUserTradesKey,
           UseGetUserCardsForTradesKey,
+          UseGetNumberOfPendingTradesKey,
         ])
         successToast({ successText: 'Trade Accepted' })
       },

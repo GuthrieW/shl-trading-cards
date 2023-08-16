@@ -9,11 +9,16 @@ import IceLevelLogo from '../../public/images/ice-level.svg'
 import Image from 'next/image'
 
 export type MobileHeaderProps = {
+  numberOfPendingTrades: number
   headerItems: HeaderLink[]
   user: User
 }
 
-const MobileHeader = ({ headerItems, user }: MobileHeaderProps) => {
+const MobileHeader = ({
+  numberOfPendingTrades,
+  headerItems,
+  user,
+}: MobileHeaderProps) => {
   const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false)
 
   return (
@@ -52,7 +57,9 @@ const MobileHeader = ({ headerItems, user }: MobileHeaderProps) => {
         {headerItems.map(({ icon, headerText, href }: HeaderLink) => (
           <DrawerItem
             icon={icon}
-            text={headerText}
+            text={`${headerText}${
+              headerText === 'Trade Hub' ? `(${numberOfPendingTrades})` : ''
+            }`}
             onClick={() => {
               Router.push(href)
               setDrawerIsOpen(false)

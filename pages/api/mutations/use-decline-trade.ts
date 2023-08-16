@@ -4,6 +4,7 @@ import { errorToast, successToast } from '@utils/toasts'
 import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { invalidateQueries } from './invalidate-queries'
+import { UseGetNumberOfPendingTradesKey } from '../queries/use-get-number-of-pending-trades'
 
 type UseDeclineTradeRequest = {
   id: number
@@ -29,7 +30,10 @@ const useDeclineTrade = (): UseDeclineTrade => {
     },
     {
       onSuccess: () => {
-        invalidateQueries(queryClient, [UseGetUserTradesKey])
+        invalidateQueries(queryClient, [
+          UseGetUserTradesKey,
+          UseGetNumberOfPendingTradesKey,
+        ])
         successToast({ successText: 'Trade Declined' })
       },
       onError: () => {

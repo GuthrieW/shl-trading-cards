@@ -4,6 +4,7 @@ import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { invalidateQueries } from './invalidate-queries'
 import { UseGetUserTradesKey } from '@pages/api/queries/use-get-user-trades'
+import { UseGetNumberOfPendingTradesKey } from '../queries/use-get-number-of-pending-trades'
 
 export type TradeAsset = {
   ownedCardId: string
@@ -45,7 +46,10 @@ const useCreateTrade = (): UseCreateTrade => {
     },
     {
       onSuccess: () => {
-        invalidateQueries(queryClient, [UseGetUserTradesKey])
+        invalidateQueries(queryClient, [
+          UseGetUserTradesKey,
+          UseGetNumberOfPendingTradesKey,
+        ])
         successToast({ successText: 'Trade created' })
       },
       onError: () => {
