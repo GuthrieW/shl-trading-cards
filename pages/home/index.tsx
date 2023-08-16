@@ -137,7 +137,6 @@ const Home = () => {
                 Trade with other users to get cards you are looking for and to
                 complete sets.
               </p>
-              <p className="text-md">Feature Coming Soon!</p>
             </div>
             <div className="flex justify-end">
               <button
@@ -152,9 +151,11 @@ const Home = () => {
           </div>
         </InfoCard>
         <InfoCard className="w-full h-full relative">
-          <h1 className="text-3xl font-bold mb-2">Unopened Packs</h1>
           {packs.length > 0 ? (
             <>
+              <h1 className="text-3xl font-bold mb-2">
+                {packs.length} Unopened Packs
+              </h1>
               <div className="relative w-full h-auto">
                 <img
                   className="w-2/5 hover:-translate-y-2 transition-transform duration-200 hover:z-10 invisible"
