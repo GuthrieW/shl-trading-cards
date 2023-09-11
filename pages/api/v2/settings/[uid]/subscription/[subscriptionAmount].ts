@@ -27,10 +27,10 @@ const index = async (
   if (method === POST) {
     const { uid, subscriptionAmount } = query
 
-    const bankResponse = await axios({
-      method: GET,
-      url: `http://localhost:9001/api/v1/account/balance/${uid}`,
-    })
+    // const bankResponse = await axios({
+    //   method: GET,
+    //   url: `http://localhost:9001/api/v1/account/balance/${uid}`,
+    // })
 
     const subscriptionAmountIsNumber = isNaN(Number(subscriptionAmount))
     if (subscriptionAmountIsNumber) {
@@ -49,12 +49,12 @@ const index = async (
       return
     }
 
-    if (bankResponse.data.bankbalance < 50000 * subAmount) {
-      response.status(StatusCodes.BAD_REQUEST).json({
-        error: `Bank Balance Insufficient`,
-      })
-      return
-    }
+    // if (bankResponse.data.bankbalance < 50000 * subAmount) {
+    //   response.status(StatusCodes.BAD_REQUEST).json({
+    //     error: `Bank Balance Insufficient`,
+    //   })
+    //   return
+    // }
 
     const result = await queryDatabase(
       SQL`

@@ -60,19 +60,19 @@ const index = async (
         return
       }
 
-      const bankResponse = await axios({
-        method: POST,
-        url: `http://localhost:9001/api/v1/purchase/cards/${packType}/${uid}`,
-        data: {},
-      })
+      // const bankResponse = await axios({
+      //   method: POST,
+      //   url: `http://localhost:9001/api/v1/purchase/cards/${packType}/${uid}`,
+      //   data: {},
+      // })
 
-      if (!bankResponse.data.purchaseSuccessful) {
-        response.status(StatusCodes.BAD_REQUEST).json({
-          error: 'Insufficient Bank Balance',
-          purchaseSuccessful: false,
-        })
-        return
-      }
+      // if (!bankResponse.data.purchaseSuccessful) {
+      //   response.status(StatusCodes.BAD_REQUEST).json({
+      //     error: 'Insufficient Bank Balance',
+      //     purchaseSuccessful: false,
+      //   })
+      //   return
+      // }
     }
 
     const result = await queryDatabase(
