@@ -24,7 +24,7 @@ const index = async (
   // Get all of the unique cards in a user's collection
   if (method === GET) {
     const { uid } = query
-    const result = await queryDatabase(
+    const result = await queryDatabase<Card>(
       SQL`
       SELECT collectionCard.cardID,
         collectionCard.ownedCardID,

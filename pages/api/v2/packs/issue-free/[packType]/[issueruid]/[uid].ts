@@ -8,6 +8,8 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
+import { assert } from 'console'
+import assertTrue from 'lib/api/assert-true'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -24,29 +26,13 @@ const index = async (
   if (method === POST) {
     const { issueruid, uid, packType } = query
 
-    if (!issueruid) {
-      response.status(StatusCodes.BAD_REQUEST).json({
-        error: 'Missing Admin User ID',
-        purchaseSuccessful: false,
-      })
-      return
-    }
-
-    if (!uid) {
-      response.status(StatusCodes.BAD_REQUEST).json({
-        error: 'Missing User ID',
-        purchaseSuccessful: false,
-      })
-      return
-    }
-
-    if (!packType) {
-      response.status(StatusCodes.BAD_REQUEST).json({
-        error: 'Missing Pack Type',
-        purchaseSuccessful: false,
-      })
-      return
-    }
+    const missingRequestData: boolean = !assertTrue(
+      !!issueruid || !!uid || !!packType,
+      'Missing Request Data',
+      StatusCodes.BAD_REQUEST,
+      response
+    )
+    if (missingRequestData) return
 
     await queryDatabase(
       SQL`
@@ -57,9 +43,7 @@ const index = async (
     `)
     )
 
-    response.status(StatusCodes.OK).json({
-      purchaseSuccessful: true,
-    })
+    response.status(StatusCodes.OK).json({ purchaseSuccessful: true })
     return
   }
 

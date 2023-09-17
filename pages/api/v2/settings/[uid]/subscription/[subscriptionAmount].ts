@@ -9,6 +9,7 @@ import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import axios from 'axios'
+import assertTrue from 'lib/api/assert-true'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -27,36 +28,24 @@ const index = async (
   if (method === POST) {
     const { uid, subscriptionAmount } = query
 
-    // const bankResponse = await axios({
-    //   method: GET,
-    //   url: `http://localhost:9001/api/v1/account/balance/${uid}`,
-    // })
+    const subscriptionAmountIsNumber: boolean = !assertTrue(
+      isNaN(Number(subscriptionAmount)),
+      'Invalid Subscription Amount',
+      StatusCodes.BAD_REQUEST,
+      response
+    )
+    if (subscriptionAmountIsNumber) return
 
-    const subscriptionAmountIsNumber = isNaN(Number(subscriptionAmount))
-    if (subscriptionAmountIsNumber) {
-      response.status(StatusCodes.BAD_REQUEST).json({
-        error: `Invalid Subscription Amount: ${subscriptionAmount} is not a number`,
-      })
-      return
-    }
+    const subAmount: number = parseInt(subscriptionAmount as string)
+    const subscriptionAmountIsValid: boolean = !assertTrue(
+      subAmount < 0 || subAmount > 3,
+      'Invalid Subscription Amount',
+      StatusCodes.BAD_REQUEST,
+      response
+    )
+    if (subscriptionAmountIsValid) return
 
-    const subAmount = parseInt(subscriptionAmount as string)
-
-    if (subAmount < 0 || subAmount > 3) {
-      response.status(StatusCodes.BAD_REQUEST).json({
-        error: `Invalid Subscription Amount: ${subscriptionAmount} is not a number between 0 and 3`,
-      })
-      return
-    }
-
-    // if (bankResponse.data.bankbalance < 50000 * subAmount) {
-    //   response.status(StatusCodes.BAD_REQUEST).json({
-    //     error: `Bank Balance Insufficient`,
-    //   })
-    //   return
-    // }
-
-    const result = await queryDatabase(
+    await queryDatabase(
       SQL`
       INSERT INTO `.append(getCardsDatabaseName()).append(SQL`.settings
         (userID, subscription)

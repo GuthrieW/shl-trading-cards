@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import {
   getCardsDatabaseName,
+  getPortalDatabaseName,
   queryDatabase,
 } from '@pages/api/database/database'
 import { POST } from '@constants/http-methods'
@@ -8,7 +9,7 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
-import axios from 'axios'
+import assertTrue from 'lib/api/assert-true'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -22,71 +23,68 @@ const index = async (
   await middleware(request, response, cors)
   const { method, query } = request
 
-  // Purchase a pack by querying the banking API and then
-  // insert that user's newpack into the packs_owned table
   if (method === POST) {
     const { uid, packType } = query
 
     if (process.env.APP_ENV === 'production') {
-      if (!uid) {
-        response.status(StatusCodes.BAD_REQUEST).json({
-          error: 'Missing User ID',
-          purchaseSuccessful: false,
-        })
-        return
-      }
+      const isMissingUserId: boolean = !assertTrue(
+        !uid,
+        'Missing User ID',
+        StatusCodes.BAD_REQUEST,
+        response
+      )
+      if (isMissingUserId) return
 
-      if (!packType) {
-        response.status(StatusCodes.BAD_REQUEST).json({
-          error: 'Missing Pack Type',
-          purchaseSuccessful: false,
-        })
-        return
-      }
+      const isMissingPackType: boolean = !assertTrue(
+        !packType,
+        'Missing Pack Type',
+        StatusCodes.BAD_REQUEST,
+        response
+      )
+      if (isMissingPackType) return
 
       const hasReachedLimit = await queryDatabase(
         SQL`
-      SELECT packsToday
-      FROM `.append(getCardsDatabaseName()).append(SQL`.packToday
-      WHERE userID=${uid};
-    `)
+          SELECT packsToday
+          FROM `.append(getCardsDatabaseName()).append(SQL`.packToday
+          WHERE userID=${uid};
+        `)
       )
 
-      if (hasReachedLimit.length > 0 && hasReachedLimit[0]?.packsToday >= 3) {
-        response.status(StatusCodes.BAD_REQUEST).json({
-          error: 'Daily Pack Limit Reached',
-          purchaseSuccessful: false,
-        })
-        return
-      }
+      const hasReachedPackLimit: boolean = !assertTrue(
+        hasReachedLimit[0]?.packsToday >= 3,
+        'Daily Pack Limit Reached',
+        StatusCodes.BAD_REQUEST,
+        response
+      )
+      if (hasReachedPackLimit) return
 
-      // const bankResponse = await axios({
-      //   method: POST,
-      //   url: `http://localhost:9001/api/v1/purchase/cards/${packType}/${uid}`,
-      //   data: {},
-      // })
+      const bankData = await queryDatabase(
+        SQL`
+          SELECT bankBalance
+          FROM `.append(getPortalDatabaseName()).append(SQL`.bankBalance
+          WHERE uid=${uid};
+        `)
+      )
 
-      // if (!bankResponse.data.purchaseSuccessful) {
-      //   response.status(StatusCodes.BAD_REQUEST).json({
-      //     error: 'Insufficient Bank Balance',
-      //     purchaseSuccessful: false,
-      //   })
-      //   return
-      // }
+      const hasInsufficientFunds: boolean = !assertTrue(
+        bankData[0]?.bankBalance >= 0,
+        'Insufficient Funds',
+        StatusCodes.BAD_REQUEST,
+        response
+      )
+      if (hasInsufficientFunds) return
+
+      await queryDatabase(
+        SQL`
+          INSERT INTO `.append(getPortalDatabaseName())
+          .append(SQL`.bankTransactions (uid, status, type, description, amount, submitByID)
+          VALUES (${uid}, "completed", "other", "Base Pack", -50000);
+        `)
+      )
     }
 
-    const result = await queryDatabase(
-      SQL`
-      INSERT INTO `.append(getCardsDatabaseName()).append(SQL`.packs_owned
-        (userID, packType, source)
-      VALUES
-        (${uid}, ${packType}, "Pack Shop");
-    `)
-    )
-
-    response.status(StatusCodes.OK).json({
-      purchaseSuccessful: true,
-    })
+    response.status(StatusCodes.OK).json({ purchaseSuccessful: true })
     return
   }
 
