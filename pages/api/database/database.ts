@@ -37,9 +37,13 @@ process.env.APP_ENV !== 'production'
 const dbConnection = mysql(config)
 
 export async function queryDatabase<T>(query): Promise<T[] | T> {
-  const results: T[] | T = await dbConnection.query(query)
-  await dbConnection.end()
-  return results
+  try {
+    const results: T[] | T = await dbConnection.query(query)
+    await dbConnection.end()
+    return results
+  } catch (error) {
+    return []
+  }
 }
 
 export const getCardsDatabaseName = () =>
