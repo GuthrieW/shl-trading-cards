@@ -191,6 +191,7 @@ type PackData = {
 type MostCardsOwner = {
   userID: number
   sum: number
+  uniqueCards: number
   username: string
   avatar?: string
 }

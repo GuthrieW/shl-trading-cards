@@ -3,10 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { GET } from '@constants/http-methods'
 
 import Cors from 'cors'
-import {
-  getCardsDatabaseName,
-  queryDatabase,
-} from '@pages/api/database/database'
+import { queryDatabase } from '@pages/api/database/database'
 import SQL from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 
@@ -24,13 +21,13 @@ const index = async (
 
   if (method === GET) {
     const result = await queryDatabase(SQL`
-      SELECT ownedCards.userID, sum(ownedCards.quantity) AS sum, user_info.username, user_info.avatar
+      SELECT ownedCards.userID, count(*) AS uniqueCards, sum(ownedCards.quantity) AS sum, user_info.username, user_info.avatar
       FROM ownedCards
       LEFT JOIN user_info 
       ON ownedCards.userID = user_info.uid
       GROUP BY userID  
       ORDER BY sum(ownedCards.quantity) DESC
-      LIMIT 10;
+      LIMIT 10
     `)
 
     response.status(StatusCodes.OK).json(result)

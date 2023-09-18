@@ -135,17 +135,21 @@ const Home = () => {
           <h1 className="text-3xl font-bold mb-2">User Collections</h1>
           <div className="flex flex-col h-full align-center content-between">
             <div className="flex flex-col w-full">
-              {cardOwners.map(({ userID, username, sum }, index) => (
-                <div
-                  onClick={() => Router.push(`/collection?uid=${userID}`)}
-                  className="flex flex-row items-start justify-between outline outline-1 rounded bg-neutral-800 text-gray-200 hover:bg-neutral-700 hover:scale-110 duration-200 cursor-pointer"
-                >
-                  <span className="ml-2 my-1">
-                    {index + 1}. {username}
-                  </span>
-                  <span className="mr-2 my-1">{sum} cards</span>
-                </div>
-              ))}
+              {cardOwners.map(
+                ({ userID, username, sum, uniqueCards }, index) => (
+                  <div
+                    onClick={() => Router.push(`/collection?uid=${userID}`)}
+                    className="flex flex-row items-start justify-between outline outline-1 rounded bg-neutral-800 text-gray-200 hover:bg-neutral-700 hover:scale-110 duration-200 cursor-pointer"
+                  >
+                    <span className="ml-2 my-1">
+                      {index + 1}. {username}
+                    </span>
+                    <span className="mr-2 my-1">
+                      Unique: {uniqueCards} Total: {sum}
+                    </span>
+                  </div>
+                )
+              )}
             </div>
             <div className="flex justify-end">
               <button
