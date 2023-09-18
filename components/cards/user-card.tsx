@@ -5,9 +5,10 @@ import Router from 'next/router'
 
 export type UserCardProps = {
   user: User
+  quantity?: number
 }
 
-const UserCard = ({ user }: UserCardProps) => {
+const UserCard = ({ user, quantity }: UserCardProps) => {
   if (!user) {
     user = {
       uid: -1,
@@ -24,6 +25,7 @@ const UserCard = ({ user }: UserCardProps) => {
           src={fixAvatar(user.avatar)}
         />
         <span>{user.username}</span>
+        {quantity && <span>Cards: {quantity}</span>}
         <div className="grid grid-cols-2 mt-4">
           <div className="flex flex-col items-center">
             <IconButton

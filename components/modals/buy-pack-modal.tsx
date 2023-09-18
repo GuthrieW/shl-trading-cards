@@ -3,20 +3,15 @@ import { PackInfo, getBasePackCover } from '@constants/packs-map'
 import { warningToast } from '@utils/toasts'
 import React from 'react'
 import Modal from './modal'
+import { PackInfoWithCover } from '@pages/pack-shop'
 
 type BuyPackModalProps = {
   onAccept: Function
   setShowModal: Function
-  pack: PackInfo
-  limitReached: boolean
+  pack: PackInfoWithCover
 }
 
-const BuyPackModal = ({
-  onAccept,
-  setShowModal,
-  pack,
-  limitReached,
-}: BuyPackModalProps) => (
+const BuyPackModal = ({ onAccept, setShowModal, pack }: BuyPackModalProps) => (
   <Modal
     setShowModal={setShowModal}
     title={`${pack.label} - ${pack.priceLabel}`}
@@ -24,7 +19,7 @@ const BuyPackModal = ({
   >
     <div className="flex flex-col justify-center items-center">
       <div className="w-1/2 flex flex-col justify-center items-center">
-        <img className="select-none" src={getBasePackCover()} />
+        <img className="select-none" src={pack.cover} />
       </div>
       <div className="flex items-center justify-end p-6">
         <Button

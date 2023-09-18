@@ -9,14 +9,18 @@ import useOpenPack from '@pages/api/mutations/use-open-pack'
 import useGetUser from '@pages/api/queries/use-get-user'
 import useGetUserPacks from '@pages/api/queries/use-get-user-packs'
 import getUidFromSession from '@utils/get-uid-from-session'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import Router from 'next/router'
 import { NextSeo } from 'next-seo'
 import { useResponsive } from '@hooks/useResponsive'
 
+export type UserPackWithCover = UserPack & {
+  cover: string
+}
+
 const OpenPacks = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [modalPack, setModalPack] = useState<UserPack>(null)
+  const [modalPack, setModalPack] = useState<UserPackWithCover>(null)
 
   const { isMobile, isTablet } = useResponsive()
   const {
@@ -35,6 +39,10 @@ const OpenPacks = () => {
     uid: getUidFromSession(),
   })
 
+  const packsWithCovers: UserPackWithCover[] = useMemo(() => {
+    return userPacks.map((pack) => ({ ...pack, cover: getBasePackCover() }))
+  }, [userPacks])
+
   const {
     openPack,
     response,
@@ -43,7 +51,7 @@ const OpenPacks = () => {
     isError: useOpenPackIsError,
   } = useOpenPack()
 
-  const handleSelectedPack = (pack: UserPack) => {
+  const handleSelectedPack = (pack: UserPackWithCover) => {
     setModalPack(pack)
     setShowModal(true)
   }
@@ -76,7 +84,7 @@ const OpenPacks = () => {
       <NextSeo title="Open Packs" />
       <div className="m-2">
         <h1 className="text-4xl text-center my-6">Open Packs</h1>
-        {userPacks.length === 0 ? (
+        {packsWithCovers.length === 0 ? (
           <div className="text-center">
             <p className="text-xl">You don't have any packs to open.</p>
             <p className="text-xl">
@@ -92,7 +100,7 @@ const OpenPacks = () => {
           </div>
         ) : (
           <>
-            <p>Number of packs: {userPacks.length}</p>
+            <p>Number of packs: {packsWithCovers.length}</p>
             <p>Subscribed: {user.subscription ? user.subscription : 'No'}</p>
             <div
               className={`grid ${
@@ -103,12 +111,12 @@ const OpenPacks = () => {
                   : 'grid-cols-5'
               }`}
             >
-              {userPacks.map((pack, index) => (
+              {packsWithCovers.map((pack, index) => (
                 <img
                   key={index}
                   onClick={() => handleSelectedPack(pack)}
                   className="select-none my-2 cursor-pointer h-96 mx-4 transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
-                  src={getBasePackCover()}
+                  src={pack.cover}
                 />
               ))}
             </div>

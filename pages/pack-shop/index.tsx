@@ -1,18 +1,25 @@
 import useBuyPack from '@pages/api/mutations/use-buy-pack'
 import getUidFromSession from '@utils/get-uid-from-session'
-import React, { useState } from 'react'
-import { packs, PackInfo, getBasePackCover } from '@constants/packs-map'
+import React, { useMemo, useState } from 'react'
+import packsMap, {
+  packs,
+  PackInfo,
+  getBasePackCover,
+} from '@constants/packs-map'
 import BuyPackModal from '@components/modals/buy-pack-modal'
 import { warningToast } from '@utils/toasts'
 import subscriptionOptions from '@constants/subscription-options'
 import useGetUser from '@pages/api/queries/use-get-user'
 import useUpdateSubscription from '@pages/api/mutations/use-update-subscription'
 import { NextSeo } from 'next-seo'
-import useGetPacksBoughtToday from '@pages/api/queries/use-get-packs-bought-today'
+
+export type PackInfoWithCover = PackInfo & {
+  cover: string
+}
 
 const PackShop = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
-  const [modalPack, setModalPack] = useState<PackInfo>(null)
+  const [modalPack, setModalPack] = useState<PackInfoWithCover>(null)
 
   const {
     user,
@@ -21,15 +28,18 @@ const PackShop = () => {
   } = useGetUser({
     uid: getUidFromSession(),
   })
-  const {
-    packsBoughtToday,
-    isLoading: packsBoughtTodayIsLoading,
-    isError: packsBoughtTodayIsError,
-  } = useGetPacksBoughtToday({ uid: getUidFromSession() })
+
+  const packsWithCovers: PackInfoWithCover[] = useMemo(() => {
+    return packs.map((pack) => {
+      if (pack.id === 'base') return { ...pack, cover: getBasePackCover() }
+      return null
+    })
+  }, [])
+
   const { buyPack, isLoading: buyBackIsLoading } = useBuyPack()
   const { updateSubscription } = useUpdateSubscription()
 
-  const handleSelectedPack = (pack: PackInfo): void => {
+  const handleSelectedPack = (pack: PackInfoWithCover): void => {
     setModalPack(pack)
     setShowModal(true)
   }
@@ -51,12 +61,7 @@ const PackShop = () => {
     })
   }
 
-  if (
-    getUserIsLoading ||
-    getUserIsError ||
-    packsBoughtTodayIsLoading ||
-    packsBoughtTodayIsError
-  ) {
+  if (getUserIsLoading || getUserIsError) {
     return null
   }
 
@@ -84,12 +89,12 @@ const PackShop = () => {
           </select>
         </div>
         <div className="grid grid-cols-3">
-          {packs.map((pack: PackInfo, index: number) => (
+          {packsWithCovers.map((pack: PackInfoWithCover, index: number) => (
             <div className="my-2 h-auto flex flex-col items-center justify-center">
               <img
                 onClick={() => handleSelectedPack(pack)}
                 className="cursor-pointer h-96 mx-4 transition ease-linear hover:scale-105 shadow-none hover:shadow-xl"
-                src={getBasePackCover()}
+                src={pack.cover}
               />
               <div className="text-center">
                 <h1 className="text-2xl">{pack.label} Pack</h1>
@@ -105,7 +110,6 @@ const PackShop = () => {
             onAccept={handleBuyPack}
             setShowModal={setShowModal}
             pack={modalPack}
-            limitReached={packsBoughtToday > 3}
           />
         )}
       </div>

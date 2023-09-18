@@ -187,3 +187,10 @@ type PackData = {
   openDate: Date
   source: string
 }
+
+type MostCardsOwner = {
+  userID: number
+  sum: number
+  username: string
+  avatar?: string
+}

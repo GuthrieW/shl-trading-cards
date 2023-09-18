@@ -1,15 +1,16 @@
 import React from 'react'
-import packsMap, { PackInfo, getBasePackCover } from '@constants/packs-map'
+import packsMap, { getBasePackCover } from '@constants/packs-map'
 import Modal from './modal'
 import Button from '@components/buttons/button'
+import { UserPackWithCover } from '@pages/open-packs'
 
 type OpenPackModalProps = {
   onAccept: Function
   setShowModal: Function
-  pack: UserPack
+  pack: UserPackWithCover
 }
 
-const getPackTypeData = (pack: UserPack) => {
+const getPackTypeData = (pack: UserPackWithCover) => {
   if (pack.packType === packsMap.base.id) {
     return packsMap.base
   }
@@ -29,7 +30,7 @@ const OpenPackModal = ({
     >
       <div className="flex flex-col justify-center items-center">
         <div className="w-1/2 flex flex-col justify-center items-center">
-          <img className="select-none" src={getBasePackCover()} />
+          <img className="select-none" src={pack.cover} />
         </div>
         <div className="flex items-center justify-end p-6">
           <Button
