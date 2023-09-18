@@ -18,7 +18,7 @@ const OpenPacks = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalPack, setModalPack] = useState<UserPack>(null)
 
-  const { isMobile, isTablet, isDesktop } = useResponsive()
+  const { isMobile, isTablet } = useResponsive()
   const {
     user,
     isSuccess: getCurrentUserIsSuccess,

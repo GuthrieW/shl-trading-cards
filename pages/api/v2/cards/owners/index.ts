@@ -9,6 +9,7 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
+import assertTrue from 'lib/api/assert-true'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -57,10 +58,13 @@ const index = async (
       .append(getUsersDatabaseName()).append(SQL`.mybb_users user
       ON ownedCard.userID = user.uid `)
 
-    if (name.length === 0 && teams.length === 0 && rarities.length === 0) {
-      response.status(StatusCodes.OK).send('At least one parameter required')
-      return
-    }
+    const hasAtLeastOneParameter: boolean = !assertTrue(
+      name.length === 0 && teams.length === 0 && rarities.length === 0,
+      'At least one parameter required',
+      StatusCodes.BAD_REQUEST,
+      response
+    )
+    if (hasAtLeastOneParameter) return
 
     if (name.length !== 0 || teams.length !== 0 || rarities.length !== 0) {
       query.append(' WHERE')
@@ -97,7 +101,7 @@ const index = async (
 
     query.append(` ORDER BY overall DESC`)
 
-    const result = await queryDatabase(query)
+    const result = (await queryDatabase<Card>(query)) as Card[]
 
     response.status(StatusCodes.OK).json({
       cards: result.slice(page * 25, page * 25 + 25),

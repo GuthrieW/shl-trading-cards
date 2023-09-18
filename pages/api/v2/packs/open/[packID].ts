@@ -10,6 +10,7 @@ import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import packsMap from '@constants/packs-map'
+import assertTrue from 'lib/api/assert-true'
 
 const allowedMethods = []
 const cors = Cors({
@@ -204,12 +205,13 @@ const index = async (
   if (method === POST) {
     const { packID } = query
 
-    if (!packID) {
-      response.status(StatusCodes.BAD_REQUEST).json({
-        error: `Missing Pack ID`,
-      })
-      return
-    }
+    const missingPackId: boolean = !assertTrue(
+      !!packID,
+      'Missing Pack ID',
+      StatusCodes.BAD_REQUEST,
+      response
+    )
+    if (missingPackId) return
 
     const packResult = await queryDatabase(
       SQL`
@@ -226,12 +228,13 @@ const index = async (
 
     const pack: PackData = packResult[0]
 
-    if (pack.opened) {
-      response.status(StatusCodes.BAD_REQUEST).json({
-        error: 'Bro chill you already opened that pack',
-      })
-      return
-    }
+    const packAlreadyOpened: boolean = !assertTrue(
+      Boolean(pack.opened),
+      'Pack Already Opened',
+      StatusCodes.BAD_REQUEST,
+      response
+    )
+    if (packAlreadyOpened) return
 
     let pulledCards: Card[] = []
     if (pack.packType === packsMap.base.id) {
@@ -262,9 +265,7 @@ const index = async (
     `)
     )
 
-    response.status(StatusCodes.OK).json({
-      openingSuccessful: true,
-    })
+    response.status(StatusCodes.OK).json({ openingSuccessful: true })
     return
   }
 

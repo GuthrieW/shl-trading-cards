@@ -22,7 +22,6 @@ const index = async (
   if (method === GET) {
     const { uid } = query
     const trades = await queryDatabase(SQL`CALL get_trades_by_user(${uid});`)
-    console.log('trades', trades)
     const pending: Trade[] = trades[0].filter(
       (trade: Trade) => trade.trade_status === 'PENDING'
     )

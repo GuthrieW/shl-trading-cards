@@ -9,6 +9,7 @@ import {
   queryDatabase,
 } from '@pages/api/database/database'
 import { TradeAsset } from '@pages/api/mutations/use-create-trade'
+import assertTrue from 'lib/api/assert-true'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -24,31 +25,17 @@ const index = async (
 
   if (method === POST) {
     const { initiatorId, recipientId, tradeAssets } = body
-    if (initiatorId === '4491') {
-      response
-        .status(StatusCodes.BAD_REQUEST)
-        .send(
-          'Andrei you are not allowed to make a trade until your bank account is back above $0'
-        )
-      return
-    }
-    if (recipientId === '4491') {
-      response
-        .status(StatusCodes.BAD_REQUEST)
-        .send(
-          'Andrei is not allowed to make a trade until his bank account is back above $0'
-        )
-      return
-    }
 
-    if (initiatorId === recipientId) {
+    const isTradingWithSelf: boolean = !assertTrue(
+      initiatorId === recipientId,
+      'Trading With Self',
+      StatusCodes.BAD_REQUEST,
       response
-        .status(StatusCodes.BAD_REQUEST)
-        .send('You cannot trade with yourself')
-      return
-    }
+    )
+    if (isTradingWithSelf) return
 
-    const cardOwners = await Promise.all(
+    let tradeError: boolean = false
+    await Promise.all(
       tradeAssets.map(async (asset: TradeAsset) => {
         const cardOwner = await queryDatabase(
           SQL`SELECT userID FROM `
@@ -59,15 +46,18 @@ const index = async (
         )
 
         if (cardOwner[0].userID != asset.fromId) {
-          response
-            .status(StatusCodes.BAD_REQUEST)
-            .send(`User ${asset.fromId} does not own card ${asset.ownedCardId}`)
-          return
+          tradeError = true
         }
       })
     )
 
-    console.log('cardOwners', cardOwners)
+    assertTrue(
+      tradeError,
+      'Trade Contains Errors',
+      StatusCodes.BAD_REQUEST,
+      response
+    )
+    if (tradeError) return
 
     const createTradeResult = await queryDatabase(
       SQL`call create_trade(${initiatorId},${recipientId})`

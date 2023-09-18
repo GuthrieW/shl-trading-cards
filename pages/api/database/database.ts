@@ -36,21 +36,21 @@ process.env.APP_ENV !== 'production'
 
 const dbConnection = mysql(config)
 
-export const queryDatabase = async (query): Promise<any> => {
+export async function queryDatabase<T>(query): Promise<T[] | T> {
   try {
-    const results = await dbConnection.query(query)
+    const results: T[] | T = await dbConnection.query(query)
     await dbConnection.end()
     return results
   } catch (error) {
-    return { error }
+    return []
   }
 }
 
-export const getCardsDatabaseName = () => {
-  return process.env.APP_ENV === 'production' ? 'admin_cards' : 'dev_cards'
-}
+export const getCardsDatabaseName = () =>
+  process.env.APP_ENV === 'production' ? 'admin_cards' : 'dev_cards'
 
-export const getUsersDatabaseName = () => {
-  // TODO: DO NOT MERGE THIS CHANGE
-  return process.env.APP_ENV === 'production' ? 'admin_mybb' : 'admin_mybb'
-}
+export const getUsersDatabaseName = () =>
+  process.env.APP_ENV === 'production' ? 'admin_mybb' : 'admin_mybb'
+
+export const getPortalDatabaseName = () =>
+  process.env.APP_ENV === 'production' ? 'admin_portal' : 'dev_portal'

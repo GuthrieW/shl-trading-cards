@@ -20,12 +20,10 @@ const index = async (
 
   if (method === POST) {
     const { id, declineId } = query
-    console.log(id, declineId)
     const result = await queryDatabase(
       SQL`call decline_trade(${id}, ${declineId});`
     )
 
-    console.log('result', result)
     response.status(StatusCodes.OK).json(result)
     return
   }

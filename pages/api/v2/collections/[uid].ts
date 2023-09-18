@@ -86,7 +86,7 @@ const index = async (
 
     queryString.append(` ORDER BY overall DESC;`)
 
-    const result = await queryDatabase(queryString)
+    const result = (await queryDatabase<Card>(queryString)) as Card[]
 
     response.status(StatusCodes.OK).json({
       cards: result.slice(page * 25, page * 25 + 25),

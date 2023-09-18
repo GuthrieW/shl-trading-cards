@@ -56,9 +56,8 @@ const index = async (
 
     queryString.append(` ORDER BY username ASC;`)
 
-    const result = await queryDatabase(queryString)
+    const result = (await queryDatabase(queryString)) as Card[]
 
-    console.log('result', result)
     if (page === -1) {
       response.status(StatusCodes.OK).json({
         users: result,
