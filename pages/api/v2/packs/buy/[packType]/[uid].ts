@@ -68,7 +68,7 @@ const index = async (
       )
 
       const hasInsufficientFunds: boolean = checkBoom(
-        bankData[0]?.bankBalance >= 0,
+        bankData[0]?.bankBalance > 0,
         'Insufficient Funds',
         StatusCodes.BAD_REQUEST,
         response

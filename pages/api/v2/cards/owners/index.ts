@@ -59,7 +59,7 @@ const index = async (
       ON ownedCard.userID = user.uid `)
 
     const hasAtLeastOneParameter: boolean = checkBoom(
-      name.length === 0 && teams.length === 0 && rarities.length === 0,
+      name.length !== 0 || teams.length !== 0 || rarities.length !== 0,
       'At least one parameter required',
       StatusCodes.BAD_REQUEST,
       response
