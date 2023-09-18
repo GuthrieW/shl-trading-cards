@@ -9,7 +9,7 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
-import assertTrue from 'lib/api/assert-true'
+import checkBoom from '@lib/api/check-Boom'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -58,7 +58,7 @@ const index = async (
       .append(getUsersDatabaseName()).append(SQL`.mybb_users user
       ON ownedCard.userID = user.uid `)
 
-    const hasAtLeastOneParameter: boolean = !assertTrue(
+    const hasAtLeastOneParameter: boolean = checkBoom(
       name.length === 0 && teams.length === 0 && rarities.length === 0,
       'At least one parameter required',
       StatusCodes.BAD_REQUEST,

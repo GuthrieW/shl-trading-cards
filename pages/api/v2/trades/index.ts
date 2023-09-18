@@ -9,7 +9,7 @@ import {
   queryDatabase,
 } from '@pages/api/database/database'
 import { TradeAsset } from '@pages/api/mutations/use-create-trade'
-import assertTrue from 'lib/api/assert-true'
+import checkBoom from '@lib/api/check-Boom'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -26,8 +26,8 @@ const index = async (
   if (method === POST) {
     const { initiatorId, recipientId, tradeAssets } = body
 
-    const isTradingWithSelf: boolean = !assertTrue(
-      initiatorId === recipientId,
+    const isTradingWithSelf: boolean = checkBoom(
+      initiatorId !== recipientId,
       'Trading With Self',
       StatusCodes.BAD_REQUEST,
       response
@@ -51,8 +51,8 @@ const index = async (
       })
     )
 
-    assertTrue(
-      tradeError,
+    checkBoom(
+      !tradeError,
       'Trade Contains Errors',
       StatusCodes.BAD_REQUEST,
       response

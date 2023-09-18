@@ -3,13 +3,12 @@ import {
   getCardsDatabaseName,
   queryDatabase,
 } from '@pages/api/database/database'
-import { GET, POST } from '@constants/http-methods'
+import { POST } from '@constants/http-methods'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
-import axios from 'axios'
-import assertTrue from 'lib/api/assert-true'
+import checkBoom from '@lib/api/check-Boom'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -28,8 +27,8 @@ const index = async (
   if (method === POST) {
     const { uid, subscriptionAmount } = query
 
-    const subscriptionAmountIsNumber: boolean = !assertTrue(
-      isNaN(Number(subscriptionAmount)),
+    const subscriptionAmountIsNumber: boolean = checkBoom(
+      !isNaN(Number(subscriptionAmount)),
       'Invalid Subscription Amount',
       StatusCodes.BAD_REQUEST,
       response
@@ -37,8 +36,8 @@ const index = async (
     if (subscriptionAmountIsNumber) return
 
     const subAmount: number = parseInt(subscriptionAmount as string)
-    const subscriptionAmountIsValid: boolean = !assertTrue(
-      subAmount < 0 || subAmount > 3,
+    const subscriptionAmountIsValid: boolean = checkBoom(
+      subAmount >= 0 && subAmount <= 3,
       'Invalid Subscription Amount',
       StatusCodes.BAD_REQUEST,
       response

@@ -1,20 +1,20 @@
 import { StatusCodes } from 'http-status-codes'
 import { NextApiResponse } from 'next'
 
-export default function assertTrue(
+export default function checkBoom(
   predicate: boolean | ((...args: any[]) => boolean),
   errorMessage: string,
   errorCode: StatusCodes,
   response: NextApiResponse
 ): boolean {
   if (!predicate) {
-    if (process.env.APP_ENV === 'production') {
-      console.log(errorMessage)
+    if (process.env.APP_ENV !== 'production') {
+      console.log('boom', errorMessage)
     }
 
     response.status(errorCode).json({ error: errorMessage })
-    return false
+    return true
   }
 
-  return true
+  return false
 }
