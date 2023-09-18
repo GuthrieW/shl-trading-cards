@@ -52,7 +52,7 @@ const index = async (
       )
 
       const hasReachedPackLimit: boolean = checkBoom(
-        hasReachedLimit[0]?.packsToday <= 3,
+        hasReachedLimit[0]?.packsToday < 3,
         'Daily Pack Limit Reached',
         StatusCodes.BAD_REQUEST,
         response
@@ -81,6 +81,15 @@ const index = async (
           .append(SQL`.bankTransactions (uid, status, type, description, amount, submitByID)
           VALUES (${uid}, "completed", "cards", "Base Pack Purchase", -50000);
         `)
+      )
+
+      await queryDatabase(
+        SQL`
+        INSERT INTO `.append(getCardsDatabaseName()).append(SQL`.packs_owned
+          (userID, packType, source)
+        VALUES
+          (${uid}, ${packType}, "Pack Shop");
+      `)
       )
     }
 
