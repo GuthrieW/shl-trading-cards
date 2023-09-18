@@ -43,16 +43,16 @@ const index = async (
       )
       if (isMissingPackType) return
 
-      const hasReachedLimit = await queryDatabase(
+      const hasReachedLimit = (await queryDatabase<{ packsToday: number }>(
         SQL`
           SELECT packsToday
           FROM `.append(getCardsDatabaseName()).append(SQL`.packToday
           WHERE userID=${uid};
         `)
-      )
+      )) as { packsToday: number }[]
 
       const hasReachedPackLimit: boolean = checkBoom(
-        hasReachedLimit[0]?.packsToday < 3,
+        hasReachedLimit.length === 0 || hasReachedLimit[0]?.packsToday < 3,
         'Daily Pack Limit Reached',
         StatusCodes.BAD_REQUEST,
         response
