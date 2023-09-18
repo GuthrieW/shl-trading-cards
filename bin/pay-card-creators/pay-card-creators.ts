@@ -42,14 +42,14 @@ async function main() {
 }
 
 async function getFinishedAndUnpaidCards(): Promise<Card[]> {
-  const cards: Card[] = await queryDatabase(
+  const cards: Card[] = (await queryDatabase<Card>(
     SQL`
     SELECT COUNT(*), author_userID, card_rarity FROM admin_cards.cards
     WHERE approved=1
     AND author_paid=0
     AND image_url IS NOT NULL
     GROUP BY author_userID, card_rarity;`
-  )
+  )) as Card[]
 
   return cards
 }

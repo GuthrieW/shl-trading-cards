@@ -47,11 +47,8 @@ async function main() {
   const goalies: IndexPlayer[] = await getIndexGoalies(args.season)
   const cardRequests: CardRequest[] =
     await checkForDuplicatesAndCreateCardRequestData([...skaters, ...goalies])
-  const cardRequestResult: string = await requestCards(
-    cardRequests,
-    args.dryRun
-  )
-  console.log(cardRequestResult)
+  const cardRequestResult = await requestCards(cardRequests, args.dryRun)
+  console.log(JSON.stringify(cardRequestResult))
 }
 
 /**
@@ -106,7 +103,7 @@ async function checkForDuplicatesAndCreateCardRequestData(
         const teamId = teamNameToId(player.team)
         const raritiesToCheck = getSameAndHigherRaritiesQueryFragment(rarity)
 
-        const playerResult = await queryDatabase(
+        const playerResult = (await queryDatabase(
           SQL`
         SELECT count(*) as amount
         FROM admin_cards.cards 
@@ -114,7 +111,7 @@ async function checkForDuplicatesAndCreateCardRequestData(
           AND teamId=${player.team}
           AND player_name='${player.name}'
           AND ${raritiesToCheck};`
-        )
+        )) as { amount: number }
 
         return !playerResult.amount
           ? ({
@@ -163,7 +160,7 @@ async function checkForDuplicatesAndCreateCardRequestData(
 async function requestCards(
   cardRequests: CardRequest[],
   isDryRun: boolean
-): Promise<string> {
+): Promise<any> {
   const cardRows: string[] = cardRequests.map((cardRequest: CardRequest) => {
     return `('${cardRequest.player_name}', ${cardRequest.teamID}, ${cardRequest.playerID}, '${cardRequest.card_rarity}', '${cardRequest.sub_type}', 0, 0, '${cardRequest.position}', ${cardRequest.overall}, ${cardRequest.high_shots}, ${cardRequest.low_shots}, ${cardRequest.quickness}, ${cardRequest.control}, ${cardRequest.conditioning}, ${cardRequest.skating}, ${cardRequest.shooting}, ${cardRequest.hands}, ${cardRequest.checking}, ${cardRequest.defense}, ${cardRequest.season}, 0)`
   })

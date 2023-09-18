@@ -46,7 +46,7 @@ async function checkForDuplicatesAndGenerateDeleteQueries(): Promise<
   DeleteRequest[]
 > {
   const query = SQL`SELECT count(*) as c, player_name, card_rarity FROM admin_cards.cards GROUP BY player_name, card_rarity HAVING c > 1;`
-  const duplicates: AxiosResponse<Card[], any> = await queryDatabase(query)
+  const duplicates = await queryDatabase(query)
   return null
 }
 
@@ -68,8 +68,8 @@ async function deleteCards(
     return ['Dry run finished']
   }
 
-  const results = await Promise.all(
+  const results: string[] = (await Promise.all(
     deleteQueries.map(async (deleteQuery) => await queryDatabase(deleteQuery))
-  )
+  )) as string[]
   return results
 }
