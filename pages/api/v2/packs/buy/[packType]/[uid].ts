@@ -79,7 +79,7 @@ const index = async (
         SQL`
           INSERT INTO `.append(getPortalDatabaseName())
           .append(SQL`.bankTransactions (uid, status, type, description, amount, submitByID)
-          VALUES (${uid}, "completed", "other", "Base Pack", -50000);
+          VALUES (${uid}, "completed", "cards", "Base Pack Purchase", -50000);
         `)
       )
     }

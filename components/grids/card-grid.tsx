@@ -5,7 +5,7 @@ export type CardGridProps = {
 }
 
 const CardGrid = () => {
-  const { isMobile, isTablet, isDesktop } = useResponsive()
+  const { isMobile, isTablet } = useResponsive()
 
   return (
     <div
