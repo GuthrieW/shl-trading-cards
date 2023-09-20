@@ -19,14 +19,9 @@ parser.addArgument('--season', {
   required: true,
 })
 
-parser.addArgument('--dryRun', {
-  type: Boolean,
-  required: true,
-})
-
 let args: {
+  dryRun?: boolean
   season: number
-  dryRun: boolean
 } = parser.parseArgs()
 
 void main()
@@ -40,8 +35,9 @@ void main()
   })
 
 async function main() {
+  args.dryRun = true
+
   if (!args.season) throw new Error('argument --season number required')
-  if (!args.dryRun) throw new Error('argument --dryRun required')
 
   const skaters: IndexPlayer[] = await getIndexSkaters(args.season)
   const goalies: IndexPlayer[] = await getIndexGoalies(args.season)
@@ -102,15 +98,17 @@ async function checkForDuplicatesAndCreateCardRequestData(
         const rarity = calculateRarity(position, overall)
         const teamId = teamNameToId(player.team)
         const raritiesToCheck = getSameAndHigherRaritiesQueryFragment(rarity)
-
         const playerResult = (await queryDatabase(
           SQL`
-        SELECT count(*) as amount
-        FROM admin_cards.cards 
-        WHERE playerId=${player.id}
-          AND teamId=${player.team}
-          AND player_name='${player.name}'
-          AND ${raritiesToCheck};`
+            SELECT count(*) as amount
+            FROM admin_cards.cards 
+            WHERE player_name=${player.name}
+              AND teamId=${player.team}
+              AND playerId=${player.id}
+              AND ${raritiesToCheck}
+              AND position=${player.position}
+              AND season=${player.season};
+          `
         )) as { amount: number }
 
         return !playerResult.amount

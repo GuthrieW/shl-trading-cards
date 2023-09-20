@@ -5,17 +5,6 @@ import axios, { AxiosResponse } from 'axios'
 import { GET } from '@constants/http-methods'
 import SQL from 'sql-template-strings'
 
-let parser = new ArgumentParser()
-
-parser.addArgument('--dryRun', {
-  type: Boolean,
-  require: true,
-})
-
-let args: {
-  dryRun: boolean
-} = parser.parseArgs()
-
 void main()
   .then(async () => {
     console.log('Finished smoke test')
@@ -27,8 +16,6 @@ void main()
   })
 
 async function main() {
-  console.log('args', args)
-
   const indexResult: AxiosResponse<any, any> = await axios({
     method: GET,
     url: 'https://index.simulationhockey.com/api/v1/players/ratings',

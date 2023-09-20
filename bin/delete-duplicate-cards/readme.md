@@ -8,7 +8,7 @@ When duplicates exist the card to be kept will be decided in the following order
 - author_userID exists
 - higher overall
 
-Instances where duplicates are approved and exist within a user's collection should all duplicates to:
+Instances where duplicates are approved and exist within a user's collection should all be moved to:
 
 - card_rarity Misprint
 - pullable 0
