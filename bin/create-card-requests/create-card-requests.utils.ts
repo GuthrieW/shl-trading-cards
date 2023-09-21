@@ -156,7 +156,7 @@ export const getSameAndHigherRaritiesQueryFragment = (
     return `(card_rarity='${rarityMap.gold.value}' OR card_rarity='${rarityMap.ruby.value}' OR card_rarity='${rarityMap.diamond.value}')`
   }
   if (rarity === rarityMap.ruby.value) {
-    return `( card_rarity='${rarityMap.ruby.value}' OR card_rarity='${rarityMap.diamond.value}')`
+    return `(card_rarity='${rarityMap.ruby.value}' OR card_rarity='${rarityMap.diamond.value}')`
   }
   if (rarity === rarityMap.diamond.value) {
     return `(card_rarity='${rarityMap.diamond.value}')`
