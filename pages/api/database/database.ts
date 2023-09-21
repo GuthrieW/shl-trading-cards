@@ -25,7 +25,12 @@ if (process.env.APP_ENV === 'development') {
 
 if (process.env.APP_ENV === 'script') {
   config = {
-    config: {},
+    config: {
+      host: 'localhost',
+      user: 'admin_cards',
+      password: 'CTRFcardMaster99!',
+      database: 'admin_cards',
+    },
   }
 }
 

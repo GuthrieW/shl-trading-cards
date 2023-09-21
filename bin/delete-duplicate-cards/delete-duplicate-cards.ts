@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { ArgumentParser } from 'argparse'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { queryDatabase } from '@pages/api/database/database'
 import sortBy from 'lodash/sortBy'
@@ -23,9 +22,6 @@ async function main() {
   const { cardIdsToDelete, cardIdsToMoveToMisprint } = await checkShouldDelete(
     duplicateCardIds
   )
-
-  console.log('cardIdsToDelete', cardIdsToDelete)
-  console.log('cardIdsToMoveToMisprint', cardIdsToMoveToMisprint)
 
   await moveMisprints(cardIdsToMoveToMisprint, args.dryRun)
   await deleteDuplicates(cardIdsToDelete, args.dryRun)
@@ -53,6 +49,8 @@ async function getDuplicateCardIds(): Promise<string[]> {
     HAVING c > 1;
   `)) as DuplicateCard[]
 
+  console.log('total number of duplictes', duplicatesRows.length)
+
   const cardIdsToDelete: string[] = []
 
   await Promise.all(
@@ -61,17 +59,16 @@ async function getDuplicateCardIds(): Promise<string[]> {
         cardId: string
         image_url: string
         author_userID: string
-        overall: number
       }
 
       const duplicates = (await queryDatabase<DuplicateCheck>(SQL`
-        SELECT cardId, image_url, author_userID, overall
+        SELECT cardId, image_url, author_userID
         FROM admin_cards.cards
         WHERE player_name=${duplicatesRow.player_name}
           AND teamID=${duplicatesRow.teamID}
           AND playerID=${duplicatesRow.playerID}
           AND card_rarity=${duplicatesRow.card_rarity}
-          AND sub_type=${duplicatesRow.sub_type}
+          AND (sub_type=${duplicatesRow.sub_type} OR (sub_type IS NULL AND ${duplicatesRow.sub_type} IS NULL))
           AND position=${duplicatesRow.position}
           AND season=${duplicatesRow.season};
       `)) as DuplicateCheck[]
@@ -79,7 +76,6 @@ async function getDuplicateCardIds(): Promise<string[]> {
       const sortedDuplicates = sortBy(duplicates, [
         'image_url',
         'author_userID',
-        'overall',
       ])
 
       sortedDuplicates.shift()
@@ -109,8 +105,6 @@ async function checkShouldDelete(
         FROM admin_cards.collection
         WHERE cardID=${cardId};
     `)
-
-      console.log('existingCards', foundInCollection[0].existingCards)
 
       foundInCollection[0]?.existingCards > 0
         ? cardIdsToMoveToMisprint.push(cardId)
@@ -152,17 +146,13 @@ async function deleteDuplicates(
   cardIds: string[],
   dryRun: boolean
 ): Promise<void> {
-  const deleteQueries: SQLStatement[] = cardIds.map(
-    (cardId) => SQL`
-      DELETE FROM admin_cards.cards
-      WHERE cardId=${cardId};`
-  )
+  const query: SQLStatement = SQL`
+    DELETE FROM admin_cards.cards
+    WHERE cardID IN ${cardIds};
+  `
 
-  console.log('Delete Queries:', JSON.stringify(deleteQueries, null, 2))
-
+  console.log('delete query', query)
   if (!dryRun) {
-    await Promise.all(
-      await deleteQueries.map(async (query) => await queryDatabase(query))
-    )
+    await queryDatabase(query)
   }
 }

@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "APP_ENV=production next start -p 9000",
     "start:dev": "APP_ENV=development next start -p 6500",
-    "create-cards-requests": "APP_ENV=script tsx bin/create-card-requests/create-card-requests.ts --dryRun=true",
+    "create-cards-requests": "APP_ENV=script tsx bin/create-card-requests/create-card-requests.ts",
     "delete-duplicates": "APP_ENV=script tsx bin/delete-duplicate-cards/delete-duplicate-cards.ts",
-    "pay-card-creators": "APP_ENV=script tsx bin/pay-card-creators/pay-card-creators.ts --dryRun=true",
+    "pay-card-creators": "APP_ENV=script tsx bin/pay-card-creators/pay-card-creators.ts",
     "smoke-test": "APP_ENV=script tsx bin/smoke-test/smoke-test.ts"
   },
   "dependencies": {
