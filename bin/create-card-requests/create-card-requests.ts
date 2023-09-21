@@ -19,9 +19,15 @@ parser.addArgument('--season', {
   required: true,
 })
 
+parser.addArgument('--prodRun', {
+  type: Boolean,
+  action: 'storeTrue',
+  defaultValue: false,
+})
+
 let args: {
-  dryRun?: boolean
   season: number
+  prodRun?: boolean
 } = parser.parseArgs()
 
 void main()
@@ -35,16 +41,15 @@ void main()
   })
 
 async function main() {
-  args.dryRun = true
-
+  console.log('args', args)
   if (!args.season) throw new Error('argument --season number required')
 
   const skaters: IndexPlayer[] = await getIndexSkaters(args.season)
   const goalies: IndexPlayer[] = await getIndexGoalies(args.season)
   const cardRequests: CardRequest[] =
     await checkForDuplicatesAndCreateCardRequestData([...skaters, ...goalies])
-  const cardRequestResult = await requestCards(cardRequests, args.dryRun)
-  console.log(JSON.stringify(cardRequestResult))
+  // const cardRequestResult = await requestCards(cardRequests, args.prodRun)
+  // console.log(JSON.stringify(cardRequestResult))
 }
 
 /**
@@ -157,7 +162,7 @@ async function checkForDuplicatesAndCreateCardRequestData(
  */
 async function requestCards(
   cardRequests: CardRequest[],
-  isDryRun: boolean
+  isProdRun: boolean
 ): Promise<any> {
   const cardRows: string[] = cardRequests.map((cardRequest: CardRequest) => {
     return `('${cardRequest.player_name}', ${cardRequest.teamID}, ${cardRequest.playerID}, '${cardRequest.card_rarity}', '${cardRequest.sub_type}', 0, 0, '${cardRequest.position}', ${cardRequest.overall}, ${cardRequest.high_shots}, ${cardRequest.low_shots}, ${cardRequest.quickness}, ${cardRequest.control}, ${cardRequest.conditioning}, ${cardRequest.skating}, ${cardRequest.shooting}, ${cardRequest.hands}, ${cardRequest.checking}, ${cardRequest.defense}, ${cardRequest.season}, 0)`
@@ -170,7 +175,7 @@ async function requestCards(
     ${cardRows.join(',\n')};
   `
 
-  if (isDryRun) {
+  if (!isProdRun) {
     console.log(JSON.stringify(insertQuery, null, 2))
     return 'Dry run finished'
   }

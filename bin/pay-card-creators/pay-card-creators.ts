@@ -7,6 +7,12 @@ import SQL, { SQLStatement } from 'sql-template-strings'
 import { UsersWithPayments } from './pay-card-creators.d'
 import rarityMap from '@constants/rarity-map'
 
+type AuthorPayoutForRarity = {
+  cardsMade: number
+  author_userID: string
+  card_rarity: string
+}
+
 const HALL_OF_FAME_CARD_PAY: number = 750000
 const TWO_THOUSAND_CLUB_PAY: number = 500000
 const AWARDS_CARD_PAY: number = 500000
@@ -14,6 +20,18 @@ const CHARITY_CARD_PAY: number = 500000
 const LOGO_CARD_PAY: number = 250000
 const MISPRINT_CARD_PAY: number = 250000
 const BASE_CARD_PAY: number = 250000
+
+let parser = new ArgumentParser()
+
+parser.addArgument('--prodRun', {
+  type: Boolean,
+  action: 'storeTrue',
+  defaultValue: false,
+})
+
+let args: {
+  prodRun?: boolean
+} = parser.parseArgs()
 
 void main()
   .then(async () => {
@@ -26,45 +44,63 @@ void main()
   })
 
 async function main() {
-  const args = { dryRun: true }
+  console.log('args', args)
   const finishedAndUnpaidCards = await getFinishedAndUnpaidCards()
-  const userPayments = calculateAuthorPayments(finishedAndUnpaidCards)
-  await generateUserPayments(userPayments)
-  if (!args.dryRun) {
+  const authorPayments: UsersWithPayments = calculateAuthorPayments(
+    finishedAndUnpaidCards
+  )
+  const paymentQueries: SQLStatement[] = await generateUserPayments(
+    authorPayments
+  )
+
+  console.log('paymentQueries', paymentQueries)
+
+  if (args.prodRun) {
+    await payAuthors(paymentQueries)
     await setCardsAuthorsPaids()
   }
+}
+
+async function payAuthors(paymentQueries: SQLStatement[]): Promise<void> {
+  await Promise.all(
+    await paymentQueries.map(
+      async (paymentQuery) => await queryDatabase(paymentQuery)
+    )
+  )
 }
 
 async function setCardsAuthorsPaids(): Promise<void> {
   await queryDatabase(
     SQL`
-    UPDATE admin_cards.cards
-    SET author_paid=1
-    WHERE approved=1
-    AND author_paid=0
-    AND image_url IS NOT NULL;`
+      UPDATE admin_cards.cards
+      SET author_paid=1
+      WHERE approved=1
+      AND author_paid=0
+      AND image_url IS NOT NULL;
+    `
   )
-
-  return
 }
 
-async function getFinishedAndUnpaidCards(): Promise<Card[]> {
-  const cards: Card[] = (await queryDatabase<Card>(
-    SQL`
-      SELECT COUNT(*), author_userID, card_rarity FROM admin_cards.cards
+async function getFinishedAndUnpaidCards(): Promise<AuthorPayoutForRarity[]> {
+  const cards: AuthorPayoutForRarity[] =
+    (await queryDatabase<AuthorPayoutForRarity>(
+      SQL`
+      SELECT COUNT(*) as cardsMade, author_userID, card_rarity FROM admin_cards.cards
       WHERE approved=1
       AND author_paid=0
       AND image_url IS NOT NULL
       GROUP BY author_userID, card_rarity;
     `
-  )) as Card[]
+    )) as AuthorPayoutForRarity[]
 
   return cards
 }
 
-function calculateAuthorPayments(cardsToPayout: Card[]): UsersWithPayments {
+function calculateAuthorPayments(
+  cardsToPayout: AuthorPayoutForRarity[]
+): UsersWithPayments {
   const usersWithPayments: UsersWithPayments = {}
-  cardsToPayout.forEach((cardToPayout: Card) => {
+  cardsToPayout.forEach((cardToPayout: AuthorPayoutForRarity) => {
     if (!usersWithPayments[cardToPayout.author_userID]) {
       usersWithPayments[cardToPayout.author_userID] = {
         amountToPayAuthor: 0,
@@ -79,33 +115,40 @@ function calculateAuthorPayments(cardsToPayout: Card[]): UsersWithPayments {
     }
 
     if (cardToPayout.card_rarity === rarityMap.hallOfFame.label) {
-      usersWithPayments[cardToPayout.author_userID].hallOfFame += 1
+      usersWithPayments[cardToPayout.author_userID].hallOfFame +=
+        cardToPayout.cardsMade
       usersWithPayments[cardToPayout.author_userID].amountToPayAuthor +=
-        HALL_OF_FAME_CARD_PAY
+        HALL_OF_FAME_CARD_PAY * cardToPayout.cardsMade
     } else if (cardToPayout.card_rarity === rarityMap.twoThousandClub.label) {
-      usersWithPayments[cardToPayout.author_userID].twoThousandClub += 1
+      usersWithPayments[cardToPayout.author_userID].twoThousandClub +=
+        cardToPayout.cardsMade
       usersWithPayments[cardToPayout.author_userID].amountToPayAuthor +=
-        TWO_THOUSAND_CLUB_PAY
+        TWO_THOUSAND_CLUB_PAY * cardToPayout.cardsMade
     } else if (cardToPayout.card_rarity === rarityMap.award.label) {
-      usersWithPayments[cardToPayout.author_userID].awards += 1
+      usersWithPayments[cardToPayout.author_userID].awards +=
+        cardToPayout.cardsMade
       usersWithPayments[cardToPayout.author_userID].amountToPayAuthor +=
-        AWARDS_CARD_PAY
+        AWARDS_CARD_PAY * cardToPayout.cardsMade
     } else if (cardToPayout.card_rarity === rarityMap.charity.label) {
-      usersWithPayments[cardToPayout.author_userID].charity += 1
+      usersWithPayments[cardToPayout.author_userID].charity +=
+        cardToPayout.cardsMade
       usersWithPayments[cardToPayout.author_userID].amountToPayAuthor +=
-        CHARITY_CARD_PAY
+        CHARITY_CARD_PAY * cardToPayout.cardsMade
     } else if (cardToPayout.card_rarity === rarityMap.logo.label) {
-      usersWithPayments[cardToPayout.author_userID].logo += 1
+      usersWithPayments[cardToPayout.author_userID].logo +=
+        cardToPayout.cardsMade
       usersWithPayments[cardToPayout.author_userID].amountToPayAuthor +=
-        LOGO_CARD_PAY
+        LOGO_CARD_PAY * cardToPayout.cardsMade
     } else if (cardToPayout.card_rarity === rarityMap.misprint.label) {
-      usersWithPayments[cardToPayout.author_userID].misprint += 1
+      usersWithPayments[cardToPayout.author_userID].misprint +=
+        cardToPayout.cardsMade
       usersWithPayments[cardToPayout.author_userID].amountToPayAuthor +=
-        MISPRINT_CARD_PAY
+        MISPRINT_CARD_PAY * cardToPayout.cardsMade
     } else {
-      usersWithPayments[cardToPayout.author_userID].base += 1
+      usersWithPayments[cardToPayout.author_userID].base +=
+        cardToPayout.cardsMade
       usersWithPayments[cardToPayout.author_userID].amountToPayAuthor +=
-        BASE_CARD_PAY
+        BASE_CARD_PAY * cardToPayout.cardsMade
     }
   })
 
@@ -114,93 +157,68 @@ function calculateAuthorPayments(cardsToPayout: Card[]): UsersWithPayments {
 
 async function generateUserPayments(
   userPayments: UsersWithPayments
-): Promise<void> {
-  const payments: SQLStatement[] = Object.entries(userPayments).map(
+): Promise<SQLStatement[]> {
+  return Object.entries(userPayments).map(
     ([userId, paymentData]): SQLStatement => {
-      let isFirstPayment = true
-      const description = ''
+      const description: string[] = []
       if (paymentData.hallOfFame > 0) {
-        description.concat(
+        description.push(
           generatePayDescription(
             HALL_OF_FAME_CARD_PAY,
             paymentData.hallOfFame,
-            'Hall of Fame',
-            isFirstPayment
+            'Hall of Fame'
           )
         )
-        isFirstPayment = false
       }
       if (paymentData.twoThousandClub > 0) {
-        description.concat(
+        description.push(
           generatePayDescription(
             TWO_THOUSAND_CLUB_PAY,
             paymentData.twoThousandClub,
-            'Two Thousand Club',
-            isFirstPayment
+            'Two Thousand Club'
           )
         )
-        isFirstPayment = false
       }
       if (paymentData.awards > 0) {
-        description.concat(
-          generatePayDescription(
-            AWARDS_CARD_PAY,
-            paymentData.awards,
-            'Awards',
-            isFirstPayment
-          )
+        description.push(
+          generatePayDescription(AWARDS_CARD_PAY, paymentData.awards, 'Awards')
         )
-        isFirstPayment = false
       }
       if (paymentData.charity > 0) {
-        description.concat(
+        description.push(
           generatePayDescription(
             CHARITY_CARD_PAY,
             paymentData.charity,
-            'Charity',
-            isFirstPayment
+            'Charity'
           )
         )
-        isFirstPayment = false
       }
       if (paymentData.logo > 0) {
-        description.concat(
-          generatePayDescription(
-            LOGO_CARD_PAY,
-            paymentData.logo,
-            'Logo',
-            isFirstPayment
-          )
+        description.push(
+          generatePayDescription(LOGO_CARD_PAY, paymentData.logo, 'Logo')
         )
-        isFirstPayment = false
       }
       if (paymentData.misprint > 0) {
-        description.concat(
+        description.push(
           generatePayDescription(
             MISPRINT_CARD_PAY,
             paymentData.misprint,
-            'Misprint',
-            isFirstPayment
+            'Misprint'
           )
         )
-        isFirstPayment = false
       }
       if (paymentData.base > 0) {
-        description.concat(
-          generatePayDescription(
-            BASE_CARD_PAY,
-            paymentData.base,
-            'Base',
-            isFirstPayment
-          )
+        description.push(
+          generatePayDescription(BASE_CARD_PAY, paymentData.base, 'Base')
         )
-        isFirstPayment = false
       }
 
       return SQL`
         INSERT INTO `.append(getPortalDatabaseName())
         .append(SQL`.bankTransactions (uid, status, type, description, amount, submitByID)
-        VALUES (${userId}, "completed", "cards", "${description}", ${paymentData.amountToPayAuthor}, 0);
+        VALUES (${userId}, 'pending', 'cards', '${description.join('-')}', ${
+        paymentData.amountToPayAuthor
+      }, 2856);
       `)
     }
   )
@@ -209,16 +227,16 @@ async function generateUserPayments(
 function generatePayDescription(
   payPerCard: number,
   numberOfCards: number,
-  cardName: string,
-  isFirstPayment: boolean
+  cardName: string
 ): string {
   const formatter: Intl.NumberFormat = new Intl.NumberFormat('en', {
     style: 'currency',
     currency: 'USD',
     maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
   })
   const formattedPay: string = formatter.format(numberOfCards * payPerCard)
-  return `${isFirstPayment ? '-' : ''}${numberOfCards} ${cardName} ${
+  return `${numberOfCards} ${cardName} ${
     numberOfCards > 1 ? 'Cards' : 'Card'
-  } $(${formattedPay})`
+  } (${formattedPay})`
 }

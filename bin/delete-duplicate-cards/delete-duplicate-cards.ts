@@ -1,7 +1,20 @@
 #!/usr/bin/env node
+import { ArgumentParser } from 'argparse'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { queryDatabase } from '@pages/api/database/database'
 import sortBy from 'lodash/sortBy'
+
+let parser = new ArgumentParser()
+
+parser.addArgument('--prodRun', {
+  type: Boolean,
+  action: 'storeTrue',
+  defaultValue: false,
+})
+
+let args: {
+  prodRun?: boolean
+} = parser.parseArgs()
 
 void main()
   .then(async () => {
@@ -14,7 +27,6 @@ void main()
   })
 
 async function main() {
-  const args = { dryRun: true }
   console.log('args', args)
 
   const duplicateCardIds: string[] = await getDuplicateCardIds()
@@ -23,8 +35,8 @@ async function main() {
     duplicateCardIds
   )
 
-  await moveMisprints(cardIdsToMoveToMisprint, args.dryRun)
-  await deleteDuplicates(cardIdsToDelete, args.dryRun)
+  // await moveMisprints(cardIdsToMoveToMisprint, args.prodRun)
+  // await deleteDuplicates(cardIdsToDelete, args.prodRun)
 }
 
 /**
@@ -120,7 +132,7 @@ async function checkShouldDelete(
  */
 async function moveMisprints(
   cardIds: string[],
-  dryRun: boolean
+  prodRun: boolean
 ): Promise<void> {
   const updateQueries: SQLStatement[] = cardIds.map(
     (cardId) => SQL`
@@ -132,7 +144,7 @@ async function moveMisprints(
 
   console.log('Move Misprints Queries:', JSON.stringify(updateQueries, null, 2))
 
-  if (!dryRun) {
+  if (prodRun) {
     await Promise.all(
       await updateQueries.map(async (query) => await queryDatabase(query))
     )
@@ -144,7 +156,7 @@ async function moveMisprints(
  */
 async function deleteDuplicates(
   cardIds: string[],
-  dryRun: boolean
+  prodRun: boolean
 ): Promise<void> {
   const query: SQLStatement = SQL`
     DELETE FROM admin_cards.cards
@@ -152,7 +164,7 @@ async function deleteDuplicates(
   `
 
   console.log('delete query', query)
-  if (!dryRun) {
+  if (prodRun) {
     await queryDatabase(query)
   }
 }
