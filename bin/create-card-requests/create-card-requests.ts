@@ -11,6 +11,7 @@ import {
 } from './create-card-requests.utils'
 import { GET } from '../../constants/http-methods'
 import { ImportError, IndexPlayer } from './create-card-requests.d'
+import deburr from 'lodash/deburr'
 
 let parser = new ArgumentParser()
 
@@ -48,8 +49,8 @@ async function main() {
   const goalies: IndexPlayer[] = await getIndexGoalies(args.season)
   const cardRequests: CardRequest[] =
     await checkForDuplicatesAndCreateCardRequestData([...skaters, ...goalies])
-  // const cardRequestResult = await requestCards(cardRequests, args.prodRun)
-  // console.log(JSON.stringify(cardRequestResult))
+  const cardRequestResult = await requestCards(cardRequests, args.prodRun)
+  console.log(JSON.stringify(cardRequestResult))
 }
 
 /**
@@ -111,33 +112,33 @@ async function checkForDuplicatesAndCreateCardRequestData(
               AND teamId=${player.team}
               AND playerId=${player.id}
               AND ${raritiesToCheck}
-              AND position=${player.position}
-              AND season=${player.season};
+              AND position=${player.position};
           `
         )) as { amount: number }
 
-        return !playerResult.amount
-          ? ({
-              teamID: Number(teamId),
-              playerID: Number(player.id),
-              player_name: player.name,
-              season: player.season,
-              card_rarity: rarity,
-              sub_type: 'null',
-              position,
-              overall,
-              skating,
-              shooting,
-              hands,
-              checking,
-              defense,
-              high_shots,
-              low_shots,
-              quickness,
-              control,
-              conditioning,
-            } as CardRequest)
-          : null
+        if (playerResult.amount > 0) {
+          return null
+        }
+        return {
+          teamID: Number(teamId),
+          playerID: Number(player.id),
+          player_name: player.name,
+          season: player.season,
+          card_rarity: rarity,
+          sub_type: 'null',
+          position,
+          overall,
+          skating,
+          shooting,
+          hands,
+          checking,
+          defense,
+          high_shots,
+          low_shots,
+          quickness,
+          control,
+          conditioning,
+        } as CardRequest
       } catch (e) {
         errors.push({ error: e, player })
         return null
@@ -164,9 +165,25 @@ async function requestCards(
   cardRequests: CardRequest[],
   isProdRun: boolean
 ): Promise<any> {
-  const cardRows: string[] = cardRequests.map((cardRequest: CardRequest) => {
-    return `('${cardRequest.player_name}', ${cardRequest.teamID}, ${cardRequest.playerID}, '${cardRequest.card_rarity}', '${cardRequest.sub_type}', 0, 0, '${cardRequest.position}', ${cardRequest.overall}, ${cardRequest.high_shots}, ${cardRequest.low_shots}, ${cardRequest.quickness}, ${cardRequest.control}, ${cardRequest.conditioning}, ${cardRequest.skating}, ${cardRequest.shooting}, ${cardRequest.hands}, ${cardRequest.checking}, ${cardRequest.defense}, ${cardRequest.season}, 0)`
-  })
+  const cardRows = await Promise.all(
+    await cardRequests.map(async (cardRequest: CardRequest) => {
+      console.log('cardRequest', cardRequest)
+      const creationSeason = await queryDatabase(SQL`
+        SELECT 
+            \`Last Name\`,
+            (SeasonID + 1) as season
+        from admin_simdata.player_master
+        where \`last name\` = ${deburr(cardRequest.player_name)}
+            and SeasonID <> 0
+        order by SeasonID ASC
+        limit 1;
+      `)
+
+      console.log('creationSeason', creationSeason, cardRequest.player_name)
+
+      return `('${cardRequest.player_name}', ${cardRequest.teamID}, ${cardRequest.playerID}, '${cardRequest.card_rarity}', '${cardRequest.sub_type}', 0, 0, '${cardRequest.position}', ${cardRequest.overall}, ${cardRequest.high_shots}, ${cardRequest.low_shots}, ${cardRequest.quickness}, ${cardRequest.control}, ${cardRequest.conditioning}, ${cardRequest.skating}, ${cardRequest.shooting}, ${cardRequest.hands}, ${cardRequest.checking}, ${cardRequest.defense}, ${creationSeason[0].season}, 0)`
+    })
+  )
 
   const insertQuery: SQLStatement = SQL`
     INSERT INTO admin_cards.cards
@@ -179,6 +196,8 @@ async function requestCards(
     console.log(JSON.stringify(insertQuery, null, 2))
     return 'Dry run finished'
   }
+
+  console.log(`Created ${cardRows.length} rows`)
 
   const result = await queryDatabase(insertQuery)
   return result

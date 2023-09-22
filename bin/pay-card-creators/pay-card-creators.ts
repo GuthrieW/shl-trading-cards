@@ -1,11 +1,21 @@
-import {
-  getPortalDatabaseName,
-  queryDatabase,
-} from '@pages/api/database/database'
+import { queryDatabase } from '@pages/api/database/database'
 import { ArgumentParser } from 'argparse'
 import SQL, { SQLStatement } from 'sql-template-strings'
-import { UsersWithPayments } from './pay-card-creators.d'
 import rarityMap from '@constants/rarity-map'
+
+type UsersWithPayments = Record<
+  string,
+  {
+    base: number
+    logo: number
+    awards: number
+    hallOfFame: number
+    twoThousandClub: number
+    misprint: number
+    charity: number
+    amountToPayAuthor: number
+  }
+>
 
 type AuthorPayoutForRarity = {
   cardsMade: number
@@ -45,7 +55,9 @@ void main()
 
 async function main() {
   console.log('args', args)
-  const finishedAndUnpaidCards = await getFinishedAndUnpaidCards()
+
+  const finishedAndUnpaidCards: AuthorPayoutForRarity[] =
+    await getFinishedAndUnpaidCards()
   const authorPayments: UsersWithPayments = calculateAuthorPayments(
     finishedAndUnpaidCards
   )
@@ -85,12 +97,12 @@ async function getFinishedAndUnpaidCards(): Promise<AuthorPayoutForRarity[]> {
   const cards: AuthorPayoutForRarity[] =
     (await queryDatabase<AuthorPayoutForRarity>(
       SQL`
-      SELECT COUNT(*) as cardsMade, author_userID, card_rarity FROM admin_cards.cards
-      WHERE approved=1
-      AND author_paid=0
-      AND image_url IS NOT NULL
-      GROUP BY author_userID, card_rarity;
-    `
+        SELECT COUNT(*) as cardsMade, author_userID, card_rarity FROM admin_cards.cards
+        WHERE approved=1
+        AND author_paid=0
+        AND image_url IS NOT NULL
+        GROUP BY author_userID, card_rarity;
+      `
     )) as AuthorPayoutForRarity[]
 
   return cards
@@ -166,7 +178,7 @@ async function generateUserPayments(
           generatePayDescription(
             HALL_OF_FAME_CARD_PAY,
             paymentData.hallOfFame,
-            'Hall of Fame'
+            rarityMap.hallOfFame.label
           )
         )
       }
@@ -175,13 +187,17 @@ async function generateUserPayments(
           generatePayDescription(
             TWO_THOUSAND_CLUB_PAY,
             paymentData.twoThousandClub,
-            'Two Thousand Club'
+            rarityMap.twoThousandClub.label
           )
         )
       }
       if (paymentData.awards > 0) {
         description.push(
-          generatePayDescription(AWARDS_CARD_PAY, paymentData.awards, 'Awards')
+          generatePayDescription(
+            AWARDS_CARD_PAY,
+            paymentData.awards,
+            rarityMap.award.label
+          )
         )
       }
       if (paymentData.charity > 0) {
@@ -189,13 +205,17 @@ async function generateUserPayments(
           generatePayDescription(
             CHARITY_CARD_PAY,
             paymentData.charity,
-            'Charity'
+            rarityMap.charity.label
           )
         )
       }
       if (paymentData.logo > 0) {
         description.push(
-          generatePayDescription(LOGO_CARD_PAY, paymentData.logo, 'Logo')
+          generatePayDescription(
+            LOGO_CARD_PAY,
+            paymentData.logo,
+            rarityMap.logo.label
+          )
         )
       }
       if (paymentData.misprint > 0) {
@@ -203,7 +223,7 @@ async function generateUserPayments(
           generatePayDescription(
             MISPRINT_CARD_PAY,
             paymentData.misprint,
-            'Misprint'
+            rarityMap.misprint.label
           )
         )
       }
@@ -214,12 +234,9 @@ async function generateUserPayments(
       }
 
       return SQL`
-        INSERT INTO `.append(getPortalDatabaseName())
-        .append(SQL`.bankTransactions (uid, status, type, description, amount, submitByID)
-        VALUES (${userId}, 'pending', 'cards', '${description.join('-')}', ${
+        CALL admin_cards.card_payouts(${userId}, ${description.join('-')}, ${
         paymentData.amountToPayAuthor
-      }, 2856);
-      `)
+      }, 2856);`
     }
   )
 }
