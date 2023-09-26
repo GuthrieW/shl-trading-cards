@@ -35,8 +35,8 @@ async function main() {
     duplicateCardIds
   )
 
-  // await moveMisprints(cardIdsToMoveToMisprint, args.prodRun)
-  // await deleteDuplicates(cardIdsToDelete, args.prodRun)
+  await moveMisprints(cardIdsToMoveToMisprint, args.prodRun)
+  await deleteDuplicates(cardIdsToDelete, args.prodRun)
 }
 
 /**
@@ -158,13 +158,20 @@ async function deleteDuplicates(
   cardIds: string[],
   prodRun: boolean
 ): Promise<void> {
-  const query: SQLStatement = SQL`
-    DELETE FROM admin_cards.cards
-    WHERE cardID IN ${cardIds};
-  `
+  const deleteQueries: SQLStatement[] = cardIds.map(
+    (cardId) => SQL`
+      DELETE FROM admin_cards.cards
+      WHERE cardID=${cardId};
+    `
+  )
 
-  console.log('delete query', query)
+  console.log(
+    'Delete Duplicates Queries:',
+    JSON.stringify(deleteQueries, null, 2)
+  )
   if (prodRun) {
-    await queryDatabase(query)
+    await Promise.all(
+      await deleteQueries.map(async (query) => await queryDatabase(query))
+    )
   }
 }
