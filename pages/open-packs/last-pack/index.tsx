@@ -29,6 +29,14 @@ const LastOpenedPack = () => {
       id: rarityMap.hallOfFame.label,
       color: '#FFD700',
     },
+    {
+      id: rarityMap.twoThousandClub.label,
+      color: '#FFD700',
+    },
+    {
+      id: rarityMap.award.label,
+      color: '#FFD700',
+    },
   ]
 
   const updateRevealedCards = (index: number) => {
