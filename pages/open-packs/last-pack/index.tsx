@@ -56,7 +56,10 @@ const LastOpenedPack = () => {
         <div className="flex justify-center items-start h-full">
           <div className="flex h-full flex-col sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-2 overflow-x-auto py-6">
             {latestPackCards.map((card, index) => (
-              <ReactCardFlip isFlipped={revealedCards.includes(index)}>
+              <ReactCardFlip
+                key={index}
+                isFlipped={revealedCards.includes(index)}
+              >
                 <img
                   width="320"
                   height="440"
@@ -66,11 +69,9 @@ const LastOpenedPack = () => {
                   style={{
                     boxShadow: `${
                       revealedCards.includes(index)
-                        ? `0px 0px 16px 10px ${
-                            cardRarityShadows.find(
-                              (shadow) => shadow.id === card.card_rarity
-                            )?.color
-                          }`
+                        ? `0px 0px 16px 10px ${cardRarityShadows.find(
+                            (shadow) => shadow.id === card.card_rarity
+                          )?.color}`
                         : 'none'
                     }`,
                   }}
@@ -87,11 +88,9 @@ const LastOpenedPack = () => {
                   style={{
                     boxShadow: `${
                       revealedCards.includes(index)
-                        ? `0px 0px 16px 10px ${
-                            cardRarityShadows.find(
-                              (shadow) => shadow.id === card.card_rarity
-                            )?.color
-                          }`
+                        ? `0px 0px 16px 10px ${cardRarityShadows.find(
+                            (shadow) => shadow.id === card.card_rarity
+                          )?.color}`
                         : 'none'
                     }`,
                   }}

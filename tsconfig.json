@@ -10,7 +10,8 @@
       "@requests/*": ["requests/*"],
       "@utils/*": ["utils/*"],
       "@hooks/*": ["hooks/*"],
-      "@lib/*": ["lib/*"]
+      "@lib/*": ["lib/*"],
+      "react": ["./node_modules/@types/react"]
     },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],

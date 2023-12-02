@@ -7,15 +7,15 @@ import MobileHeader from './mobile-header'
 import { useResponsive } from '@hooks/useResponsive'
 import { HeaderLink } from './index.d'
 import {
-  ChatAlt2Icon,
+  ChatBubbleLeftRightIcon,
   CogIcon,
   CurrencyDollarIcon,
-  DocumentAddIcon,
-  DuplicateIcon,
+  SquaresPlusIcon,
+  Squares2X2Icon,
   HomeIcon,
   PlayIcon,
   UsersIcon,
-} from '@heroicons/react/outline'
+} from '@heroicons/react/20/solid'
 import useGetNumberOfPendingTrades from '@pages/api/queries/use-get-number-of-pending-trades'
 
 const headersLinks: HeaderLink[] = [
@@ -34,7 +34,7 @@ const headersLinks: HeaderLink[] = [
     hide: false,
   },
   {
-    icon: <DuplicateIcon />,
+    icon: <Squares2X2Icon />,
     headerText: 'Collection',
     href: `/collection?uid=${getUidFromSession()}`,
     requireCardTeam: false,
@@ -48,14 +48,14 @@ const headersLinks: HeaderLink[] = [
     hide: false,
   },
   {
-    icon: <DocumentAddIcon />,
+    icon: <SquaresPlusIcon />,
     headerText: 'Open Packs',
     href: '/open-packs',
     requireCardTeam: false,
     hide: false,
   },
   {
-    icon: <ChatAlt2Icon />,
+    icon: <ChatBubbleLeftRightIcon />,
     headerText: 'Trade Hub',
     href: '/trade-hub',
     requireCardTeam: false,

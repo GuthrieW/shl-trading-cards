@@ -34,7 +34,7 @@ const CollectionGrid = ({ userId }: CollectionGridProps) => {
   })
 
   useEffect(
-    () => refetch(),
+    () => void refetch(),
     [searchString, selectedRarities, selectedTeams, currentPage]
   )
 

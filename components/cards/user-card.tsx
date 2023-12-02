@@ -1,5 +1,5 @@
 import IconButton from '@components/buttons/icon-button'
-import { ChatAlt2Icon, DuplicateIcon } from '@heroicons/react/outline'
+import { ChatBubbleLeftRightIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 import fixAvatar from '@utils/fix-avatar-url'
 import Router from 'next/router'
 
@@ -33,7 +33,7 @@ const UserCard = ({ user, quantity }: UserCardProps) => {
               disabled={false}
               onClick={() => Router.push(`/collection?uid=${user.uid}`)}
             >
-              <DuplicateIcon />
+              <Squares2X2Icon />
             </IconButton>
             <span className="text-sm mt-1">Collection</span>
           </div>
@@ -43,7 +43,7 @@ const UserCard = ({ user, quantity }: UserCardProps) => {
               disabled={false}
               onClick={() => Router.push(`/trade-hub/${user.uid}`)}
             >
-              <ChatAlt2Icon />
+              <ChatBubbleLeftRightIcon />
             </IconButton>
             <span className="text-sm mt-1">Trade</span>
           </div>

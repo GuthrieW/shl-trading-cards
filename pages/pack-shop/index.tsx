@@ -78,7 +78,7 @@ const PackShop = () => {
           <h1>Base Pack Subscription</h1>
           <select
             className="m-2"
-            value={user.subscription}
+            value={user.subscription ?? 0}
             onChange={handleUpdateSubscription}
           >
             {subscriptionOptions.map((subscriptionOption, index) => (
@@ -90,7 +90,10 @@ const PackShop = () => {
         </div>
         <div className="grid grid-cols-3">
           {packsWithCovers.map((pack: PackInfoWithCover, index: number) => (
-            <div className="my-2 h-auto flex flex-col items-center justify-center">
+            <div
+              key={index}
+              className="my-2 h-auto flex flex-col items-center justify-center"
+            >
               <img
                 onClick={() => handleSelectedPack(pack)}
                 className="cursor-pointer h-96 mx-4 transition ease-linear hover:scale-105 shadow-none hover:shadow-xl"

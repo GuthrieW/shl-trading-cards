@@ -1,5 +1,5 @@
 import IconButton from '@components/buttons/icon-button'
-import { XIcon } from '@heroicons/react/outline'
+import { XMarkIcon } from '@heroicons/react/20/solid'
 import { useClickListener } from '@hooks/useClickListener'
 import { useRef } from 'react'
 import IceLevelLogo from '../../public/images/ice-level.svg'
@@ -28,18 +28,17 @@ const Drawer = ({ children, title, isOpen, closeDrawer }: DrawerProps) => {
         {title ? (
           <p>{title}</p>
         ) : (
-          <div className="cursor-pointer">
-            <Image
-              src={IceLevelLogo}
-              alt="Ice Level Logo"
-              onClick={() => Router.push('/home')}
-              width={96}
-              height={72}
-            />
-          </div>
+          <Image
+            className="cursor-pointer"
+            src={IceLevelLogo}
+            alt="Ice Level Logo"
+            onClick={() => Router.push('/home')}
+            width={96}
+            height={72}
+          />
         )}
         <IconButton disabled={false} onClick={() => closeDrawer()}>
-          <XIcon />
+          <XMarkIcon />
         </IconButton>
       </div>
       {children}

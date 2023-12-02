@@ -3,8 +3,7 @@ import getUidFromSession from '@utils/get-uid-from-session'
 import React from 'react'
 import dayjs from 'dayjs'
 import fixAvatar from '@utils/fix-avatar-url'
-import IconButton from '@components/buttons/icon-button'
-import { CheckIcon, RefreshIcon, XIcon } from '@heroicons/react/outline'
+import { ArrowPathIcon, CheckIcon,  XMarkIcon} from '@heroicons/react/20/solid'
 
 export type TradeSelectorOptionProps = {
   className?: string
@@ -26,7 +25,7 @@ const getTradeIconAndColor = (
   if (tradeStatus === 'PENDING') {
     return {
       color: 'bg-yellow-600',
-      icon: <RefreshIcon className="h-3 w-3 stroke-[3px]" />,
+      icon: <ArrowPathIcon className="h-3 w-3 stroke-[3px]" />,
       text: 'Pending',
     }
   }
@@ -34,7 +33,7 @@ const getTradeIconAndColor = (
   if (tradeStatus === 'DECLINED') {
     return {
       color: 'bg-red-600',
-      icon: <XIcon className="h-3 w-3 stroke-[3px]" />,
+      icon: <XMarkIcon className="h-3 w-3 stroke-[3px]" />,
       text: 'Declined',
     }
   }
@@ -42,7 +41,7 @@ const getTradeIconAndColor = (
   if (tradeStatus === 'AUTO_DECLINED') {
     return {
       color: 'bg-red-600',
-      icon: <XIcon className="h-3 w-3 stroke-[3px]" />,
+      icon: <XMarkIcon className="h-3 w-3 stroke-[3px]" />,
       text: 'Voided',
     }
   }

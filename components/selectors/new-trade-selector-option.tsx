@@ -1,5 +1,5 @@
 import React from 'react'
-import { PlusIcon } from '@heroicons/react/solid'
+import { PlusIcon } from '@heroicons/react/20/solid'
 import { ClipLoader } from 'react-spinners'
 
 export type NewTradeSelectorOptionProps = {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { XIcon } from '@heroicons/react/solid'
+import { XMarkIcon } from '@heroicons/react/20/solid'
 
 type EditCardModalProps = {
   children: any
@@ -32,7 +32,7 @@ const Modal = ({
                   className="mx-1 w-6 h-6 hover:bg-gray-300 rounded-md cursor-pointer"
                   onClick={() => setShowModal(false)}
                 >
-                  <XIcon fill="black" stroke="black" />
+                  <XMarkIcon fill="black" stroke="black" />
                 </button>
               </div>
               <div className="mx-2">

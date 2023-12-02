@@ -23,7 +23,7 @@ const CardSearchForm = () => {
     page: currentPage,
   })
 
-  useEffect(() => refetch(), [currentPage])
+  useEffect(() => void refetch(), [currentPage])
   useEffect(
     () => updateCurrentPage(0),
     [searchString, selectedRarities, selectedTeams]
