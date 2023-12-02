@@ -93,12 +93,6 @@ const LastOpenedPack = () => {
             ))}
           </div>
         </div>
-        {/* 
-      <div className="flex flex-row">
-        {latestPackCards.map((card) => (
-          <MovableCard card={card} />
-        ))}
-      </div> */}
       </div>
     </div>
   )
