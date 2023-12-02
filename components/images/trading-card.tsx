@@ -23,10 +23,10 @@ const TradingCard = ({
   const dimensions: { width: number; height: number } = isMobile
     ? { width: 211, height: 290 }
     : isTablet
-    ? { width: 200, height: 276 }
-    : isDesktop
-    ? { width: 142, height: 195 }
-    : { width: 320, height: 440 }
+      ? { width: 200, height: 276 }
+      : isDesktop
+        ? { width: 142, height: 195 }
+        : { width: 320, height: 440 }
 
   return (
     <Image
@@ -37,6 +37,7 @@ const TradingCard = ({
       alt={`${rarity} ${playerName}`}
       className={`w-full h-full cursor-pointer rounded-sm mx-1 ${className}`}
       loading="lazy"
+      unoptimized={true}
     />
   )
 }

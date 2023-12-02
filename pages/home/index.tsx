@@ -76,19 +76,17 @@ const Home = () => {
                   className="w-1/2 hover:-translate-y-2 transition-transform duration-200 hover:z-10 invisible"
                   src={`${pathToCards}/${cards[0].cardID}.png`}
                 />
-                {cards.map((card, index) => {
-                  return (
-                    <img
-                      key={card.cardID}
-                      className="absolute w-1/2 hover:-translate-y-2 transition-transform duration-200 hover:z-10"
-                      style={{
-                        left: `${index * 10}%`,
-                        top: `0`,
-                      }}
-                      src={`${pathToCards}/${card.cardID}.png`}
-                    />
-                  )
-                })}
+                {cards.map((card, index) => (
+                  <img
+                    key={card.cardID}
+                    className="absolute w-1/2 hover:-translate-y-2 transition-transform duration-200 hover:z-10"
+                    style={{
+                      left: `${index * 10}%`,
+                      top: `0`,
+                    }}
+                    src={`${pathToCards}/${card.cardID}.png`}
+                  />
+                ))}
               </div>
 
               <div className="flex justify-center xl:justify-end">
@@ -138,6 +136,7 @@ const Home = () => {
               {cardOwners.map(
                 ({ userID, username, sum, uniqueCards }, index) => (
                   <div
+                    key={userID}
                     onClick={() => Router.push(`/collection?uid=${userID}`)}
                     className="flex flex-row items-start justify-between outline outline-1 rounded bg-neutral-800 text-gray-200 hover:bg-neutral-700 hover:scale-110 duration-200 cursor-pointer"
                   >
@@ -174,19 +173,17 @@ const Home = () => {
                   className="w-2/5 hover:-translate-y-2 transition-transform duration-200 hover:z-10 invisible"
                   src={packsMap[packs[0].packType].imageUrl}
                 />
-                {packs.map((pack, index) => {
-                  return (
-                    <img
-                      key={pack.packID}
-                      className="absolute w-2/5 hover:-translate-y-2 transition-transform duration-200 hover:z-10"
-                      style={{
-                        left: `${index * 10}%`,
-                        top: `0`,
-                      }}
-                      src={getBasePackCover()}
-                    />
-                  )
-                })}
+                {packs.map((pack, index) => (
+                  <img
+                    key={pack.packID}
+                    className="absolute w-2/5 hover:-translate-y-2 transition-transform duration-200 hover:z-10"
+                    style={{
+                      left: `${index * 10}%`,
+                      top: `0`,
+                    }}
+                    src={getBasePackCover()}
+                  />
+                ))}
               </div>
               <div className="flex justify-center xl:justify-end">
                 <button

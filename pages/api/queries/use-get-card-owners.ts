@@ -2,7 +2,6 @@ import { useQuery, useQueryClient } from 'react-query'
 import axios from 'axios'
 import { POST } from '@constants/http-methods'
 import { invalidateQueries } from '../mutations/invalidate-queries'
-import { errorToast } from '@utils/toasts'
 
 export type CardOwner = {
   username: string
@@ -41,6 +40,10 @@ const useGetCardOwners = ({
   const { data, error, isFetching, isSuccess, refetch } = useQuery(
     UseGetCardOwnersKey,
     async () => {
+      if (name.length === 0 && teams.length === 0 && rarities.length === 0) {
+        return
+      }
+
       return await axios({
         method: POST,
         url: `/api/v2/cards/owners`,

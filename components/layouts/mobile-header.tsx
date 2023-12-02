@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MenuIcon } from '@heroicons/react/outline'
+import { Bars3Icon } from '@heroicons/react/20/solid'
 import Drawer from '@components/drawers/drawer'
 import IconButton from '@components/buttons/icon-button'
 import { HeaderLink } from '.'
@@ -30,17 +30,16 @@ const MobileHeader = ({
             disabled={false}
             onClick={() => setDrawerIsOpen(true)}
           >
-            <MenuIcon />
+            <Bars3Icon />
           </IconButton>
-          <div className="cursor-pointer">
-            <Image
-              src={IceLevelLogo}
-              alt="Ice Level Logo"
-              onClick={() => Router.push('/home')}
-              width={96}
-              height={72}
-            />
-          </div>
+          <Image
+            className="cursor-pointer"
+            src={IceLevelLogo}
+            alt="Ice Level Logo"
+            onClick={() => Router.push('/home')}
+            width={96}
+            height={72}
+          />
           <span
             className="p-1 mr-2 cursor-pointer rounded hover:bg-neutral-700 hover:text-gray-300"
             onClick={() =>
@@ -56,6 +55,7 @@ const MobileHeader = ({
       <Drawer isOpen={drawerIsOpen} closeDrawer={() => setDrawerIsOpen(false)}>
         {headerItems.map(({ icon, headerText, href }: HeaderLink) => (
           <DrawerItem
+            key={href}
             icon={icon}
             text={`${headerText}${
               headerText === 'Trade Hub' ? `(${numberOfPendingTrades})` : ''

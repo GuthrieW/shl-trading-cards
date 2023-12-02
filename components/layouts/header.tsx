@@ -14,15 +14,14 @@ type HeaderProps = {
 const Header = ({ numberOfPendingTrades, headerItems, user }: HeaderProps) => (
   <div className="relative top-0 h-16 w-full bg-neutral-800 text-gray-200">
     <div className="h-full w-full flex flex-row justify-between items-center mx-2">
-      <div className="cursor-pointer">
-        <Image
-          src={IceLevelLogo}
-          alt="Ice Level Logo"
-          onClick={() => Router.push('/home')}
-          width={96}
-          height={72}
-        />
-      </div>
+      <Image
+        className="cursor-pointer"
+        src={IceLevelLogo}
+        alt="Ice Level Logo"
+        onClick={() => Router.push('/home')}
+        width={96}
+        height={72}
+      />
       <div className="flex flex-row justify-center items-center h-full">
         {headerItems.map(({ headerText, href }: HeaderLink) => (
           <NavLink key={href} onClick={() => Router.push(href)}>

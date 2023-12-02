@@ -18,7 +18,7 @@ const UserGrid = ({}: UserGridProps) => {
     page: currentPage,
   })
 
-  useEffect(() => refetch(), [currentPage, searchString])
+  useEffect(() => void refetch(), [currentPage, searchString])
   useEffect(() => updateCurrentPage(0), [searchString])
 
   const updateCurrentPage = (pageNumber: number) => setCurrentPage(pageNumber)
@@ -44,7 +44,7 @@ const UserGrid = ({}: UserGridProps) => {
           }`}
         >
           {users.map((user) => (
-            <UserCard user={user} />
+            <UserCard key={user.uid} user={user} />
           ))}
         </div>
       )}

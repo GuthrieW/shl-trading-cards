@@ -4,7 +4,7 @@ import {
   ChevronRightIcon,
   ChevronDoubleLeftIcon,
   ChevronLeftIcon,
-} from '@heroicons/react/outline'
+} from '@heroicons/react/20/solid'
 
 type PaginationProps = {
   pageOptions: any
