@@ -28,7 +28,6 @@ const useGetNumberOfPendingTrades = ({
     }
   )
 
-  console.log('data', data?.data)
   return {
     numberOfPendingTrades: data?.data?.pending || 0,
     isSuccess,
