@@ -1,9 +1,5 @@
 import OpenPackModal from '@components/modals/open-pack-modal'
-import packsMap, {
-  basePackCovers,
-  getBasePackCover,
-  packCovers,
-} from '@constants/packs-map'
+import { getBasePackCover } from '@constants/packs-map'
 import { warningToast } from '@utils/toasts'
 import useOpenPack from '@pages/api/mutations/use-open-pack'
 import useGetUser from '@pages/api/queries/use-get-user'
@@ -107,8 +103,8 @@ const OpenPacks = () => {
                 isMobile
                   ? 'grid-cols-2'
                   : isTablet
-                  ? 'grid-cols-3'
-                  : 'grid-cols-5'
+                    ? 'grid-cols-3'
+                    : 'grid-cols-5'
               }`}
             >
               {packsWithCovers.map((pack, index) => (

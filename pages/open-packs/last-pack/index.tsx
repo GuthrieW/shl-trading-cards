@@ -2,7 +2,6 @@ import useGetLatestPackCards from '@pages/api/queries/use-get-latest-pack-cards'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React, { useState } from 'react'
 import { NextSeo } from 'next-seo'
-import MovableCard from '@components/canvas/movable-card'
 import Button from '@components/buttons/button'
 import Router from 'next/router'
 import ReactCardFlip from 'react-card-flip'
@@ -17,31 +16,22 @@ const LastOpenedPack = () => {
     })
 
   const cardRarityShadows = [
-    {
-      id: rarityMap.ruby.label,
-      color: '#e0115f',
-    },
-    {
-      id: rarityMap.diamond.label,
-      color: '#45ACA5',
-    },
-    {
-      id: rarityMap.hallOfFame.label,
-      color: '#FFD700',
-    },
-    {
-      id: rarityMap.twoThousandClub.label,
-      color: '#FFD700',
-    },
-    {
-      id: rarityMap.award.label,
-      color: '#FFD700',
-    },
+    { id: rarityMap.ruby.label, color: '#e0115f' },
+    { id: rarityMap.diamond.label, color: '#45ACA5' },
+    { id: rarityMap.hallOfFame.label, color: '#FFD700' },
+    { id: rarityMap.twoThousandClub.label, color: '#FFD700' },
+    { id: rarityMap.award.label, color: '#FFD700' },
   ]
 
-  const updateRevealedCards = (index: number) => {
+  const updateRevealedCards = (index: number): void => {
     if (revealedCards.includes(index)) return
     setRevealedCards([...revealedCards, index])
+  }
+
+  const flipAllCards = (): void => {
+    setRevealedCards(
+      revealedCards.length === latestPackCards.length ? [] : [0, 1, 2, 3, 4, 5]
+    )
   }
 
   if (isLoading || isError || latestPackCards.length === 0) return null
@@ -49,9 +39,15 @@ const LastOpenedPack = () => {
   return (
     <div className="h-full w-full m-1">
       <NextSeo title="Last Pack" />
-      <Button disabled={false} onClick={() => Router.push('/open-packs')}>
-        Open Another Pack
-      </Button>
+      <div className="flex flex-row items-center justify-start space-x-2">
+        <Button disabled={false} onClick={() => Router.push('/open-packs')}>
+          Open Another Pack
+        </Button>
+        <Button disabled={false} onClick={flipAllCards}>
+          Flip All Cards
+        </Button>
+      </div>
+
       <div className="m-2" style={{ height: 'calc(100vh-64px)' }}>
         <div className="flex justify-center items-start h-full">
           <div className="flex h-full flex-col sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-2 overflow-x-auto py-6">
