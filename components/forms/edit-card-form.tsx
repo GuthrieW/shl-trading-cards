@@ -36,7 +36,7 @@ const EditCardForm = ({ card, setShowModal, onSubmit }: EditCardFormProps) => {
 
   const isSkater = card.position !== 'G'
   return (
-    <div className="flex flex-row items-center">
+    <div className="flex flex-row items-center m-2">
       <Formik
         initialValues={card}
         onSubmit={(values) => {
@@ -244,7 +244,7 @@ const EditCardForm = ({ card, setShowModal, onSubmit }: EditCardFormProps) => {
           </Form>
         )}
       </Formik>
-      <div className="flex flex-col items-start">
+      <div className="flex flex-col items-start ml-5 mr-2 my-2">
         {card.image_url && (
           <TradingCard
             source={card.image_url}
