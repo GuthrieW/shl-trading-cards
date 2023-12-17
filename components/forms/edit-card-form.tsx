@@ -253,18 +253,28 @@ const EditCardForm = ({ card, setShowModal, onSubmit }: EditCardFormProps) => {
           />
         )}
         <div className="flex flex-col w-full items-center justify-center my-2 space-y-2">
-          <Button
-            disabled={isLoading || false}
-            onClick={() => sendToAwaitingClaim({ cardID: card.cardID })}
-          >
-            Set to Needs Author
-          </Button>
-          <Button
-            disabled={isLoading || false}
-            onClick={() => sendToAwaitingSubmission({ cardID: card.cardID })}
-          >
-            Set to Awaiting Submission
-          </Button>
+          {card.author_userID && (
+            <Button
+              disabled={isLoading || false}
+              onClick={() => {
+                sendToAwaitingClaim({ cardID: card.cardID })
+                setShowModal(false)
+              }}
+            >
+              Set to Needs Author
+            </Button>
+          )}
+          {card.image_url && (
+            <Button
+              disabled={isLoading || false}
+              onClick={() => {
+                sendToAwaitingSubmission({ cardID: card.cardID })
+                setShowModal(false)
+              }}
+            >
+              Set to Awaiting Submission
+            </Button>
+          )}
         </div>
       </div>
     </div>

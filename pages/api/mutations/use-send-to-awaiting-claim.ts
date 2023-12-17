@@ -3,6 +3,7 @@ import { errorToast, successToast } from '@utils/toasts'
 import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { invalidateQueries } from './invalidate-queries'
+import { UseGetAllCardsKey } from '../queries/use-get-all-cards'
 
 type UseSendToAwaitingClaimRequest = {
   cardID: number
@@ -29,7 +30,7 @@ const useSendToAwaitingClaim = (): UseSendToAwaitingClaim => {
     },
     {
       onSuccess: () => {
-        invalidateQueries(queryClient, [])
+        invalidateQueries(queryClient, [UseGetAllCardsKey])
         successToast({ successText: 'Card Sent to Awaiting Claim' })
       },
       onError: () => {
