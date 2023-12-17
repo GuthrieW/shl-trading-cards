@@ -3,7 +3,7 @@ import Modal from './modal'
 import EditCardForm from '../forms/edit-card-form'
 
 type EditCardModalProps = {
-  cardData: any
+  cardData: Card
   setShowModal: Function
   onSubmit: Function
   cardID: number
@@ -23,7 +23,7 @@ const EditCardModal = ({
     subtitle={`${cardName} - ${cardID}`}
   >
     <EditCardForm
-      cardData={cardData}
+      card={cardData}
       onSubmit={onSubmit}
       setShowModal={setShowModal}
     />
