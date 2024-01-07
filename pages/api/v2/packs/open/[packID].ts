@@ -10,7 +10,7 @@ import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import packsMap from '@constants/packs-map'
-import checkBoom from '@lib/api/check-Boom'
+import checkBoom from '@lib/api/check-boom'
 
 const allowedMethods = []
 const cors = Cors({

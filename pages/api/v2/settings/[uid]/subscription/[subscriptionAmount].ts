@@ -8,7 +8,7 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
-import checkBoom from '@lib/api/check-Boom'
+import checkBoom from '@lib/api/check-boom'
 
 const allowedMethods = [POST]
 const cors = Cors({
