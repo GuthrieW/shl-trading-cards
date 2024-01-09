@@ -9,7 +9,7 @@ import {
   queryDatabase,
 } from '@pages/api/database/database'
 import { TradeAsset } from '@pages/api/mutations/use-create-trade'
-import checkBoom from '@lib/api/checkBoom'
+import checkBoom from '@pages/api/lib/checkBoom'
 
 const allowedMethods = [POST]
 const cors = Cors({
