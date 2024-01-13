@@ -72,7 +72,7 @@ async function main() {
       ...goaliesWithSeason,
     ])
   await writeFileSync('temp/card-requests.txt', JSON.stringify(cardRequests))
-  requestCards(cardRequests, args.prodRun)
+  await requestCards(cardRequests, args.prodRun)
 }
 
 /**
@@ -231,7 +231,7 @@ async function requestCards(
 ): Promise<any> {
   const cardRows = await Promise.all(
     await cardRequests.map(async (cardRequest: CardRequest) => {
-      return `('${cardRequest.player_name}', ${cardRequest.teamID}, ${cardRequest.playerID}, '${cardRequest.card_rarity}', '${cardRequest.sub_type}', 0, 0, '${cardRequest.position}', ${cardRequest.overall}, ${cardRequest.high_shots}, ${cardRequest.low_shots}, ${cardRequest.quickness}, ${cardRequest.control}, ${cardRequest.conditioning}, ${cardRequest.skating}, ${cardRequest.shooting}, ${cardRequest.hands}, ${cardRequest.checking}, ${cardRequest.defense}, ${cardRequest.season}, 0)`
+      return `("${cardRequest.player_name}", ${cardRequest.teamID}, ${cardRequest.playerID}, "${cardRequest.card_rarity}", ${cardRequest.sub_type}, 0, 0, "${cardRequest.position}", ${cardRequest.overall}, ${cardRequest.high_shots}, ${cardRequest.low_shots}, ${cardRequest.quickness}, ${cardRequest.control}, ${cardRequest.conditioning}, ${cardRequest.skating}, ${cardRequest.shooting}, ${cardRequest.hands}, ${cardRequest.checking}, ${cardRequest.defense}, ${cardRequest.season}, 0)`
     })
   )
 
