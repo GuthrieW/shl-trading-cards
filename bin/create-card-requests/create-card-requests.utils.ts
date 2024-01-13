@@ -190,7 +190,30 @@ export const calculateRarity = (
 /**
  * transform a team name to a team ID
  */
-export const teamNameToId = (teamName: string): number => {
-  return Object.values(teamsMap).find((team) => team.abbreviation === teamName)
-    .teamID
-}
+export const teamNameToId = (teamName: string): number =>
+  Object.values(portalTeamsMap).find((team) => team.abbreviation === teamName)
+    ?.teamID
+
+const portalTeamsMap: { teamID: number; abbreviation: string }[] = [
+  { teamID: 0, abbreviation: 'BUF' },
+  { teamID: 1, abbreviation: 'CHI' },
+  { teamID: 2, abbreviation: 'HAM' },
+  { teamID: 3, abbreviation: 'TOR' },
+  { teamID: 4, abbreviation: 'MAN' },
+  { teamID: 5, abbreviation: 'NEW' },
+  { teamID: 6, abbreviation: 'TBB' },
+  { teamID: 7, abbreviation: 'BAP' },
+  { teamID: 7, abbreviation: 'WKP' },
+  { teamID: 8, abbreviation: 'CGY' },
+  { teamID: 9, abbreviation: 'EDM' },
+  { teamID: 10, abbreviation: 'MIN' },
+  { teamID: 11, abbreviation: 'WPG' },
+  { teamID: 12, abbreviation: 'SFP' },
+  { teamID: 13, abbreviation: 'LAP' },
+  { teamID: 14, abbreviation: 'NOL' },
+  { teamID: 15, abbreviation: 'TEX' },
+  { teamID: 18, abbreviation: 'ATL' },
+  { teamID: 19, abbreviation: 'SEA' },
+  { teamID: 20, abbreviation: 'MTL' },
+  { teamID: 21, abbreviation: 'PHI' },
+]

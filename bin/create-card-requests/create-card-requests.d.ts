@@ -58,6 +58,17 @@ export type IndexPlayer = IndexSkaterAttributes &
     appliedTPE: number
   }
 
+export type PortalPlayer = {
+  playerUpdateID: number
+  userID: number
+  leagueID: number
+  seasonID: number
+  teamID: number
+  round: number
+  draftNumber: number
+  playerName: string
+}
+
 type ImportError = {
   error: string
   player: IndexPlayer

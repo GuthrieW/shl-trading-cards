@@ -47,12 +47,13 @@ export async function queryDatabase<T>(query): Promise<T[] | T> {
     await dbConnection.end()
     return results
   } catch (error) {
+    console.log('error', error)
     return []
   }
 }
 
 export const getCardsDatabaseName = () =>
-  process.env.APP_ENV === 'production' ? 'admin_cards' : 'dev_cards'
+  process.env.APP_ENV === 'production' || 'script' ? 'admin_cards' : 'dev_cards'
 
 export const getUsersDatabaseName = () =>
   process.env.APP_ENV === 'production' ? 'admin_mybb' : 'admin_mybb'
