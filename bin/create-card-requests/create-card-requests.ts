@@ -19,7 +19,6 @@ import {
   PortalPlayer,
 } from './create-card-requests.d'
 import { writeFileSync } from 'fs'
-import { isNil } from 'lodash'
 
 let parser = new ArgumentParser()
 let unfoundPlayerCount = 0

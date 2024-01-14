@@ -10,7 +10,8 @@
     "create-card-requests": "APP_ENV=script tsx bin/create-card-requests/create-card-requests.ts --season=74 --prodRun",
     "delete-duplicates": "APP_ENV=script tsx bin/delete-duplicate-cards/delete-duplicate-cards.ts --prodRun",
     "pay-card-creators": "APP_ENV=script tsx bin/pay-card-creators/pay-card-creators.ts --prodRun",
-    "smoke-test": "APP_ENV=script tsx bin/smoke-test/smoke-test.ts"
+    "smoke-test": "APP_ENV=script tsx bin/smoke-test/smoke-test.ts",
+    "temp-script": "APP_ENV=script tsx bin/temp-script/temp-script.ts"
   },
   "dependencies": {
     "@babel/core": "^7.23.5",
