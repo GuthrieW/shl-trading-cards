@@ -71,7 +71,6 @@ async function main() {
       ...skatersWithSeason,
       ...goaliesWithSeason,
     ])
-  await writeFileSync('temp/card-requests.txt', JSON.stringify(cardRequests))
   await requestCards(cardRequests, args.prodRun)
 }
 
@@ -222,35 +221,42 @@ async function checkForDuplicatesAndCreateCardRequestData(
   return unfilteredPlayerRequests.filter((cardRequest) => !!cardRequest)
 }
 
-/**
- * send card requests to the trading cards database
- */
 async function requestCards(
   cardRequests: CardRequest[],
   isProdRun: boolean
 ): Promise<any> {
-  const cardRows = await Promise.all(
-    await cardRequests.map(async (cardRequest: CardRequest) => {
-      return `("${cardRequest.player_name}", ${cardRequest.teamID}, ${cardRequest.playerID}, "${cardRequest.card_rarity}", ${cardRequest.sub_type}, 0, 0, "${cardRequest.position}", ${cardRequest.overall}, ${cardRequest.high_shots}, ${cardRequest.low_shots}, ${cardRequest.quickness}, ${cardRequest.control}, ${cardRequest.conditioning}, ${cardRequest.skating}, ${cardRequest.shooting}, ${cardRequest.hands}, ${cardRequest.checking}, ${cardRequest.defense}, ${cardRequest.season}, 0)`
+  const requestResults = await Promise.all(
+    await cardRequests.map(async (cardRequest) => {
+      const insertQuery: SQLStatement = SQL`
+        INSERT INTO `.append(getCardsDatabaseName()).append(`.cards
+          (player_name, teamID, playerID, card_rarity, sub_type, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season, author_paid)
+        VALUES ("${cardRequest.player_name.trim()}", ${cardRequest.teamID}, ${
+          cardRequest.playerID
+        }, "${cardRequest.card_rarity}", ${cardRequest.sub_type}, 0, 0, "${
+          cardRequest.position
+        }", ${cardRequest.overall}, ${cardRequest.high_shots}, ${
+          cardRequest.low_shots
+        }, ${cardRequest.quickness}, ${cardRequest.control}, ${
+          cardRequest.conditioning
+        }, ${cardRequest.skating}, ${cardRequest.shooting}, ${
+          cardRequest.hands
+        }, ${cardRequest.checking}, ${cardRequest.defense}, ${
+          cardRequest.season
+        }, 0);`)
+
+      if (isProdRun) {
+        return await queryDatabase(insertQuery)
+      } else {
+        return insertQuery
+      }
     })
   )
 
-  const insertQuery: SQLStatement = SQL`
-    INSERT INTO admin_cards.cards
-      (player_name, teamID, playerID, card_rarity, sub_type, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season, author_paid)
-    VALUES
-    ${cardRows.join(',\n')};
-  `
-
-  if (!isProdRun) {
-    console.log(JSON.stringify(insertQuery, null, 2))
-    console.log('Number of cards to insert', cardRows.length)
-
-    return 'Dry run finished'
-  }
-
-  console.log(`Created ${cardRows.length} rows`)
-
-  const result = await queryDatabase(insertQuery)
-  return result
+  await writeFileSync('temp/card-requests.txt', JSON.stringify(requestResults))
+  console.log(
+    isProdRun
+      ? `Prod run finished. ${requestResults.length} cards inserted`
+      : 'Dry run finished'
+  )
+  return
 }
