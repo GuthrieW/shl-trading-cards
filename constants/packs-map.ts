@@ -23,7 +23,9 @@ export const packCovers = {
   base: {
     old: '/images/base-pack-cover.png',
     cgy: '/images/base-pack-cgy.png',
+    chi: '/images/base-pack-chi.png',
     min: '/images/base-pack-min.png',
+    sfp: '/images/base-pack-sfp.png',
     tex: '/images/base-pack-tex.png',
     tor: '/images/base-pack-tor.png',
     meme: '/images/base-pack-meme.png',
@@ -32,7 +34,9 @@ export const packCovers = {
 
 export const basePackCovers = [
   packCovers.base.cgy,
+  packCovers.base.chi,
   packCovers.base.min,
+  packCovers.base.sfp,
   packCovers.base.tex,
   packCovers.base.tor,
 ]
