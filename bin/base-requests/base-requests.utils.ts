@@ -1,5 +1,5 @@
 import rarityMap from '../../constants/rarity-map'
-import { IndexPlayer, Position } from './create-card-requests.d'
+import { IndexPlayer, Position } from './base-requests.d'
 
 /**
  * transform an index player into trading card attributes and position

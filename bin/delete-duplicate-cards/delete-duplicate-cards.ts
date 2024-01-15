@@ -6,15 +6,14 @@ import sortBy from 'lodash/sortBy'
 
 let parser = new ArgumentParser()
 
-parser.addArgument('--prodRun', {
-  type: Boolean,
+parser.add_argument('--prodRun', {
   action: 'storeTrue',
-  defaultValue: false,
+  default: false,
 })
 
 let args: {
   prodRun?: boolean
-} = parser.parseArgs()
+} = parser.parse_args()
 
 void main()
   .then(async () => {
@@ -31,9 +30,8 @@ async function main() {
 
   const duplicateCardIds: string[] = await getDuplicateCardIds()
   console.log(`${duplicateCardIds.length} duplicate cards found`)
-  const { cardIdsToDelete, cardIdsToMoveToMisprint } = await checkShouldDelete(
-    duplicateCardIds
-  )
+  const { cardIdsToDelete, cardIdsToMoveToMisprint } =
+    await checkShouldDelete(duplicateCardIds)
 
   await moveMisprints(cardIdsToMoveToMisprint, args.prodRun)
   await deleteDuplicates(cardIdsToDelete, args.prodRun)
@@ -82,7 +80,8 @@ async function getDuplicateCardIds(): Promise<string[]> {
           AND card_rarity=${duplicatesRow.card_rarity}
           AND (sub_type=${duplicatesRow.sub_type} OR (sub_type IS NULL AND ${duplicatesRow.sub_type} IS NULL))
           AND position=${duplicatesRow.position}
-          AND season=${duplicatesRow.season};
+          AND season=${duplicatesRow.season}
+          AND card_rarity <> "Misprint";
       `)) as DuplicateCheck[]
 
       const sortedDuplicates = sortBy(duplicates, [

@@ -33,15 +33,14 @@ const BASE_CARD_PAY: number = 250000
 
 let parser = new ArgumentParser()
 
-parser.addArgument('--prodRun', {
-  type: Boolean,
-  action: 'storeTrue',
-  defaultValue: false,
+parser.add_argument('--prodRun', {
+  action: 'store_true',
+  default: false,
 })
 
 let args: {
   prodRun?: boolean
-} = parser.parseArgs()
+} = parser.parse_args()
 
 void main()
   .then(async () => {
@@ -61,9 +60,8 @@ async function main() {
   const authorPayments: UsersWithPayments = calculateAuthorPayments(
     finishedAndUnpaidCards
   )
-  const paymentQueries: SQLStatement[] = await generateUserPayments(
-    authorPayments
-  )
+  const paymentQueries: SQLStatement[] =
+    await generateUserPayments(authorPayments)
 
   console.log('paymentQueries', paymentQueries)
 
@@ -235,8 +233,8 @@ async function generateUserPayments(
 
       return SQL`
         CALL admin_cards.card_payouts(${userId}, ${description.join('-')}, ${
-        paymentData.amountToPayAuthor
-      }, 2856);`
+          paymentData.amountToPayAuthor
+        }, 2856);`
     }
   )
 }

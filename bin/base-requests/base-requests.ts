@@ -11,13 +11,9 @@ import {
   calculateRarity,
   getSameAndHigherRaritiesQueryFragment,
   teamNameToId,
-} from './create-card-requests.utils'
+} from './base-requests.utils'
 import { GET } from '../../constants/http-methods'
-import {
-  ImportError,
-  IndexPlayer,
-  PortalPlayer,
-} from './create-card-requests.d'
+import { ImportError, IndexPlayer, PortalPlayer } from './base-requests.d'
 import { writeFileSync } from 'fs'
 
 let parser = new ArgumentParser()
@@ -25,7 +21,7 @@ let unfoundPlayerCount = 0
 
 parser.add_argument('--season', {
   type: Number,
-  required: true,
+  required: false,
 })
 
 parser.add_argument('--prodRun', {
@@ -220,7 +216,7 @@ async function checkForDuplicatesAndCreateCardRequestData(
   return unfilteredPlayerRequests.filter((cardRequest) => !!cardRequest)
 }
 
-async function requestCards(
+export async function requestCards(
   cardRequests: CardRequest[],
   isProdRun: boolean
 ): Promise<any> {
