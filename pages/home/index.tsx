@@ -1,6 +1,4 @@
 import InfoCard from '@components/cards/info-card'
-import UserCard from '@components/cards/user-card'
-import packsMap, { getBasePackCover } from '@constants/packs-map'
 import pathToCards from '@constants/path-to-cards'
 import useGetUserCards from '@pages/api/queries/use-get-user-cards'
 import useGetUserPacks from '@pages/api/queries/use-get-user-packs'
@@ -66,8 +64,8 @@ const Home = () => {
         }}
       ></div>
       <div className="w-3/4 m-auto h-full flex flex-col xl:grid xl:grid-cols-3 gap-4">
-        <InfoCard className="w-full h-full relative">
-          <h1 className="text-3xl font-bold mb-2">Your Cards</h1>
+        <InfoCard className="w-full relative">
+          <h1 className="text-3xl font-bold mb-2">Your Top Cards</h1>
           {cards.length > 0 ? (
             <>
               <div className="relative w-full h-auto">
@@ -88,7 +86,6 @@ const Home = () => {
                   />
                 ))}
               </div>
-
               <div className="flex justify-center xl:justify-end">
                 <button
                   className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -129,7 +126,7 @@ const Home = () => {
             </div>
           )}
         </InfoCard>
-        <InfoCard className="w-full h-full relative xl:pb-8">
+        <InfoCard className="w-full relative xl:pb-8">
           <h1 className="text-3xl font-bold mb-2">User Collections</h1>
           <div className="flex flex-col h-full align-center content-between">
             <div className="flex flex-col w-full">
@@ -162,69 +159,16 @@ const Home = () => {
             </div>
           </div>
         </InfoCard>
-        <InfoCard className="w-full h-full relative">
-          {packs.length > 0 ? (
-            <>
-              <h1 className="text-3xl font-bold mb-2">
-                {packs.length} Unopened Packs
-              </h1>
-              <div className="relative w-full h-auto">
-                <img
-                  className="w-2/5 hover:-translate-y-2 transition-transform duration-200 hover:z-10 invisible"
-                  src={packsMap[packs[0].packType].imageUrl}
-                />
-                {packs.map((pack, index) => (
-                  <img
-                    key={pack.packID}
-                    className="absolute w-2/5 hover:-translate-y-2 transition-transform duration-200 hover:z-10"
-                    style={{
-                      left: `${index * 10}%`,
-                      top: `0`,
-                    }}
-                    src={getBasePackCover()}
-                  />
-                ))}
-              </div>
-              <div className="flex justify-center xl:justify-end">
-                <button
-                  className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  onClick={() => {
-                    Router.push('/open-packs')
-                  }}
-                >
-                  Open Your Packs
-                </button>
-              </div>
-            </>
-          ) : (
-            // direct user to buy packs
-            <div className="flex flex-col h-full align-center justify-evenly">
-              <div className="text-center">
-                <p className="text-xl">You don't have any packs.</p>
-                <p className="text-xl">
-                  Go to the{' '}
-                  <a
-                    className="text-blue-500 hover:text-blue-600 transition-colors duration-200 my-4"
-                    href="/pack-shop"
-                  >
-                    pack shop
-                  </a>{' '}
-                  to get some packs!
-                </p>
-              </div>
-              <div className="flex justify-end">
-                <button
-                  className="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit"
-                  onClick={() => {
-                    Router.push('/pack-shop')
-                  }}
-                >
-                  Buy Packs
-                </button>
-              </div>
-            </div>
-          )}
-        </InfoCard>
+        <div className="w-full h-full flex justify-center items-center relative m-4 ">
+          <iframe
+            src="https://discord.com/widget?id=806601618702336000&theme=dark"
+            width="350"
+            height="500"
+            allowTransparency={true}
+            frameBorder={'0'}
+            sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+          ></iframe>
+        </div>
       </div>
     </>
   )
