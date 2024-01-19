@@ -3,9 +3,6 @@ import { generateRarityCheckboxes } from '@components/dropdowns/generate-rarity-
 import { generateTeamCheckboxes } from '@components/dropdowns/generate-team-checkboxes'
 import TradingCard from '@components/images/trading-card'
 import SearchBar from '@components/inputs/search-bar'
-import pathToCards from '@constants/path-to-cards'
-import rarityMap from '@constants/rarity-map'
-import teamsMap from '@constants/teams-map'
 import React, { useMemo, useState, useRef, useCallback } from 'react'
 import { useVirtual } from 'react-virtual'
 
