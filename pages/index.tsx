@@ -1,3 +1,5 @@
+import { DefaultLayout } from '@components/v3/layout/DefaultLayout'
+import { useSession } from '@hooks/useSession'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 const index = () => {
@@ -5,11 +7,11 @@ const index = () => {
 
   useEffect(() => {}, [])
 
-  if (typeof window !== 'undefined') {
-    router.push('/home')
-  }
-
-  return <div />
+  return (
+    <DefaultLayout title="Home">
+      <div />
+    </DefaultLayout>
+  )
 }
 
 export default index

@@ -1,6 +1,6 @@
 import Button from '@components/buttons/button'
 import TradingCard from '@components/images/trading-card'
-import { CardOwner } from '@pages/api/queries/use-get-card-owners'
+import { CardOwner } from '@pages/_old/api/queries/use-get-card-owners'
 import Router from 'next/router'
 import React from 'react'
 

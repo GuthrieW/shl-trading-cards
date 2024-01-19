@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { ArgumentParser } from 'argparse'
-import { queryDatabase } from '../../pages/api/database/database'
+import { queryDatabase } from '../../pages/_old/api/database/database'
 import axios, { AxiosResponse } from 'axios'
 import { GET } from '@constants/http-methods'
 import SQL from 'sql-template-strings'

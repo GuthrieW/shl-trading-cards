@@ -1,6 +1,6 @@
 import Button from '@components/buttons/button'
 import { warningToast } from '@utils/toasts'
-import useCreateCard from '@pages/api/mutations/use-create-card'
+import useCreateCard from '@pages/_old/api/mutations/use-create-card'
 import isAdminOrCardTeam from '@utils/user-groups/is-admin-or-card-team'
 import { NextSeo } from 'next-seo'
 import Router from 'next/router'

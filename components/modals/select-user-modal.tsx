@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import Modal from './modal'
-import useGetAllUsersWithCards from '@pages/api/queries/use-get-all-users-with-cards'
+import useGetAllUsersWithCards from '@pages/_old/api/queries/use-get-all-users-with-cards'
 import AutoCompleteSearchBar from '@components/inputs/autocomplete-search-bar'
 import Router from 'next/router'
 import getUidFromSession from '@utils/get-uid-from-session'

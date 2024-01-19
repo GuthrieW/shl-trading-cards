@@ -1,4 +1,4 @@
-import useGetCurrentUser from '@pages/api/queries/use-get-current-user'
+import useGetCurrentUser from '@pages/_old/api/queries/use-get-current-user'
 import Header from './header'
 import getUidFromSession from '@utils/get-uid-from-session'
 import isAdminOrCardTeam from '@utils/user-groups/is-admin-or-card-team'
@@ -16,7 +16,7 @@ import {
   PlayIcon,
   UsersIcon,
 } from '@heroicons/react/20/solid'
-import useGetNumberOfPendingTrades from '@pages/api/queries/use-get-number-of-pending-trades'
+import useGetNumberOfPendingTrades from '@pages/_old/api/queries/use-get-number-of-pending-trades'
 
 const headersLinks: HeaderLink[] = [
   {

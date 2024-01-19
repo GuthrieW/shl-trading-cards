@@ -1,5 +1,5 @@
 import SubmitCardsTable from '@components/tables/submit-cards-table'
-import useGetClaimedCards from '@pages/api/queries/use-get-claimed-cards'
+import useGetClaimedCards from '@pages/_old/api/queries/use-get-claimed-cards'
 import { NextSeo } from 'next-seo'
 import React from 'react'
 

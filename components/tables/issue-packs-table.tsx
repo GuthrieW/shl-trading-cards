@@ -8,7 +8,7 @@ import {
 import Pagination from './pagination'
 import Table from './table'
 import React, { useMemo, useState } from 'react'
-import useIssuePack from '@pages/api/mutations/use-issue-pack'
+import useIssuePack from '@pages/_old/api/mutations/use-issue-pack'
 import IssuePacksModal from '@components/modals/issue-packs-modal'
 import { warningToast } from '@utils/toasts'
 import getUidFromSession from '@utils/get-uid-from-session'

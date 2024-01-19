@@ -1,106 +1,93 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { Raleway, Montserrat } from 'next/font/google'
 import { DefaultSeo } from 'next-seo'
 import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
-import DefaultLayout from '@components/layouts/default-layout'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { QueryCache, QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
-import { ToastContainer } from 'react-toastify'
-import AES from 'crypto-js/aes'
-import 'react-toastify/dist/ReactToastify.css'
 import '../styles/globals.css'
+import { SessionProvider } from 'contexts/SessionContext'
+import { useSession } from '@hooks/useSession'
+import { CustomChakraProvider } from 'styles/CustomChakraProvider'
+import { ToastProvider } from 'contexts/ToastContext'
+import { Footer } from '@components/v3/layout/Footer'
+import { Spinner } from '@chakra-ui/react'
+import { ShlLogo } from '@components/v3/logo/ShlLogo'
 
-const AuthModal = () => (
-  <iframe
-    style={{
-      position: 'absolute',
-      top: '0',
-      left: '0',
-      width: '100%',
-      height: '100vh',
-    }}
-    name={'user-authentication-window'}
-    src={'https://simulationhockey.com/userinfo.php'}
-  />
-)
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: 'variable',
+  style: ['normal'],
+  variable: '--font-montserrat',
+})
 
-export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
-  const [showModal, setShowModal] = useState<boolean>(false)
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-      },
-    },
-  })
+const raleway = Raleway({
+  subsets: ['latin'],
+  weight: 'variable',
+  style: ['normal'],
+  variable: '--font-raleway',
+})
 
-  useEffect(() => {
-    const windowExists = typeof window !== 'undefined'
-    const eventHandler = (event) => {
-      if (windowExists) {
-        if (event.origin === 'https://simulationhockey.com') {
-          setShowModal(false)
-          const { type, uid } = event.data
-          if (type == 'uid') {
-            sessionStorage.setItem(
-              'token',
-              AES.encrypt(
-                uid.toString(),
-                process.env.NEXT_PUBLIC_TOKEN_KEY
-              ).toString()
-            )
-          }
-        }
-      }
-    }
+const AppWrappers = ({ Component, pageProps }: AppProps) => {
+  const { isLoggedIn, handleRefresh, isLoading } = useSession()
 
-    if (windowExists) {
-      if (!sessionStorage.getItem('token')) {
-        setShowModal(true)
-      }
-      window.addEventListener('message', eventHandler)
-    }
-
-    return () => {
-      if (windowExists) {
-        window.removeEventListener('message', eventHandler)
-      }
-    }
-  }, [])
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        queryCache: new QueryCache({
+          onError: async (error, query) => {
+            // @ts-ignore
+            if (error.status === 401) {
+              await handleRefresh()
+              if (isLoggedIn) {
+                queryClient.refetchQueries(query.queryKey)
+              }
+            }
+          },
+        }),
+      })
+  )
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Hydrate state={{}}>
-        {showModal && <AuthModal />}
-        {!showModal && (
-          <DefaultLayout>
-            <ToastContainer
-              position="bottom-left"
-              autoClose={5000}
-              hideProgressBar={true}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss={false}
-              draggable={false}
-              pauseOnHover={false}
-            />
-            <DefaultSeo {...SEO} />
-            <Component {...pageProps} />
-            <style global jsx>{`
-              body {
-                font-family: 'Raleway', sans-serif;
-                background-color: rgb(245, 245, 245);
-              }
-              * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-              }
-            `}</style>
-          </DefaultLayout>
-        )}
+      <Hydrate state={pageProps.dehydratedState}>
+        <main
+          className={`${montserrat.variable} ${raleway.variable} relative min-h-screen font-raleway`}
+        >
+          <DefaultSeo {...SEO} />
+          <CustomChakraProvider>
+            <ToastProvider>
+              {isLoading ? (
+                <>
+                  <div
+                    className="z-50 h-16 w-full bg-grey900"
+                    role="navigation"
+                    aria-label="Main"
+                  >
+                    <ShlLogo />
+                  </div>
+                  <div className="m-auto w-full bg-grey100 pb-8 2xl:w-4/5 ">
+                    <div className="m-auto flex h-[calc(100vh-10rem)] w-full items-center justify-center">
+                      <Spinner size="xl" thickness="4px" />
+                    </div>
+                  </div>
+                  <Footer />
+                </>
+              ) : (
+                <Component {...pageProps} />
+              )}
+            </ToastProvider>
+          </CustomChakraProvider>
+        </main>
       </Hydrate>
     </QueryClientProvider>
+  )
+}
+
+export default function App(props: AppProps) {
+  return (
+    <SessionProvider>
+      <AppWrappers {...props} />
+    </SessionProvider>
   )
 }

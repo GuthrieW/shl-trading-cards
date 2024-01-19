@@ -2,9 +2,9 @@ import Button from '@components/buttons/button'
 import InfoCard from '@components/cards/info-card'
 import TradingCard from '@components/images/trading-card'
 import { useResponsive } from '@hooks/useResponsive'
-import useAcceptTrade from '@pages/api/mutations/use-accept-trade'
-import useDeclineTrade from '@pages/api/mutations/use-decline-trade'
-import useGetTradeDetails from '@pages/api/queries/use-get-trade-details'
+import useAcceptTrade from '@pages/_old/api/mutations/use-accept-trade'
+import useDeclineTrade from '@pages/_old/api/mutations/use-decline-trade'
+import useGetTradeDetails from '@pages/_old/api/queries/use-get-trade-details'
 import React, { MouseEventHandler } from 'react'
 
 type TradeViewerCardProps = {
@@ -58,8 +58,8 @@ const TradeViewerCard = ({
               isMobile
                 ? 'grid-cols-2'
                 : isTablet
-                ? 'grid-cols-3'
-                : 'grid-cols-5'
+                  ? 'grid-cols-3'
+                  : 'grid-cols-5'
             }`}
           >
             {myCards.map((card) => (
@@ -82,8 +82,8 @@ const TradeViewerCard = ({
               isMobile
                 ? 'grid-cols-2'
                 : isTablet
-                ? 'grid-cols-3'
-                : 'grid-cols-5'
+                  ? 'grid-cols-3'
+                  : 'grid-cols-5'
             }`}
           >
             {theirCards.map((card) => (

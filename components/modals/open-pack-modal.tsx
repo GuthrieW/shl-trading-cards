@@ -2,7 +2,7 @@ import React from 'react'
 import packsMap, { getBasePackCover } from '@constants/packs-map'
 import Modal from './modal'
 import Button from '@components/buttons/button'
-import { UserPackWithCover } from '@pages/open-packs'
+import { UserPackWithCover } from '@pages/_old/open-packs'
 
 type OpenPackModalProps = {
   onAccept: Function

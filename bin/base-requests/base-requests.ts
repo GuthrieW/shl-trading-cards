@@ -2,7 +2,7 @@
 import {
   getCardsDatabaseName,
   queryDatabase,
-} from '../../pages/api/database/database'
+} from '../../pages/_old/api/database/database'
 import { ArgumentParser } from 'argparse'
 import axios, { AxiosResponse } from 'axios'
 import SQL from 'sql-template-strings'

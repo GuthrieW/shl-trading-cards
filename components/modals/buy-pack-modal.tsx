@@ -3,7 +3,7 @@ import { PackInfo, getBasePackCover } from '@constants/packs-map'
 import { warningToast } from '@utils/toasts'
 import React from 'react'
 import Modal from './modal'
-import { PackInfoWithCover } from '@pages/pack-shop'
+import { PackInfoWithCover } from '@pages/_old/pack-shop'
 
 type BuyPackModalProps = {
   onAccept: Function

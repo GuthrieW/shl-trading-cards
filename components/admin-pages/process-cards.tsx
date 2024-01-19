@@ -1,5 +1,5 @@
 import ProcessCardsTable from '@components/tables/process-cards-table'
-import useGetUnapprovedCards from '@pages/api/queries/use-get-unapproved-cards'
+import useGetUnapprovedCards from '@pages/_old/api/queries/use-get-unapproved-cards'
 import { NextSeo } from 'next-seo'
 import React from 'react'
 

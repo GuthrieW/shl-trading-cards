@@ -1,4 +1,4 @@
-import { queryDatabase } from '@pages/api/database/database'
+import { queryDatabase } from '@pages/_old/api/database/database'
 import { ArgumentParser } from 'argparse'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import rarityMap from '@constants/rarity-map'

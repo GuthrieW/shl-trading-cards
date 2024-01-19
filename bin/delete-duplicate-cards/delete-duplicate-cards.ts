@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { ArgumentParser } from 'argparse'
 import SQL, { SQLStatement } from 'sql-template-strings'
-import { queryDatabase } from '@pages/api/database/database'
+import { queryDatabase } from '@pages/_old/api/database/database'
 import sortBy from 'lodash/sortBy'
 
 let parser = new ArgumentParser()

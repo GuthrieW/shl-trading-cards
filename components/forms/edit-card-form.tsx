@@ -6,8 +6,8 @@ import positionMap from '@constants/position-map'
 import TradingCard from '@components/images/trading-card'
 import { TextField } from '@components/inputs/textfield'
 import { SelectField } from '@components/inputs/select'
-import useSendToAwaitingClaim from '@pages/api/mutations/use-send-to-awaiting-claim'
-import useSendToAwaitingSubmission from '@pages/api/mutations/use-send-to-awaiting-submission'
+import useSendToAwaitingClaim from '@pages/_old/api/mutations/use-send-to-awaiting-claim'
+import useSendToAwaitingSubmission from '@pages/_old/api/mutations/use-send-to-awaiting-submission'
 
 type EditCardFormProps = {
   card: Card

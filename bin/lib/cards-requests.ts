@@ -1,7 +1,7 @@
 import {
   getCardsDatabaseName,
   queryDatabase,
-} from '@pages/api/database/database'
+} from '@pages/_old/api/database/database'
 import { writeFileSync } from 'fs'
 import SQL, { SQLStatement } from 'sql-template-strings'
 

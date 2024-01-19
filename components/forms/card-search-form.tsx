@@ -7,7 +7,7 @@ import GridPagination from '@components/grids/grid-pagination'
 import SearchBar from '@components/inputs/search-bar'
 import rarityMap from '@constants/rarity-map'
 import teamsMap from '@constants/teams-map'
-import useGetCardOwners from '@pages/api/queries/use-get-card-owners'
+import useGetCardOwners from '@pages/_old/api/queries/use-get-card-owners'
 import { useEffect, useState } from 'react'
 
 const CardSearchForm = () => {

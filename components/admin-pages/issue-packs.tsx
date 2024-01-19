@@ -1,5 +1,5 @@
 import IssuePacksTable from '@components/tables/issue-packs-table'
-import useGetAllUsers from '@pages/api/queries/use-get-all-users'
+import useGetAllUsers from '@pages/_old/api/queries/use-get-all-users'
 import { NextSeo } from 'next-seo'
 import React from 'react'
 

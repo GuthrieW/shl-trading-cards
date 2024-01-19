@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { queryDatabase } from '@pages/api/database/database'
+import { queryDatabase } from '@pages/_old/api/database/database'
 import { readFileSync, writeFileSync } from 'fs'
 import SQL from 'sql-template-strings'
 

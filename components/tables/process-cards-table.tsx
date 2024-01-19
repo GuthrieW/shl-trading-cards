@@ -10,8 +10,8 @@ import {
 import Pagination from './pagination'
 import Table from './table'
 import ProcessCardModal from '@components/modals/process-card-modal'
-import useAcceptCard from '@pages/api/mutations/use-accept-card'
-import useDenyCard from '@pages/api/mutations/use-deny-card'
+import useAcceptCard from '@pages/_old/api/mutations/use-accept-card'
+import useDenyCard from '@pages/_old/api/mutations/use-deny-card'
 import { warningToast } from '@utils/toasts'
 import attributesMap from '@constants/attributes-map'
 

@@ -1,9 +1,9 @@
-import useGetUser from '@pages/api/queries/use-get-user'
+import useGetUser from '@pages/_old/api/queries/use-get-user'
 import getUidFromSession from '@utils/get-uid-from-session'
 import React from 'react'
 import dayjs from 'dayjs'
 import fixAvatar from '@utils/fix-avatar-url'
-import { ArrowPathIcon, CheckIcon,  XMarkIcon} from '@heroicons/react/20/solid'
+import { ArrowPathIcon, CheckIcon, XMarkIcon } from '@heroicons/react/20/solid'
 
 export type TradeSelectorOptionProps = {
   className?: string

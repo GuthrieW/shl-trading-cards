@@ -17,7 +17,8 @@ import {
   Tooltip,
 } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
-import { Footer } from '@components/v2/layout/footer'
+import { Footer } from '@components/v3/layout/Footer'
+import { Header } from '@components/v3/layout/Header'
 
 const validationSchema = Yup.object({}).shape({
   username: Yup.string().required('Username is required'),
@@ -77,7 +78,7 @@ export default () => {
   return (
     <>
       <NextSeo title="Log in" openGraph={{ title: 'Log in' }} />
-      <Header showAuthButtons={false} />
+      <Header />
       <div className="mx-auto w-full space-y-4 bg-grey100 px-12 py-20 2xl:w-3/5 2xl:px-28">
         <div className="mx-auto flex min-h-[calc(100vh-16rem)] flex-col text-center md:w-3/5">
           <form onSubmit={handleSubmit}>

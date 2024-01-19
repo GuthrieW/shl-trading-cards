@@ -2,7 +2,7 @@ import UserCard from '@components/cards/user-card'
 import SearchBar from '@components/inputs/search-bar'
 import { useResponsive } from '@hooks/useResponsive'
 import { useEffect, useState } from 'react'
-import useGetAllUsersWithCards from '@pages/api/queries/use-get-all-users-with-cards'
+import useGetAllUsersWithCards from '@pages/_old/api/queries/use-get-all-users-with-cards'
 import GridPagination from './grid-pagination'
 import { PropagateLoader } from 'react-spinners'
 
