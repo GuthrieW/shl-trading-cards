@@ -1,7 +1,6 @@
 import rarityMap from '@constants/rarity-map'
 import { queryDatabase } from '@pages/api/database/database'
-import { ArgumentParser } from 'argparse'
-import { requestCards } from 'bin/base-requests/base-requests'
+import { requestCards } from 'bin/lib/cards-requests'
 import { readFileSync } from 'fs'
 import SQL from 'sql-template-strings'
 

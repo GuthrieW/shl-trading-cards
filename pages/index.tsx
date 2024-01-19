@@ -1,11 +1,15 @@
-import Router from 'next/router'
-
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 const index = () => {
+  const router = useRouter()
+
+  useEffect(() => {}, [])
+
   if (typeof window !== 'undefined') {
-    Router.push('/home')
+    router.push('/home')
   }
 
-  return null
+  return <div />
 }
 
 export default index
