@@ -48,6 +48,8 @@ const AppWrappers = ({ Component, pageProps }: AppProps) => {
       })
   )
 
+  console.log('testing')
+
   return (
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
@@ -57,25 +59,25 @@ const AppWrappers = ({ Component, pageProps }: AppProps) => {
           <DefaultSeo {...SEO} />
           <CustomChakraProvider>
             <ToastProvider>
-              {isLoading ? (
-                <>
-                  <div
-                    className="z-50 h-16 w-full bg-grey900"
-                    role="navigation"
-                    aria-label="Main"
-                  >
-                    <ShlLogo />
-                  </div>
-                  <div className="m-auto w-full bg-grey100 pb-8 2xl:w-4/5 ">
-                    <div className="m-auto flex h-[calc(100vh-10rem)] w-full items-center justify-center">
+              <>
+                <div
+                  className="z-50 h-16 w-full bg-grey900"
+                  role="navigation"
+                  aria-label="Main"
+                >
+                  <ShlLogo />
+                </div>
+                <div className="m-auto w-full bg-grey100 pb-8 2xl:w-4/5 ">
+                  <div className="m-auto flex h-[calc(100vh-10rem)] w-full items-center justify-center">
+                    {isLoading ? (
                       <Spinner size="xl" thickness="4px" />
-                    </div>
+                    ) : (
+                      <Component {...pageProps} />
+                    )}
                   </div>
-                  <Footer />
-                </>
-              ) : (
-                <Component {...pageProps} />
-              )}
+                </div>
+                <Footer />
+              </>
             </ToastProvider>
           </CustomChakraProvider>
         </main>
