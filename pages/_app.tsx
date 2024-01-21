@@ -59,25 +59,27 @@ const AppWrappers = ({ Component, pageProps }: AppProps) => {
           <DefaultSeo {...SEO} />
           <CustomChakraProvider>
             <ToastProvider>
-              <>
-                <div
-                  className="z-50 h-16 w-full bg-grey900"
-                  role="navigation"
-                  aria-label="Main"
-                >
-                  <ShlLogo />
-                </div>
-                <div className="m-auto w-full bg-grey100 pb-8 2xl:w-4/5 ">
-                  <div className="m-auto flex h-[calc(100vh-10rem)] w-full items-center justify-center">
-                    {isLoading ? (
-                      <Spinner size="xl" thickness="4px" />
-                    ) : (
-                      <Component {...pageProps} />
-                    )}
+              {isLoading ? (
+                <>
+                  <div
+                    className="z-50 h-16 w-full bg-grey900"
+                    role="navigation"
+                    aria-label="Main"
+                  >
+                    <div className="relative mx-auto flex h-full w-full items-center justify-between px-[5%] sm:w-11/12 sm:justify-start sm:p-0 lg:w-3/4">
+                      <ShlLogo />
+                    </div>
                   </div>
-                </div>
-                <Footer />
-              </>
+                  <div className="m-auto w-full bg-grey100 pb-8 2xl:w-4/5 ">
+                    <div className="m-auto flex h-[calc(100vh-10rem)] w-full items-center justify-center">
+                      <Spinner size="xl" thickness="4px" />
+                    </div>
+                  </div>
+                  <Footer />
+                </>
+              ) : (
+                <Component {...pageProps} />
+              )}
             </ToastProvider>
           </CustomChakraProvider>
         </main>
