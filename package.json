@@ -11,6 +11,7 @@
     "charity-requests": "APP_ENV=script tsx bin/charity-requests/charity-requests.ts",
     "delete-duplicates": "APP_ENV=script tsx bin/delete-duplicate-cards/delete-duplicate-cards.ts --prodRun",
     "pay-card-creators": "APP_ENV=script tsx bin/pay-card-creators/pay-card-creators.ts --prodRun",
+    "add-charity-cards-to-users": "APP_ENV=script tsx bin/add-charity-cards-to-users/add-charity-cards-to-users.ts",
     "smoke-test": "APP_ENV=script tsx bin/smoke-test/smoke-test.ts",
     "temp-script": "APP_ENV=script tsx bin/temp-script/temp-script.ts"
   },
