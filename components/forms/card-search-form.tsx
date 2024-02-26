@@ -5,7 +5,6 @@ import { generateRarityCheckboxes } from '@components/dropdowns/generate-rarity-
 import { generateTeamCheckboxes } from '@components/dropdowns/generate-team-checkboxes'
 import GridPagination from '@components/grids/grid-pagination'
 import SearchBar from '@components/inputs/search-bar'
-import rarityMap from '@constants/rarity-map'
 import teamsMap from '@constants/teams-map'
 import useGetCardOwners from '@pages/api/queries/use-get-card-owners'
 import { useEffect, useState } from 'react'

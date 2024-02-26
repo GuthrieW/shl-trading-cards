@@ -16,10 +16,10 @@ const MovableCard = ({ card }: MovableCard) => {
   const dimensions: { width: number; height: number } = isMobile
     ? { width: 211, height: 290 }
     : isTablet
-    ? { width: 200, height: 276 }
-    : isDesktop
-    ? { width: 142, height: 195 }
-    : { width: 320, height: 440 }
+      ? { width: 200, height: 276 }
+      : isDesktop
+        ? { width: 142, height: 195 }
+        : { width: 320, height: 440 }
 
   useEffect(() => {
     const preventDefault = (e: Event) => e.preventDefault()
@@ -38,6 +38,7 @@ const MovableCard = ({ card }: MovableCard) => {
     { id: rarityMap.hallOfFame.label, color: '#FFD700' },
     { id: rarityMap.award.label, color: '#FFD700' },
     { id: rarityMap.twoThousandClub.label, color: '#FFD700' },
+    { id: rarityMap.fistOverall.label, color: '#FFD700' },
   ]
 
   const domTarget = useRef(null)

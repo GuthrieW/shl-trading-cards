@@ -20,6 +20,11 @@ const rarityMap = {
     value: '2000 TPE Club',
     rarity: 50,
   },
+  fistOverall: {
+    label: '1st Overall',
+    value: '1st Overall',
+    rarity: 0,
+  },
 }
 
 export default rarityMap
