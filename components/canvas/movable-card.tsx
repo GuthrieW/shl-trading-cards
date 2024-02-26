@@ -38,7 +38,7 @@ const MovableCard = ({ card }: MovableCard) => {
     { id: rarityMap.hallOfFame.label, color: '#FFD700' },
     { id: rarityMap.award.label, color: '#FFD700' },
     { id: rarityMap.twoThousandClub.label, color: '#FFD700' },
-    { id: rarityMap.fistOverall.label, color: '#FFD700' },
+    { id: rarityMap.firstOverall.label, color: '#FFD700' },
   ]
 
   const domTarget = useRef(null)

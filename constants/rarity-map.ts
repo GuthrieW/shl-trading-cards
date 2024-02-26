@@ -5,8 +5,8 @@ export type Rarity = {
 }
 
 const rarityMap = {
-  bronze: { label: 'Bronze', value: 'Bronze', rarity: 4300 },
-  silver: { label: 'Silver', value: 'Silver', rarity: 3000 },
+  bronze: { label: 'Bronze', value: 'Bronze', rarity: 4280 },
+  silver: { label: 'Silver', value: 'Silver', rarity: 2985 },
   gold: { label: 'Gold', value: 'Gold', rarity: 1500 },
   ruby: { label: 'Ruby', value: 'Ruby', rarity: 400 },
   diamond: { label: 'Diamond', value: 'Diamond', rarity: 200 },
@@ -20,10 +20,10 @@ const rarityMap = {
     value: '2000 TPE Club',
     rarity: 50,
   },
-  fistOverall: {
+  firstOverall: {
     label: '1st Overall',
     value: '1st Overall',
-    rarity: 0,
+    rarity: 35,
   },
 }
 
