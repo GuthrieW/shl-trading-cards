@@ -192,7 +192,7 @@ const getBasePackRarity = (): string => {
         rarityMap.award.rarity +
         rarityMap.firstOverall.rarity
   )
-    return rarityMap.award.label
+    return rarityMap.firstOverall.label
   return rarityMap.bronze.label
 }
 
