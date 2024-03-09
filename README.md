@@ -21,17 +21,33 @@
 Notice: While permission to obtain and utilize this project is granted under the MIT License, this software is highly specialized for its intended implementation. It is recommended for anyone interested in this software to fork and modify the project for your intended implementation.
 
 To start the project in a development environment run:
-`yarn dev`
+
+```
+yarn dev
+```
 
 To start the project in a production environment run:
-`yarn start`
+
+```
+yarn start
+```
 
 # Bug Reports
 
 To report a bug fill out the following template and post a new issue [here](https://github.com/GuthrieW/shl-trading-cards/issues/new):
 
 ```
+SHL Username:
 
+Operating System (Windows/Mac/Linux):
+
+Device (Mobile/PC):
+
+Description:
+
+Reproduction Steps:
+
+Screenshots:
 ```
 
 # Feature Requests
@@ -39,7 +55,11 @@ To report a bug fill out the following template and post a new issue [here](http
 To request as new feature fill out the following template and post a new issue [here](https://github.com/GuthrieW/shl-trading-cards/issues/new):
 
 ```
+SHL Username:
 
+Desired Functionality:
+
+Mockup:
 ```
 
 # Contributing
