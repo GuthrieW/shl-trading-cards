@@ -10,6 +10,8 @@ import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import fs from 'fs'
 import { pathToCardsForUpload } from '@constants/path-to-cards'
+import { v4 as uuid } from 'uuid'
+import WebpConverter from 'webp-converter'
 
 const allowedMethods = [PATCH]
 const cors = Cors({
@@ -24,15 +26,20 @@ const index = async (
   const { method, query, body } = request
 
   if (method === PATCH) {
-    const { cardID } = query
-    const { image } = body
+    const { cardID } = query as { cardID: string }
+    const { image } = body as { image: string }
 
-    const imageFilename = `${cardID}.png`
-    const base64Data = image.replace(/^data:image\/png;base64,/, '')
+    const imageFilename: string = `${uuid()}.webp`
+    const base64PngData: string = image.replace(/^data:image\/png;base64,/, '')
+    const base64WebpData: string = await WebpConverter.str2webpstr(
+      base64PngData,
+      'png',
+      '-q 100'
+    )
 
     try {
-      const imagePage = `${pathToCardsForUpload}${imageFilename}`
-      fs.writeFileSync(imagePage, base64Data, 'base64')
+      const imagePage: string = `${pathToCardsForUpload}${imageFilename}`
+      fs.writeFileSync(imagePage, base64WebpData, 'base64')
     } catch (error) {
       console.log('error', error)
     }
