@@ -1,14 +1,9 @@
-<br />
-<br />
-
 <p align="center">
   <a href="https://cards.simulationhockey.com">
     <img src="https://cards.simulationhockey.com/images/ice-level.svg" alt="easybase logo black" width="50%">
   </a>
 </p>
-
 <br />
-
 <p align="center">
   <img alt="npm" src="https://img.shields.io/npm/dw/easybase-react">
   <img alt="GitHub" src="https://img.shields.io/github/license/easybase/easybase-react">
@@ -64,8 +59,10 @@ Mockup:
 
 # Contributing
 
-To contribute to this project
+To contribute to this project follow the [standard GitHub contribution guidlines](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project).
+
+If you need something to work on you can find issues on the [issues page](https://github.com/GuthrieW/shl-trading-cards/issues).
 
 # License
 
-MIT. Copyright (c) 2021 Wesley Guthrie
+[MIT Copyright (c) 2021 Wesley Guthrie](https://github.com/GuthrieW/shl-trading-cards/blob/main/LICENSE)
