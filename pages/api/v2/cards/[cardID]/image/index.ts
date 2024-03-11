@@ -8,10 +8,8 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
-import fs from 'fs'
-import { pathToCardsForUpload } from '@constants/path-to-cards'
 import { v4 as uuid } from 'uuid'
-import WebpConverter from 'webp-converter'
+import { imageService } from 'lib/imageService'
 
 const allowedMethods = [PATCH]
 const cors = Cors({
@@ -31,15 +29,9 @@ const index = async (
 
     const imageFilename: string = `${uuid()}.webp`
     const base64PngData: string = image.replace(/^data:image\/png;base64,/, '')
-    const base64WebpData: string = await WebpConverter.str2webpstr(
-      base64PngData,
-      'png',
-      '-q 100'
-    )
-
+    const webpBuffer: Buffer = await imageService.convertToWebp(base64PngData)
     try {
-      const imagePage: string = `${pathToCardsForUpload}${imageFilename}`
-      fs.writeFileSync(imagePage, base64WebpData, 'base64')
+      await imageService.saveImage(webpBuffer, imageFilename)
     } catch (error) {
       console.log('error', error)
     }

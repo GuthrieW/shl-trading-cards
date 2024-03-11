@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { queryDatabase } from '@pages/api/database/database'
 import { ArgumentParser } from 'argparse'
 import SQL, { SQLStatement } from 'sql-template-strings'

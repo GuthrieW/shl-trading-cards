@@ -36,6 +36,8 @@ SHL Username:
 
 Operating System (Windows/Mac/Linux):
 
+Browser (Safari/IE/Chrome/Firefox):
+
 Device (Mobile/PC):
 
 Description:
