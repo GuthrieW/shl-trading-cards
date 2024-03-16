@@ -37,8 +37,8 @@ async function main() {
         LIMIT 1;
       `
 
-      const result = await queryDatabase<any>(query)
-      let player = result[0] as Card
+      const result: Card[] = await queryDatabase<Card>(query)
+      let player = result[0]
 
       if (!player) {
         console.error(`Existing card not found for ${cardName}`)

@@ -1,5 +1,6 @@
 import sharp, { type OutputInfo } from 'sharp'
 import { pathToCardsForUpload } from '@constants/path-to-cards'
+import { v4 as uuid } from 'uuid'
 
 class ImageService {
   async convertToWebp(image: string): Promise<Buffer> {
@@ -8,6 +9,10 @@ class ImageService {
 
   async saveImage(imageBuffer: Buffer, filename: string): Promise<OutputInfo> {
     return await sharp(imageBuffer).toFile(`${pathToCardsForUpload}${filename}`)
+  }
+
+  async generateFilename() {
+    return `${uuid()}.webp`
   }
 }
 

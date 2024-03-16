@@ -94,7 +94,7 @@ async function setCardsAuthorsPaids(): Promise<void> {
 
 async function getFinishedAndUnpaidCards(): Promise<AuthorPayoutForRarity[]> {
   const cards: AuthorPayoutForRarity[] =
-    (await queryDatabase<AuthorPayoutForRarity>(
+    await queryDatabase<AuthorPayoutForRarity>(
       SQL`
         SELECT COUNT(*) as cardsMade, author_userID, card_rarity FROM admin_cards.cards
         WHERE approved=1
@@ -102,7 +102,7 @@ async function getFinishedAndUnpaidCards(): Promise<AuthorPayoutForRarity[]> {
         AND image_url IS NOT NULL
         GROUP BY author_userID, card_rarity;
       `
-    )) as AuthorPayoutForRarity[]
+    )
 
   return cards
 }

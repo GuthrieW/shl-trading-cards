@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import sharp from 'sharp'
+import { POST } from '@constants/http-methods'
+import axios from 'axios'
 
 void main()
   .then(async () => {
@@ -12,7 +13,10 @@ void main()
   })
 
 async function main() {
-  await sharp('temp/card-to-convert.png')
-    .webp()
-    .toFile('temp/converted-card.webp')
+  const result = await axios({
+    method: POST,
+    url: 'https://cards.simulationhockey.com/api/v2/cards/fix',
+  })
+
+  console.log('result', result)
 }

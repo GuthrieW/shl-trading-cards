@@ -43,13 +43,13 @@ const index = async (
       )
       if (isMissingPackType) return
 
-      const hasReachedLimit = (await queryDatabase<{ packsToday: number }>(
+      const hasReachedLimit = await queryDatabase<{ packsToday: number }>(
         SQL`
           SELECT packsToday
           FROM `.append(getCardsDatabaseName()).append(SQL`.packToday
           WHERE userID=${uid};
         `)
-      )) as { packsToday: number }[]
+      )
 
       const hasReachedPackLimit: boolean = checkBoom(
         hasReachedLimit.length === 0 || hasReachedLimit[0]?.packsToday < 3,
@@ -59,7 +59,7 @@ const index = async (
       )
       if (hasReachedPackLimit) return
 
-      const bankData = await queryDatabase(
+      const bankData = await queryDatabase<{ bankBalance: number }>(
         SQL`
           SELECT bankBalance
           FROM `.append(getPortalDatabaseName()).append(SQL`.bankBalance

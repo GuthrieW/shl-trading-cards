@@ -25,7 +25,7 @@ const index = async (
   if (method === GET) {
     const { cardID } = query
 
-    const result = await queryDatabase<Card>(
+    const result: Card[] = await queryDatabase<Card>(
       SQL`
       SELECT cardID,
         player_name,

@@ -22,7 +22,7 @@ async function main() {
         SELECT player_name FROM admin_cards.cards WHERE playerID=${cardId} LIMIT 1;
       `
 
-      const result = await queryDatabase<any>(query)
+      const result: { player_name: string }[] = await queryDatabase<any>(query)
       console.log('result', result)
       return `${cardId} - ${result[0]?.player_name} - `
     })

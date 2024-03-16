@@ -22,7 +22,7 @@ const index = async (
   const { method } = request
 
   if (method === GET) {
-    const unapprovedCards: Card[] = (await queryDatabase<Card>(
+    const unapprovedCards: Card[] = await queryDatabase<Card>(
       SQL`
       SELECT cardID,
         player_name,
@@ -53,7 +53,7 @@ const index = async (
         AND author_userID IS NOT NULL
         AND image_url IS NOT NULL;
     `)
-    )) as Card[]
+    )
 
     response.status(StatusCodes.OK).json(unapprovedCards)
     return

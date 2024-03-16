@@ -10,7 +10,7 @@
     "add-cards-to-users": "APP_ENV=script tsx bin/add-cards-to-users/add-cards-to-users.ts",
     "base-requests": "APP_ENV=development tsx bin/base-requests/base-requests.ts --season=74",
     "charity-requests": "APP_ENV=development tsx bin/charity-requests/charity-requests.ts",
-    "convert-all-pngs-to-webps": "APP_ENV=development tsx bin/convert-all-pngs-to-webps/convert-all-pngs-to-webps.ts",
+    "convert-all-pngs-to-webps": "APP_ENV=production tsx bin/convert-all-pngs-to-webps/convert-all-pngs-to-webps.ts",
     "convert-single-png-to-webp": "APP_ENV=development tsx bin/convert-single-png-to-webp/convert-single-png-to-webp.ts",
     "delete-duplicates": "APP_ENV=development tsx bin/delete-duplicate-cards/delete-duplicate-cards.ts --prodRun",
     "pay-card-creators": "APP_ENV=development tsx bin/pay-card-creators/pay-card-creators.ts --prodRun",

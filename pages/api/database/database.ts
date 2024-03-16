@@ -12,13 +12,13 @@ if (process.env.APP_ENV === 'production') {
   }
 }
 
-if (process.env.APP_ENV === 'development') {
+if (process.env.APP_ENV === 'production') {
   config = {
     config: {
-      host: process.env.DEV_DATABASE_HOST,
-      user: process.env.DEV_DATABASE_USER,
-      password: process.env.DEV_DATABASE_PASSWORD,
-      database: process.env.DEV_DATABASE_NAME,
+      host: 'localhost',
+      user: 'admin_cards',
+      password: 'CTRFcardMaster99!',
+      database: 'admin_cards',
     },
   }
 }
@@ -30,9 +30,9 @@ process.env.APP_ENV !== 'production'
 
 const dbConnection = mysql(config)
 
-export async function queryDatabase<T>(query): Promise<T[] | T> {
+export async function queryDatabase<T>(query): Promise<T[]> {
   try {
-    const results: T[] | T = await dbConnection.query(query)
+    const results: T[] = await dbConnection.query(query)
     await dbConnection.end()
     return results
   } catch (error) {
