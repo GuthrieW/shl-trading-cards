@@ -18,7 +18,7 @@ const SubmitCardModal = ({ setShowModal, card }: SubmitCardModalProps) => {
 
   const convertToBase64 = (file): Promise<string> => {
     return new Promise((resolve) => {
-      let reader = new FileReader()
+      const reader = new FileReader()
       reader.readAsDataURL(file)
       reader.onload = () => {
         const baseUrl = reader.result as string

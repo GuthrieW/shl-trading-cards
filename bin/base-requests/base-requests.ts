@@ -160,7 +160,7 @@ async function checkForDuplicatesAndCreateCardRequestData(
         const teamId = teamNameToId(player.team)
         const raritiesToCheck = getSameAndHigherRaritiesQueryFragment(rarity)
 
-        const playerResult = (await queryDatabase(
+        const playerResult: { amount: number }[] = await queryDatabase(
           SQL`
             SELECT count(*) as amount
             FROM `.append(getCardsDatabaseName()).append(`.cards
@@ -170,7 +170,7 @@ async function checkForDuplicatesAndCreateCardRequestData(
               AND ${raritiesToCheck} 
               AND position='${position}';
           `)
-        )) as { amount: number }
+        )
 
         if (playerResult[0] && playerResult[0].amount > 0) {
           return null

@@ -23,17 +23,6 @@ if (process.env.APP_ENV === 'development') {
   }
 }
 
-if (process.env.APP_ENV === 'script') {
-  config = {
-    config: {
-      host: 'localhost',
-      user: 'admin_cards',
-      password: 'CTRFcardMaster99!',
-      database: 'admin_cards',
-    },
-  }
-}
-
 console.log('env', process.env.APP_ENV)
 process.env.APP_ENV !== 'production'
   ? console.log('dbconfig', config)
@@ -41,9 +30,9 @@ process.env.APP_ENV !== 'production'
 
 const dbConnection = mysql(config)
 
-export async function queryDatabase<T>(query): Promise<T[] | T> {
+export async function queryDatabase<T>(query): Promise<T[]> {
   try {
-    const results: T[] | T = await dbConnection.query(query)
+    const results: T[] = await dbConnection.query(query)
     await dbConnection.end()
     return results
   } catch (error) {
@@ -53,7 +42,7 @@ export async function queryDatabase<T>(query): Promise<T[] | T> {
 }
 
 export const getCardsDatabaseName = () =>
-  process.env.APP_ENV === 'production' || 'script' ? 'admin_cards' : 'dev_cards'
+  process.env.APP_ENV === 'production' ? 'admin_cards' : 'dev_cards'
 
 export const getUsersDatabaseName = () =>
   process.env.APP_ENV === 'production' ? 'admin_mybb' : 'admin_mybb'

@@ -71,7 +71,8 @@ async function getDuplicateCardIds(): Promise<string[]> {
         author_userID: string
       }
 
-      const duplicates = (await queryDatabase<DuplicateCheck>(SQL`
+      const duplicates: DuplicateCheck[] =
+        await queryDatabase<DuplicateCheck>(SQL`
         SELECT cardId, image_url, author_userID
         FROM admin_cards.cards
         WHERE player_name=${duplicatesRow.player_name}
@@ -82,7 +83,7 @@ async function getDuplicateCardIds(): Promise<string[]> {
           AND position=${duplicatesRow.position}
           AND season=${duplicatesRow.season}
           AND card_rarity <> "Misprint";
-      `)) as DuplicateCheck[]
+      `)
 
       const sortedDuplicates = sortBy(duplicates, [
         'image_url',
@@ -111,7 +112,9 @@ async function checkShouldDelete(
 
   await Promise.all(
     await cardIdsToCheck.map(async (cardId: string) => {
-      const foundInCollection = await queryDatabase(SQL`
+      const foundInCollection = await queryDatabase<{
+        existingCards: number
+      }>(SQL`
         SELECT count(*) as existingCards
         FROM admin_cards.collection
         WHERE cardID=${cardId};

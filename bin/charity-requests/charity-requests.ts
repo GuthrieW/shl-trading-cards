@@ -1,6 +1,6 @@
+#!/usr/bin/env node
 import rarityMap from '@constants/rarity-map'
 import { queryDatabase } from '@pages/api/database/database'
-import { ArgumentParser } from 'argparse'
 import { requestCards } from 'bin/base-requests/base-requests'
 import { readFileSync } from 'fs'
 import SQL from 'sql-template-strings'
@@ -37,8 +37,8 @@ async function main() {
         LIMIT 1;
       `
 
-      const result = await queryDatabase<any>(query)
-      let player = result[0] as Card
+      const result: Card[] = await queryDatabase<Card>(query)
+      let player = result[0]
 
       if (!player) {
         console.error(`Existing card not found for ${cardName}`)

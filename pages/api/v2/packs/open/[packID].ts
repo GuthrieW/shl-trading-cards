@@ -196,12 +196,12 @@ const getBasePackRarity = (): string => {
   return rarityMap.bronze.label
 }
 
-const pullBaseCards = async (): Promise<Card[]> => {
-  let pulledCards: Card[] = []
+const pullBaseCards = async (): Promise<{ cardID: string }[]> => {
+  let pulledCards: { cardID: string }[] = []
   for (let i = 0; i < 6; i++) {
     const rarity: string = getBasePackRarity()
 
-    const card = await queryDatabase(
+    const card: { cardID: string }[] = await queryDatabase(
       SQL`
       SELECT cardID
       FROM `.append(getCardsDatabaseName()).append(SQL`.cards
@@ -239,7 +239,7 @@ const index = async (
     )
     if (missingPackId) return
 
-    const packResult = await queryDatabase(
+    const packResult = await queryDatabase<PackData>(
       SQL`
       SELECT packID,
         userID,
@@ -262,7 +262,7 @@ const index = async (
     )
     if (packAlreadyOpened) return
 
-    let pulledCards: Card[] = []
+    let pulledCards: { cardID: string }[] = []
     if (pack.packType === packsMap.base.id) {
       pulledCards = await pullBaseCards()
     } else {

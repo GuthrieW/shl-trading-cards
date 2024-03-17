@@ -24,7 +24,7 @@ const index = async (
   if (method === GET) {
     const { uid } = query
 
-    const result = await queryDatabase(
+    const result = await queryDatabase<{ packsToday: number }>(
       SQL`
       SELECT packsToday
       FROM `.append(getCardsDatabaseName()).append(SQL`.packToday

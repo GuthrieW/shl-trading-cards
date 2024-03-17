@@ -1,4 +1,4 @@
-# Create Card Requests
+# Base Requests
 
 This script creates new card requests for the provided season and inserts them into the database. Requests are only created if a card does not already exist with the same playerID, teamID, player_name and equal or higher card_rarity.
 

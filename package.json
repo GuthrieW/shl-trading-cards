@@ -7,13 +7,15 @@
     "build": "next build",
     "start": "APP_ENV=production next start -p 9000",
     "start:dev": "APP_ENV=development next start -p 6500",
-    "base-requests": "APP_ENV=script tsx bin/base-requests/base-requests.ts --season=74",
-    "charity-requests": "APP_ENV=script tsx bin/charity-requests/charity-requests.ts",
-    "delete-duplicates": "APP_ENV=script tsx bin/delete-duplicate-cards/delete-duplicate-cards.ts --prodRun",
-    "pay-card-creators": "APP_ENV=script tsx bin/pay-card-creators/pay-card-creators.ts --prodRun",
-    "add-charity-cards-to-users": "APP_ENV=script tsx bin/add-charity-cards-to-users/add-charity-cards-to-users.ts",
-    "smoke-test": "APP_ENV=script tsx bin/smoke-test/smoke-test.ts",
-    "temp-script": "APP_ENV=script tsx bin/temp-script/temp-script.ts"
+    "add-cards-to-users": "APP_ENV=script tsx bin/add-cards-to-users/add-cards-to-users.ts",
+    "base-requests": "APP_ENV=development tsx bin/base-requests/base-requests.ts --season=74",
+    "charity-requests": "APP_ENV=development tsx bin/charity-requests/charity-requests.ts",
+    "convert-all-pngs-to-webps": "APP_ENV=production tsx bin/convert-all-pngs-to-webps/convert-all-pngs-to-webps.ts",
+    "convert-single-png-to-webp": "APP_ENV=development tsx bin/convert-single-png-to-webp/convert-single-png-to-webp.ts",
+    "delete-duplicates": "APP_ENV=development tsx bin/delete-duplicate-cards/delete-duplicate-cards.ts --prodRun",
+    "pay-card-creators": "APP_ENV=development tsx bin/pay-card-creators/pay-card-creators.ts --prodRun",
+    "smoke-test": "APP_ENV=development tsx bin/smoke-test/smoke-test.ts",
+    "temp-script": "APP_ENV=development tsx bin/temp-script/temp-script.ts"
   },
   "dependencies": {
     "@babel/core": "^7.23.5",
@@ -49,12 +51,14 @@
     "react-use-gesture": "^9.1.3",
     "react-virtual": "^2.10.4",
     "serverless-mysql": "^1.5.4",
+    "sharp": "0.32.6",
     "sql-template-strings": "^2.2.2",
     "styled-components": "^6.1.1",
     "svg-sprite-loader": "^6.0.9",
     "ts-node": "^10.9.1",
     "tsx": "^4.6.2",
     "typescript": "^5.3.2",
+    "uuid": "^9.0.1",
     "webpack": "^5.89.0"
   },
   "devDependencies": {
