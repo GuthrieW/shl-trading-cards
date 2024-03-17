@@ -72,7 +72,7 @@ const Home = () => {
                 <img
                   key={cards[0].cardID}
                   className="w-1/2 hover:-translate-y-2 transition-transform duration-200 hover:z-10 invisible"
-                  src={`${pathToCards}/${cards[0].cardID}.png`}
+                  src={`${pathToCards}${cards[0].image_url}`}
                 />
                 {cards.map((card, index) => (
                   <img
@@ -82,7 +82,7 @@ const Home = () => {
                       left: `${index * 10}%`,
                       top: `0`,
                     }}
-                    src={`${pathToCards}/${card.cardID}.png`}
+                    src={`${pathToCards}${card.image_url}`}
                   />
                 ))}
               </div>
