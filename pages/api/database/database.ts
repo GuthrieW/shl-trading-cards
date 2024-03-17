@@ -12,13 +12,13 @@ if (process.env.APP_ENV === 'production') {
   }
 }
 
-if (process.env.APP_ENV === 'production') {
+if (process.env.APP_ENV === 'development') {
   config = {
     config: {
-      host: 'localhost',
-      user: 'admin_cards',
-      password: 'CTRFcardMaster99!',
-      database: 'admin_cards',
+      host: process.env.DEV_DATABASE_HOST,
+      user: process.env.DEV_DATABASE_USER,
+      password: process.env.DEV_DATABASE_PASSWORD,
+      database: process.env.DEV_DATABASE_NAME,
     },
   }
 }

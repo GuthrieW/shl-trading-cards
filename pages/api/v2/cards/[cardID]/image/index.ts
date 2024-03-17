@@ -28,20 +28,18 @@ const index = async (
       const { cardID } = query as { cardID: string }
       const { image } = body as { image: string }
 
+      const base64PngData: string = image.replace(/^data:image\/png;base64/, '')
+      const pngBuffer = Buffer.from(base64PngData, 'base64')
+      const webpBuffer: Buffer = await imageService.convertToWebp(pngBuffer)
       const imageFilename: string = `${uuid()}.webp`
-      const base64PngData: string = image.replace(
-        /^data:image\/png;base64,/,
-        ''
-      )
-      const webpBuffer: Buffer = await imageService.convertToWebp(base64PngData)
       await imageService.saveImage(webpBuffer, imageFilename)
 
       const result = await queryDatabase(
         SQL`
-      UPDATE `.append(getCardsDatabaseName()).append(SQL`.cards
-      SET image_url=${imageFilename}
-      WHERE cardID=${cardID};
-    `)
+        UPDATE `.append(getCardsDatabaseName()).append(SQL`.cards
+        SET image_url=${imageFilename}
+        WHERE cardID=${cardID};
+      `)
       )
 
       response.status(StatusCodes.OK).json(result)
@@ -49,7 +47,6 @@ const index = async (
     } catch (error) {
       console.log('error', error)
       response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
-
       return
     }
   }

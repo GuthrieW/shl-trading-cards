@@ -21,10 +21,10 @@ const index = async (
 
   if (method === GET) {
     const { uid } = query
-    const trades = await queryDatabase<Trade[]>(
+    const trades: Trade[] = await queryDatabase<Trade>(
       SQL`CALL get_trades_by_user(${uid});`
     )
-    const pending: Trade[] = trades[0].filter(
+    const pending: Trade[] = trades.filter(
       (trade: Trade) => trade.trade_status === 'PENDING'
     )
     response.status(StatusCodes.OK).json({ pending: pending.length })
