@@ -37,7 +37,7 @@ const index = async (
     let tradeError: boolean = false
     await Promise.all(
       tradeAssets.map(async (asset: TradeAsset) => {
-        const cardOwner = await queryDatabase(
+        const cardOwner = await queryDatabase<{ userID: string }>(
           SQL`SELECT userID FROM `
             .append(getCardsDatabaseName())
             .append(`.collection WHERE ownedCardId=`)
