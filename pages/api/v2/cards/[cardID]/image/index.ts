@@ -24,28 +24,34 @@ const index = async (
   const { method, query, body } = request
 
   if (method === PATCH) {
-    const { cardID } = query as { cardID: string }
-    const { image } = body as { image: string }
-
-    const imageFilename: string = `${uuid()}.webp`
-    const base64PngData: string = image.replace(/^data:image\/png;base64,/, '')
-    const webpBuffer: Buffer = await imageService.convertToWebp(base64PngData)
     try {
-      await imageService.saveImage(webpBuffer, imageFilename)
-    } catch (error) {
-      console.log('error', error)
-    }
+      const { cardID } = query as { cardID: string }
+      const { image } = body as { image: string }
 
-    const result = await queryDatabase(
-      SQL`
+      const imageFilename: string = `${uuid()}.webp`
+      const base64PngData: string = image.replace(
+        /^data:image\/png;base64,/,
+        ''
+      )
+      const webpBuffer: Buffer = await imageService.convertToWebp(base64PngData)
+      await imageService.saveImage(webpBuffer, imageFilename)
+
+      const result = await queryDatabase(
+        SQL`
       UPDATE `.append(getCardsDatabaseName()).append(SQL`.cards
       SET image_url=${imageFilename}
       WHERE cardID=${cardID};
     `)
-    )
+      )
 
-    response.status(StatusCodes.OK).json(result)
-    return
+      response.status(StatusCodes.OK).json(result)
+      return
+    } catch (error) {
+      console.log('error', error)
+      response.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
+
+      return
+    }
   }
 
   response.setHeader('Allowed', allowedMethods)
