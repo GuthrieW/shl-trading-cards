@@ -12,8 +12,10 @@ import RequestCards from '../../components/admin-pages/request-cards'
 import SubmitCards from '../../components/admin-pages/submit-cards'
 import ProcessCards from '../../components/admin-pages/process-cards'
 import Dropdown, { DropdownOption } from '@components/dropdowns/dropdown'
+import DonationManagement from '@components/admin-pages/donations-managment'
 
 type AdminPage =
+  | 'donation-management'
   | 'issue-packs'
   | 'all-cards'
   | 'edit-cards'
@@ -56,6 +58,10 @@ const Admin = () => {
       onClick: () => handleSelectOption('claim-cards'),
     },
     {
+      text: 'Donations',
+      onClick: () => handleSelectOption('donation-management'),
+    },
+    {
       text: 'Edit Cards',
       onClick: () => handleSelectOption('edit-cards'),
     },
@@ -84,6 +90,7 @@ const Admin = () => {
     <div className="mx-2">
       <p>Admin Dashboard</p>
       <Dropdown title={buttonText} options={dropdownOptions} />
+      {selectedAdminPage === 'donation-management' && <DonationManagement />}
       {selectedAdminPage === 'issue-packs' && <IssuePacks />}
       {selectedAdminPage === 'all-cards' && <AllCards />}
       {selectedAdminPage === 'edit-cards' && <EditCards />}

@@ -279,7 +279,7 @@ const EditCardsTable = ({ tableData }: EditCardTableProps) => {
     if (isLoading) {
       warningToast({ warningText: 'Already editing a card' })
     }
-    const result = editCard({ card: newCardData })
+    editCard({ card: newCardData })
   }
 
   return (
