@@ -9,7 +9,7 @@ class ImageService {
    * @returns {Buffer}
    */
   async convertToWebp(image: ArrayBuffer | Buffer | string): Promise<Buffer> {
-    return await sharp(image).webp().toBuffer()
+    return await sharp(image).webp({ lossless: true, quality: 100 }).toBuffer()
   }
 
   /**

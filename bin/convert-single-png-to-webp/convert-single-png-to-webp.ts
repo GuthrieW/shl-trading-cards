@@ -13,6 +13,6 @@ void main()
 
 async function main() {
   await sharp('temp/card-to-convert.png')
-    .webp()
+    .webp({ lossless: true, quality: 100 })
     .toFile('temp/converted-card.webp')
 }
