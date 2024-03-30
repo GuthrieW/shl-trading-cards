@@ -9,6 +9,8 @@ import {
   useGlobalFilter,
 } from 'react-table'
 import { warningToast } from '@utils/toasts'
+import useEditDonator from '@pages/api/mutations/use-edit-donator'
+import EditDonatorModal from '@components/modals/edit-donator-modal'
 
 export type DonationManagementTableProps = {
   tableData: User[]
@@ -31,7 +33,11 @@ const DonationManagementTable = ({
   const [showModal, setShowModal] = useState<boolean>(false)
   const [selectedButtonId, setSelectedButtonId] =
     useState<PlayerTableButtonId>('skaters')
-  const [modalRow, setModalRow] = useState<Card>(null)
+  const [modalRow, setModalRow] = useState<{
+    uid: number
+    username: string
+    subsscription: number
+  }>(null)
 
   const columnData: ColumnData[] = [
     {
@@ -100,6 +106,7 @@ const DonationManagementTable = ({
     if (isLoading) {
       warningToast({ warningText: 'Already editing a donator' })
     }
+
     editDonator({
       uid: newDonatorData.uid,
       subscription: newDonatorData.subscription,
@@ -131,8 +138,9 @@ const DonationManagementTable = ({
       />
       {showModal && (
         <EditDonatorModal
-          uid={modalRow.cardID}
-          username={modalRow.player_name}
+          uid={modalRow.uid}
+          username={modalRow.username}
+          subscription={modalRow.subsscription}
           onSubmit={handleEditDonator}
           setShowModal={setShowModal}
         />
