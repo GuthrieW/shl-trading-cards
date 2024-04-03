@@ -8,7 +8,7 @@ import { StatusCodes } from 'http-status-codes'
 
 const allowedMethods = [POST]
 const cors = Cors({
-  method: allowedMethods,
+  methods: allowedMethods,
 })
 
 const index = async (

@@ -640,6 +640,13 @@
   resolved "https://registry.yarnpkg.com/@types/argparse/-/argparse-2.0.14.tgz#a4395eb7bcb9bebefb4988ece567d85881b43b0c"
   integrity sha512-jJ6NMs9rXQ0rsqNt3TL4Elcwhd6wygo3lJOVoiHzURD34vsCcAlw443uGu4PXTtEmMF7sYKoadTCLXNmuJuQGw==
 
+"@types/cors@^2.8.17":
+  version "2.8.17"
+  resolved "https://registry.yarnpkg.com/@types/cors/-/cors-2.8.17.tgz#5d718a5e494a8166f569d986794e49c48b216b2b"
+  integrity sha512-8CGDvrBj1zgo2qE+oS3pOCyYNqCPryMWY2bGfwA0dcfopWGgxs+78df0Rs3rc9THP4JkOhLsAa+15VdpAqkcUA==
+  dependencies:
+    "@types/node" "*"
+
 "@types/crypto-js@^4.1.1":
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/@types/crypto-js/-/crypto-js-4.2.1.tgz#480edd76991a63050cb88db1a8840758c55a7135"

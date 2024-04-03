@@ -195,3 +195,8 @@ type MostCardsOwner = {
   username: string
   avatar?: string
 }
+
+type Donator = {
+  uid: number
+  subscription: number
+}

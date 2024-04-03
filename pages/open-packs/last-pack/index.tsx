@@ -8,6 +8,12 @@ import ReactCardFlip from 'react-card-flip'
 import rarityMap from '@constants/rarity-map'
 import pathToCards from '@constants/path-to-cards'
 
+const HexCodes = {
+  Ruby: '#E0115F',
+  Diamond: '#45ACA5',
+  Gold: '#FFD700',
+}
+
 const LastOpenedPack = () => {
   const [revealedCards, setRevealedCards] = useState<number[]>([])
   const { latestPackCards, isSuccess, isLoading, isError } =
@@ -16,11 +22,11 @@ const LastOpenedPack = () => {
     })
 
   const cardRarityShadows = [
-    { id: rarityMap.ruby.label, color: '#e0115f' },
-    { id: rarityMap.diamond.label, color: '#45ACA5' },
-    { id: rarityMap.hallOfFame.label, color: '#FFD700' },
-    { id: rarityMap.twoThousandClub.label, color: '#FFD700' },
-    { id: rarityMap.award.label, color: '#FFD700' },
+    { id: rarityMap.ruby.label, color: HexCodes.Ruby },
+    { id: rarityMap.diamond.label, color: HexCodes.Diamond },
+    { id: rarityMap.hallOfFame.label, color: HexCodes.Gold },
+    { id: rarityMap.twoThousandClub.label, color: HexCodes.Gold },
+    { id: rarityMap.award.label, color: HexCodes.Gold },
   ]
 
   const updateRevealedCards = (index: number): void => {
