@@ -8,7 +8,6 @@ import {
   usePagination,
   useGlobalFilter,
 } from 'react-table'
-import { warningToast } from '@utils/toasts'
 import useEditDonator from '@pages/api/mutations/use-edit-donator'
 import EditDonatorModal from '@components/modals/edit-donator-modal'
 
@@ -27,9 +26,6 @@ type ColumnData = {
 const DonationManagementTable = ({
   tableData,
 }: DonationManagementTableProps) => {
-  const { editDonator, response, isSuccess, isLoading, isError } =
-    useEditDonator()
-
   const [showModal, setShowModal] = useState<boolean>(false)
   const [selectedButtonId, setSelectedButtonId] =
     useState<PlayerTableButtonId>('skaters')
@@ -52,13 +48,6 @@ const DonationManagementTable = ({
       Header: 'uid',
       accessor: 'uid',
       title: 'uid',
-      sortDescFirst: false,
-    },
-    {
-      id: 'subscription',
-      Header: 'Subscription',
-      accessor: 'subscription',
-      title: 'Subscription',
       sortDescFirst: false,
     },
   ]
@@ -102,16 +91,16 @@ const DonationManagementTable = ({
     setShowModal(true)
   }
 
-  const handleEditDonator = (newDonatorData) => {
-    if (isLoading) {
-      warningToast({ warningText: 'Already editing a donator' })
-    }
+  // const handleEditDonator = (newDonatorData) => {
+  //   if (isLoading) {
+  //     warningToast({ warningText: 'Already editing a donator' })
+  //   }
 
-    editDonator({
-      uid: newDonatorData.uid,
-      subscription: newDonatorData.subscription,
-    })
-  }
+  //   editDonator({
+  //     uid: newDonatorData.uid,
+  //     subscription: newDonatorData.subscription,
+  //   })
+  // }
 
   return (
     <div>
@@ -140,8 +129,6 @@ const DonationManagementTable = ({
         <EditDonatorModal
           uid={modalRow.uid}
           username={modalRow.username}
-          subscription={modalRow.subsscription}
-          onSubmit={handleEditDonator}
           setShowModal={setShowModal}
         />
       )}

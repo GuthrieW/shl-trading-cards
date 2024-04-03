@@ -1,12 +1,15 @@
-import { POST } from '@constants/http-methods'
+import { GET } from '@constants/http-methods'
+import {
+  getCardsDatabaseName,
+  queryDatabase,
+} from '@pages/api/database/database'
 import middleware from '@pages/api/database/middleware'
-import { NextApiRequest, NextApiResponse } from 'next'
 import Cors from 'cors'
-import { queryDatabase } from '@pages/api/database/database'
-import SQL from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
+import { NextApiRequest, NextApiResponse } from 'next'
+import SQL from 'sql-template-strings'
 
-const allowedMethods = [POST]
+const allowedMethods = [GET]
 const cors = Cors({
   methods: allowedMethods,
 })
@@ -18,16 +21,19 @@ const index = async (
   await middleware(request, response, cors)
   const { method, query } = request
 
-  if (method === POST) {
-    const { id, declineId } = query
-    const result = await queryDatabase(
-      SQL`call decline_trade(${id}, ${declineId});`
+  if (method === GET) {
+    const { uid } = query
+    const result = await queryDatabase<Donator>(
+      SQL`
+        SELECT uid, subscription
+        FROM `.append(getCardsDatabaseName()).append(SQL`.monthly_subscriptions 
+        WHERE uid=${uid};
+      `)
     )
 
     response.status(StatusCodes.OK).json(result)
     return
   }
-
   response.setHeader('Allowed', allowedMethods)
   response.status(StatusCodes.METHOD_NOT_ALLOWED).end()
 }

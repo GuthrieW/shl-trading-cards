@@ -1,4 +1,4 @@
-import { PATCH } from '@constants/http-methods'
+import { POST } from '@constants/http-methods'
 import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { invalidateQueries } from './invalidate-queries'
@@ -10,7 +10,7 @@ type UseEditDonatorRequest = {
 }
 
 type UseEditDonator = {
-  editDonator: (UseEditDonatorRequest) => void
+  editDonator: (UseEditDonatorRequest: UseEditDonatorRequest) => void
   response: AxiosResponse
   isSuccess: boolean
   isLoading: boolean
@@ -22,7 +22,7 @@ const useEditDonator = (): UseEditDonator => {
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     async ({ uid, subscription }: UseEditDonatorRequest) => {
       return await axios({
-        method: PATCH,
+        method: POST,
         url: `/api/v2/donations`,
         data: { uid, subscription },
       })

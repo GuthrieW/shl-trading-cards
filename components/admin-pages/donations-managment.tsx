@@ -1,14 +1,14 @@
 import DonationManagementTable from '@components/tables/donation-management-table'
-import useGetDonationUsers from '@pages/api/queries/use-get-donation-users'
+import useGetallUsers from '@pages/api/queries/use-get-all-users'
 import { NextSeo } from 'next-seo'
 
 const DonationManagement = () => {
-  const { donationUsers, isLoading } = useGetDonationUsers({})
+  const { users, isSuccess, isLoading, isError } = useGetallUsers({})
   return (
     <>
       <NextSeo title="Donation Management" />
       <div className="m-2">
-        <DonationManagementTable tableData={donationUsers} />
+        <DonationManagementTable tableData={users} />
       </div>
     </>
   )
