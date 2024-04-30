@@ -3,15 +3,16 @@ import rarityMap from '@constants/rarity-map'
 export const generateRarityCheckboxes = (
   updateButtonIdsHook
 ): CollectionTableButtons[] => {
-  return Object.values(rarityMap).map((rarity) => {
-    let text = rarity.label
-    if (text === 'Hall of Fame') text = 'HOF'
-    if (text === '2000 TPE Club') text = '2K'
-    if (text === '1st Overall') text = '1OA'
+  return Object.values(rarityMap).map(({ label }) => {
+    let text: string = label
+    if (label === 'Hall of Fame') text = 'HOF'
+    if (label === '2000 TPE Club') text = '2K'
+    if (label === '1st Overall') text = '1OA'
+    if (label === 'IIHF Awards') text = 'IIHF'
     return {
-      id: rarity.label,
+      id: label,
       text,
-      onClick: () => updateButtonIdsHook(rarity.label),
+      onClick: () => updateButtonIdsHook(label),
     }
   })
 }

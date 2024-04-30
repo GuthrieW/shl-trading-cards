@@ -5,7 +5,6 @@ import pathToCards from '@constants/path-to-cards'
 import styles from './card-viewer.module.css'
 import rarityMap from '@constants/rarity-map'
 import { useResponsive } from '@hooks/useResponsive'
-import TradingCard from '@components/images/trading-card'
 
 export type MovableCard = {
   card: Card
@@ -39,6 +38,7 @@ const MovableCard = ({ card }: MovableCard) => {
     { id: rarityMap.award.label, color: '#FFD700' },
     { id: rarityMap.twoThousandClub.label, color: '#FFD700' },
     { id: rarityMap.firstOverall.label, color: '#FFD700' },
+    { id: rarityMap.iihfAwards.label, color: '#FFD700' },
   ]
 
   const domTarget = useRef(null)

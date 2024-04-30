@@ -5,7 +5,7 @@ export type Rarity = {
 }
 
 const rarityMap = {
-  bronze: { label: 'Bronze', value: 'Bronze', rarity: 4280 },
+  bronze: { label: 'Bronze', value: 'Bronze', rarity: 4280 }, // 4215
   silver: { label: 'Silver', value: 'Silver', rarity: 2985 },
   gold: { label: 'Gold', value: 'Gold', rarity: 1500 },
   ruby: { label: 'Ruby', value: 'Ruby', rarity: 400 },
@@ -20,11 +20,8 @@ const rarityMap = {
     value: '2000 TPE Club',
     rarity: 50,
   },
-  firstOverall: {
-    label: '1st Overall',
-    value: '1st Overall',
-    rarity: 35,
-  },
-}
+  firstOverall: { label: '1st Overall', value: '1st Overall', rarity: 35 },
+  iihfAwards: { label: 'IIHF Awards', value: 'IIHF Awards', rarity: 0 }, // 65
+} as const satisfies Record<string, Rarity>
 
 export default rarityMap

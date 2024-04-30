@@ -27,6 +27,8 @@ const LastOpenedPack = () => {
     { id: rarityMap.hallOfFame.label, color: HexCodes.Gold },
     { id: rarityMap.twoThousandClub.label, color: HexCodes.Gold },
     { id: rarityMap.award.label, color: HexCodes.Gold },
+    { id: rarityMap.firstOverall.label, color: HexCodes.Gold },
+    { id: rarityMap.iihfAwards.label, color: HexCodes.Gold },
   ]
 
   const updateRevealedCards = (index: number): void => {

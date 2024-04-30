@@ -4,7 +4,7 @@ import {
   queryDatabase,
 } from '@pages/api/database/database'
 import { POST } from '@constants/http-methods'
-import rarityMap from '@constants/rarity-map'
+import rarityMap, { Rarity } from '@constants/rarity-map'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
@@ -24,176 +24,20 @@ const randomIntFromInterval = (maximum: number): number => {
 }
 
 const getBasePackRarity = (): string => {
-  const num = randomIntFromInterval(10000)
+  const num: number = randomIntFromInterval(10000)
+  const rarities: Rarity[] = Object.values(rarityMap)
 
-  if (num > 0 && num <= rarityMap.hallOfFame.rarity)
-    return rarityMap.hallOfFame.label
-  if (
-    num > rarityMap.hallOfFame.rarity &&
-    num <= rarityMap.hallOfFame.rarity + rarityMap.twoThousandClub.rarity
-  )
-    return rarityMap.twoThousandClub.label
-  if (
-    num > rarityMap.hallOfFame.rarity + rarityMap.twoThousandClub.rarity &&
-    num <=
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity
-  )
-    return rarityMap.diamond.label
-  if (
-    num >
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity &&
-    num <=
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity
-  )
-    return rarityMap.ruby.label
-  if (
-    num >
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity &&
-    num <=
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity +
-        rarityMap.gold.rarity
-  )
-    return rarityMap.gold.label
-  if (
-    num >
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity +
-        rarityMap.gold.rarity &&
-    num <=
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity +
-        rarityMap.gold.rarity +
-        rarityMap.silver.rarity
-  )
-    return rarityMap.silver.label
-  if (
-    num >
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity +
-        rarityMap.gold.rarity +
-        rarityMap.silver.rarity &&
-    num <=
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity +
-        rarityMap.gold.rarity +
-        rarityMap.silver.rarity +
-        rarityMap.bronze.rarity
-  )
-    return rarityMap.bronze.label
-  if (
-    num >
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity +
-        rarityMap.gold.rarity +
-        rarityMap.silver.rarity +
-        rarityMap.bronze.rarity &&
-    num <=
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity +
-        rarityMap.gold.rarity +
-        rarityMap.silver.rarity +
-        rarityMap.bronze.rarity +
-        rarityMap.logo.rarity
-  )
-    return rarityMap.logo.label
-  if (
-    num >
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity +
-        rarityMap.gold.rarity +
-        rarityMap.silver.rarity +
-        rarityMap.bronze.rarity +
-        rarityMap.logo.rarity &&
-    num <=
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity +
-        rarityMap.gold.rarity +
-        rarityMap.silver.rarity +
-        rarityMap.bronze.rarity +
-        rarityMap.logo.rarity +
-        rarityMap.charity.rarity
-  )
-    return rarityMap.charity.label
-  if (
-    num >
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity +
-        rarityMap.gold.rarity +
-        rarityMap.silver.rarity +
-        rarityMap.bronze.rarity +
-        rarityMap.logo.rarity +
-        rarityMap.charity.rarity &&
-    num <=
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity +
-        rarityMap.gold.rarity +
-        rarityMap.silver.rarity +
-        rarityMap.bronze.rarity +
-        rarityMap.logo.rarity +
-        rarityMap.charity.rarity +
-        rarityMap.award.rarity
-  )
-    return rarityMap.award.label
-  if (
-    num >
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity +
-        rarityMap.gold.rarity +
-        rarityMap.silver.rarity +
-        rarityMap.bronze.rarity +
-        rarityMap.logo.rarity +
-        rarityMap.charity.rarity +
-        rarityMap.award.rarity &&
-    num <=
-      rarityMap.hallOfFame.rarity +
-        rarityMap.twoThousandClub.rarity +
-        rarityMap.diamond.rarity +
-        rarityMap.ruby.rarity +
-        rarityMap.gold.rarity +
-        rarityMap.silver.rarity +
-        rarityMap.bronze.rarity +
-        rarityMap.logo.rarity +
-        rarityMap.charity.rarity +
-        rarityMap.award.rarity +
-        rarityMap.firstOverall.rarity
-  )
-    return rarityMap.firstOverall.label
-  return rarityMap.bronze.label
+  let counter = 0
+  const foundRarityRecord = rarities.find((rarity, index) => {
+    if (num > counter && num <= num + rarity.rarity) {
+      return true
+    }
+
+    counter += rarity.rarity
+    return false
+  })
+
+  return foundRarityRecord.label
 }
 
 const pullBaseCards = async (): Promise<{ cardID: string }[]> => {
