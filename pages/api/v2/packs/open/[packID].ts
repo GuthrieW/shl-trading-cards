@@ -29,7 +29,7 @@ const getBasePackRarity = (): string => {
 
   let counter = 0
   const foundRarityRecord = rarities.find((rarity, index) => {
-    if (num > counter && num <= num + rarity.rarity) {
+    if (num > counter && counter <= num + rarity.rarity) {
       return true
     }
 
