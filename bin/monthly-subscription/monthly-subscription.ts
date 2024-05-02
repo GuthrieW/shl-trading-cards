@@ -4,12 +4,13 @@ import {
   getCardsDatabaseName,
   queryDatabase,
 } from '@pages/api/database/database'
+import { sleep } from 'bin/lib'
 import dayjs from 'dayjs'
-import SQL, { SQLStatement } from 'sql-template-strings'
+import SQL from 'sql-template-strings'
 
 void main()
   .then(async () => {
-    console.log('Finished deleting cards')
+    console.log('Finished distributing monthly subscriptions')
     process.exit(0)
   })
   .catch((error) => {
@@ -26,13 +27,14 @@ async function main() {
   const subscribedUsers = await queryDatabase<SubscriptionUser>(
     SQL`
     SELECT uid
-    FROM`.append(getCardsDatabaseName()).append(SQL`.monthly_subscriptions
+    FROM `.append(getCardsDatabaseName()).append(SQL`.monthly_subscriptions
     WHERE subscription > 0;
   `)
   )
 
   console.log('Users to distribute to: ', JSON.stringify(subscribedUsers))
 
+  await sleep(5000)
   await Promise.all(
     await subscribedUsers.map(async (subscribedUser: SubscriptionUser) => {
       console.log(`Distributing packs for user ${subscribedUser.uid}`)
@@ -45,7 +47,9 @@ async function main() {
           VALUES
             (${subscribedUser.uid}, ${
               packsMap.base.id
-            }, ${`Monthly Subscription ${dayjs().format('MMMM YYYY')}`});
+            }, ${`Monthly Subscription ${dayjs(new Date()).format(
+              'MMMM YYYY'
+            )}`});
           `)
         )
       }

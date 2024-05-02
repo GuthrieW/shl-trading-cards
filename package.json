@@ -8,14 +8,15 @@
     "start": "APP_ENV=production next start -p 9000",
     "start:dev": "APP_ENV=development next start -p 6500",
     "add-cards-to-users": "APP_ENV=script tsx bin/add-cards-to-users/add-cards-to-users.ts",
-    "base-requests": "APP_ENV=development tsx bin/base-requests/base-requests.ts --season=74",
-    "charity-requests": "APP_ENV=development tsx bin/charity-requests/charity-requests.ts",
-    "convert-all-pngs-to-webps": "APP_ENV=production tsx bin/convert-all-pngs-to-webps/convert-all-pngs-to-webps.ts",
-    "convert-single-png-to-webp": "APP_ENV=development tsx bin/convert-single-png-to-webp/convert-single-png-to-webp.ts",
-    "delete-duplicates": "APP_ENV=development tsx bin/delete-duplicate-cards/delete-duplicate-cards.ts --prodRun",
-    "pay-card-creators": "APP_ENV=development tsx bin/pay-card-creators/pay-card-creators.ts --prodRun",
-    "smoke-test": "APP_ENV=development tsx bin/smoke-test/smoke-test.ts",
-    "temp-script": "APP_ENV=development tsx bin/temp-script/temp-script.ts"
+    "base-requests": "APP_ENV=script tsx bin/base-requests/base-requests.ts --season=74",
+    "charity-requests": "APP_ENV=script tsx bin/charity-requests/charity-requests.ts",
+    "convert-all-pngs-to-webps": "APP_ENV=script tsx bin/convert-all-pngs-to-webps/convert-all-pngs-to-webps.ts",
+    "convert-single-png-to-webp": "APP_ENV=script tsx bin/convert-single-png-to-webp/convert-single-png-to-webp.ts",
+    "delete-duplicates": "APP_ENV=script tsx bin/delete-duplicate-cards/delete-duplicate-cards.ts --prodRun",
+    "pay-card-creators": "APP_ENV=script tsx bin/pay-card-creators/pay-card-creators.ts --prodRun",
+    "smoke-test": "APP_ENV=script tsx bin/smoke-test/smoke-test.ts",
+    "temp-script": "APP_ENV=script tsx bin/temp-script/temp-script.ts",
+    "monthly-subscription": "APP_ENV=script tsx bin/monthly-subscription/monthly-subscription.ts"
   },
   "dependencies": {
     "@babel/core": "^7.23.5",

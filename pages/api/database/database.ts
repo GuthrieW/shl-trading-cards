@@ -23,6 +23,18 @@ if (process.env.APP_ENV === 'development') {
   }
 }
 
+if (process.env.APP_ENV === 'script') {
+  console.log('you need to populate the db config with connection information')
+  config = {
+    config: {
+      host: '',
+      user: '',
+      password: '',
+      database: '',
+    },
+  }
+}
+
 console.log('env', process.env.APP_ENV)
 process.env.APP_ENV !== 'production'
   ? console.log('dbconfig', config)
@@ -42,7 +54,7 @@ export async function queryDatabase<T>(query): Promise<T[]> {
 }
 
 export const getCardsDatabaseName = () =>
-  process.env.APP_ENV === 'production' ? 'admin_cards' : 'dev_cards'
+  process.env.APP_ENV === 'production' || 'script' ? 'admin_cards' : 'dev_cards'
 
 export const getUsersDatabaseName = () =>
   process.env.APP_ENV === 'production' ? 'admin_mybb' : 'admin_mybb'
