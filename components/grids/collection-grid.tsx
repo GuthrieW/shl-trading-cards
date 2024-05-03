@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import SearchBar from '@components/inputs/search-bar'
-import rarityMap from '@constants/rarity-map'
 import CardLightBoxModal from '@components/modals/card-lightbox-modal'
 import DropdownWithCheckboxGroup from '@components/dropdowns/dropdown-with-checkbox-group'
-import teamsMap from '@constants/teams-map'
 import useGetUserCards from '@pages/api/queries/use-get-user-cards'
 import { useResponsive } from '@hooks/useResponsive'
 import GridPagination from './grid-pagination'
@@ -11,6 +9,7 @@ import TradingCard from '@components/images/trading-card'
 import { PropagateLoader } from 'react-spinners'
 import { generateRarityCheckboxes } from '@components/dropdowns/generate-rarity-checkboxes'
 import { generateTeamCheckboxes } from '@components/dropdowns/generate-team-checkboxes'
+import rarityMap from '@constants/rarity-map'
 
 type CollectionGridProps = {
   userId: number
@@ -46,12 +45,26 @@ const CollectionGrid = ({ userId }: CollectionGridProps) => {
   const handleUpdateSearchString = (event) =>
     setSearchString(event.target.value || '')
 
-  const updateSelectedRarityButtonIds = (toggleId) =>
-    selectedRarities.includes(toggleId)
+  const updateSelectedRarityButtonIds = (toggleId) => {
+    // if you're swapping between shl cards or iihf cards we only want
+    // cards in that new rarity to be selected
+    if (
+      (toggleId === rarityMap.iihfAwards.label &&
+        !selectedRarities.includes(rarityMap.iihfAwards.label)) ||
+      (toggleId !== rarityMap.iihfAwards.label &&
+        selectedRarities.length > 0 &&
+        selectedRarities.includes(rarityMap.iihfAwards.label))
+    ) {
+      setSelectedRarities([toggleId])
+      return
+    }
+
+    return selectedRarities.includes(toggleId)
       ? setSelectedRarities(
           selectedRarities.filter((rarity) => rarity != toggleId)
         )
       : setSelectedRarities(selectedRarities.concat(toggleId))
+  }
 
   const updateSelectedTeamButtonIds = (toggleId) =>
     selectedTeams.includes(toggleId)
@@ -62,7 +75,8 @@ const CollectionGrid = ({ userId }: CollectionGridProps) => {
     generateRarityCheckboxes(updateSelectedRarityButtonIds)
 
   const teamCheckboxes: CollectionTableButtons[] = generateTeamCheckboxes(
-    updateSelectedTeamButtonIds
+    updateSelectedTeamButtonIds,
+    selectedRarities
   )
 
   const updateCurrentPage = (pageNumber: number) => setCurrentPage(pageNumber)

@@ -1,11 +1,21 @@
-import teamsMap from '@constants/teams-map'
+import rarityMap from '@constants/rarity-map'
+import { iihfTeamsMap, shlTeamsMap } from '@constants/teams-map'
 
 export const generateTeamCheckboxes = (
-  updateButtonIdsHook
+  updateButtonIdsHook,
+  selectedRarities: string[]
 ): CollectionTableButtons[] => {
-  return Object.keys(teamsMap).map((key) => ({
-    id: key,
-    text: teamsMap[key].abbreviation,
-    onClick: () => updateButtonIdsHook(key),
-  }))
+  if (selectedRarities.includes(rarityMap.iihfAwards.label)) {
+    return Object.keys(iihfTeamsMap).map((key) => ({
+      id: key,
+      text: iihfTeamsMap[key].abbreviation,
+      onClick: () => updateButtonIdsHook(key),
+    }))
+  } else {
+    return Object.keys(shlTeamsMap).map((key) => ({
+      id: key,
+      text: shlTeamsMap[key].abbreviation,
+      onClick: () => updateButtonIdsHook(key),
+    }))
+  }
 }

@@ -5,7 +5,8 @@ import { generateRarityCheckboxes } from '@components/dropdowns/generate-rarity-
 import { generateTeamCheckboxes } from '@components/dropdowns/generate-team-checkboxes'
 import GridPagination from '@components/grids/grid-pagination'
 import SearchBar from '@components/inputs/search-bar'
-import teamsMap from '@constants/teams-map'
+import rarityMap from '@constants/rarity-map'
+import { shlTeamsMap } from '@constants/teams-map'
 import useGetCardOwners from '@pages/api/queries/use-get-card-owners'
 import { useEffect, useState } from 'react'
 
@@ -17,7 +18,7 @@ const CardSearchForm = () => {
 
   const { cardOwners, total, isLoading, isError, refetch } = useGetCardOwners({
     name: searchString,
-    teams: selectedTeams.map((team) => teamsMap[team].teamID),
+    teams: selectedTeams.map((team) => shlTeamsMap[team].teamID),
     rarities: selectedRarities,
     page: currentPage,
   })
@@ -33,13 +34,26 @@ const CardSearchForm = () => {
   const handleUpdateSearchString = (event) =>
     setSearchString(event.target.value || '')
 
-  const updateSelectedRarityButtonIds = (toggleId) =>
-    selectedRarities.includes(toggleId)
+  const updateSelectedRarityButtonIds = (toggleId) => {
+    // if you're swapping between shl cards or iihf cards we only want
+    // cards in that new rarity to be selected
+    if (
+      (toggleId === rarityMap.iihfAwards.label &&
+        !selectedRarities.includes(rarityMap.iihfAwards.label)) ||
+      (toggleId !== rarityMap.iihfAwards.label &&
+        selectedRarities.length > 0 &&
+        selectedRarities.includes(rarityMap.iihfAwards.label))
+    ) {
+      setSelectedRarities([toggleId])
+      return
+    }
+
+    return selectedRarities.includes(toggleId)
       ? setSelectedRarities(
           selectedRarities.filter((rarity) => rarity != toggleId)
         )
       : setSelectedRarities(selectedRarities.concat(toggleId))
-
+  }
   const updateSelectedTeamButtonIds = (toggleId) =>
     selectedTeams.includes(toggleId)
       ? setSelectedTeams(selectedTeams.filter((team) => team != toggleId))
@@ -49,7 +63,8 @@ const CardSearchForm = () => {
     generateRarityCheckboxes(updateSelectedRarityButtonIds)
 
   const teamCheckboxes: CollectionTableButtons[] = generateTeamCheckboxes(
-    updateSelectedTeamButtonIds
+    updateSelectedTeamButtonIds,
+    selectedRarities
   )
 
   return (
