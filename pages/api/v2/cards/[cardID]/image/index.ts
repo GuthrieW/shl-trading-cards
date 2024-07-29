@@ -30,9 +30,8 @@ const index = async (
 
       const base64PngData: string = image.replace(/^data:image\/png;base64/, '')
       const pngBuffer = Buffer.from(base64PngData, 'base64')
-      const webpBuffer: Buffer = await imageService.convertToWebp(pngBuffer)
-      const imageFilename: string = `${uuid()}.webp`
-      await imageService.saveImage(webpBuffer, imageFilename)
+      const imageFilename: string = `${uuid()}.png`
+      await imageService.saveImage(pngBuffer, imageFilename)
 
       const result = await queryDatabase(
         SQL`

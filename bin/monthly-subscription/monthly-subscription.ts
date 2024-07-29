@@ -34,7 +34,6 @@ async function main() {
 
   console.log('Users to distribute to: ', JSON.stringify(subscribedUsers))
 
-  await sleep(5000)
   await Promise.all(
     await subscribedUsers.map(async (subscribedUser: SubscriptionUser) => {
       console.log(`Distributing packs for user ${subscribedUser.uid}`)
