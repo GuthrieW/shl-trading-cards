@@ -123,8 +123,9 @@ function addSeasonToPlayers(
       return { ...indexPlayer, season: matchingPortalPlayer.seasonID }
     } else {
       console.error(
-        'Please manually enter season for index player with id: ',
-        indexPlayer.id
+        'Please manually enter season for index player with id and name: ',
+        indexPlayer.id,
+        indexPlayer.name
       )
       unfoundPlayerCount++
       return indexPlayer
