@@ -8,7 +8,7 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
-import checkBoom from '@pages/api/lib/checkBoom'
+import assertBoom from '@pages/api/lib/assertBoom'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -27,20 +27,20 @@ const index = async (
   if (method === POST) {
     const { uid, subscriptionAmount } = query
 
-    const subscriptionAmountIsNumber: boolean = checkBoom(
+    const subscriptionAmountIsNumber: boolean = assertBoom(
       !isNaN(Number(subscriptionAmount)),
+      response,
       'Invalid Subscription Amount',
-      StatusCodes.BAD_REQUEST,
-      response
+      StatusCodes.BAD_REQUEST
     )
     if (subscriptionAmountIsNumber) return
 
     const subAmount: number = parseInt(subscriptionAmount as string)
-    const subscriptionAmountIsValid: boolean = checkBoom(
+    const subscriptionAmountIsValid: boolean = assertBoom(
       subAmount >= 0 && subAmount <= 3,
+      response,
       'Invalid Subscription Amount',
-      StatusCodes.BAD_REQUEST,
-      response
+      StatusCodes.BAD_REQUEST
     )
     if (subscriptionAmountIsValid) return
 

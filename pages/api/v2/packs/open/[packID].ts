@@ -10,7 +10,7 @@ import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import packsMap from '@constants/packs-map'
-import checkBoom from '@pages/api/lib/checkBoom'
+import assertBoom from '@pages/api/lib/assertBoom'
 
 const allowedMethods = []
 const cors = Cors({
@@ -75,11 +75,11 @@ const index = async (
   if (method === POST) {
     const { packID } = query
 
-    const missingPackId: boolean = checkBoom(
+    const missingPackId: boolean = assertBoom(
       !!packID,
+      response,
       'Missing Pack ID',
-      StatusCodes.BAD_REQUEST,
-      response
+      StatusCodes.BAD_REQUEST
     )
     if (missingPackId) return
 
@@ -98,11 +98,11 @@ const index = async (
 
     const pack: PackData = packResult[0]
 
-    const packAlreadyOpened: boolean = checkBoom(
+    const packAlreadyOpened: boolean = assertBoom(
       !Boolean(pack.opened),
+      response,
       'Pack Already Opened',
-      StatusCodes.BAD_REQUEST,
-      response
+      StatusCodes.BAD_REQUEST
     )
     if (packAlreadyOpened) return
 

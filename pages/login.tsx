@@ -18,14 +18,14 @@ import { useFormik } from 'formik'
 import { NextSeo } from 'next-seo'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { InferType, object, string } from 'yup'
+import * as Yup from 'yup'
 
-const validationSchema = object({}).shape({
-  username: string().required('Username is required'),
-  password: string().required('Password is required'),
+const validationSchema = Yup.object({}).shape({
+  username: Yup.string().required('Username is required'),
+  password: Yup.string().required('Password is required'),
 })
 
-type FormValues = InferType<typeof validationSchema>
+type FormValues = Yup.InferType<typeof validationSchema>
 
 export default () => {
   const router = useRouter()
@@ -68,12 +68,10 @@ export default () => {
         setIsRedirectingFromLogin(true)
         router.push('/')
       } catch (error) {
-        const errorMessage =
+        const errorMessage: string =
           'errorMessage' in error
             ? error.errorMessage
-            : 'message' in error
-              ? error.message
-              : "We're having issues, please try again later"
+            : "We're having issues, please try again later"
         setLoginError(errorMessage)
       } finally {
         setSubmitting(false)

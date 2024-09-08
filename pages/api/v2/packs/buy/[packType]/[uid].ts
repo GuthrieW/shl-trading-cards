@@ -9,7 +9,7 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
-import checkBoom from '@pages/api/lib/checkBoom'
+import assertBoom from '@pages/api/lib/assertBoom'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -27,19 +27,19 @@ const index = async (
     const { uid, packType } = query
 
     if (process.env.APP_ENV === 'production') {
-      const isMissingUserId: boolean = checkBoom(
+      const isMissingUserId: boolean = assertBoom(
         !!uid,
+        response,
         'Missing User ID',
-        StatusCodes.BAD_REQUEST,
-        response
+        StatusCodes.BAD_REQUEST
       )
       if (isMissingUserId) return
 
-      const isMissingPackType: boolean = checkBoom(
+      const isMissingPackType: boolean = assertBoom(
         !!packType,
+        response,
         'Missing Pack Type',
-        StatusCodes.BAD_REQUEST,
-        response
+        StatusCodes.BAD_REQUEST
       )
       if (isMissingPackType) return
 
@@ -51,11 +51,11 @@ const index = async (
         `)
       )
 
-      const hasReachedPackLimit: boolean = checkBoom(
+      const hasReachedPackLimit: boolean = assertBoom(
         hasReachedLimit.length === 0 || hasReachedLimit[0]?.packsToday < 3,
+        response,
         'Daily Pack Limit Reached',
-        StatusCodes.BAD_REQUEST,
-        response
+        StatusCodes.BAD_REQUEST
       )
       if (hasReachedPackLimit) return
 
@@ -67,11 +67,11 @@ const index = async (
         `)
       )
 
-      const hasInsufficientFunds: boolean = checkBoom(
+      const hasInsufficientFunds: boolean = assertBoom(
         bankData[0]?.bankBalance > 0,
+        response,
         'Insufficient Funds',
-        StatusCodes.BAD_REQUEST,
-        response
+        StatusCodes.BAD_REQUEST
       )
       if (hasInsufficientFunds) return
 

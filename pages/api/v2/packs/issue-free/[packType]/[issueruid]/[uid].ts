@@ -8,7 +8,7 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
-import checkBoom from '@pages/api/lib/checkBoom'
+import assertBoom from '@pages/api/lib/assertBoom'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -25,11 +25,11 @@ const index = async (
   if (method === POST) {
     const { issueruid, uid, packType } = query
 
-    const missingRequestData: boolean = checkBoom(
+    const missingRequestData: boolean = assertBoom(
       !!issueruid || !!uid || !!packType,
+      response,
       'Missing Request Data',
-      StatusCodes.BAD_REQUEST,
-      response
+      StatusCodes.BAD_REQUEST
     )
     if (missingRequestData) return
 

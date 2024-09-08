@@ -1,4 +1,5 @@
 import { PageWrapper } from '@components/common/PageWrapper'
+import config from 'lib/config'
 import { NextPageContext } from 'next'
 import { dehydrate, QueryClient } from 'react-query'
 
@@ -12,13 +13,9 @@ export default function index() {
 
 export async function getServerSideProps({ req }: NextPageContext) {
   const queryClient = new QueryClient()
-  const userId = req?.headers.cookie.replace('userid=', '')
+  const userId = req?.headers.cookie.replace(`${config.userIDCookieName}=`, '')
 
   if (userId) {
-    // await queryClient.prefetchQuery({
-    //   queryKey: [],
-    //   queryFn: () => query(`api/v3/user/userId`)
-    // })
     return {
       props: {
         dehydratedState: dehydrate(queryClient),

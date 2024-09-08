@@ -51,18 +51,11 @@ export const SessionProvider = ({
       const response = await axios({
         method: POST,
         url: '/api/v3/auth/login',
-        data: {
-          username,
-          password,
-        },
+        data: { username, password },
       })
 
-      if (response.status !== StatusCodes.OK) {
-        throw new Error(response.statusText)
-      }
-
-      if (response.data.error) {
-        throw new Error(response.data.errorMessage)
+      if (response.status !== StatusCodes.OK || response.data.error) {
+        throw new Error(response.data.error.errorMessage)
       }
 
       setSession({
