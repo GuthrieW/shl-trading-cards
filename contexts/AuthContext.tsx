@@ -55,7 +55,7 @@ export const SessionProvider = ({
       })
 
       if (response.status !== StatusCodes.OK || response.data.error) {
-        throw new Error(response.data.error.errorMessage)
+        throw new Error(response.data)
       }
 
       setSession({
@@ -103,7 +103,7 @@ export const SessionProvider = ({
       },
     })
 
-    if (response.status !== StatusCodes.OK) {
+    if (response.status !== StatusCodes.OK || response.data.error) {
       handleLogout()
       setIsLoading(false)
       isRefreshingRef.current = false

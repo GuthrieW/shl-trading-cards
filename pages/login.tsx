@@ -68,9 +68,10 @@ export default () => {
         setIsRedirectingFromLogin(true)
         router.push('/')
       } catch (error) {
+        console.error('error', error)
         const errorMessage: string =
-          'errorMessage' in error
-            ? error.errorMessage
+          'message' in error
+            ? error.message
             : "We're having issues, please try again later"
         setLoginError(errorMessage)
       } finally {
