@@ -5,11 +5,19 @@ import methodNotAllowed from '../lib/methodNotAllowed'
 import SQL from 'sql-template-strings'
 import { queryDatabase } from '@pages/api/database/database'
 import { StatusCodes } from 'http-status-codes'
-import jwt from 'jsonwebtoken'
 import { v4 as uuid } from 'uuid'
-import { getRefreshTokenExpirationDate } from './utils'
+import { getRefreshTokenExpirationDate, signJwt } from './utils'
+import { ApiResponse } from '..'
+import serverConnectionFailed from '../lib/serverConnectionFailed'
 
 const allowedMethods: string[] = [POST]
+
+type LoginData = {
+  userid: number
+  usergroup: number
+  accessToken: string
+  refreshToken: string
+}
 
 type InternalLoginUser = {
   uid: number
@@ -21,7 +29,7 @@ type InternalLoginUser = {
 
 export default async function loginEndpoint(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse<ApiResponse<LoginData>>
 ): Promise<void> {
   if (req.method === POST) {
     const queryResult = await queryDatabase<InternalLoginUser>(SQL`
@@ -30,12 +38,7 @@ export default async function loginEndpoint(
       WHERE username = ${req.body.username}
     `)
 
-    if ('error' in queryResult) {
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .end('Server connection failed')
-      return
-    }
+    if (serverConnectionFailed(res, queryResult)) return
 
     if (queryResult.length > 1) {
       res
@@ -65,7 +68,7 @@ export default async function loginEndpoint(
     if (user.usergroup === 5) {
       res.status(StatusCodes.OK).json({
         status: 'error',
-        errorMessage:
+        message:
           'Your account is still awaiting activation. Please be sure to verify your account. Follow-up on the forum or on our Discord if you feel this is an error.',
       })
       return
@@ -83,16 +86,9 @@ export default async function loginEndpoint(
       return
     }
 
-    const accessToken = jwt.sign(
-      { userid: user.uid },
-      process.env.SECRET ?? '',
-      {
-        expiresIn: '15m',
-      }
-    )
-
-    const refreshToken = uuid()
-    const expiresAt = getRefreshTokenExpirationDate()
+    const accessToken: string = signJwt(user.uid)
+    const refreshToken: string = uuid()
+    const expiresAt: string = getRefreshTokenExpirationDate()
 
     await queryDatabase(SQL`
       INSERT INTO refreshTokens (uid, expires_at, token)

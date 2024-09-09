@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken'
+
 export const getRefreshTokenExpirationDate = () => {
   const date = new Date()
   date.setDate(date.getDate() + 7)
@@ -11,3 +13,8 @@ export const convertRefreshTokenExpirationDate = (datetime: string) => {
     return 0
   }
 }
+
+export const signJwt = (uid: number) =>
+  jwt.sign({ userid: uid }, process.env.SECRET ?? '', {
+    expiresIn: '15m',
+  })

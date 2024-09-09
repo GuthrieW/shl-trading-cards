@@ -1,16 +1,9 @@
-type ApiResponseStatusError = 'error'
-type ApiResponseStatusSuccess = 'success'
-
-export type ApiResponseStatus =
-  | ApiResponseStatusSuccess
-  | ApiResponseStatusError
-
 export type ApiResponse<T> =
   | {
-      status: ApiResponseStatusSuccess
+      status: 'success'
       payload: T
     }
   | {
-      status: ApiResponseStatusError
-      errorMessage: string
+      status: 'error' | 'logout'
+      message: string
     }
