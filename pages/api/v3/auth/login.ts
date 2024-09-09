@@ -33,7 +33,7 @@ export default async function loginEndpoint(
 ): Promise<void> {
   if (req.method === POST) {
     const queryResult = await queryDatabase<InternalLoginUser>(SQL`
-      SELECT uid, username, password, salt, usergroup
+      SELECT uid, username, password, salt, usergroup, displaygroup, additionalgroups
       FROM mybb_users
       WHERE username = ${req.body.username}
     `)

@@ -27,7 +27,7 @@ const validationSchema = Yup.object({}).shape({
 
 type FormValues = Yup.InferType<typeof validationSchema>
 
-export default () => {
+export default function () {
   const router = useRouter()
 
   const [loginError, setLoginError] = useState<string>('')

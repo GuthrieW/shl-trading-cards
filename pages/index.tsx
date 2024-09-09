@@ -3,7 +3,7 @@ import config from 'lib/config'
 import { NextPageContext } from 'next'
 import { dehydrate, QueryClient } from 'react-query'
 
-export default function index() {
+export default function () {
   return (
     <PageWrapper>
       <p>Home Page</p>
@@ -11,17 +11,18 @@ export default function index() {
   )
 }
 
-export async function getServerSideProps({ req }: NextPageContext) {
-  const queryClient = new QueryClient()
-  const userId = req?.headers.cookie.replace(`${config.userIDCookieName}=`, '')
+// export async function getServerSideProps({ req }: NextPageContext) {
+//   const queryClient = new QueryClient()
+//   console.log('req', req.headers)
+//   const userId = req?.headers.cookie?.replace(`${config.userIDCookieName}=`, '')
 
-  if (userId) {
-    return {
-      props: {
-        dehydratedState: dehydrate(queryClient),
-      },
-    }
-  }
+//   if (userId) {
+//     return {
+//       props: {
+//         dehydratedState: dehydrate(queryClient),
+//       },
+//     }
+//   }
 
-  return { props: {} }
-}
+//   return { props: {} }
+// }

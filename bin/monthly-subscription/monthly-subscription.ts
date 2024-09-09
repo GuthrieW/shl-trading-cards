@@ -1,11 +1,10 @@
 #!/usr/bin/env node
-import packsMap from '@constants/packs-map'
 import {
   getCardsDatabaseName,
   queryDatabase,
 } from '@pages/api/database/database'
-import { sleep } from 'bin/lib'
 import dayjs from 'dayjs'
+import { packService } from 'services/packService'
 import SQL from 'sql-template-strings'
 
 void main()
@@ -45,7 +44,7 @@ async function main() {
             (userID, packType, source)
           VALUES
             (${subscribedUser.uid}, ${
-              packsMap.base.id
+              packService.packs.base.id
             }, ${`Monthly Subscription ${dayjs(new Date()).format(
               'MMMM YYYY'
             )}`});

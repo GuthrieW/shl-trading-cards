@@ -9,8 +9,9 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
-import packsMap from '@constants/packs-map'
+// import packsMap from '@constants/packs-map'
 import assertBoom from '@pages/api/lib/assertBoom'
+import { packService } from 'services/packService'
 
 const allowedMethods = []
 const cors = Cors({
@@ -107,7 +108,7 @@ const index = async (
     if (packAlreadyOpened) return
 
     let pulledCards: { cardID: string }[] = []
-    if (pack.packType === packsMap.base.id) {
+    if (pack.packType === packService.packs.base.id) {
       pulledCards = await pullBaseCards()
     } else {
       response.status(StatusCodes.BAD_REQUEST).json({

@@ -9,7 +9,7 @@ import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import { v4 as uuid } from 'uuid'
-import { imageService } from 'lib/imageService'
+import { imageService } from 'services/imageService'
 
 const allowedMethods = [PATCH]
 const cors = Cors({

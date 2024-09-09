@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { Raleway, Montserrat } from '@next/font/google'
+import { Raleway, Montserrat } from 'next/font/google'
 import { DefaultSeo } from 'next-seo'
 import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
 import { QueryCache, QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
-import 'react-toastify/dist/ReactToastify.css'
 import '../styles/globals.css'
 import { SessionProvider, useSession } from 'contexts/AuthContext'
 import { CustomChakraProvider } from 'styles/CustomChakraProvider'
 import { ToastProvider } from 'contexts/ToastContext'
-import { LeagueLogo } from '@components/common/LeagueLogo'
+import { IceLevelLogo } from '@components/common/IceLevelLogo'
 import { Footer } from '@components/common/Footer'
 import { Spinner } from '@chakra-ui/react'
 
@@ -47,19 +46,19 @@ const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
       })
   )
 
-  useEffect(() => {
-    if (
-      localStorage.theme === 'dark' ||
-      (!('theme' in localStorage) &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      document.body.classList.add('dark')
-      document.documentElement.classList.add('dark')
-    } else {
-      document.body.classList.add('light')
-      document.documentElement.classList.add('light')
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (
+  //     localStorage.theme === 'dark' ||
+  //     (!('theme' in localStorage) &&
+  //       window.matchMedia('(prefers-color-scheme: dark)').matches)
+  //   ) {
+  //     document.body.classList.add('dark')
+  //     document.documentElement.classList.add('dark')
+  //   } else {
+  //     document.body.classList.add('light')
+  //     document.documentElement.classList.add('light')
+  //   }
+  // }, [])
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -78,10 +77,7 @@ const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
                     aria-label="Main"
                   >
                     <div className="relative mx-auto flex h-full w-full items-center justify-between px-[5%] sm:w-11/12 sm:justify-start sm:p-0 lg:w-3/4">
-                      <LeagueLogo
-                        league="shl"
-                        className="relative top-[5%] h-[90%] sm:top-[2.5%]"
-                      />
+                      <IceLevelLogo className="relative top-[5%] h-[90%] sm:top-[2.5%]" />
                     </div>
                   </div>
                   <div className="m-auto w-full bg-secondary pb-8 dark:bg-secondaryDark 2xl:w-4/5 ">
