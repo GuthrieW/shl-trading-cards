@@ -79,7 +79,7 @@ export const SessionProvider = ({
   const handleLogout = useCallback(() => {
     if (!window) return
     setSession(null)
-    window?.localStorage.removeItem('refreshToken')
+    window?.localStorage.removeItem(config.localStorage.refreshToken)
     deleteUserID()
   }, [deleteUserID])
 
@@ -95,7 +95,7 @@ export const SessionProvider = ({
 
     const response = await axios({
       method: POST,
-      url: '/api/v3/auth/refresh',
+      url: '/api/v3/auth/token',
       data: {
         refreshToken: window?.localStorage.getItem(
           config.localStorage.refreshToken
