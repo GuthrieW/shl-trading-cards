@@ -11,18 +11,17 @@ export default function () {
   )
 }
 
-// export async function getServerSideProps({ req }: NextPageContext) {
-//   const queryClient = new QueryClient()
-//   console.log('req', req.headers)
-//   const userId = req?.headers.cookie?.replace(`${config.userIDCookieName}=`, '')
+export async function getServerSideProps({ req }: NextPageContext) {
+  const queryClient = new QueryClient()
+  const userId = req?.headers.cookie?.replace(`${config.userIDCookieName}=`, '')
 
-//   if (userId) {
-//     return {
-//       props: {
-//         dehydratedState: dehydrate(queryClient),
-//       },
-//     }
-//   }
+  if (userId) {
+    return {
+      props: {
+        dehydratedState: dehydrate(queryClient),
+      },
+    }
+  }
 
-//   return { props: {} }
-// }
+  return { props: {} }
+}

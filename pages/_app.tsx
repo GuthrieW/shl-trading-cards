@@ -5,13 +5,13 @@ import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
 import { QueryCache, QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
-import '../styles/globals.css'
 import { SessionProvider, useSession } from 'contexts/AuthContext'
 import { CustomChakraProvider } from 'styles/CustomChakraProvider'
 import { ToastProvider } from 'contexts/ToastContext'
 import { IceLevelLogo } from '@components/common/IceLevelLogo'
 import { Footer } from '@components/common/Footer'
 import { Spinner } from '@chakra-ui/react'
+import '../styles/globals.css'
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -46,19 +46,19 @@ const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
       })
   )
 
-  // useEffect(() => {
-  //   if (
-  //     localStorage.theme === 'dark' ||
-  //     (!('theme' in localStorage) &&
-  //       window.matchMedia('(prefers-color-scheme: dark)').matches)
-  //   ) {
-  //     document.body.classList.add('dark')
-  //     document.documentElement.classList.add('dark')
-  //   } else {
-  //     document.body.classList.add('light')
-  //     document.documentElement.classList.add('light')
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (
+      localStorage.theme === 'dark' ||
+      (!('theme' in localStorage) &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      document.body.classList.add('dark')
+      document.documentElement.classList.add('dark')
+    } else {
+      document.body.classList.add('light')
+      document.documentElement.classList.add('light')
+    }
+  }, [])
 
   return (
     <QueryClientProvider client={queryClient}>
