@@ -3,14 +3,18 @@ import { POST } from '@constants/http-methods'
 import { NextApiRequest, NextApiResponse } from 'next'
 import methodNotAllowed from '../lib/methodNotAllowed'
 import SQL from 'sql-template-strings'
-import { queryDatabase } from '@pages/api/database/database'
+import { usersQuery } from '@pages/api/database/database'
 import { StatusCodes } from 'http-status-codes'
 import { v4 as uuid } from 'uuid'
 import { getRefreshTokenExpirationDate, signJwt } from './utils'
 import { ApiResponse } from '..'
-import serverConnectionFailed from '../lib/serverConnectionFailed'
+import Cors from 'cors'
+import middleware from '@pages/api/database/middleware'
 
 const allowedMethods: string[] = [POST]
+const cors = Cors({
+  methods: allowedMethods,
+})
 
 type LoginData = {
   userid: number
@@ -31,14 +35,25 @@ export default async function loginEndpoint(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<LoginData>>
 ): Promise<void> {
+  await middleware(req, res, cors)
+
   if (req.method === POST) {
-    const queryResult = await queryDatabase<InternalLoginUser>(SQL`
+    console.log('got into post')
+    const queryResult: { error: unknown } | InternalLoginUser[] =
+      await usersQuery<InternalLoginUser>(SQL`
       SELECT uid, username, password, salt, usergroup, displaygroup, additionalgroups
-      FROM mybb_users
+      FROM .mybb_users
       WHERE username = ${req.body.username}
     `)
 
-    if (serverConnectionFailed(res, queryResult)) return
+    console.log('queryResult', queryResult)
+
+    if ('error' in queryResult) {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .end('Server connection failed')
+      return
+    }
 
     if (queryResult.length > 1) {
       res
@@ -78,6 +93,7 @@ export default async function loginEndpoint(
       MD5(user.salt).toString() + MD5(req.body.password).toString()
     ).toString()
 
+    console.log('password check', saltedPassword, user.password)
     if (saltedPassword !== user.password) {
       res.status(StatusCodes.OK).json({
         status: 'error',
@@ -90,11 +106,17 @@ export default async function loginEndpoint(
     const refreshToken: string = uuid()
     const expiresAt: string = getRefreshTokenExpirationDate()
 
-    await queryDatabase(SQL`
+    console.log('accessToken', accessToken)
+    console.log('refreshToken', refreshToken)
+    console.log('expiresAt', expiresAt)
+
+    const result = await usersQuery(SQL`
       INSERT INTO refreshTokens (uid, expires_at, token)
       VALUES (${user.uid}, ${expiresAt}, ${refreshToken})
       ON DUPLICATE KEY UPDATE token=${refreshToken}, expires_at=${expiresAt};
     `)
+
+    console.log('result', result)
 
     res.status(StatusCodes.OK).json({
       status: 'success',

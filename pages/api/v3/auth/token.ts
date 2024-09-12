@@ -4,7 +4,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { queryDatabase } from '@pages/api/database/database'
 import SQL from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
-import serverConnectionFailed from '../lib/serverConnectionFailed'
 import {
   convertRefreshTokenExpirationDate,
   getRefreshTokenExpirationDate,
@@ -12,6 +11,8 @@ import {
 } from './utils'
 import { ApiResponse } from '..'
 import { v4 as uuid } from 'uuid'
+import Cors from 'cors'
+import middleware from '@pages/api/database/middleware'
 
 type TokenData = {
   userid: number
@@ -26,11 +27,16 @@ type InternalUserToken = {
 }
 
 const allowedMethods: string[] = [POST]
+const cors = Cors({
+  methods: allowedMethods,
+})
 
 export default async function tokenEndpoint(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<TokenData>>
 ) {
+  await middleware(req, res, cors)
+
   if (req.method === POST) {
     const queryResult = await queryDatabase<InternalUserToken>(SQL`
       SELECT uid, invalid, expires_at
@@ -38,7 +44,12 @@ export default async function tokenEndpoint(
       WHERE token=${req.body.refreshToken};
     `)
 
-    if (serverConnectionFailed(res, queryResult)) return
+    if ('error' in queryResult) {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .end('Server connection failed')
+      return
+    }
 
     if (queryResult.length === 0) {
       res

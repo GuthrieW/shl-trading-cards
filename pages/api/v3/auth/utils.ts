@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken'
+import * as jwt from 'jsonwebtoken'
 
 export const getRefreshTokenExpirationDate = () => {
   const date = new Date()

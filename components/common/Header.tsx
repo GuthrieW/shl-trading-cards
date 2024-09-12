@@ -25,9 +25,9 @@ import axios from 'axios'
 import { GET } from '@constants/http-methods'
 import classNames from 'classnames'
 
-const CURRENT_PAGE_LINK_CLASSES =
+const CURRENT_PAGE_LINK_CLASSES: string =
   'border-b-0 sm:border-b-[4px] border-l-[4px] sm:border-l-0 pt-0 sm:pt-[4px] pr-[14px] sm:pr-[10px] border-secondary dark:border-secondaryDark'
-const LINK_CLASSES =
+const LINK_CLASSES: string =
   '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-secondaryText dark:!text-secondaryTextDark hover:bg-borderblue dark:hover:bg-borderblueDark sm:h-full sm:w-max'
 
 const linkClasses = (router: NextRouter, path: string): string =>
@@ -37,7 +37,6 @@ const linkClasses = (router: NextRouter, path: string): string =>
   )
 
 export const Header = ({ showAuthButtons = true }) => {
-  // const [drawerVisible, setDrawerVisible] = useState(false)
   const { session, loggedIn, handleLogout } = useSession()
   const router = useRouter()
 
@@ -73,41 +72,55 @@ export const Header = ({ showAuthButtons = true }) => {
   }
 
   return (
-    <div>
-      <div
-        className="z-50 h-16 w-full bg-primary dark:bg-primaryDark"
-        role="navigation"
-        aria-label="Header"
+    <div
+      className="z-50 h-16 w-full flex flex-row justify-center bg-primary dark:bg-primaryDark"
+      role="navigation"
+      aria-label="Header"
+    >
+      <Link
+        href="/"
+        className="m-0 h-full w-full transition-all px-[5%]"
+        aria-label="Ice Level Homepage"
       >
-        <div className="relative mx-auto flex flex-row h-full w-full items-center justify-between px-[5%] sm:w-11/12 sm:justify-start sm:p-0 lg:w-3/4">
-          <Link
-            href="/"
-            className="m-0 h-full transition-all"
-            aria-label="Ice Level Homepage"
-          >
-            <IceLevelLogo className="relative top-[5%] h-[90%] sm:top-[2.5%]" />
+        <IceLevelLogo className="top-[5%] h-[90%] w-auto sm:top-[2.5%] " />
+      </Link>
+      <div className="flex flex-row justify-end items-center h-full w-full px-[5%]">
+        <div className="relative flex flex-row">
+          <Link href="/collect" className={linkClasses(router, '/collect')}>
+            Collect
           </Link>
-          <Link href="/community" className={linkClasses(router, '/community')}>
-            Community
+          <Link href="/shop" className={linkClasses(router, '/shop')}>
+            Shop
           </Link>
-          <Link
-            href="/collection"
-            className={linkClasses(router, '/collection')}
-          >
-            Collection
+          <Link href="/trade" className={linkClasses(router, '/trade')}>
+            Trade
           </Link>
-          <Link href="/trade-hub" className={linkClasses(router, '/trade-hub')}>
-            Trade Hub
-          </Link>
-          <Link href="/pack-shop" className={linkClasses(router, '/pack-shop')}>
-            Pack Shop
-          </Link>
-          <Link
-            href="/open-packs"
-            className={linkClasses(router, '/open-packs')}
-          >
-            Open Packs
-          </Link>
+          <Menu>
+            <MenuButton className={linkClasses(router, '/admin')}>
+              More
+            </MenuButton>
+            <MenuList>
+              <MenuItem
+                onClick={() => router.push('https://www.simulationhockey.com')}
+              >
+                Forums
+              </MenuItem>
+              <MenuItem
+                onClick={() =>
+                  router.push('https://index.simulationhockey.com')
+                }
+              >
+                Index
+              </MenuItem>
+              <MenuItem
+                onClick={() =>
+                  router.push('https://portal.simulationhockey.com')
+                }
+              >
+                Portal
+              </MenuItem>
+            </MenuList>
+          </Menu>
           <Menu>
             <MenuButton className={linkClasses(router, '/admin')}>
               Admin
@@ -124,6 +137,8 @@ export const Header = ({ showAuthButtons = true }) => {
               </MenuItem>
             </MenuList>
           </Menu>
+        </div>
+        <div className="flex flex-row">
           <IconButton
             aria-label={`Toggle Dark Mode`}
             icon={

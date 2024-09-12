@@ -2,7 +2,7 @@ import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthentica
 import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
 import { NextSeo } from 'next-seo'
 
-export default function () {
+export default () => {
   useRedirectIfNotAuthenticated('/')
   useRedirectIfNotAuthorized('/', {
     roles: ['TRADING_CARD_ADMIN', 'TRADING_CARD_TEAM'],
