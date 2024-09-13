@@ -68,6 +68,7 @@ export default async function tokenEndpoint(
         status: 'logout',
         message: 'Refresh token expired',
       })
+      return
     }
     const accessToken: string = signJwt(user.uid)
     const refreshToken: string = uuid()
@@ -87,6 +88,7 @@ export default async function tokenEndpoint(
         refreshToken,
       },
     })
+    return
   }
 
   methodNotAllowed(req, res, allowedMethods)

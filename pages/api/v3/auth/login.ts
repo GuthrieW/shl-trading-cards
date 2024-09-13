@@ -38,15 +38,12 @@ export default async function loginEndpoint(
   await middleware(req, res, cors)
 
   if (req.method === POST) {
-    console.log('got into post')
     const queryResult: { error: unknown } | InternalLoginUser[] =
       await usersQuery<InternalLoginUser>(SQL`
       SELECT uid, username, password, salt, usergroup, displaygroup, additionalgroups
       FROM .mybb_users
       WHERE username = ${req.body.username}
     `)
-
-    console.log('queryResult', queryResult)
 
     if ('error' in queryResult) {
       res
@@ -93,7 +90,6 @@ export default async function loginEndpoint(
       MD5(user.salt).toString() + MD5(req.body.password).toString()
     ).toString()
 
-    console.log('password check', saltedPassword, user.password)
     if (saltedPassword !== user.password) {
       res.status(StatusCodes.OK).json({
         status: 'error',
@@ -106,17 +102,11 @@ export default async function loginEndpoint(
     const refreshToken: string = uuid()
     const expiresAt: string = getRefreshTokenExpirationDate()
 
-    console.log('accessToken', accessToken)
-    console.log('refreshToken', refreshToken)
-    console.log('expiresAt', expiresAt)
-
-    const result = await usersQuery(SQL`
+    await usersQuery(SQL`
       INSERT INTO refreshTokens (uid, expires_at, token)
       VALUES (${user.uid}, ${expiresAt}, ${refreshToken})
       ON DUPLICATE KEY UPDATE token=${refreshToken}, expires_at=${expiresAt};
     `)
-
-    console.log('result', result)
 
     res.status(StatusCodes.OK).json({
       status: 'success',
@@ -127,6 +117,7 @@ export default async function loginEndpoint(
         refreshToken,
       },
     })
+    return
   }
 
   methodNotAllowed(req, res, allowedMethods)

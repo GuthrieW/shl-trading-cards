@@ -14,7 +14,17 @@ const cors = Cors({
   methods: allowedMethods,
 })
 
-export default async function userEndpoint(
+type UserData = {
+  uid: number
+  username: string
+  avatar: string
+}
+
+type UserDataWithAvatarType = UserData & {
+  avatartype: 'remote' | 'upload' | '0' | ''
+}
+
+export default async function userEndpoint<UserData>(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
@@ -26,12 +36,7 @@ export default async function userEndpoint(
       return
     }
 
-    const response = await usersQuery<{
-      uid: number
-      username: string
-      avatar: string
-      avatartype: 'remote' | 'upload' | '0' | ''
-    }>(SQL`
+    const response = await usersQuery<UserDataWithAvatarType>(SQL`
       SELECT uid, username, avatar, avatartype  
       FROM mybb_users
       WHERE uid=${req.cookies.userid}
@@ -58,6 +63,7 @@ export default async function userEndpoint(
       username: user.username,
       avatar: userAvatar,
     })
+    return
   }
 
   methodNotAllowed(req, res, allowedMethods)

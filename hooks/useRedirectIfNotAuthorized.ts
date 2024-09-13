@@ -4,7 +4,6 @@ import { usePermissions } from './usePermissions'
 import { useEffect } from 'react'
 
 export const useRedirectIfNotAuthorized = (
-  redirectPath: string,
   options:
     | {
         roles:
@@ -13,7 +12,8 @@ export const useRedirectIfNotAuthorized = (
       }
     | {
         permissions: keyof Permissions | (keyof Permissions)[]
-      }
+      },
+  redirectPath: string = '/'
 ) => {
   const router = useRouter()
   const { loading, groups, permissions } = usePermissions()

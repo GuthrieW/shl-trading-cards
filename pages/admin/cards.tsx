@@ -2,8 +2,8 @@ import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthentica
 import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
 
 export default () => {
-  useRedirectIfNotAuthenticated('/')
-  useRedirectIfNotAuthorized('/', {
+  useRedirectIfNotAuthenticated()
+  useRedirectIfNotAuthorized({
     roles: ['TRADING_CARD_ADMIN', 'TRADING_CARD_TEAM'],
   })
 
