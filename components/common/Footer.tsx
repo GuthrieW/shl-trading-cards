@@ -239,6 +239,14 @@ ${issueData.desiredFunctionality}`
           >
             Submit
           </Button>
+          <Button
+            type="button"
+            onClick={onClose}
+            className="mt-6 mx-1"
+            disabled={isSubmitting}
+          >
+            Cancel
+          </Button>
         </form>
       </div>
     )
@@ -317,13 +325,21 @@ ${issueData.desiredFunctionality}`
             />
           </FormControl>
           <Button
-            disabled={!isValid}
+            disabled={!isValid || isSubmitting}
             type="submit"
-            className="mt-6"
+            className="mt-6 mx-1"
             isLoading={isSubmitting}
             loadingText="Submitting..."
           >
             Submit
+          </Button>
+          <Button
+            type="button"
+            onClick={onClose}
+            className="mt-6 mx-1"
+            disabled={isSubmitting}
+          >
+            Cancel
           </Button>
         </form>
       </div>
@@ -348,13 +364,11 @@ ${issueData.desiredFunctionality}`
             Visit Forum
           </Link>{' '}
           |{' '}
-          <Button onClick={() => openDrawer('bug')}>
-            {bugDrawerData.header}
-          </Button>{' '}
+          <Link onClick={() => openDrawer('bug')}>{bugDrawerData.header}</Link>{' '}
           |{' '}
-          <Button onClick={() => openDrawer('feature')}>
+          <Link onClick={() => openDrawer('feature')}>
             {featureDrawerData.header}
-          </Button>
+          </Link>
         </div>
       </footer>
       <Drawer placement="bottom" isOpen={isOpen} onClose={onClose}>
