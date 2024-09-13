@@ -31,6 +31,9 @@ export const checkUserAuthorization = async (
       return false
     }
 
+    const useridCookieMatchesToken: boolean =
+      req.cookies.userid === decodedToken.userid.toString()
+
     if (options?.validRoles) {
       const roleQuery = await usersQuery<{
         uid: number
@@ -55,8 +58,16 @@ export const checkUserAuthorization = async (
           .map((group) => parseInt(group)),
       ]
 
+      if (
+        'sudo' in req.cookies &&
+        req.cookies.sudo === 'true' &&
+        groups.includes(userGroups.TRADING_CARD_ADMIN)
+      ) {
+        return useridCookieMatchesToken
+      }
+
       return (
-        req.cookies.userid === decodedToken.userid.toString() &&
+        useridCookieMatchesToken &&
         groups.some((group) => {
           if (typeof options.validRoles === 'string') {
             return userGroups[options.validRoles] === group
@@ -66,7 +77,7 @@ export const checkUserAuthorization = async (
       )
     }
 
-    return req.cookies.userid === decodedToken.userid.toString()
+    return useridCookieMatchesToken
   } catch (error) {
     return false
   }
