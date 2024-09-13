@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Raleway, Montserrat } from 'next/font/google'
+import { Raleway, Montserrat } from '@next/font/google'
 import { DefaultSeo } from 'next-seo'
 import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'

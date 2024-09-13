@@ -68,7 +68,7 @@ export default function () {
         setIsRedirectingFromLogin(true)
         router.push('/')
       } catch (error) {
-        console.error('error', error)
+        console.error(error)
         const errorMessage: string =
           'message' in error
             ? error.message
