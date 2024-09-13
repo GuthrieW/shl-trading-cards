@@ -260,7 +260,7 @@ export const Footer = () => {
   } as const
 
   const FeatureForm = () => {
-    const [bugError, setBugError] = useState<string>('')
+    const [featureError, setFeatureError] = useState<string>('')
 
     const {
       values,
@@ -292,7 +292,7 @@ export const Footer = () => {
             'message' in error
               ? error.message
               : 'Error submittings, please message caltroit_red_flames on Discord'
-          setBugError(errorMessage)
+          setFeatureError(errorMessage)
         } finally {
           setSubmitting(false)
         }
@@ -301,8 +301,8 @@ export const Footer = () => {
 
     return (
       <div>
-        {bugError && (
-          <div className="text-red dark:text-redDark">{bugError}</div>
+        {featureError && (
+          <div className="text-red dark:text-redDark">{featureError}</div>
         )}
         <form onSubmit={handleSubmit}>
           <FormControl isInvalid={!!errors.description && touched.description}>
