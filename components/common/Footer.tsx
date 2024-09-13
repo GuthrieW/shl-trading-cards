@@ -12,7 +12,6 @@ import {
   Textarea,
   useDisclosure,
 } from '@chakra-ui/react'
-import axios from 'axios'
 import { useFormik } from 'formik'
 import React, { useContext, useState } from 'react'
 import * as Yup from 'yup'
@@ -29,8 +28,8 @@ type DrawerData = {
   form: React.ReactNode
 }
 
-const REPOSITORY_NAME = 'shl-trading-cards' as const
 const REPOSITORY_OWNER = 'GuthrieW' as const
+const REPOSITORY_NAME = 'shl-trading-cards' as const
 
 const bugValidationSchema = Yup.object({}).shape({
   description: Yup.string().required('Description is required'),
@@ -50,6 +49,9 @@ type FeatureFormValues = Yup.InferType<typeof featureValidationSchema>
 export const Footer = () => {
   const { isOpen, onClose, onOpen } = useDisclosure()
   const [drawerId, setDrawerId] = useState<DrawerId>(null)
+  const [formError, setFormError] = useState<string>('')
+  const { addToast } = useContext(ToastContext)
+  const [uid] = useCookie(config.userIDCookieName)
 
   const openDrawer = (source: DrawerId) => {
     setDrawerId(source)
@@ -59,15 +61,7 @@ export const Footer = () => {
   const submitGithubIssue = async (
     issueData: BugFormValues | FeatureFormValues
   ) => {
-    const { addToast } = useContext(ToastContext)
-    const [uid] = useCookie(config.userIDCookieName)
     const bugCreator: string = uid ? `by ${uid}` : ' anonymously'
-
-    const requestWithAuth = request.defaults({
-      headers: {
-        authorization: `token ${process.env.GITHUB_ISSUES_TOKEN}`,
-      },
-    })
 
     const requestData: { title: string; body: string; label: 'bug' | 'story' } =
       {
@@ -79,8 +73,7 @@ export const Footer = () => {
     if ('reproductionSteps' in issueData) {
       requestData.title = `Bug Report (Submitted ${bugCreator})`
       requestData.label = 'bug'
-      requestData.body = `
-    # Description
+      requestData.body = `# Description
     ${issueData.description}
     
     # Reproduction Steps
@@ -97,38 +90,38 @@ export const Footer = () => {
     } else if ('desiredFunctionality' in issueData) {
       requestData.title = `Feature Request (Submitted ${bugCreator})`
       requestData.label = 'story'
-      requestData.body = `
-    # Description
+      requestData.body = `# Description
     ${issueData.description}
     
     # Desired Functionality
     ${issueData.desiredFunctionality}`
     }
 
-    const result = await requestWithAuth(
+    const result = await request(
       `POST /repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues`,
       {
-        owner: 'OWNER',
-        repo: 'shl-trading-cards',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: process.env.GITHUB_ISSUES_TOKEN,
+          accept: 'application/vnd.github+json',
+        },
+        owner: REPOSITORY_OWNER,
+        repo: REPOSITORY_NAME,
         title: requestData.title,
         body: requestData.body,
         labels: ['bug'],
         assignees: ['GuthrieW'],
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
       }
     )
 
     addToast({
-      title: 'Ticket Submitted Trade Partner',
+      title: 'Ticket Submitted',
       status: 'success',
     })
     console.log('result', result)
   }
 
   const BugForm = () => {
-    const [bugError, setBugError] = useState<string>('')
     const {
       values,
       errors,
@@ -168,7 +161,7 @@ export const Footer = () => {
             'message' in error
               ? error.message
               : 'Error submittings, please message caltroit_red_flames on Discord'
-          setBugError(errorMessage)
+          setFormError(errorMessage)
         } finally {
           setSubmitting(false)
         }
@@ -177,8 +170,8 @@ export const Footer = () => {
 
     return (
       <div>
-        {bugError && (
-          <div className="text-red dark:text-redDark">{bugError}</div>
+        {formError && (
+          <div className="text-red dark:text-redDark">{formError}</div>
         )}
         <form onSubmit={handleSubmit}>
           <FormControl isInvalid={!!errors.description && touched.description}>
@@ -260,8 +253,6 @@ export const Footer = () => {
   } as const
 
   const FeatureForm = () => {
-    const [featureError, setFeatureError] = useState<string>('')
-
     const {
       values,
       errors,
@@ -292,7 +283,7 @@ export const Footer = () => {
             'message' in error
               ? error.message
               : 'Error submittings, please message caltroit_red_flames on Discord'
-          setFeatureError(errorMessage)
+          setFormError(errorMessage)
         } finally {
           setSubmitting(false)
         }
@@ -301,8 +292,8 @@ export const Footer = () => {
 
     return (
       <div>
-        {featureError && (
-          <div className="text-red dark:text-redDark">{featureError}</div>
+        {formError && (
+          <div className="text-red dark:text-redDark">{formError}</div>
         )}
         <form onSubmit={handleSubmit}>
           <FormControl isInvalid={!!errors.description && touched.description}>
