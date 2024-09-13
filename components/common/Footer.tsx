@@ -15,10 +15,12 @@ import {
 import { useFormik } from 'formik'
 import React, { useContext, useState } from 'react'
 import * as Yup from 'yup'
-import { request } from '@octokit/request'
 import { ToastContext } from 'contexts/ToastContext'
 import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
+import axios from 'axios'
+import { POST } from '@constants/http-methods'
+import { useMutation } from 'react-query'
 
 type DrawerId = 'bug' | 'feature'
 
@@ -27,9 +29,6 @@ type DrawerData = {
   header: 'Report a Bug' | 'Suggest a Feature'
   form: React.ReactNode
 }
-
-const REPOSITORY_OWNER = 'GuthrieW' as const
-const REPOSITORY_NAME = 'shl-trading-cards' as const
 
 const bugValidationSchema = Yup.object({}).shape({
   description: Yup.string().required('Description is required'),
@@ -46,12 +45,33 @@ const featureValidationSchema = Yup.object({}).shape({
 })
 type FeatureFormValues = Yup.InferType<typeof featureValidationSchema>
 
+type GithubIssueData = { title: string; body: string; label: 'bug' | 'story' }
+
 export const Footer = () => {
   const { isOpen, onClose, onOpen } = useDisclosure()
   const [drawerId, setDrawerId] = useState<DrawerId>(null)
   const [formError, setFormError] = useState<string>('')
   const { addToast } = useContext(ToastContext)
   const [uid] = useCookie(config.userIDCookieName)
+
+  const { mutate: createGithubIssue } = useMutation(
+    (requestData: GithubIssueData) =>
+      axios({
+        method: POST,
+        url: 'api/v3/github/issue',
+        data: requestData,
+      }),
+    {
+      onSuccess: ({ data }) => {
+        addToast({
+          title: 'Ticket Submitted',
+          description: data?.payload?.newIssueUrl ?? null,
+          status: 'success',
+        })
+        onClose()
+      },
+    }
+  )
 
   const openDrawer = (source: DrawerId) => {
     setDrawerId(source)
@@ -63,62 +83,40 @@ export const Footer = () => {
   ) => {
     const bugCreator: string = uid ? `by ${uid}` : ' anonymously'
 
-    const requestData: { title: string; body: string; label: 'bug' | 'story' } =
-      {
-        title: '',
-        body: '',
-        label: null,
-      }
+    const requestData: GithubIssueData = {
+      title: '',
+      body: '',
+      label: null,
+    }
 
     if ('reproductionSteps' in issueData) {
       requestData.title = `Bug Report (Submitted ${bugCreator})`
       requestData.label = 'bug'
-      requestData.body = `# Description
-    ${issueData.description}
+      requestData.body = `## Description
+${issueData.description}
     
-    # Reproduction Steps
-    ${issueData.reproductionSteps}
+## Reproduction Steps
+${issueData.reproductionSteps}
     
-    # Operating System
-    ${issueData.operatingSystem}
+## Operating System
+${issueData.operatingSystem}
     
-    # Browser
-    ${issueData.browser}
+## Browser
+${issueData.browser}
     
-    # Device
-    ${issueData.device}`
+## Device
+${issueData.device}`
     } else if ('desiredFunctionality' in issueData) {
       requestData.title = `Feature Request (Submitted ${bugCreator})`
       requestData.label = 'story'
-      requestData.body = `# Description
-    ${issueData.description}
+      requestData.body = `## Description
+${issueData.description}
     
-    # Desired Functionality
-    ${issueData.desiredFunctionality}`
+## Desired Functionality
+${issueData.desiredFunctionality}`
     }
 
-    const result = await request(
-      `POST /repos/${REPOSITORY_OWNER}/${REPOSITORY_NAME}/issues`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: process.env.GITHUB_ISSUES_TOKEN,
-          accept: 'application/vnd.github+json',
-        },
-        owner: REPOSITORY_OWNER,
-        repo: REPOSITORY_NAME,
-        title: requestData.title,
-        body: requestData.body,
-        labels: ['bug'],
-        assignees: ['GuthrieW'],
-      }
-    )
-
-    addToast({
-      title: 'Ticket Submitted',
-      status: 'success',
-    })
-    console.log('result', result)
+    createGithubIssue(requestData)
   }
 
   const BugForm = () => {
@@ -160,7 +158,7 @@ export const Footer = () => {
           const errorMessage: string =
             'message' in error
               ? error.message
-              : 'Error submittings, please message caltroit_red_flames on Discord'
+              : 'Error submitting, please message caltroit_red_flames on Discord'
           setFormError(errorMessage)
         } finally {
           setSubmitting(false)
@@ -282,7 +280,7 @@ export const Footer = () => {
           const errorMessage: string =
             'message' in error
               ? error.message
-              : 'Error submittings, please message caltroit_red_flames on Discord'
+              : 'Error submitting, please message caltroit_red_flames on Discord'
           setFormError(errorMessage)
         } finally {
           setSubmitting(false)
@@ -313,7 +311,7 @@ export const Footer = () => {
               isRequired={false}
               onChange={handleChange}
               onBlur={handleBlur}
-              name="description"
+              name="desiredFunctionality"
               value={values.desiredFunctionality}
               className="font-mont"
             />

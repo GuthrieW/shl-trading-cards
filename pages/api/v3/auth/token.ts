@@ -34,7 +34,7 @@ const cors = Cors({
 export default async function tokenEndpoint(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<TokenData>>
-) {
+): Promise<void> {
   await middleware(req, res, cors)
 
   if (req.method === POST) {
