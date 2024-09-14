@@ -32,8 +32,12 @@ export const PageWrapper = ({
           <Spinner size="xl" thickness="4px" />
         </div>
       ) : (
-        <div className="min-h-[calc(100vh-10rem)] px-[2.5%] pt-4 2xl:px-16">
-          <div className={className}>{children}</div>
+        <div
+          className={`min-h-[calc(100vh-10rem)] px-[2.5%] pt-4 2xl:px-16 ${{
+            className,
+          }}`}
+        >
+          {children}
         </div>
       )}
     </div>

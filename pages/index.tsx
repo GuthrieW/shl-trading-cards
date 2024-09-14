@@ -5,7 +5,7 @@ import { dehydrate, QueryClient } from 'react-query'
 
 export default () => {
   return (
-    <PageWrapper>
+    <PageWrapper className="flex flex-col justify-start">
       <p>Home Page</p>
     </PageWrapper>
   )

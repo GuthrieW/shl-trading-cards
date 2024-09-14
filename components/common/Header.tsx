@@ -96,7 +96,7 @@ export const Header = ({ showAuthButtons = true }) => {
             Trade
           </Link>
           <Menu>
-            <MenuButton className={linkClasses(router, '/admin')}>
+            <MenuButton className={linkClasses(router, '/more')}>
               More
             </MenuButton>
             <MenuList>
