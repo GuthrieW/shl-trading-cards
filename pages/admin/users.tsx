@@ -3,9 +3,7 @@ import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
 
 export default () => {
   useRedirectIfNotAuthenticated()
-  useRedirectIfNotAuthorized({
-    roles: ['TRADING_CARD_ADMIN'],
-  })
+  useRedirectIfNotAuthorized({ roles: ['TRADING_CARD_ADMIN'] })
 
   return <></>
 }

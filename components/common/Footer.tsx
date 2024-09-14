@@ -164,6 +164,7 @@ ${issueData.desiredFunctionality}`
           setSubmitting(false)
         }
       },
+      validationSchema: bugValidationSchema,
     })
 
     return (
@@ -197,6 +198,7 @@ ${issueData.desiredFunctionality}`
           <FormControl>
             <FormLabel>Operating System</FormLabel>
             <Input
+              type="text"
               placeholder="Windows/Mac/Linux/Other"
               isRequired={false}
               onChange={handleChange}
@@ -209,6 +211,7 @@ ${issueData.desiredFunctionality}`
           <FormControl>
             <FormLabel>Browser</FormLabel>
             <Input
+              type="text"
               placeholder="Chrome/Edge/Firefox/Safari/Other"
               isRequired={false}
               onChange={handleChange}
@@ -221,6 +224,7 @@ ${issueData.desiredFunctionality}`
           <FormControl>
             <FormLabel>Device</FormLabel>
             <Input
+              type="text"
               placeholder="Desktop/Tablet/Mobile/Other"
               isRequired={false}
               onChange={handleChange}
@@ -294,6 +298,7 @@ ${issueData.desiredFunctionality}`
           setSubmitting(false)
         }
       },
+      validationSchema: featureValidationSchema,
     })
 
     return (

@@ -1,7 +1,7 @@
 import { POST } from '@constants/http-methods'
 import methodNotAllowed from '../lib/methodNotAllowed'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { queryDatabase } from '@pages/api/database/database'
+import { portalQuery } from '@pages/api/database/database'
 import SQL from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 import {
@@ -38,13 +38,14 @@ export default async function tokenEndpoint(
   await middleware(req, res, cors)
 
   if (req.method === POST) {
-    const queryResult = await queryDatabase<InternalUserToken>(SQL`
+    const queryResult = await portalQuery<InternalUserToken>(SQL`
       SELECT uid, invalid, expires_at
-      FROM refreshTokens,
+      FROM refreshTokens
       WHERE token=${req.body.refreshToken};
     `)
 
     if ('error' in queryResult) {
+      console.error(queryResult)
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .end('Server connection failed')
@@ -74,7 +75,7 @@ export default async function tokenEndpoint(
     const refreshToken: string = uuid()
     const expiresAt: string = getRefreshTokenExpirationDate()
 
-    await queryDatabase(SQL`
+    await portalQuery(SQL`
       INSERT INTO refreshTokens (uid, expires_at, token)
       VALUES (${user.uid}, ${expiresAt}, ${refreshToken})
       ON DUPLICATE KEY UPDATE token=${refreshToken}, expires_at=${expiresAt};

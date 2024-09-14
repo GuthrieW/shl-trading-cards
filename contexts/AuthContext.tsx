@@ -59,16 +59,16 @@ export const SessionProvider = ({
       }
 
       setSession({
-        token: response.data.accessToken,
-        userId: response.data.userid,
+        token: response.data.payload.accessToken,
+        userId: response.data.payload.userid,
       })
 
       window?.localStorage.setItem(
         config.localStorage.refreshToken,
-        response.data.refreshToken
+        response.data.payload.refreshToken
       )
 
-      setUserID(response.data.userid)
+      setUserID(response.data.payload.userid)
       setIsLoading(false)
 
       return
@@ -111,17 +111,17 @@ export const SessionProvider = ({
     }
 
     setSession({
-      token: response.data.accessToken,
-      userId: response.data.userid,
+      token: response.data.payload.accessToken,
+      userId: response.data.payload.userid,
     })
     setIsLoading(false)
     isRefreshingRef.current = false
 
     window?.localStorage.setItem(
       config.localStorage.refreshToken,
-      response.data.refreshToken
+      response.data.payload.refreshToken
     )
-    setUserID(response.data.userid)
+    setUserID(response.data.payload.userid)
   }, [handleLogout])
 
   useEffect(() => {
