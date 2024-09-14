@@ -7,6 +7,7 @@ import { StatusCodes } from 'http-status-codes'
 import { checkUserAuthorization } from '../lib/checkUserAuthorization'
 import { usersQuery } from '@pages/api/database/database'
 import SQL from 'sql-template-strings'
+import { ApiResponse } from '..'
 
 const DEFAULT_SHL_URL: string = 'https://simulationhockey.com/' as const
 const allowedMethods: string[] = [GET] as const
@@ -14,7 +15,7 @@ const cors = Cors({
   methods: allowedMethods,
 })
 
-type UserData = {
+export type UserData = {
   uid: number
   username: string
   avatar: string
@@ -26,7 +27,7 @@ type UserDataWithAvatarType = UserData & {
 
 export default async function userEndpoint<UserData>(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse<ApiResponse<UserData>>
 ): Promise<void> {
   await middleware(req, res, cors)
 
@@ -59,9 +60,12 @@ export default async function userEndpoint<UserData>(
           : `${DEFAULT_SHL_URL}images/default_avatar.png`
 
     res.status(StatusCodes.OK).json({
-      uid: user.uid,
-      username: user.username,
-      avatar: userAvatar,
+      status: 'success',
+      payload: {
+        uid: user.uid,
+        username: user.username,
+        avatar: userAvatar,
+      } as UserData,
     })
     return
   }

@@ -3,7 +3,7 @@ import { POST } from '@constants/http-methods'
 import { NextApiRequest, NextApiResponse } from 'next'
 import methodNotAllowed from '../lib/methodNotAllowed'
 import SQL from 'sql-template-strings'
-import { usersQuery } from '@pages/api/database/database'
+import { portalQuery, usersQuery } from '@pages/api/database/database'
 import { StatusCodes } from 'http-status-codes'
 import { v4 as uuid } from 'uuid'
 import { getRefreshTokenExpirationDate, signJwt } from './utils'
@@ -41,7 +41,7 @@ export default async function loginEndpoint(
     const queryResult: { error: unknown } | InternalLoginUser[] =
       await usersQuery<InternalLoginUser>(SQL`
       SELECT uid, username, password, salt, usergroup, displaygroup, additionalgroups
-      FROM .mybb_users
+      FROM mybb_users
       WHERE username = ${req.body.username}
     `)
 
@@ -102,7 +102,7 @@ export default async function loginEndpoint(
     const refreshToken: string = uuid()
     const expiresAt: string = getRefreshTokenExpirationDate()
 
-    await usersQuery(SQL`
+    await portalQuery(SQL`
       INSERT INTO refreshTokens (uid, expires_at, token)
       VALUES (${user.uid}, ${expiresAt}, ${refreshToken})
       ON DUPLICATE KEY UPDATE token=${refreshToken}, expires_at=${expiresAt};

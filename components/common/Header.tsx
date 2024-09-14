@@ -43,7 +43,7 @@ export const Header = ({ showAuthButtons = true }) => {
   const { toggleColorMode } = useColorMode()
   const isDarkMode = useColorModeValue(false, true)
 
-  const { data } = useQuery<{ username: string; avatar: string }>({
+  const { data } = useQuery({
     queryKey: ['baseUser', session?.token],
     queryFn: () =>
       axios({
@@ -70,6 +70,8 @@ export const Header = ({ showAuthButtons = true }) => {
     toggleColorMode()
     localStorage.setItem('theme', newIsDarkMode ? 'dark' : 'light')
   }
+
+  console.log('data', data)
 
   return (
     <div
@@ -161,12 +163,14 @@ export const Header = ({ showAuthButtons = true }) => {
                 <>
                   <MenuButton className="font-mont text-secondaryText hover:underline dark:text-secondaryTextDark">
                     <div className="flex h-full items-center space-x-1">
-                      <span className="hidden sm:inline">{data.username}</span>
+                      <span className="hidden sm:inline">
+                        {data?.data.payload.username}
+                      </span>
                       {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
                       <Avatar
                         size="sm"
-                        name={data.username}
-                        src={data.avatar}
+                        name={data?.data.payload.username}
+                        src={data?.data.payload.avatar}
                       />
                     </div>
                   </MenuButton>
