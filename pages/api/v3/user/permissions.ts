@@ -1,33 +1,27 @@
-import { GET } from '@constants/http-methods'
 import { NextApiRequest, NextApiResponse } from 'next'
-import methodNotAllowed from '../lib/methodNotAllowed'
+import { ApiResponse } from '..'
 import middleware from '@pages/api/database/middleware'
+import { GET } from '@constants/http-methods'
 import Cors from 'cors'
-import { StatusCodes } from 'http-status-codes'
 import { checkUserAuthorization } from '../lib/checkUserAuthorization'
+import { StatusCodes } from 'http-status-codes'
 import { usersQuery } from '@pages/api/database/database'
 import SQL from 'sql-template-strings'
-import { ApiResponse } from '..'
+import methodNotAllowed from '../lib/methodNotAllowed'
 
-const DEFAULT_SHL_URL: string = 'https://simulationhockey.com/' as const
 const allowedMethods: string[] = [GET] as const
 const cors = Cors({
   methods: allowedMethods,
 })
 
-export type UserData = {
+export type PermissionsData = {
   uid: number
-  username: string
-  avatar: string
+  groups: number[]
 }
 
-type UserDataWithAvatarType = UserData & {
-  avatartype: 'remote' | 'upload' | '0' | ''
-}
-
-export default async function userEndpoint(
+export default async function permissionsEndpoint(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<UserData>>
+  res: NextApiResponse<ApiResponse<PermissionsData>>
 ): Promise<void> {
   await middleware(req, res, cors)
 
@@ -37,8 +31,12 @@ export default async function userEndpoint(
       return
     }
 
-    const queryResult = await usersQuery<UserDataWithAvatarType>(SQL`
-      SELECT uid, username, avatar, avatartype  
+    const queryResult = await usersQuery<{
+      uid: number
+      usergroup: number
+      additionalgroups: string
+    }>(SQL`
+      SELECT uid, usergroup, additionalgroups
       FROM mybb_users
       WHERE uid=${req.cookies.userid}
     `)
@@ -67,22 +65,19 @@ export default async function userEndpoint(
 
     const [user] = queryResult
 
-    const userAvatar: string =
-      user.avatartype === 'remote'
-        ? `${DEFAULT_SHL_URL}${user.avatar.substring(2)}`
-        : user.avatartype !== '' && user.avatar !== 'noavatar'
-          ? user.avatar
-          : `${DEFAULT_SHL_URL}images/default_avatar.png`
-
     res.status(StatusCodes.OK).json({
       status: 'success',
       payload: {
         uid: user.uid,
-        username: user.username,
-        avatar: userAvatar,
+        groups: [
+          user.usergroup,
+          ...user.additionalgroups
+            .split(',')
+            .filter(Boolean)
+            .map((group) => parseInt(group)),
+        ],
       },
     })
-    return
   }
 
   methodNotAllowed(req, res, allowedMethods)

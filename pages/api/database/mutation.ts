@@ -7,7 +7,7 @@ type MutationResponse<D, V> = {
 }
 
 const LOADING_MUTATION: MutationResponse<null, null> = {
-  mutate: () => null,
+  mutate: undefined,
   isLoading: true,
   isError: false,
 }

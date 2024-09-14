@@ -16,6 +16,7 @@ export const checkUserAuthorization = async (
   const bearerPrefix: string = 'Bearer '
 
   if (!authHeader?.startsWith(bearerPrefix)) {
+    console.error('Missing valid bearer prefix')
     return false
   }
 
@@ -28,6 +29,7 @@ export const checkUserAuthorization = async (
     const decodedToken = jwt.verify(token, process.env.SECRET ?? '')
 
     if (typeof decodedToken === 'string' || !('userid' in decodedToken)) {
+      console.error('Decoded token is malformed', decodedToken)
       return false
     }
 
@@ -45,7 +47,13 @@ export const checkUserAuthorization = async (
         WHERE uid=${decodedToken.userid}
       `)
 
-      if ('error' in roleQuery || roleQuery.length === 0) {
+      if ('error' in roleQuery) {
+        console.error(roleQuery.error)
+        return false
+      }
+
+      if (roleQuery.length === 0) {
+        console.error(`No users found with userid: ${decodedToken.userid}`)
         return false
       }
 

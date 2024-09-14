@@ -48,7 +48,7 @@ export const Header = ({ showAuthButtons = true }) => {
     queryKey: ['baseUser', session?.token],
     queryFn: () =>
       axios({
-        url: 'api/v3/user',
+        url: '/api/v3/user',
         method: GET,
         headers: {
           Authorization: `Bearer ${session?.token}`,

@@ -13,4 +13,8 @@ export const useRedirectIfNotAuthenticated = (
       router.replace(redirectPath)
     }
   }, [isLoading])
+
+  return {
+    isCheckingAuthentication: isLoading,
+  }
 }

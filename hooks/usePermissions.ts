@@ -1,9 +1,9 @@
 import { GET } from '@constants/http-methods'
+import { query } from '@pages/api/database/query'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
 import { CAN_RUN_SCRIPTS, RoleGroup, userGroups } from 'lib/constants'
 import { useMemo } from 'react'
-import { useQuery } from 'react-query'
 
 export type Permissions = {
   canRunScripts: boolean
@@ -32,23 +32,27 @@ const UNAUTHENTICATED_PERMISSIONS: Permissions = {
 export const usePermissions = (): {
   permissions: Partial<Permissions>
   groups?: (keyof Readonly<typeof userGroups>)[]
-  loading: boolean
+  isLoading: boolean
 } => {
   const { session, loggedIn } = useSession()
 
-  const { data, isLoading } = useQuery<{ data; isLoading }>({
+  const { payload, isLoading } = query<{
+    uid: number
+    groups: (typeof userGroups)[keyof typeof userGroups][]
+  }>({
     queryKey: ['userGroups', session?.token],
     queryFn: () =>
       axios({
-        url: `api/v3/user/permissions`,
+        url: `/api/v3/user/permissions`,
         method: GET,
+        headers: {
+          Authorization: `Bearer ${session?.token}`,
+        },
       }),
     enabled: loggedIn,
   })
 
-  const apiUserGroups: (typeof userGroups)[keyof typeof userGroups][] =
-    data.data.groups
-
+  const apiUserGroups = payload?.groups ?? []
   const permissions = useMemo<Permissions>(() => {
     return {
       canRunScripts: checkUserHasPermission(apiUserGroups, CAN_RUN_SCRIPTS),
@@ -67,27 +71,27 @@ export const usePermissions = (): {
   }, [apiUserGroups])
 
   const groups = useMemo(() => {
-    return data?.data.groups.flatMap(
+    return payload?.groups.flatMap(
       (group) =>
         (Object.keys(userGroups).find(
           (key) =>
             userGroups[key as keyof Readonly<typeof userGroups>] === group
         ) as keyof Readonly<typeof userGroups>) ?? []
     )
-  }, [data?.data.groups])
+  }, [payload?.groups])
 
   if (!loggedIn) {
     return {
       permissions: UNAUTHENTICATED_PERMISSIONS,
       groups: undefined,
-      loading: true,
+      isLoading: true,
     }
   }
 
   return {
     permissions,
     groups,
-    loading: isLoading,
+    isLoading,
   }
 }
 

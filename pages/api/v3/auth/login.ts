@@ -6,10 +6,10 @@ import SQL from 'sql-template-strings'
 import { portalQuery, usersQuery } from '@pages/api/database/database'
 import { StatusCodes } from 'http-status-codes'
 import { v4 as uuid } from 'uuid'
-import { getRefreshTokenExpirationDate, signJwt } from './utils'
 import { ApiResponse } from '..'
 import Cors from 'cors'
 import middleware from '@pages/api/database/middleware'
+import { getRefreshTokenExpirationDate, signJwt } from './lib'
 
 const allowedMethods: string[] = [POST]
 const cors = Cors({
@@ -46,6 +46,7 @@ export default async function loginEndpoint(
     `)
 
     if ('error' in queryResult) {
+      console.error('Server connection failed')
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .end('Server connection failed')
@@ -53,6 +54,7 @@ export default async function loginEndpoint(
     }
 
     if (queryResult.length > 1) {
+      console.error('Multiple users with same username')
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .end('Multiple users with same username')
@@ -60,7 +62,8 @@ export default async function loginEndpoint(
     }
 
     if (queryResult.length === 0) {
-      res.status(StatusCodes.OK).json({
+      console.error('Multiple users with same username')
+      res.status(StatusCodes.NOT_FOUND).json({
         status: 'error',
         message: 'Invalid username or password',
       })
@@ -70,6 +73,7 @@ export default async function loginEndpoint(
     const [user] = queryResult
 
     if (user.usergroup === 7) {
+      console.log(`User with username ${req.body.username} is banned`)
       res.status(StatusCodes.OK).json({
         status: 'error',
         message: 'You have been banned. You cannot login.',

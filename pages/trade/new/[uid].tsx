@@ -46,7 +46,7 @@ export default () => {
       queryKey: ['collection', uid],
       queryFn: () =>
         axios({
-          url: `api/v3/cards/${uid}`,
+          url: `/api/v3/cards/${uid}`,
           method: GET,
         }),
     })
@@ -56,7 +56,7 @@ export default () => {
       queryKey: ['collection', tradePartnerUid],
       queryFn: () =>
         axios({
-          url: `api/v3/cards/${tradePartnerUid}`,
+          url: `/api/v3/cards/${tradePartnerUid}`,
           method: GET,
         }),
     })

@@ -8,9 +8,9 @@ type QueryResponse<T> = ApiResponse<T> & {
 }
 
 const LOADING_RESPONSE: QueryResponse<null> = {
-  status: null,
-  payload: null,
-  message: null,
+  status: undefined,
+  payload: undefined,
+  message: undefined,
   isLoading: true,
   isError: false,
 } as const
@@ -18,13 +18,16 @@ const LOADING_RESPONSE: QueryResponse<null> = {
 export const query = <T>({
   queryKey,
   queryFn,
+  enabled,
 }: {
   queryKey: string | string[]
   queryFn: () => Promise<AxiosResponse<any, any>>
+  enabled?: boolean
 }): QueryResponse<T> => {
   const { data, isLoading, isError } = useQuery<{ data: ApiResponse<T> }>({
     queryKey,
     queryFn,
+    enabled,
   })
 
   if (isLoading) {

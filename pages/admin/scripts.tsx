@@ -1,21 +1,29 @@
-import { CloseIcon } from '@chakra-ui/icons'
 import {
   Button,
-  Code,
   FormControl,
   FormLabel,
-  IconButton,
   Input,
-  ListItem,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Select,
-  Textarea,
-  UnorderedList,
+  Skeleton,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
 } from '@chakra-ui/react'
 import { PageWrapper } from '@components/common/PageWrapper'
-import { POST } from '@constants/http-methods'
+import { GET, POST } from '@constants/http-methods'
 import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated'
 import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
 import { mutation } from '@pages/api/database/mutation'
+import { query } from '@pages/api/database/query'
+import { SettingsData } from '@pages/api/v3/settings'
 import axios from 'axios'
 import { ToastContext } from 'contexts/ToastContext'
 import { useFormik } from 'formik'
@@ -94,8 +102,10 @@ export default () => {
       axios({ method: POST, url: '/api/v3/cards/delete-duplicates' }),
   })
 
-  // useRedirectIfNotAuthenticated()
-  // useRedirectIfNotAuthorized({ roles: ['TRADING_CARD_ADMIN'] })
+  const { isCheckingAuthentication } = useRedirectIfNotAuthenticated()
+  const { isCheckingAuthorization } = useRedirectIfNotAuthorized({
+    roles: ['TRADING_CARD_ADMIN'],
+  })
 
   const AddCardsToUsersForm = () => {
     const [cardsToAdd, setCardsToAdd] = useState<Record<string, string[]>>({})
@@ -250,6 +260,11 @@ export default () => {
   }
 
   const MonthlySubscriptionsForm = () => {
+    const { status, payload, isLoading } = query<{ settings: SettingsData[] }>({
+      queryKey: 'subscriptions',
+      queryFn: () => axios({ method: GET, url: '/api/v3/settings' }),
+    })
+
     const { isSubmitting, isValid } = useFormik<AddCardsToUsersValues>({
       validateOnBlur: true,
       validateOnChange: true,
@@ -282,11 +297,43 @@ export default () => {
         >
           Submit
         </Button>
-        <UnorderedList>
+
+        <Skeleton isLoaded={!isLoading}>
+          <TableContainer>
+            <Table size="md">
+              <Thead>
+                <Tr>
+                  <Th>Username</Th>
+                  <Th>Subscription</Th>
+                  <Th></Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {payload?.settings.map((setting) => (
+                  <Tr>
+                    <Td>{setting.username}</Td>
+                    <Td>{setting.subscription}</Td>
+                    <Td>
+                      <Menu>
+                        <MenuButton>Actions</MenuButton>
+                        <MenuList>
+                          <MenuItem>Update</MenuItem>
+                          <MenuItem>Delete</MenuItem>
+                        </MenuList>
+                      </Menu>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </Skeleton>
+
+        {/* <UnorderedList>
           <ListItem>Display currently subscribed users</ListItem>
           <ListItem>Add user</ListItem>
           <ListItem>Remove user</ListItem>
-        </UnorderedList>
+        </UnorderedList> */}
       </div>
     )
   }
@@ -382,27 +429,35 @@ export default () => {
 
   return (
     <PageWrapper className="h-full flex flex-col justify-center items-center w-11/12 md:w-3/4">
-      <Select
-        placeholder="Select a script"
-        onChange={(event) => setSelectedScript(event.target.value as ScriptId)}
+      <Skeleton
+        isLoaded={!isCheckingAuthentication || !isCheckingAuthorization}
       >
-        {scripts.map((script) => (
-          <option key={script.id} value={script.id}>
-            {script.name}
-          </option>
-        ))}
-      </Select>
-      {formError && (
-        <div className="text-red dark:text-redDark">{formError}</div>
-      )}
-      <div className="mt-6">
-        {selectedScript === 'add-cards-to-users' && <AddCardsToUsersForm />}
-        {selectedScript === 'delete-duplicates' && <DeleteDuplicateCardsForm />}
-        {selectedScript === 'monthly-subscriptions' && (
-          <MonthlySubscriptionsForm />
+        <Select
+          placeholder="Select a script"
+          onChange={(event) =>
+            setSelectedScript(event.target.value as ScriptId)
+          }
+        >
+          {scripts.map((script) => (
+            <option key={script.id} value={script.id}>
+              {script.name}
+            </option>
+          ))}
+        </Select>
+        {formError && (
+          <div className="text-red dark:text-redDark">{formError}</div>
         )}
-        {selectedScript === 'request-base-cards' && <RequestBaseCardsForm />}
-      </div>
+        <div className="mt-6">
+          {selectedScript === 'add-cards-to-users' && <AddCardsToUsersForm />}
+          {selectedScript === 'delete-duplicates' && (
+            <DeleteDuplicateCardsForm />
+          )}
+          {selectedScript === 'monthly-subscriptions' && (
+            <MonthlySubscriptionsForm />
+          )}
+          {selectedScript === 'request-base-cards' && <RequestBaseCardsForm />}
+        </div>
+      </Skeleton>
     </PageWrapper>
   )
 }

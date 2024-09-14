@@ -16,11 +16,11 @@ export const useRedirectIfNotAuthorized = (
   redirectPath: string = '/'
 ) => {
   const router = useRouter()
-  const { loading, groups, permissions } = usePermissions()
+  const { isLoading, groups, permissions } = usePermissions()
 
   useEffect(() => {
     if (
-      !loading && // if roles exist check to see if we don't match any roles
+      !isLoading && // if roles exist check to see if we don't match any roles
       (('roles' in options &&
         ((typeof options.roles === 'string' &&
           !groups?.includes(options.roles)) ||
@@ -36,5 +36,9 @@ export const useRedirectIfNotAuthorized = (
     ) {
       router.replace(redirectPath)
     }
-  }, [loading])
+  }, [isLoading])
+
+  return {
+    isCheckingAuthorization: isLoading,
+  }
 }
