@@ -1,5 +1,5 @@
 import { NextRouter, useRouter } from 'next/router'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Link } from './Link'
 import { IceLevelLogo } from './IceLevelLogo'
 import { useSession } from 'contexts/AuthContext'
@@ -20,10 +20,11 @@ import {
   MoonIcon,
   SunIcon,
 } from '@chakra-ui/icons'
-import { useQuery } from 'react-query'
 import axios from 'axios'
-import { GET } from '@constants/http-methods'
 import classNames from 'classnames'
+import { query } from '@pages/api/database/query'
+import { UserData } from '@pages/api/v3/user'
+import { GET } from '@constants/http-methods'
 
 const CURRENT_PAGE_LINK_CLASSES: string =
   'border-b-0 sm:border-b-[4px] border-l-[4px] sm:border-l-0 pt-0 sm:pt-[4px] pr-[14px] sm:pr-[10px] border-secondary dark:border-secondaryDark'
@@ -43,7 +44,7 @@ export const Header = ({ showAuthButtons = true }) => {
   const { toggleColorMode } = useColorMode()
   const isDarkMode = useColorModeValue(false, true)
 
-  const { data } = useQuery({
+  const { payload, isLoading } = query<UserData>({
     queryKey: ['baseUser', session?.token],
     queryFn: () =>
       axios({
@@ -70,8 +71,6 @@ export const Header = ({ showAuthButtons = true }) => {
     toggleColorMode()
     localStorage.setItem('theme', newIsDarkMode ? 'dark' : 'light')
   }
-
-  console.log('data', data)
 
   return (
     <div
@@ -164,13 +163,13 @@ export const Header = ({ showAuthButtons = true }) => {
                   <MenuButton className="font-mont text-secondaryText hover:underline dark:text-secondaryTextDark">
                     <div className="flex h-full items-center space-x-1">
                       <span className="hidden sm:inline">
-                        {data?.data.payload.username}
+                        {payload?.username}
                       </span>
                       {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
                       <Avatar
                         size="sm"
-                        name={data?.data.payload.username}
-                        src={data?.data.payload.avatar}
+                        name={payload?.username}
+                        src={payload?.avatar}
                       />
                     </div>
                   </MenuButton>

@@ -12,15 +12,14 @@ import {
   UnorderedList,
 } from '@chakra-ui/react'
 import { PageWrapper } from '@components/common/PageWrapper'
-import UserGrid from '@components/grids/user-grid'
 import { POST } from '@constants/http-methods'
 import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated'
 import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
+import { mutation } from '@pages/api/database/mutation'
 import axios from 'axios'
 import { ToastContext } from 'contexts/ToastContext'
 import { useFormik } from 'formik'
 import { Fragment, useContext, useState } from 'react'
-import { useMutation } from 'react-query'
 import * as Yup from 'yup'
 
 type ScriptId =
@@ -68,25 +67,32 @@ export default () => {
   const { addToast } = useContext(ToastContext)
 
   const { mutate: addCardsToUsers, isLoading: addCardsToUsersIsLoading } =
-    useMutation((newCardsJson: Record<string, string[]>) =>
+    mutation<void, Record<string, string[]>>({
+      mutationFn: (newCardsJson: Record<string, string[]>) =>
+        axios({
+          method: POST,
+          url: '/api/v3/collection/add-cards',
+          data: newCardsJson,
+        }),
+    })
+
+  const { mutate: distributeMonthlyPacks } = mutation<void, void>({
+    mutationFn: () =>
       axios({
         method: POST,
-        url: '/api/v3/collection/add-cards',
-        data: newCardsJson,
-      })
-    )
+        url: '/api/v3/monthly-subscriptions/distribute',
+      }),
+  })
 
-  const { mutate: distributeMonthlyPacks } = useMutation(() =>
-    axios({ method: POST, url: '/api/v3/monthly-subscriptions/distribute' })
-  )
+  const { mutate: requestBaseCards } = mutation<void, { season: number }>({
+    mutationFn: ({ season }: { season: number }) =>
+      axios({ method: POST, url: '/api/v3/cards/base-requests', data: season }),
+  })
 
-  const { mutate: requestBaseCards } = useMutation((season: number) =>
-    axios({ method: POST, url: '/api/v3/cards/base-requests', data: season })
-  )
-
-  const { mutate: deleteDuplicateCards } = useMutation(() =>
-    axios({ method: POST, url: '/api/v3/cards/delete-duplicates' })
-  )
+  const { mutate: deleteDuplicateCards } = mutation<void, void>({
+    mutationFn: () =>
+      axios({ method: POST, url: '/api/v3/cards/delete-duplicates' }),
+  })
 
   // useRedirectIfNotAuthenticated()
   // useRedirectIfNotAuthorized({ roles: ['TRADING_CARD_ADMIN'] })
@@ -296,7 +302,7 @@ export default () => {
         onSubmit: async ({ season }, { setSubmitting }) => {
           try {
             setSubmitting(true)
-            requestBaseCards(season)
+            requestBaseCards({ season })
           } catch (error) {
             console.error(error)
             const errorMessage: string =

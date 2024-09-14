@@ -11,6 +11,7 @@ import { PageWrapper } from '@components/common/PageWrapper'
 import { GET } from '@constants/http-methods'
 import { useCookie } from '@hooks/useCookie'
 import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated'
+import { query } from '@pages/api/database/query'
 import axios from 'axios'
 import { ToastContext } from 'contexts/ToastContext'
 import config from 'lib/config'
@@ -29,7 +30,6 @@ export default () => {
   const tradePartnerUid = router.query.uid as string
 
   const [uid] = useCookie(config.userIDCookieName)
-  console.log('uid', uid)
 
   if (tradePartnerUid === uid) {
     addToast({
@@ -41,8 +41,8 @@ export default () => {
     return
   }
 
-  const { data: currentUserCards, isLoading: currentUserCardsIsLoading } =
-    useQuery<{ cards: Card[] }>({
+  const { payload: currentUserCards, isLoading: currentUserCardsIsLoading } =
+    query<{ cards: Card[] }>({
       queryKey: ['collection', uid],
       queryFn: () =>
         axios({
@@ -51,8 +51,8 @@ export default () => {
         }),
     })
 
-  const { data: tradePartnerCards, isLoading: tradePartnerCardsIsLoading } =
-    useQuery<{ cards: Card[] }>({
+  const { payload: tradePartnerCards, isLoading: tradePartnerCardsIsLoading } =
+    query<{ cards: Card[] }>({
       queryKey: ['collection', tradePartnerUid],
       queryFn: () =>
         axios({

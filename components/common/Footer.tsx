@@ -20,7 +20,7 @@ import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
 import axios from 'axios'
 import { POST } from '@constants/http-methods'
-import { useMutation } from 'react-query'
+import { mutation } from '@pages/api/database/mutation'
 
 type DrawerId = 'bug' | 'feature'
 
@@ -54,24 +54,22 @@ export const Footer = () => {
   const { addToast } = useContext(ToastContext)
   const [uid] = useCookie(config.userIDCookieName)
 
-  const { mutate: createGithubIssue } = useMutation(
-    (requestData: GithubIssueData) =>
+  const { mutate: createGithubIssue } = mutation<void, GithubIssueData>({
+    mutationFn: (requestData: GithubIssueData) =>
       axios({
         method: POST,
         url: 'api/v3/github/issue',
         data: requestData,
       }),
-    {
-      onSuccess: ({ data }) => {
-        addToast({
-          title: 'Ticket Submitted',
-          description: data?.payload?.newIssueUrl ?? null,
-          status: 'success',
-        })
-        onClose()
-      },
-    }
-  )
+    onSuccess: ({ data }) => {
+      addToast({
+        title: 'Ticket Submitted',
+        description: data?.payload?.newIssueUrl ?? null,
+        status: 'success',
+      })
+      onClose()
+    },
+  })
 
   const openDrawer = (source: DrawerId) => {
     setDrawerId(source)
