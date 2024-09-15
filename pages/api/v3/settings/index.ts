@@ -20,25 +20,43 @@ export type SettingsData = {
 
 export default async function settingsEndpoint(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<{ settings: SettingsData[] }>>
+  res: NextApiResponse<ApiResponse<{ settings: SettingsData[]; total: number }>>
 ): Promise<void> {
   await middleware(req, res, cors)
 
   if (req.method === GET) {
     const limit: string = (req.query.limit ?? 10) as string
     const offset: string = (req.query.offset ?? 0) as string
-    const sort: string = (req.query.sort ?? 'username:asc') as string
 
-    const queryResult = await cardsQuery<SettingsData>(SQL`
-        SELECT u.uid, u.username, s.subscription 
-        FROM admin_cards.settings s
-        LEFT JOIN admin_mybb.mybb_users u ON s.userID = u.uid
-        WHERE s.subscription > 0
-        LIMIT 10 OFFSET 0;
-      `)
+    // TODO: Why do these counts differ?
+    const total = await cardsQuery<{ count: number }>(SQL`
+      SELECT count(*) as count
+      FROM settings
+      WHERE subscription > 0;
+    `)
 
-    if ('error' in queryResult) {
-      console.error(queryResult.error)
+    const query = SQL`
+      SELECT u.uid, u.username, s.subscription 
+      FROM admin_cards.settings s
+      LEFT JOIN admin_mybb.mybb_users u ON s.userID = u.uid
+      WHERE s.subscription > 0
+      ORDER BY u.username ASC
+    `
+
+    if (limit) {
+      query.append(SQL` LIMIT ${parseInt(limit)}`)
+    }
+
+    if (offset) {
+      query.append(SQL` OFFSET ${parseInt(offset)}`)
+    }
+
+    console.log('query', query)
+
+    const queryResult = await cardsQuery<SettingsData>(query)
+
+    if ('error' in queryResult || 'error' in total) {
+      console.error(queryResult)
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .end('Server connection failed')
@@ -47,7 +65,7 @@ export default async function settingsEndpoint(
 
     res.status(StatusCodes.OK).json({
       status: 'success',
-      payload: { settings: queryResult },
+      payload: { settings: queryResult, total: total[0].count },
     })
   }
 }

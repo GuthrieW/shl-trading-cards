@@ -18,6 +18,7 @@ import {
   Tr,
 } from '@chakra-ui/react'
 import { PageWrapper } from '@components/common/PageWrapper'
+import TablePagination from '@components/tables/TablePagination'
 import { GET, POST } from '@constants/http-methods'
 import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated'
 import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
@@ -27,7 +28,7 @@ import { SettingsData } from '@pages/api/v3/settings'
 import axios from 'axios'
 import { ToastContext } from 'contexts/ToastContext'
 import { useFormik } from 'formik'
-import { Fragment, useContext, useState } from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 import * as Yup from 'yup'
 
 type ScriptId =
@@ -260,10 +261,28 @@ export default () => {
   }
 
   const MonthlySubscriptionsForm = () => {
-    const { status, payload, isLoading } = query<{ settings: SettingsData[] }>({
+    const [rowsPerPage, setRowsPerPage] = useState<number>(10)
+    const [tablePage, setTablePage] = useState<number>(1)
+
+    const { payload, isLoading, refetch } = query<{
+      settings: SettingsData[]
+      total: number
+    }>({
       queryKey: 'subscriptions',
-      queryFn: () => axios({ method: GET, url: '/api/v3/settings' }),
+      queryFn: () =>
+        axios({
+          method: GET,
+          url: '/api/v3/settings',
+          params: {
+            offset: (tablePage - 1) * rowsPerPage,
+            limit: rowsPerPage,
+          },
+        }),
     })
+
+    useEffect(() => {
+      refetch()
+    }, [tablePage, rowsPerPage])
 
     const { isSubmitting, isValid } = useFormik<AddCardsToUsersValues>({
       validateOnBlur: true,
@@ -286,6 +305,10 @@ export default () => {
       },
     })
 
+    const handlePageChange = (newPage) => {
+      setTablePage(newPage)
+    }
+
     return (
       <div>
         <Button
@@ -297,7 +320,6 @@ export default () => {
         >
           Submit
         </Button>
-
         <Skeleton isLoaded={!isLoading}>
           <TableContainer>
             <Table size="md">
@@ -310,10 +332,10 @@ export default () => {
               </Thead>
               <Tbody>
                 {payload?.settings.map((setting) => (
-                  <Tr>
+                  <Tr key={setting.uid}>
                     <Td>{setting.username}</Td>
                     <Td>{setting.subscription}</Td>
-                    <Td>
+                    <Td className="flex justify-end items-center">
                       <Menu>
                         <MenuButton>Actions</MenuButton>
                         <MenuList>
@@ -326,14 +348,13 @@ export default () => {
                 ))}
               </Tbody>
             </Table>
+            <TablePagination
+              totalRows={payload?.total}
+              rowsPerPage={rowsPerPage}
+              onChange={handlePageChange}
+            />
           </TableContainer>
         </Skeleton>
-
-        {/* <UnorderedList>
-          <ListItem>Display currently subscribed users</ListItem>
-          <ListItem>Add user</ListItem>
-          <ListItem>Remove user</ListItem>
-        </UnorderedList> */}
       </div>
     )
   }
