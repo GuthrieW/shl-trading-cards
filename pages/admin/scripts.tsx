@@ -261,7 +261,7 @@ export default () => {
   }
 
   const MonthlySubscriptionsForm = () => {
-    const [rowsPerPage, setRowsPerPage] = useState<number>(10)
+    const rowsPerPage: number = 10 as const
     const [tablePage, setTablePage] = useState<number>(1)
 
     const { payload, isLoading, refetch } = query<{

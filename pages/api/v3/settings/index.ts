@@ -3,8 +3,8 @@ import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse } from '..'
-import { cardsQuery } from '@pages/api/database/database'
-import SQL from 'sql-template-strings'
+import { cardsQuery, QueryResult } from '@pages/api/database/database'
+import SQL, { SQLStatement } from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 
 const allowedMethods: string[] = [GET] as const
@@ -27,21 +27,36 @@ export default async function settingsEndpoint(
   if (req.method === GET) {
     const limit: string = (req.query.limit ?? 10) as string
     const offset: string = (req.query.offset ?? 0) as string
+    const orderColumn: string = (req.query.orderColumn ?? 'username') as string
+    const orderDirection: string = (req.query.order ?? 'ASC') as string
 
-    // TODO: Why do these counts differ?
-    const total = await cardsQuery<{ count: number }>(SQL`
+    const total = await cardsQuery<{
+      count: number
+    }>(SQL`
       SELECT count(*) as count
       FROM settings
       WHERE subscription > 0;
     `)
 
-    const query = SQL`
+    const query: SQLStatement = SQL`
       SELECT u.uid, u.username, s.subscription 
       FROM admin_cards.settings s
       LEFT JOIN admin_mybb.mybb_users u ON s.userID = u.uid
       WHERE s.subscription > 0
-      ORDER BY u.username ASC
     `
+
+    if (orderColumn) {
+      query.append(SQL` ORDER BY`)
+      if (orderColumn === 'username') {
+        query.append(SQL`  u.username`)
+      }
+
+      if (orderColumn === 'subscription') {
+        query.append(SQL` s.subscription`)
+      }
+
+      orderDirection === 'ASC' ? query.append(SQL` ASC`) : query.append(` DESC`)
+    }
 
     if (limit) {
       query.append(SQL` LIMIT ${parseInt(limit)}`)
@@ -50,8 +65,6 @@ export default async function settingsEndpoint(
     if (offset) {
       query.append(SQL` OFFSET ${parseInt(offset)}`)
     }
-
-    console.log('query', query)
 
     const queryResult = await cardsQuery<SettingsData>(query)
 
