@@ -3,7 +3,7 @@ import { Field } from 'formik'
 export const SelectField = ({ name, label, options, disabled = false }) => (
   <div className="m-2 flex flex-row w-full">
     <label htmlFor={name} className="flex-nowrap whitespace-nowrap">
-      {label}:{' '}
+      {label}:&nbsp;
     </label>
     <Field
       id={name}

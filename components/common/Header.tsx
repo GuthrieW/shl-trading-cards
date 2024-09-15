@@ -141,6 +141,7 @@ export const Header = ({ showAuthButtons = true }) => {
         </div>
         <div className="flex flex-row">
           <IconButton
+            className="mx-2"
             aria-label={`Toggle Dark Mode`}
             icon={
               localStorage.getItem('theme') === 'dark' ? (
@@ -154,7 +155,9 @@ export const Header = ({ showAuthButtons = true }) => {
             color="white"
           />
           {!loggedIn && showAuthButtons && (
-            <Button onClick={() => router.push('/login')}>Log In</Button>
+            <Button className="mx-2" onClick={() => router.push('/login')}>
+              Log In
+            </Button>
           )}
           {loggedIn && showAuthButtons && (
             <Menu isLazy>

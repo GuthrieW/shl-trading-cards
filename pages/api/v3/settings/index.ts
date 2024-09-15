@@ -3,7 +3,7 @@ import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse } from '..'
-import { cardsQuery, QueryResult } from '@pages/api/database/database'
+import { cardsQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 

@@ -48,7 +48,7 @@ export default ({
   }
 
   return (
-    <Box className="flex flex-row justify-center itmes-center">
+    <Box className="flex flex-row justify-center itmes-center mt-6">
       <IconButton
         onClick={goToFirstPage}
         className="mx-2"
@@ -61,8 +61,8 @@ export default ({
         aria-label="go-to-previous-page"
         icon={<ChevronLeftIcon />}
       />
-      <span className="flex justify-center items-center">
-        {currentPage} of {totalPages}
+      <span className="flex justify-center items-center mx-2">
+        {currentPage ?? 0} of {totalPages ?? 0}
       </span>
       <IconButton
         onClick={goToNextPage}

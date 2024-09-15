@@ -163,7 +163,7 @@ export default function () {
             </Link>
           </div>
           <div className="font-mont text-sm">
-            Don&apos;t have an account?{' '}
+            Don&apos;t have an account?&nbsp;
             <Link
               isExternal
               href="https://simulationhockey.com/member.php?action=register"

@@ -359,16 +359,16 @@ ${issueData.desiredFunctionality}`
     <>
       <footer className="absolute bottom-0 flex h-16 w-full items-center justify-center bg-primary text-secondaryText dark:bg-primaryDark dark:text-secondaryTextDark">
         <div className="font-mont text-xs">
-          &copy; {new Date().getFullYear()} |{' '}
+          &copy;&nbsp;{new Date().getFullYear()}&nbsp;|&nbsp;
           <span className="hidden sm:inline">
-            Made with ♥︎ by the SHL Dev Team |{' '}
+            {'Made with ♥︎ by the SHL Dev Team'}&nbsp;|&nbsp;
           </span>
           <Link href="https://simulationhockey.com/index.php" isExternal>
             Visit Forum
-          </Link>{' '}
-          |{' '}
-          <Link onClick={() => openDrawer('bug')}>{bugDrawerData.header}</Link>{' '}
-          |{' '}
+          </Link>
+          &nbsp;|&nbsp;
+          <Link onClick={() => openDrawer('bug')}>{bugDrawerData.header}</Link>
+          &nbsp;|&nbsp;
           <Link onClick={() => openDrawer('feature')}>
             {featureDrawerData.header}
           </Link>
