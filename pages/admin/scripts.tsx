@@ -24,6 +24,7 @@ import RequestBaseCardsForm from '@components/admin-scripts/RequestBaseCardsForm
 import { PageWrapper } from '@components/common/PageWrapper'
 import TablePagination from '@components/tables/TablePagination'
 import { GET, POST } from '@constants/http-methods'
+import { ArrowDownIcon } from '@heroicons/react/20/solid'
 import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated'
 import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
 import { mutation } from '@pages/api/database/mutation'
@@ -67,18 +68,21 @@ export default () => {
       <Skeleton
         isLoaded={!isCheckingAuthentication || !isCheckingAuthorization}
       >
-        <Select
-          placeholder="Select a script"
-          onChange={(event) =>
-            setSelectedScript(event.target.value as ScriptId)
-          }
-        >
-          {scripts.map((script) => (
-            <option key={script.id} value={script.id}>
-              {script.name}
-            </option>
-          ))}
-        </Select>
+        <div className="max-w-md">
+          <Select
+            placeholder="Select a script"
+            onChange={(event) =>
+              setSelectedScript(event.target.value as ScriptId)
+            }
+          >
+            {scripts.map((script) => (
+              <option key={script.id} value={script.id}>
+                {script.name}
+              </option>
+            ))}
+          </Select>
+        </div>
+
         {formError && (
           <div className="text-red dark:text-redDark">{formError}</div>
         )}

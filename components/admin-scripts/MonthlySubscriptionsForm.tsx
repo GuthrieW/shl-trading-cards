@@ -95,7 +95,7 @@ export default function MonthlySubscriptionsForm({
     <div>
       <div className="flex justify-end items-center">
         <Button
-          disabled={!isValid || isSubmitting}
+          disabled={!isValid || isSubmitting || isLoading}
           type="submit"
           className="mt-4 mx-1"
           isLoading={isSubmitting}

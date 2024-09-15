@@ -130,9 +130,6 @@ export const Header = ({ showAuthButtons = true }) => {
               <MenuItem onClick={() => router.push('/admin/cards')}>
                 Cards
               </MenuItem>
-              <MenuItem onClick={() => router.push('/admin/users')}>
-                Users
-              </MenuItem>
               <MenuItem onClick={() => router.push('/admin/scripts')}>
                 Scripts
               </MenuItem>
