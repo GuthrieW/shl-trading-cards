@@ -1,12 +1,5 @@
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogCloseButton,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Button,
   FormControl,
   FormLabel,
@@ -14,13 +7,6 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Switch,
   Table,
   TableContainer,
@@ -30,6 +16,10 @@ import {
   Tr,
   useDisclosure,
 } from '@chakra-ui/react'
+import DeleteCardDialog from '@components/admin-cards/DeleteCardDialog'
+import RemoveCardAuthorDialog from '@components/admin-cards/RemoveCardAuthorDialog'
+import RemoveCardImageDialog from '@components/admin-cards/RemoveCardImageDialog'
+import UpdateCardModal from '@components/admin-cards/UpdateCardModal'
 import { PageWrapper } from '@components/common/PageWrapper'
 import SortIcon from '@components/table/SortIcon'
 import Td from '@components/table/Td'
@@ -40,7 +30,7 @@ import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
 import { query } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
 import axios from 'axios'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type ColumnName = keyof Readonly<Card>
 
@@ -85,12 +75,10 @@ export default () => {
   const [removeImageCard, setRemoveImageCard] = useState<Card>(null)
   const [deleteCard, setDeleteCard] = useState<Card>(null)
 
-  const cancelRef = useRef()
-
   const updateModal = useDisclosure()
   const removeAuthorDialog = useDisclosure()
   const removeImageDialog = useDisclosure()
-  const deleteModal = useDisclosure()
+  const deleteDialog = useDisclosure()
 
   const { isCheckingAuthentication } = useRedirectIfNotAuthenticated()
   const { isCheckingAuthorization } = useRedirectIfNotAuthorized({
@@ -134,23 +122,6 @@ export default () => {
 
   const handlePageChange = (newPage) => {
     setTablePage(newPage)
-  }
-
-  const handleUpdateCard = (cardID: number) => {
-    updateModal.onOpen()
-    console.log(cardID)
-  }
-
-  const handleRemoveCardAuthor = (cardID: number) => {
-    console.log(cardID)
-  }
-
-  const handleRemoveCardImage = (cardID: number) => {
-    console.log(cardID)
-  }
-
-  const handleDeleteCard = (cardID: number) => {
-    console.log(cardID)
   }
 
   return (
@@ -380,7 +351,7 @@ export default () => {
                             <MenuItem
                               onClick={() => {
                                 setDeleteCard(card)
-                                deleteModal.onOpen()
+                                deleteDialog.onOpen()
                               }}
                             >
                               Delete
@@ -430,102 +401,27 @@ export default () => {
           />
         </div>
       </PageWrapper>
-      <Modal isOpen={updateModal.isOpen} onClose={updateModal.onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Update Card</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <span>Time to update the card!</span>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={updateModal.onClose}>
-              Close
-            </Button>
-            <Button colorScheme="red">Submit Update</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-      <AlertDialog
-        isOpen={removeAuthorDialog.isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={removeAuthorDialog.onClose}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Remove Author From Card
-            </AlertDialogHeader>
-            <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button
-                ref={cancelRef}
-                onClick={() => removeAuthorDialog.onClose()}
-              >
-                Cancel
-              </Button>
-              <Button
-                colorScheme="red"
-                onClick={removeAuthorDialog.onClose}
-                ml={3}
-              >
-                Remove Author
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
-      <AlertDialog
-        isOpen={removeImageDialog.isOpen}
-        leastDestructiveRef={cancelRef}
+      <UpdateCardModal
+        card={updateCard}
+        onClose={updateModal.onClose}
+        isOpen={updateModal.isOpen}
+      />
+      <RemoveCardImageDialog
+        cardID={removeImageCard.cardID}
         onClose={removeImageDialog.onClose}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Remove Image From Card
-            </AlertDialogHeader>
-            <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button
-                ref={cancelRef}
-                onClick={() => removeImageDialog.onClose()}
-              >
-                Cancel
-              </Button>
-              <Button
-                colorScheme="red"
-                onClick={removeImageDialog.onClose}
-                ml={3}
-              >
-                Remove Image
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
-      <Modal isOpen={deleteModal.isOpen} onClose={deleteModal.onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Delete Card</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <span>Look I made you some content</span>
-          </ModalBody>
+        isOpen={removeImageDialog.isOpen}
+      />
 
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={deleteModal.onClose}>
-              Close
-            </Button>
-            <Button colorScheme="red">Delete Card</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <RemoveCardAuthorDialog
+        cardID={removeAuthorCard.cardID}
+        onClose={removeAuthorDialog.onClose}
+        isOpen={removeAuthorDialog.isOpen}
+      />
+      <DeleteCardDialog
+        cardID={deleteCard.cardID}
+        onClose={deleteDialog.onClose}
+        isOpen={deleteDialog.isOpen}
+      />
     </>
   )
 }
