@@ -1,39 +1,13 @@
-import {
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Select,
-  Skeleton,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@chakra-ui/react'
+import { Select, Skeleton } from '@chakra-ui/react'
 import AddCardsToUsersForm from '@components/admin-scripts/AddCardsToUsersForms'
 import DeleteDuplicateCardsForm from '@components/admin-scripts/DeleteDuplicateCardsForm'
 import MonthlySubscriptionsForm from '@components/admin-scripts/MonthlySubscriptionsForm'
 import RequestBaseCardsForm from '@components/admin-scripts/RequestBaseCardsForm'
 import { PageWrapper } from '@components/common/PageWrapper'
-import TablePagination from '@components/tables/TablePagination'
-import { GET, POST } from '@constants/http-methods'
-import { ArrowDownIcon } from '@heroicons/react/20/solid'
 import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated'
 import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
-import { mutation } from '@pages/api/database/mutation'
-import { query } from '@pages/api/database/query'
-import { SettingsData } from '@pages/api/v3/settings'
-import axios from 'axios'
-import { ToastContext } from 'contexts/ToastContext'
-import { useFormik } from 'formik'
-import { Fragment, useContext, useEffect, useState } from 'react'
+
+import { useState } from 'react'
 
 type ScriptId =
   | 'add-cards-to-users'

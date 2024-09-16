@@ -48,7 +48,7 @@ export default ({
   }
 
   return (
-    <Box className="flex flex-row justify-center itmes-center mt-6">
+    <Box className="flex flex-row justify-center itmes-center mt-6 mb-4">
       <IconButton
         onClick={goToFirstPage}
         className="mx-2"

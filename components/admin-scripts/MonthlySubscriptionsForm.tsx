@@ -1,5 +1,7 @@
+import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons'
 import {
   Button,
+  Icon,
   Menu,
   MenuButton,
   MenuItem,
@@ -22,6 +24,9 @@ import axios from 'axios'
 import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
 
+type ColumnName = 'subscription' | 'username'
+type SortDirection = 'ASC' | 'DESC'
+
 export default function MonthlySubscriptionsForm({
   onError,
 }: {
@@ -35,8 +40,10 @@ export default function MonthlySubscriptionsForm({
       }),
   })
 
-  const rowsPerPage: number = 10 as const
+  const [sortColumn, setSortColumn] = useState<ColumnName>('username')
+  const [sortDirection, setSortDirection] = useState<'ASC' | 'DESC'>('ASC')
   const [tablePage, setTablePage] = useState<number>(1)
+  const rowsPerPage: number = 10 as const
 
   const LOADING_TABLE_DATA = {
     settings: Array.from({ length: 10 }, (_, index) => ({
@@ -58,13 +65,15 @@ export default function MonthlySubscriptionsForm({
         params: {
           offset: (tablePage - 1) * rowsPerPage,
           limit: rowsPerPage,
+          sortColumn,
+          sortDirection,
         },
       }),
   })
 
   useEffect(() => {
     refetch()
-  }, [tablePage, rowsPerPage])
+  }, [tablePage, rowsPerPage, sortColumn, sortDirection])
 
   const { isSubmitting, isValid } = useFormik<{}>({
     validateOnBlur: true,
@@ -87,6 +96,16 @@ export default function MonthlySubscriptionsForm({
     },
   })
 
+  const handleSortChange = (columnName: ColumnName) => {
+    if (columnName === sortColumn) {
+      setSortDirection(sortDirection === 'ASC' ? 'DESC' : 'ASC')
+      return
+    } else {
+      setSortColumn(columnName)
+      setSortDirection('ASC')
+    }
+  }
+
   const handlePageChange = (newPage) => {
     setTablePage(newPage)
   }
@@ -105,12 +124,32 @@ export default function MonthlySubscriptionsForm({
         </Button>
       </div>
 
-      <TableContainer>
-        <Table size="md">
+      <TableContainer className="rounded border border-1 border-inherit mt-4">
+        <Table className="mt-4" size="md" layout="fixed">
           <Thead>
             <Tr>
-              <Th>Username</Th>
-              <Th>Subscription</Th>
+              <Th
+                className="cursor-pointer"
+                onClick={() => handleSortChange('username')}
+              >
+                Username
+                {sortColumn === 'username' && (
+                  <Icon
+                    as={sortDirection === 'ASC' ? ArrowDownIcon : ArrowUpIcon}
+                  />
+                )}
+              </Th>
+              <Th
+                className="cursor-pointer"
+                onClick={() => handleSortChange('subscription')}
+              >
+                Subscription
+                {sortColumn === 'subscription' && (
+                  <Icon
+                    as={sortDirection === 'ASC' ? ArrowDownIcon : ArrowUpIcon}
+                  />
+                )}
+              </Th>
               <Th></Th>
             </Tr>
           </Thead>

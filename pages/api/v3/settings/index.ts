@@ -27,8 +27,8 @@ export default async function settingsEndpoint(
   if (req.method === GET) {
     const limit: string = (req.query.limit ?? 10) as string
     const offset: string = (req.query.offset ?? 0) as string
-    const orderColumn: string = (req.query.orderColumn ?? 'username') as string
-    const orderDirection: string = (req.query.order ?? 'ASC') as string
+    const sortColumn: string = (req.query.sortColumn ?? 'username') as string
+    const sortDirection: string = (req.query.sortDirection ?? 'ASC') as string
 
     const total = await cardsQuery<{
       count: number
@@ -45,17 +45,17 @@ export default async function settingsEndpoint(
       WHERE s.subscription > 0
     `
 
-    if (orderColumn) {
+    if (sortColumn) {
       query.append(SQL` ORDER BY`)
-      if (orderColumn === 'username') {
+      if (sortColumn === 'username') {
         query.append(SQL`  u.username`)
       }
 
-      if (orderColumn === 'subscription') {
+      if (sortColumn === 'subscription') {
         query.append(SQL` s.subscription`)
       }
 
-      orderDirection === 'ASC' ? query.append(SQL` ASC`) : query.append(` DESC`)
+      sortDirection === 'ASC' ? query.append(SQL` ASC`) : query.append(` DESC`)
     }
 
     if (limit) {
