@@ -1,4 +1,4 @@
-import { Spinner } from '@chakra-ui/react'
+import { Skeleton, Spinner } from '@chakra-ui/react'
 import { NextSeo } from 'next-seo'
 import { ComponentProps, HTMLAttributes, PropsWithChildren } from 'react'
 import { Header } from './Header'
@@ -6,10 +6,11 @@ import { Footer } from './Footer'
 
 export const PageWrapper = ({
   children,
-  loading = false,
   className,
   title,
   openGraph,
+  loading = false,
+
   ...additionalSeoProps
 }: PropsWithChildren<
   {

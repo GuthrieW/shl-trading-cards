@@ -1,37 +1,50 @@
-import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons'
+import { ChevronDownIcon } from '@chakra-ui/icons'
 import {
   Button,
-  Icon,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Skeleton,
   Table,
   TableContainer,
   Tbody,
-  Td,
   Th,
   Thead,
   Tr,
 } from '@chakra-ui/react'
+import SortIcon from '@components/table/SortIcon'
+import Td from '@components/table/Td'
 import TablePagination from '@components/tables/TablePagination'
 import { GET, POST } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
 import { query } from '@pages/api/database/query'
+import { SortDirection } from '@pages/api/v3'
 import { SettingsData } from '@pages/api/v3/settings'
 import axios from 'axios'
 import { useFormik } from 'formik'
 import { useEffect, useState } from 'react'
 
 type ColumnName = 'subscription' | 'username'
-type SortDirection = 'ASC' | 'DESC'
+
+const ROWS_PER_PAGE: number = 10 as const
+
+const LOADING_TABLE_DATA = {
+  rows: Array.from({ length: 10 }, (_, index) => ({
+    uid: index,
+    username: 'username',
+    subscription: 0,
+  })),
+} as const
 
 export default function MonthlySubscriptionsForm({
   onError,
 }: {
   onError: (errorMessage) => void
 }) {
+  const [sortColumn, setSortColumn] = useState<ColumnName>('username')
+  const [sortDirection, setSortDirection] = useState<SortDirection>('ASC')
+  const [tablePage, setTablePage] = useState<number>(1)
+
   const { mutate: distributeMonthlyPacks } = mutation<void, void>({
     mutationFn: () =>
       axios({
@@ -40,31 +53,18 @@ export default function MonthlySubscriptionsForm({
       }),
   })
 
-  const [sortColumn, setSortColumn] = useState<ColumnName>('username')
-  const [sortDirection, setSortDirection] = useState<'ASC' | 'DESC'>('ASC')
-  const [tablePage, setTablePage] = useState<number>(1)
-  const rowsPerPage: number = 10 as const
-
-  const LOADING_TABLE_DATA = {
-    settings: Array.from({ length: 10 }, (_, index) => ({
-      uid: index,
-      username: 'username',
-      subscription: 0,
-    })),
-  }
-
   const { payload, isLoading, refetch } = query<{
-    settings: SettingsData[]
+    rows: SettingsData[]
     total: number
   }>({
-    queryKey: 'subscriptions',
+    queryKey: ['subscriptions', String(tablePage), sortColumn, sortDirection],
     queryFn: () =>
       axios({
         method: GET,
         url: '/api/v3/settings',
         params: {
-          offset: (tablePage - 1) * rowsPerPage,
-          limit: rowsPerPage,
+          offset: (tablePage - 1) * ROWS_PER_PAGE,
+          limit: ROWS_PER_PAGE,
           sortColumn,
           sortDirection,
         },
@@ -73,7 +73,7 @@ export default function MonthlySubscriptionsForm({
 
   useEffect(() => {
     refetch()
-  }, [tablePage, rowsPerPage, sortColumn, sortDirection])
+  }, [tablePage, sortColumn, sortDirection])
 
   const { isSubmitting, isValid } = useFormik<{}>({
     validateOnBlur: true,
@@ -124,71 +124,64 @@ export default function MonthlySubscriptionsForm({
         </Button>
       </div>
 
-      <TableContainer className="rounded border border-1 border-inherit mt-4">
-        <Table className="mt-4" size="md" layout="fixed">
-          <Thead>
-            <Tr>
-              <Th
-                className="cursor-pointer"
-                onClick={() => handleSortChange('username')}
-              >
-                Username
-                {sortColumn === 'username' && (
-                  <Icon
-                    as={sortDirection === 'ASC' ? ArrowDownIcon : ArrowUpIcon}
-                  />
-                )}
-              </Th>
-              <Th
-                className="cursor-pointer"
-                onClick={() => handleSortChange('subscription')}
-              >
-                Subscription
-                {sortColumn === 'subscription' && (
-                  <Icon
-                    as={sortDirection === 'ASC' ? ArrowDownIcon : ArrowUpIcon}
-                  />
-                )}
-              </Th>
-              <Th></Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {(isLoading ? LOADING_TABLE_DATA : payload)?.settings.map(
-              (setting) => (
-                <Tr key={setting.uid}>
-                  <Td>
-                    <Skeleton isLoaded={!isLoading}>
-                      {setting.username}
-                    </Skeleton>
-                  </Td>
-                  <Td>
-                    <Skeleton isLoaded={!isLoading}>
-                      {setting.subscription}
-                    </Skeleton>
-                  </Td>
-                  <Td className="flex justify-end items-center">
-                    <Skeleton isLoaded={!isLoading}>
+      <div className="rounded border border-1 border-inherit mt-4">
+        <TableContainer>
+          <Table className="mt-4" size="md" layout="fixed">
+            <Thead>
+              <Tr>
+                <Th
+                  className="cursor-pointer"
+                  onClick={() => handleSortChange('username')}
+                >
+                  Username
+                  {sortColumn === 'username' && (
+                    <SortIcon sortDirection={sortDirection} />
+                  )}
+                </Th>
+                <Th
+                  className="cursor-pointer"
+                  onClick={() => handleSortChange('subscription')}
+                >
+                  Subscription
+                  {sortColumn === 'subscription' && (
+                    <SortIcon sortDirection={sortDirection} />
+                  )}
+                </Th>
+                <Th></Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {(isLoading ? LOADING_TABLE_DATA : payload)?.rows.map(
+                (setting) => (
+                  <Tr key={setting.uid}>
+                    <Td isLoading={isLoading}>{setting.username}</Td>
+                    <Td isLoading={isLoading}>{setting.subscription}</Td>
+                    <Td
+                      isLoading={isLoading}
+                      className="flex justify-end items-center"
+                    >
                       <Menu>
-                        <MenuButton>Actions</MenuButton>
+                        <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                          Actions
+                        </MenuButton>
                         <MenuList>
                           <MenuItem>Update</MenuItem>
                           <MenuItem>Delete</MenuItem>
                         </MenuList>
                       </Menu>
-                    </Skeleton>
-                  </Td>
-                </Tr>
-              )
-            )}
-          </Tbody>
-        </Table>
+                    </Td>
+                  </Tr>
+                )
+              )}
+            </Tbody>
+          </Table>
+        </TableContainer>
         <TablePagination
           totalRows={payload?.total}
-          rowsPerPage={rowsPerPage}
-          onChange={handlePageChange}
+          rowsPerPage={ROWS_PER_PAGE}
+          onPageChange={handlePageChange}
         />
-      </TableContainer>
+      </div>
     </div>
   )
 }

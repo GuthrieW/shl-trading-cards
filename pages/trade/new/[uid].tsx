@@ -25,7 +25,7 @@ export default () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedUser, setSelectedUser] = useState<string>(null)
 
-  useRedirectIfNotAuthenticated()
+  const { isCheckingAuthentication } = useRedirectIfNotAuthenticated()
 
   const tradePartnerUid = router.query.uid as string
 
@@ -67,7 +67,7 @@ export default () => {
   }
 
   return (
-    <PageWrapper>
+    <PageWrapper loading={isCheckingAuthentication}>
       <Button onClick={() => openDrawer(uid)}>Open My Cards</Button>
       <Button onClick={() => openDrawer(tradePartnerUid)}>
         Open Other Cards

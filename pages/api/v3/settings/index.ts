@@ -2,7 +2,7 @@ import { GET } from '@constants/http-methods'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse } from '..'
+import { ApiResponse, ListResponse, ListTotal } from '..'
 import { cardsQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
@@ -20,7 +20,7 @@ export type SettingsData = {
 
 export default async function settingsEndpoint(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<{ settings: SettingsData[]; total: number }>>
+  res: NextApiResponse<ApiResponse<ListResponse<SettingsData>>>
 ): Promise<void> {
   await middleware(req, res, cors)
 
@@ -30,10 +30,8 @@ export default async function settingsEndpoint(
     const sortColumn: string = (req.query.sortColumn ?? 'username') as string
     const sortDirection: string = (req.query.sortDirection ?? 'ASC') as string
 
-    const total = await cardsQuery<{
-      count: number
-    }>(SQL`
-      SELECT count(*) as count
+    const count = await cardsQuery<ListTotal>(SQL`
+      SELECT count(*) as total
       FROM settings
       WHERE subscription > 0;
     `)
@@ -48,7 +46,7 @@ export default async function settingsEndpoint(
     if (sortColumn) {
       query.append(SQL` ORDER BY`)
       if (sortColumn === 'username') {
-        query.append(SQL`  u.username`)
+        query.append(SQL` u.username`)
       }
 
       if (sortColumn === 'subscription') {
@@ -68,7 +66,7 @@ export default async function settingsEndpoint(
 
     const queryResult = await cardsQuery<SettingsData>(query)
 
-    if ('error' in queryResult || 'error' in total) {
+    if ('error' in count || 'error' in queryResult) {
       console.error(queryResult)
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -78,7 +76,7 @@ export default async function settingsEndpoint(
 
     res.status(StatusCodes.OK).json({
       status: 'success',
-      payload: { settings: queryResult, total: total[0].count },
+      payload: { rows: queryResult, total: count[0].total },
     })
   }
 }

@@ -38,43 +38,42 @@ export default () => {
   })
 
   return (
-    <PageWrapper className="h-full flex flex-col justify-center items-center w-11/12 md:w-3/4">
-      <Skeleton
-        isLoaded={!isCheckingAuthentication || !isCheckingAuthorization}
-      >
-        <div className="max-w-md">
-          <Select
-            placeholder="Select a script"
-            onChange={(event) =>
-              setSelectedScript(event.target.value as ScriptId)
-            }
-          >
-            {scripts.map((script) => (
-              <option key={script.id} value={script.id}>
-                {script.name}
-              </option>
-            ))}
-          </Select>
-        </div>
+    <PageWrapper
+      loading={isCheckingAuthentication || isCheckingAuthorization}
+      className="h-full flex flex-col justify-center items-center w-11/12 md:w-3/4"
+    >
+      <div className="max-w-md">
+        <Select
+          placeholder="Select a script"
+          onChange={(event) =>
+            setSelectedScript(event.target.value as ScriptId)
+          }
+        >
+          {scripts.map((script) => (
+            <option key={script.id} value={script.id}>
+              {script.name}
+            </option>
+          ))}
+        </Select>
+      </div>
 
-        {formError && (
-          <div className="text-red dark:text-redDark">{formError}</div>
+      {formError && (
+        <div className="text-red dark:text-redDark">{formError}</div>
+      )}
+      <div className="mt-6">
+        {selectedScript === 'add-cards-to-users' && (
+          <AddCardsToUsersForm onError={setFormError} />
         )}
-        <div className="mt-6">
-          {selectedScript === 'add-cards-to-users' && (
-            <AddCardsToUsersForm onError={setFormError} />
-          )}
-          {selectedScript === 'delete-duplicates' && (
-            <DeleteDuplicateCardsForm onError={setFormError} />
-          )}
-          {selectedScript === 'monthly-subscriptions' && (
-            <MonthlySubscriptionsForm onError={setFormError} />
-          )}
-          {selectedScript === 'request-base-cards' && (
-            <RequestBaseCardsForm onError={setFormError} />
-          )}
-        </div>
-      </Skeleton>
+        {selectedScript === 'delete-duplicates' && (
+          <DeleteDuplicateCardsForm onError={setFormError} />
+        )}
+        {selectedScript === 'monthly-subscriptions' && (
+          <MonthlySubscriptionsForm onError={setFormError} />
+        )}
+        {selectedScript === 'request-base-cards' && (
+          <RequestBaseCardsForm onError={setFormError} />
+        )}
+      </div>
     </PageWrapper>
   )
 }

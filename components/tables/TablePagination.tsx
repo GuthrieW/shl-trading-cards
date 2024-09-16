@@ -1,4 +1,4 @@
-import { Box, Icon, IconButton } from '@chakra-ui/react'
+import { Box, IconButton } from '@chakra-ui/react'
 import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
@@ -9,23 +9,25 @@ import { useEffect, useState } from 'react'
 
 export default ({
   totalRows,
-  rowsPerPage,
-  onChange,
+  rowsPerPage = 10,
+  onPageChange,
 }: {
   totalRows: number
   rowsPerPage: number
-  onChange: (currentPage) => void
+  onPageChange: (currentPage) => void
 }) => {
   const [totalPages, setTotalPages] = useState<number>(0)
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   useEffect(() => {
-    onChange(currentPage)
+    onPageChange(currentPage)
   }, [currentPage])
 
   useEffect(() => {
-    setTotalPages(Math.ceil(totalRows / rowsPerPage))
-    setCurrentPage(1)
+    if (totalRows && Math.ceil(totalRows / rowsPerPage) !== totalPages) {
+      setTotalPages(Math.ceil(totalRows / rowsPerPage))
+      setCurrentPage(1)
+    }
   }, [totalRows, rowsPerPage])
 
   const goToFirstPage = () => {

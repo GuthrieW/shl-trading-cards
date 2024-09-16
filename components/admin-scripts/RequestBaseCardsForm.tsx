@@ -56,7 +56,7 @@ export default function RequestBaseCardsForm({
           isLoading={isSubmitting}
           loadingText="Submitting..."
         >
-          Submit
+          Request Base Cards
         </Button>
       </div>
 
