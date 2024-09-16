@@ -53,7 +53,9 @@ export default async function tokenEndpoint(
     }
 
     if (queryResult.length === 0) {
-      res.status(StatusCodes.NOT_FOUND).end('No refresh token found')
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .end('No refresh token found')
       return
     }
 

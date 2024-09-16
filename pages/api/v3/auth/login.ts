@@ -63,7 +63,7 @@ export default async function loginEndpoint(
 
     if (queryResult.length === 0) {
       console.error('Multiple users with same username')
-      res.status(StatusCodes.NOT_FOUND).json({
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: 'error',
         message: 'Invalid username or password',
       })

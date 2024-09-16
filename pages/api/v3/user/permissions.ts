@@ -59,7 +59,9 @@ export default async function permissionsEndpoint(
 
     if (queryResult.length === 0) {
       console.error('User permissions not found')
-      res.status(StatusCodes.NOT_FOUND).end('User permissions not found')
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .end('User permissions not found')
       return
     }
 
