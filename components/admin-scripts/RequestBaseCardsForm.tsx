@@ -31,6 +31,7 @@ export default function RequestBaseCardsForm({
       onSubmit: async ({ season }, { setSubmitting }) => {
         try {
           setSubmitting(true)
+          onError(null)
           requestBaseCards({ season })
         } catch (error) {
           console.error(error)

@@ -14,11 +14,11 @@ import axios from 'axios'
 import { DELETE } from '@constants/http-methods'
 
 export default function RemoveCardImageDialog({
-  cardID,
+  card,
   isOpen,
   onClose,
 }: {
-  cardID: number
+  card: Card
   isOpen: boolean
   onClose: () => void
 }) {
@@ -41,7 +41,7 @@ export default function RemoveCardImageDialog({
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Remove Image From Card
+            Remove Image From Card #{card.cardID}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody>
@@ -54,7 +54,7 @@ export default function RemoveCardImageDialog({
             <Button
               colorScheme="red"
               onClick={() => {
-                deleteCardImage({ cardID })
+                deleteCardImage({ cardID: card.cardID })
                 onClose()
               }}
               ml={3}

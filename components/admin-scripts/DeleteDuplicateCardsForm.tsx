@@ -21,6 +21,7 @@ export default function DeleteDuplicateCardsForm({
     onSubmit: async ({}, { setSubmitting }) => {
       try {
         setSubmitting(true)
+        onError(null)
         deleteDuplicateCards()
       } catch (error) {
         console.error(error)

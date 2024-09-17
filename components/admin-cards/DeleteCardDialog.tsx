@@ -14,11 +14,11 @@ import axios from 'axios'
 import { DELETE } from '@constants/http-methods'
 
 export default function DeleteCardDialog({
-  cardID,
+  card,
   isOpen,
   onClose,
 }: {
-  cardID: number
+  card: Card
   isOpen: boolean
   onClose: () => void
 }) {
@@ -41,7 +41,7 @@ export default function DeleteCardDialog({
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Remove Author From Card
+            Delete Card #{card.cardID}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody>
@@ -54,12 +54,12 @@ export default function DeleteCardDialog({
             <Button
               colorScheme="red"
               onClick={() => {
-                deleteCard({ cardID })
+                deleteCard({ cardID: card.cardID })
                 onClose()
               }}
               ml={3}
             >
-              Remove Author
+              DELETE CARD
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

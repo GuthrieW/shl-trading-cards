@@ -26,10 +26,16 @@ export default async function cardsEndpoint(
     const sortDirection = (req.query.sortDirection ?? 'ASC') as string
     const viewSkaters = (req.query.viewSkaters ?? 'true') as 'true' | 'false'
 
-    const count = await cardsQuery<ListTotal>(SQL`
+    const countQuery = SQL`
       SELECT count(*) as total
       FROM cards
-    `)
+    `
+
+    viewSkaters === 'true'
+      ? countQuery.append(SQL` WHERE position = 'F' OR position = 'D'`)
+      : countQuery.append(SQL` WHERE position = 'G'`)
+
+    const count = await cardsQuery<ListTotal>(countQuery)
 
     const query: SQLStatement = SQL`
       SELECT cardID,

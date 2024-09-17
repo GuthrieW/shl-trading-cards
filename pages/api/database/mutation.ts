@@ -1,13 +1,20 @@
-import { MutationFunction, UseMutateFunction, useMutation } from 'react-query'
+import {
+  MutationFunction,
+  UseMutateAsyncFunction,
+  UseMutateFunction,
+  useMutation,
+} from 'react-query'
 
 type MutationResponse<D, V> = {
   mutate: UseMutateFunction<D, unknown, V, unknown>
+  mutateAsync: UseMutateAsyncFunction<D, unknown, V, unknown>
   isLoading: boolean
   isError: boolean
 }
 
 const LOADING_MUTATION: MutationResponse<null, null> = {
   mutate: undefined,
+  mutateAsync: undefined,
   isLoading: true,
   isError: false,
 }
@@ -21,7 +28,7 @@ export const mutation = <D, V>({
   onSuccess?: (data) => void
   onError?: (data) => void
 }): MutationResponse<D, V> => {
-  const { mutate, isLoading, isError } = useMutation(mutationFn, {
+  const { mutate, mutateAsync, isLoading, isError } = useMutation(mutationFn, {
     onSuccess,
     onError,
   })
@@ -32,6 +39,7 @@ export const mutation = <D, V>({
 
   return {
     mutate,
+    mutateAsync,
     isLoading,
     isError,
   }

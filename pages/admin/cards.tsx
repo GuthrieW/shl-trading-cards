@@ -70,10 +70,7 @@ export default () => {
   const [sortColumn, setSortColumn] = useState<ColumnName>('player_name')
   const [sortDirection, setSortDirection] = useState<SortDirection>('ASC')
   const [tablePage, setTablePage] = useState<number>(1)
-  const [updateCard, setUpdateCard] = useState<Card>(null)
-  const [removeAuthorCard, setRemoveAuthorCard] = useState<Card>(null)
-  const [removeImageCard, setRemoveImageCard] = useState<Card>(null)
-  const [deleteCard, setDeleteCard] = useState<Card>(null)
+  const [selectedCard, setSelectedCard] = useState<Card>(null)
 
   const updateModal = useDisclosure()
   const removeAuthorDialog = useDisclosure()
@@ -135,7 +132,8 @@ export default () => {
             <FormControl className="flex items-center m-2">
               <FormLabel className="mb-0">Toggle Goaltenders:</FormLabel>
               <Switch
-                onChange={() => {
+                onChange={(event) => {
+                  console.log('event', event)
                   setViewSkaters((currentValue) => !currentValue)
                 }}
               />
@@ -326,7 +324,7 @@ export default () => {
                           <MenuList>
                             <MenuItem
                               onClick={() => {
-                                setUpdateCard(card)
+                                setSelectedCard(card)
                                 updateModal.onOpen()
                               }}
                             >
@@ -334,7 +332,7 @@ export default () => {
                             </MenuItem>
                             <MenuItem
                               onClick={() => {
-                                setRemoveAuthorCard(card)
+                                setSelectedCard(card)
                                 removeAuthorDialog.onOpen()
                               }}
                             >
@@ -342,7 +340,7 @@ export default () => {
                             </MenuItem>
                             <MenuItem
                               onClick={() => {
-                                setRemoveImageCard(card)
+                                setSelectedCard(card)
                                 removeImageDialog.onOpen()
                               }}
                             >
@@ -350,7 +348,7 @@ export default () => {
                             </MenuItem>
                             <MenuItem
                               onClick={() => {
-                                setDeleteCard(card)
+                                setSelectedCard(card)
                                 deleteDialog.onOpen()
                               }}
                             >
@@ -401,27 +399,42 @@ export default () => {
           />
         </div>
       </PageWrapper>
-      <UpdateCardModal
-        card={updateCard}
-        onClose={updateModal.onClose}
-        isOpen={updateModal.isOpen}
-      />
-      <RemoveCardImageDialog
-        cardID={removeImageCard.cardID}
-        onClose={removeImageDialog.onClose}
-        isOpen={removeImageDialog.isOpen}
-      />
-
-      <RemoveCardAuthorDialog
-        cardID={removeAuthorCard.cardID}
-        onClose={removeAuthorDialog.onClose}
-        isOpen={removeAuthorDialog.isOpen}
-      />
-      <DeleteCardDialog
-        cardID={deleteCard.cardID}
-        onClose={deleteDialog.onClose}
-        isOpen={deleteDialog.isOpen}
-      />
+      {selectedCard && (
+        <>
+          <UpdateCardModal
+            card={selectedCard}
+            onClose={() => {
+              updateModal.onClose()
+              setSelectedCard(null)
+            }}
+            isOpen={updateModal.isOpen}
+          />
+          <RemoveCardAuthorDialog
+            card={selectedCard}
+            onClose={() => {
+              removeAuthorDialog.onClose()
+              setSelectedCard(null)
+            }}
+            isOpen={removeAuthorDialog.isOpen}
+          />
+          <RemoveCardImageDialog
+            card={selectedCard}
+            onClose={() => {
+              removeImageDialog.onClose()
+              setSelectedCard(null)
+            }}
+            isOpen={removeImageDialog.isOpen}
+          />
+          <DeleteCardDialog
+            card={selectedCard}
+            onClose={() => {
+              deleteDialog.onClose()
+              setSelectedCard(null)
+            }}
+            isOpen={deleteDialog.isOpen}
+          />
+        </>
+      )}
     </>
   )
 }

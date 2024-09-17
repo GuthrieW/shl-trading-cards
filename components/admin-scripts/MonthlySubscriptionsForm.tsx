@@ -82,6 +82,7 @@ export default function MonthlySubscriptionsForm({
     onSubmit: async ({}, { setSubmitting }) => {
       try {
         setSubmitting(true)
+        onError(null)
         distributeMonthlyPacks()
       } catch (error) {
         console.error(error)

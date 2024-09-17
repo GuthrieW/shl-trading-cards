@@ -57,6 +57,7 @@ export default function AddCardsToUsersForm({
     onSubmit: async ({ userId, cardId }, { setSubmitting }) => {
       try {
         setSubmitting(true)
+        onError(null)
         if (userId === 0) throw new Error('0 is not a valid User ID')
         if (cardId === 0) throw new Error('0 is not a valid Card ID')
 

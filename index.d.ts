@@ -7,8 +7,8 @@ type Card = {
   card_rarity: string
   sub_type: string
   player_name: string
-  pullable: boolean
-  approved: boolean
+  pullable: 0 | 1
+  approved: 0 | 1
   image_url?: string
   position: string
   overall: number
@@ -23,7 +23,7 @@ type Card = {
   control?: number | null
   conditioning?: number | null
   season: number
-  author_paid: boolean
+  author_paid: 0 | 1
 }
 
 type CardRequest = {

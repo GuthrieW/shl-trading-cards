@@ -143,6 +143,7 @@ ${issueData.desiredFunctionality}`
       ) => {
         try {
           setSubmitting(true)
+          setFormError(null)
           await submitGithubIssue({
             description,
             reproductionSteps,
