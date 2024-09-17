@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Button,
   Drawer,
   DrawerBody,
@@ -58,7 +60,7 @@ export const Footer = () => {
     mutationFn: (requestData: GithubIssueData) =>
       axios({
         method: POST,
-        url: 'api/v3/github/issue',
+        url: '/api/v3/github/issue',
         data: requestData,
       }),
     onSuccess: ({ data }) => {
@@ -168,9 +170,10 @@ ${issueData.desiredFunctionality}`
 
     return (
       <div>
-        {formError && (
-          <div className="text-red dark:text-redDark">{formError}</div>
-        )}
+        <Alert status="error">
+          <AlertIcon />
+          {formError}
+        </Alert>
         <form onSubmit={handleSubmit}>
           <FormControl isInvalid={!!errors.description && touched.description}>
             <FormLabel>Description</FormLabel>
@@ -303,7 +306,10 @@ ${issueData.desiredFunctionality}`
     return (
       <div>
         {formError && (
-          <div className="text-red dark:text-redDark">{formError}</div>
+          <Alert status="error">
+            <AlertIcon />
+            {formError}
+          </Alert>
         )}
         <form onSubmit={handleSubmit}>
           <FormControl isInvalid={!!errors.description && touched.description}>

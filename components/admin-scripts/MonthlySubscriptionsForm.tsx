@@ -76,8 +76,6 @@ export default function MonthlySubscriptionsForm({
   }, [tablePage, sortColumn, sortDirection])
 
   const { isSubmitting, isValid } = useFormik<{}>({
-    validateOnBlur: true,
-    validateOnChange: true,
     initialValues: {},
     onSubmit: async ({}, { setSubmitting }) => {
       try {

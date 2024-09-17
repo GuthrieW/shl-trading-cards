@@ -2,10 +2,11 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, ListResponse, ListTotal } from '..'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
-import { GET } from '@constants/http-methods'
+import { GET, PATCH } from '@constants/http-methods'
 import { cardsQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
+import methodNotAllowed from '../lib/methodNotAllowed'
 
 const allowedMethods: string[] = [GET] as const
 const cors = Cors({
@@ -14,7 +15,7 @@ const cors = Cors({
 
 export default async function cardsEndpoint(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<ListResponse<Card>>>
+  res: NextApiResponse<ApiResponse<ListResponse<Card> | ListResponse<null>>>
 ): Promise<void> {
   await middleware(req, res, cors)
 
@@ -23,8 +24,34 @@ export default async function cardsEndpoint(
     const offset = (req.query.offset ?? 0) as string
     const sortColumn = (req.query.sortColumn ??
       'cardID') as keyof Readonly<Card>
-    const sortDirection = (req.query.sortDirection ?? 'ASC') as string
-    const viewSkaters = (req.query.viewSkaters ?? 'true') as 'true' | 'false'
+    const sortDirection = (req.query.sortDirection ?? 'ASC') as 'ASC' | 'DESC'
+    const viewSkaters = (req.query.viewSkaters ?? 'false') as 'true' | 'false'
+    const viewNeedsAuthor = (req.query.viewNeedsAuthor ?? 'false') as
+      | 'true'
+      | 'false'
+    const viewNeedsImage = (req.query.viewNeedsImage ?? 'false') as
+      | 'true'
+      | 'false'
+    const viewNeedsApproval = (req.query.viewNeedsApproval ?? 'false') as
+      | 'true'
+      | 'false'
+    const viewNeedsAuthorPaid = (req.query.viewNeedsAuthorPaid ?? 'false') as
+      | 'true'
+      | 'false'
+    const viewDone = (req.query.viewDone ?? 'false') as 'true' | 'false'
+
+    console.log('req.query', req.query)
+
+    const hasSortStatus: boolean = [
+      viewNeedsAuthor,
+      viewNeedsImage,
+      viewNeedsApproval,
+      viewNeedsAuthorPaid,
+      viewDone,
+    ].some((viewStatus) => {
+      console.log('viewStatus', viewStatus === 'true')
+      return viewStatus === 'true'
+    })
 
     const countQuery = SQL`
       SELECT count(*) as total
@@ -32,8 +59,53 @@ export default async function cardsEndpoint(
     `
 
     viewSkaters === 'true'
-      ? countQuery.append(SQL` WHERE position = 'F' OR position = 'D'`)
-      : countQuery.append(SQL` WHERE position = 'G'`)
+      ? countQuery.append(SQL` WHERE (position = 'F' OR position = 'D')`)
+      : countQuery.append(SQL` WHERE (position = 'G')`)
+
+    const statusesToAppend: SQLStatement[] = []
+
+    if (hasSortStatus) {
+      countQuery.append(SQL` AND (`)
+
+      if (viewNeedsAuthor === 'true') {
+        statusesToAppend.push(SQL` (author_userID IS NULL)`)
+      }
+
+      if (viewNeedsImage === 'true') {
+        statusesToAppend.push(
+          SQL` (author_userID IS NOT NULL AND image_url IS NULL)`
+        )
+      }
+
+      if (viewNeedsApproval === 'true') {
+        statusesToAppend.push(
+          SQL` (author_userID IS NOT NULL AND image_url IS NOT NULL AND approved = 0)`
+        )
+      }
+
+      if (viewNeedsAuthorPaid === 'true') {
+        statusesToAppend.push(
+          SQL` (author_userID IS NOT NULL AND image_url IS NOT NULL AND approved = 1 AND author_paid = 0)`
+        )
+      }
+
+      if (viewDone === 'true') {
+        statusesToAppend.push(
+          SQL` (author_userID IS NOT NULL AND image_url IS NOT NULL AND approved = 1 AND author_paid = 1)`
+        )
+      }
+
+      statusesToAppend.forEach((statusToAppend, index) => {
+        if (index === 0) {
+          countQuery.append(statusToAppend)
+        } else {
+          countQuery.append(SQL` OR `)
+          countQuery.append(statusToAppend)
+        }
+      })
+
+      countQuery.append(SQL`)`)
+    }
 
     const count = await cardsQuery<ListTotal>(countQuery)
 
@@ -66,9 +138,24 @@ export default async function cardsEndpoint(
     `
 
     viewSkaters === 'true'
-      ? query.append(SQL` WHERE position = 'F' OR position = 'D'`)
-      : query.append(SQL` WHERE position = 'G'`)
+      ? query.append(SQL` WHERE (position = 'F' OR position = 'D')`)
+      : query.append(SQL` WHERE (position = 'G')`)
 
+    if (hasSortStatus) {
+      query.append(SQL` AND (`)
+
+      statusesToAppend.forEach((statusToAppend, index) => {
+        if (index === 0) {
+          query.append(statusToAppend)
+        } else {
+          query.append(SQL` OR `)
+          query.append(statusToAppend)
+        }
+      })
+      query.append(SQL`)`)
+    }
+
+    statusesToAppend.forEach((s) => console.log('s', s))
     if (sortColumn) {
       query.append(SQL` ORDER BY`)
 
@@ -104,6 +191,8 @@ export default async function cardsEndpoint(
       query.append(SQL` OFFSET ${parseInt(offset)}`)
     }
 
+    console.log('testing query', query)
+
     const queryResult = await cardsQuery<Card>(query)
 
     if ('error' in count || 'error' in queryResult) {
@@ -119,4 +208,6 @@ export default async function cardsEndpoint(
       payload: { rows: queryResult, total: count[0].total },
     })
   }
+
+  methodNotAllowed(req, res, allowedMethods)
 }

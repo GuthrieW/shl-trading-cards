@@ -103,7 +103,14 @@ export const SessionProvider = ({
       },
     })
 
-    if (response.status !== StatusCodes.OK || response.data.error) {
+    if (response.status !== StatusCodes.OK) {
+      handleLogout()
+      setIsLoading(false)
+      isRefreshingRef.current = false
+      return
+    }
+
+    if (response.data.status === 'logout') {
       handleLogout()
       setIsLoading(false)
       isRefreshingRef.current = false

@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import {
+  Alert,
+  AlertIcon,
   Button,
   Modal,
   ModalBody,
@@ -19,6 +21,7 @@ import Input from '@components/forms/Input'
 import Select from '@components/forms/Select'
 import rarityMap from '@constants/rarity-map'
 import positionMap from '@constants/position-map'
+import { useQueryClient } from 'react-query'
 
 const updateValidationSchema = Yup.object({}).shape({
   cardID: Yup.number().integer().required('Card ID is required'),
@@ -47,17 +50,17 @@ const updateValidationSchema = Yup.object({}).shape({
     .min(1)
     .max(99)
     .required('Overall is required'),
-  skating: Yup.number().integer().min(1).max(99).optional(),
-  shooting: Yup.number().integer().min(1).max(99).optional(),
-  hands: Yup.number().integer().min(1).max(99).optional(),
-  checking: Yup.number().integer().min(1).max(99).optional(),
-  defense: Yup.number().integer().min(1).max(99).optional(),
-  high_shots: Yup.number().integer().min(1).max(99).optional(),
-  low_shots: Yup.number().integer().min(1).max(99).optional(),
-  quickness: Yup.number().integer().min(1).max(99).optional(),
-  control: Yup.number().integer().min(1).max(99).optional(),
-  conditioning: Yup.number().integer().min(1).max(99).optional(),
-  season: Yup.number().integer().min(1).max(99).optional(),
+  skating: Yup.number().integer().min(1).max(20).optional(),
+  shooting: Yup.number().integer().min(1).max(20).optional(),
+  hands: Yup.number().integer().min(1).max(20).optional(),
+  checking: Yup.number().integer().min(1).max(20).optional(),
+  defense: Yup.number().integer().min(1).max(20).optional(),
+  high_shots: Yup.number().integer().min(1).max(20).optional(),
+  low_shots: Yup.number().integer().min(1).max(20).optional(),
+  quickness: Yup.number().integer().min(1).max(20).optional(),
+  control: Yup.number().integer().min(1).max(20).optional(),
+  conditioning: Yup.number().integer().min(1).max(20).optional(),
+  season: Yup.number().integer().min(1).optional(),
   author_paid: Yup.number()
     .integer()
     .min(0)
@@ -77,16 +80,17 @@ export default function UpdateCardModal({
   onClose: () => void
 }) {
   const [formError, setFormError] = useState<string>('')
+  const queryClient = useQueryClient()
 
   const { mutateAsync: updateCard } = mutation<
     void,
-    { cardID: number; cardUpdates: Partial<Card> }
+    { cardID: number; card: Partial<Card> }
   >({
-    mutationFn: ({ cardID, cardUpdates }) =>
+    mutationFn: ({ cardID, card }) =>
       axios({
         method: PATCH,
-        url: 'api/v3/card',
-        data: { cardID, cardUpdates },
+        url: `/api/v3/cards/${cardID}`,
+        data: { card },
       }),
   })
 
@@ -100,6 +104,7 @@ export default function UpdateCardModal({
     isValid,
     handleSubmit,
   } = useFormik<UpdateFormValues>({
+    enableReinitialize: true,
     validateOnBlur: true,
     validateOnChange: true,
     initialValues: {
@@ -129,14 +134,26 @@ export default function UpdateCardModal({
       author_paid: card.author_paid ?? undefined,
     },
     onSubmit: async (cardUpdates: Card, { setSubmitting }) => {
-      console.log('card', card)
+      try {
+        await updateValidationSchema.validate(cardUpdates)
+      } catch (error) {
+        console.error(error)
+        setFormError(String(error))
+        return
+      }
+
       try {
         setSubmitting(true)
         setFormError(null)
 
         await updateCard(
-          { cardID: card.cardID, cardUpdates },
-          { onSuccess: () => onClose() }
+          { cardID: card.cardID, card: cardUpdates },
+          {
+            onSuccess: () => {
+              queryClient.invalidateQueries(['cards'])
+              onClose()
+            },
+          }
         )
       } catch (error) {
         console.error(error)
@@ -149,7 +166,6 @@ export default function UpdateCardModal({
         setSubmitting(false)
       }
     },
-    validationSchema: updateValidationSchema,
   })
 
   return (
@@ -159,9 +175,11 @@ export default function UpdateCardModal({
         <ModalHeader>Update Card #{card.cardID}</ModalHeader>
         <ModalCloseButton />
         {formError && (
-          <div className="text-red dark:text-redDark">{formError}</div>
+          <Alert status="error">
+            <AlertIcon />
+            {formError}
+          </Alert>
         )}
-        <Button onClick={() => console.log(values)}>Test</Button>
         <form onSubmit={handleSubmit}>
           <ModalBody className="flex flex-row">
             <Stack className="mx-2">

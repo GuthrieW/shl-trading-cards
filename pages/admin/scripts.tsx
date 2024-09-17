@@ -1,4 +1,4 @@
-import { Select, Skeleton } from '@chakra-ui/react'
+import { Alert, AlertIcon, Select, Skeleton } from '@chakra-ui/react'
 import AddCardsToUsersForm from '@components/admin-scripts/AddCardsToUsersForms'
 import DeleteDuplicateCardsForm from '@components/admin-scripts/DeleteDuplicateCardsForm'
 import MonthlySubscriptionsForm from '@components/admin-scripts/MonthlySubscriptionsForm'
@@ -58,7 +58,10 @@ export default () => {
       </div>
 
       {formError && (
-        <div className="text-red dark:text-redDark">{formError}</div>
+        <Alert status="error">
+          <AlertIcon />
+          {formError}
+        </Alert>
       )}
       <div className="mt-6">
         {selectedScript === 'add-cards-to-users' && (

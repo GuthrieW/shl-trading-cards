@@ -1,7 +1,7 @@
 import mysql, { ServerlessMysql } from 'serverless-mysql'
 import { SQLStatement } from 'sql-template-strings'
 
-type QueryResult<T> = T[] | { error: unknown }
+type SelectQueryResult<T> = T[] | { error: unknown }
 
 const initializeDB = (database: string | undefined): ServerlessMysql =>
   mysql({
@@ -27,7 +27,9 @@ const portalDatabase: ServerlessMysql = initializeDB(
 
 const getQueryFn =
   (db: ServerlessMysql) =>
-  async <T extends unknown>(query: SQLStatement): Promise<QueryResult<T>> => {
+  async <T extends unknown>(
+    query: SQLStatement
+  ): Promise<SelectQueryResult<T>> => {
     try {
       const results: T[] = await db.query(query)
       await db.end()

@@ -1,4 +1,4 @@
-import { ChevronDownIcon } from '@chakra-ui/icons'
+import { CheckIcon, ChevronDownIcon, CloseIcon } from '@chakra-ui/icons'
 import {
   Button,
   FormControl,
@@ -6,7 +6,9 @@ import {
   Menu,
   MenuButton,
   MenuItem,
+  MenuItemOption,
   MenuList,
+  MenuOptionGroup,
   Switch,
   Table,
   TableContainer,
@@ -20,23 +22,28 @@ import DeleteCardDialog from '@components/admin-cards/DeleteCardDialog'
 import RemoveCardAuthorDialog from '@components/admin-cards/RemoveCardAuthorDialog'
 import RemoveCardImageDialog from '@components/admin-cards/RemoveCardImageDialog'
 import UpdateCardModal from '@components/admin-cards/UpdateCardModal'
+import { PermissionGuard } from '@components/auth/PermissionGuard'
+import { RoleGuard } from '@components/auth/RoleGuard'
 import { PageWrapper } from '@components/common/PageWrapper'
 import SortIcon from '@components/table/SortIcon'
 import Td from '@components/table/Td'
 import TablePagination from '@components/tables/TablePagination'
-import { GET } from '@constants/http-methods'
+import { GET, PATCH } from '@constants/http-methods'
 import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated'
 import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
+import { mutation } from '@pages/api/database/mutation'
 import { query } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { useQueryClient } from 'react-query'
+import { cardService } from 'services/cardService'
 
 type ColumnName = keyof Readonly<Card>
 
 const ROWS_PER_PAGE: number = 10 as const
 
-const LOADING_TABLE_DATA = {
+const LOADING_TABLE_DATA: { rows: Card[] } = {
   rows: Array.from({ length: 10 }, (_, index) => ({
     cardID: index,
     teamID: 0,
@@ -67,6 +74,12 @@ const LOADING_TABLE_DATA = {
 
 export default () => {
   const [viewSkaters, setViewSkaters] = useState<boolean>(true)
+  const [viewNeedsAuthor, setViewNeedsAuthor] = useState<boolean>(false)
+  const [viewNeedsImage, setviewNeedsImage] = useState<boolean>(false)
+  const [viewNeedsApproval, setviewNeedsApproval] = useState<boolean>(false)
+  const [viewNeedsAuthorPaid, setviewNeedsAuthorPaid] = useState<boolean>(false)
+  const [viewDone, setViewDone] = useState<boolean>(false)
+
   const [sortColumn, setSortColumn] = useState<ColumnName>('player_name')
   const [sortDirection, setSortDirection] = useState<SortDirection>('ASC')
   const [tablePage, setTablePage] = useState<number>(1)
@@ -75,7 +88,18 @@ export default () => {
   const updateModal = useDisclosure()
   const removeAuthorDialog = useDisclosure()
   const removeImageDialog = useDisclosure()
+  const approveImageDialog = useDisclosure()
   const deleteDialog = useDisclosure()
+
+  const queryClient = useQueryClient()
+
+  const { mutate: claimCard } = mutation<void, { cardID: number }>({
+    mutationFn: ({ cardID }) =>
+      axios({
+        method: PATCH,
+        url: `/api/v3/cards/claim/${cardID}`,
+      }),
+  })
 
   const { isCheckingAuthentication } = useRedirectIfNotAuthenticated()
   const { isCheckingAuthorization } = useRedirectIfNotAuthorized({
@@ -86,6 +110,11 @@ export default () => {
     queryKey: [
       'cards',
       String(viewSkaters),
+      String(viewNeedsAuthor),
+      String(viewNeedsImage),
+      String(viewNeedsApproval),
+      String(viewNeedsAuthorPaid),
+      String(viewDone),
       sortColumn,
       sortDirection,
       String(tablePage),
@@ -98,6 +127,11 @@ export default () => {
           offset: (tablePage - 1) * ROWS_PER_PAGE,
           limit: ROWS_PER_PAGE,
           viewSkaters,
+          viewNeedsAuthor,
+          viewNeedsImage,
+          viewNeedsApproval,
+          viewNeedsAuthorPaid,
+          viewDone,
           sortColumn,
           sortDirection,
         },
@@ -106,7 +140,17 @@ export default () => {
 
   useEffect(() => {
     refetch()
-  }, [viewSkaters, sortColumn, sortDirection, tablePage])
+  }, [
+    viewSkaters,
+    viewNeedsAuthor,
+    viewNeedsImage,
+    viewNeedsApproval,
+    viewNeedsAuthorPaid,
+    viewDone,
+    sortColumn,
+    sortDirection,
+    tablePage,
+  ])
 
   const handleSortChange = (columnName: ColumnName) => {
     if (columnName === sortColumn) {
@@ -129,91 +173,145 @@ export default () => {
       >
         <div className="rounded border border-1 border-inherit mt-4">
           <TableContainer>
-            <FormControl className="flex items-center m-2">
-              <FormLabel className="mb-0">Toggle Goaltenders:</FormLabel>
-              <Switch
-                onChange={(event) => {
-                  console.log('event', event)
-                  setViewSkaters((currentValue) => !currentValue)
-                }}
-              />
-            </FormControl>
-
+            <div className="m-2">
+              <Menu closeOnSelect={false}>
+                <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                  <span className="pr-2">Statuses</span>
+                </MenuButton>
+                <MenuList>
+                  <MenuOptionGroup type="checkbox">
+                    <MenuItemOption
+                      value="NeedsAuthor"
+                      onClick={() => setViewNeedsAuthor(!viewNeedsAuthor)}
+                    >
+                      NeedsAuthor&nbsp;
+                    </MenuItemOption>
+                    <MenuItemOption
+                      value="NeedsImage"
+                      onClick={() => setviewNeedsImage(!viewNeedsImage)}
+                    >
+                      NeedsImage&nbsp;
+                    </MenuItemOption>
+                    <MenuItemOption
+                      value="NeedsApproval"
+                      onClick={() => setviewNeedsApproval(!viewNeedsApproval)}
+                    >
+                      NeedsApproval&nbsp;
+                    </MenuItemOption>
+                    <MenuItemOption
+                      value="NeedsAuthorPaid"
+                      onClick={() =>
+                        setviewNeedsAuthorPaid(!viewNeedsAuthorPaid)
+                      }
+                    >
+                      NeedsAuthorPaid&nbsp;
+                    </MenuItemOption>
+                    <MenuItemOption
+                      value="Done"
+                      onClick={() => setViewDone(!viewDone)}
+                    >
+                      Done&nbsp;
+                    </MenuItemOption>
+                  </MenuOptionGroup>
+                </MenuList>
+              </Menu>
+              <FormControl className="flex items-center m-2">
+                <FormLabel className="mb-0">Toggle Goaltenders:</FormLabel>
+                <Switch onChange={() => setViewSkaters(!viewSkaters)} />
+              </FormControl>
+            </div>
             <Table className="mt-4" size="md">
               <Thead>
                 <Tr>
-                  <Th></Th>
+                  <Th position="sticky" left="0"></Th>
+                  <Th>Status</Th>
                   <Th
                     className="cursor-pointer"
                     onClick={() => handleSortChange('player_name')}
                   >
-                    Name&nbsp;
-                    {sortColumn === 'player_name' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      Name&nbsp;
+                      {sortColumn === 'player_name' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                   <Th
                     className="cursor-pointer"
                     onClick={() => handleSortChange('cardID')}
                   >
-                    Card ID&nbsp;
-                    {sortColumn === 'cardID' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      Card ID&nbsp;
+                      {sortColumn === 'cardID' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                   <Th
                     className="cursor-pointer"
                     onClick={() => handleSortChange('playerID')}
                   >
-                    Player ID&nbsp;
-                    {sortColumn === 'playerID' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      Player ID&nbsp;
+                      {sortColumn === 'playerID' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                   <Th
                     className="cursor-pointer"
                     onClick={() => handleSortChange('teamID')}
                   >
-                    Team ID&nbsp;
-                    {sortColumn === 'teamID' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      Team ID&nbsp;
+                      {sortColumn === 'teamID' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                   <Th
                     className="cursor-pointer"
                     onClick={() => handleSortChange('author_userID')}
                   >
-                    Author ID&nbsp;
-                    {sortColumn === 'author_userID' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      Author ID&nbsp;
+                      {sortColumn === 'author_userID' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                   <Th
                     className="cursor-pointer"
                     onClick={() => handleSortChange('pullable')}
                   >
-                    Pullable&nbsp;
-                    {sortColumn === 'pullable' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      Pullable&nbsp;
+                      {sortColumn === 'pullable' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                   <Th
                     className="cursor-pointer"
                     onClick={() => handleSortChange('approved')}
                   >
-                    Approved&nbsp;
-                    {sortColumn === 'approved' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      Approved&nbsp;
+                      {sortColumn === 'approved' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                   <Th
                     className="cursor-pointer"
                     onClick={() => handleSortChange('author_paid')}
                   >
-                    Paid&nbsp;
-                    {sortColumn === 'author_paid' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      Paid&nbsp;
+                      {sortColumn === 'author_paid' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                   <Th>Image URL</Th>
                   <Th>Rarity</Th>
@@ -222,20 +320,24 @@ export default () => {
                     className="cursor-pointer"
                     onClick={() => handleSortChange('season')}
                   >
-                    Season&nbsp;
-                    {sortColumn === 'season' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      Season&nbsp;
+                      {sortColumn === 'season' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                   <Th>Position</Th>
                   <Th
                     className="cursor-pointer"
                     onClick={() => handleSortChange('overall')}
                   >
-                    OVR&nbsp;
-                    {sortColumn === 'overall' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      OVR&nbsp;
+                      {sortColumn === 'overall' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                   <Th
                     className="cursor-pointer"
@@ -243,13 +345,15 @@ export default () => {
                       handleSortChange(viewSkaters ? 'skating' : 'high_shots')
                     }
                   >
-                    {viewSkaters ? 'SKT' : 'HSHT'}&nbsp;
-                    {viewSkaters && sortColumn === 'skating' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
-                    {!viewSkaters && sortColumn === 'high_shots' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      {viewSkaters ? 'SKT' : 'HSHT'}&nbsp;
+                      {viewSkaters && sortColumn === 'skating' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                      {!viewSkaters && sortColumn === 'high_shots' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                   <Th
                     className="cursor-pointer"
@@ -257,13 +361,15 @@ export default () => {
                       handleSortChange(viewSkaters ? 'shooting' : 'low_shots')
                     }
                   >
-                    {viewSkaters ? 'SHT' : 'LSHT'}&nbsp;
-                    {viewSkaters && sortColumn === 'shooting' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
-                    {!viewSkaters && sortColumn === 'low_shots' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      {viewSkaters ? 'SHT' : 'LSHT'}&nbsp;
+                      {viewSkaters && sortColumn === 'shooting' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                      {!viewSkaters && sortColumn === 'low_shots' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                   <Th
                     className="cursor-pointer"
@@ -271,13 +377,15 @@ export default () => {
                       handleSortChange(viewSkaters ? 'hands' : 'quickness')
                     }
                   >
-                    {viewSkaters ? 'HND' : 'QUI'}&nbsp;
-                    {viewSkaters && sortColumn === 'hands' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
-                    {!viewSkaters && sortColumn === 'quickness' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      {viewSkaters ? 'HND' : 'QUI'}&nbsp;
+                      {viewSkaters && sortColumn === 'hands' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                      {!viewSkaters && sortColumn === 'quickness' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                   <Th
                     className="cursor-pointer"
@@ -285,13 +393,15 @@ export default () => {
                       handleSortChange(viewSkaters ? 'checking' : 'control')
                     }
                   >
-                    {viewSkaters ? 'CHK' : 'CTL'}&nbsp;
-                    {viewSkaters && sortColumn === 'checking' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
-                    {!viewSkaters && sortColumn === 'control' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      {viewSkaters ? 'CHK' : 'CTL'}&nbsp;
+                      {viewSkaters && sortColumn === 'checking' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                      {!viewSkaters && sortColumn === 'control' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                   <Th
                     className="cursor-pointer"
@@ -299,21 +409,23 @@ export default () => {
                       handleSortChange(viewSkaters ? 'defense' : 'conditioning')
                     }
                   >
-                    {viewSkaters ? 'DEF' : 'CND'}&nbsp;
-                    {viewSkaters && sortColumn === 'defense' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
-                    {!viewSkaters && sortColumn === 'conditioning' && (
-                      <SortIcon sortDirection={sortDirection} />
-                    )}
+                    <span className="flex items-center">
+                      {viewSkaters ? 'DEF' : 'CND'}&nbsp;
+                      {viewSkaters && sortColumn === 'defense' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                      {!viewSkaters && sortColumn === 'conditioning' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
                   </Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {(isLoading ? LOADING_TABLE_DATA : payload)?.rows.map(
-                  (card) => (
+                  (card: Card) => (
                     <Tr key={card.cardID}>
-                      <Td isLoading={isLoading}>
+                      <Td isLoading={isLoading} position="sticky" left="0">
                         <Menu>
                           <MenuButton
                             as={Button}
@@ -322,40 +434,94 @@ export default () => {
                             Actions
                           </MenuButton>
                           <MenuList>
-                            <MenuItem
-                              onClick={() => {
-                                setSelectedCard(card)
-                                updateModal.onOpen()
-                              }}
+                            <RoleGuard
+                              userRoles={[
+                                'TRADING_CARD_ADMIN',
+                                'TRADING_CARD_TEAM',
+                              ]}
                             >
-                              Update
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() => {
-                                setSelectedCard(card)
-                                removeAuthorDialog.onOpen()
-                              }}
-                            >
-                              Remove Author
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() => {
-                                setSelectedCard(card)
-                                removeImageDialog.onOpen()
-                              }}
-                            >
-                              Remove Image
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() => {
-                                setSelectedCard(card)
-                                deleteDialog.onOpen()
-                              }}
-                            >
-                              Delete
-                            </MenuItem>
+                              <MenuItem
+                                onClick={() =>
+                                  claimCard(
+                                    { cardID: card.cardID },
+                                    {
+                                      onSuccess: () => {
+                                        queryClient.invalidateQueries(['cards'])
+                                      },
+                                    }
+                                  )
+                                }
+                              >
+                                Claim Card
+                              </MenuItem>
+                            </RoleGuard>
+                            <PermissionGuard userPermissions={['canEditCards']}>
+                              <MenuItem
+                                onClick={() => {
+                                  setSelectedCard(card)
+                                  updateModal.onOpen()
+                                }}
+                              >
+                                Update
+                              </MenuItem>
+                            </PermissionGuard>
+                            {card.author_userID && (
+                              <PermissionGuard
+                                userPermissions={['canEditCards']}
+                              >
+                                <MenuItem
+                                  onClick={() => {
+                                    setSelectedCard(card)
+                                    removeAuthorDialog.onOpen()
+                                  }}
+                                >
+                                  Remove Author
+                                </MenuItem>
+                              </PermissionGuard>
+                            )}
+                            {card.image_url && (
+                              <PermissionGuard
+                                userPermissions={['canEditCards']}
+                              >
+                                <MenuItem
+                                  onClick={() => {
+                                    setSelectedCard(card)
+                                    removeImageDialog.onOpen()
+                                  }}
+                                >
+                                  Remove Image
+                                </MenuItem>
+                              </PermissionGuard>
+                            )}
+                            {card.image_url && card.approved && (
+                              <PermissionGuard
+                                userPermissions={['canEditCards']}
+                              >
+                                <MenuItem
+                                  onClick={() => {
+                                    setSelectedCard(card)
+                                    approveImageDialog.onOpen()
+                                  }}
+                                >
+                                  Approve Image
+                                </MenuItem>
+                              </PermissionGuard>
+                            )}
+                            <RoleGuard userRoles={['TRADING_CARD_ADMIN']}>
+                              <MenuItem
+                                onClick={() => {
+                                  setSelectedCard(card)
+                                  deleteDialog.onOpen()
+                                }}
+                              >
+                                Delete
+                              </MenuItem>
+                            </RoleGuard>
                           </MenuList>
                         </Menu>
+                      </Td>
+                      <Td isLoading={isLoading}>
+                        {cardService.calculateStatus(card)}
                       </Td>
                       <Td isLoading={isLoading}>{card.player_name}</Td>
                       <Td isLoading={isLoading}>{card.cardID}</Td>

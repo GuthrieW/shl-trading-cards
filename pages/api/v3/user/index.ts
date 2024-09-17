@@ -47,7 +47,7 @@ export default async function userEndpoint(
       console.error(queryResult.error)
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .end('Server connection failed')
+        .end('Datebase connection failed')
       return
     }
 
