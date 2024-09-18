@@ -75,6 +75,7 @@ export default async function cardsEndpoint(
       status: 'success',
       payload: null,
     })
+    return
   }
 
   if (req.method === PATCH) {
@@ -157,6 +158,7 @@ export default async function cardsEndpoint(
       status: 'success',
       payload: null,
     })
+    return
   }
 
   methodNotAllowed(req, res, allowedMethods)

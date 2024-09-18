@@ -202,6 +202,7 @@ export default async function cardsEndpoint(
       status: 'success',
       payload: { rows: queryResult, total: count[0].total },
     })
+    return
   }
 
   methodNotAllowed(req, res, allowedMethods)

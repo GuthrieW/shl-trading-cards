@@ -6,6 +6,7 @@ import { ApiResponse, ListResponse, ListTotal } from '..'
 import { cardsQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
+import methodNotAllowed from '../lib/methodNotAllowed'
 
 const allowedMethods: string[] = [GET] as const
 const cors = Cors({
@@ -78,5 +79,8 @@ export default async function settingsEndpoint(
       status: 'success',
       payload: { rows: queryResult, total: count[0].total },
     })
+    return
   }
+
+  methodNotAllowed(req, res, allowedMethods)
 }

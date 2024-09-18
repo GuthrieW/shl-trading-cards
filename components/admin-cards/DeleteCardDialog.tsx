@@ -33,7 +33,7 @@ export default function DeleteCardDialog({
     mutationFn: ({ cardID }) =>
       axios({
         method: DELETE,
-        url: `/api/v3/card/${cardID}`,
+        url: `/api/v3/cards/${cardID}`,
       }),
   })
 

@@ -6,6 +6,7 @@ import Cors from 'cors'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { cardsQuery } from '@pages/api/database/database'
 import { StatusCodes } from 'http-status-codes'
+import methodNotAllowed from '../lib/methodNotAllowed'
 
 export type OwnedCard = {
   quantity: number
@@ -205,5 +206,8 @@ export default async function collectionEndpoint(
       status: 'success',
       payload: { rows: queryResult, total: countResult[0].total },
     })
+    return
   }
+
+  methodNotAllowed(req, res, allowedMethods)
 }
