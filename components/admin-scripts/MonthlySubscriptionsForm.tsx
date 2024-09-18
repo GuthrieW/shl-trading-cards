@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react'
 import SortIcon from '@components/table/SortIcon'
 import Td from '@components/table/Td'
-import TablePagination from '@components/tables/TablePagination'
+import TablePagination from '@components/table/TablePagination'
 import { GET, POST } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
 import { query } from '@pages/api/database/query'

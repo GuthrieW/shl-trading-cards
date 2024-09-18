@@ -17,7 +17,6 @@ import { ToastContext } from 'contexts/ToastContext'
 import config from 'lib/config'
 import { useRouter } from 'next/router'
 import { useContext, useState } from 'react'
-import { useQuery } from 'react-query'
 
 export default () => {
   const router = useRouter()
