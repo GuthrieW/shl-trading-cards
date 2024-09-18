@@ -1,29 +1,19 @@
-import { GET } from '@constants/http-methods'
 import { NextApiRequest, NextApiResponse } from 'next'
-import methodNotAllowed from '../lib/methodNotAllowed'
+import { ApiResponse } from '..'
+import { UserData, UserDataWithAvatarType } from '.'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
-import { StatusCodes } from 'http-status-codes'
-import { checkUserAuthorization } from '../lib/checkUserAuthorization'
+import { GET } from '@constants/http-methods'
 import { usersQuery } from '@pages/api/database/database'
 import SQL from 'sql-template-strings'
-import { ApiResponse } from '..'
+import { StatusCodes } from 'http-status-codes'
+import methodNotAllowed from '../lib/methodNotAllowed'
 
 const DEFAULT_SHL_URL: string = 'https://simulationhockey.com/' as const
 const allowedMethods: string[] = [GET] as const
 const cors = Cors({
   methods: allowedMethods,
 })
-
-export type UserData = {
-  uid: number
-  username: string
-  avatar: string
-}
-
-export type UserDataWithAvatarType = UserData & {
-  avatartype: 'remote' | 'upload' | '0' | ''
-}
 
 export default async function userEndpoint(
   req: NextApiRequest,
@@ -32,15 +22,11 @@ export default async function userEndpoint(
   await middleware(req, res, cors)
 
   if (req.method === GET) {
-    if (!(await checkUserAuthorization(req))) {
-      res.status(StatusCodes.UNAUTHORIZED).end('Not authorized')
-      return
-    }
-
+    const uid = req.query.uid as string
     const queryResult = await usersQuery<UserDataWithAvatarType>(SQL`
       SELECT uid, username, avatar, avatartype  
       FROM mybb_users
-      WHERE uid=${req.cookies.userid}
+      WHERE uid=${uid}
     `)
 
     if ('error' in queryResult) {

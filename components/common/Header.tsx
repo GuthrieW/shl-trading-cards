@@ -50,10 +50,9 @@ export const Header = ({ showAuthButtons = true }) => {
       axios({
         url: '/api/v3/user',
         method: GET,
-        headers: {
-          Authorization: `Bearer ${session?.token}`,
-        },
+        headers: { Authorization: `Bearer ${session?.token}` },
       }),
+    enabled: loggedIn,
   })
 
   useEffect(() => {

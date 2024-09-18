@@ -1,5 +1,6 @@
 import { CheckIcon } from '@chakra-ui/icons'
 import {
+  Avatar,
   Badge,
   FormControl,
   FormLabel,
@@ -19,12 +20,12 @@ import TablePagination from '@components/table/TablePagination'
 import { GET } from '@constants/http-methods'
 import rarityMap from '@constants/rarity-map'
 import { shlTeamsMap } from '@constants/teams-map'
-import { useCookie } from '@hooks/useCookie'
 import { query } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
 import { OwnedCard } from '@pages/api/v3/collection/[uid]'
+import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
-import config from 'lib/config'
+import { useSession } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { Fragment, useEffect, useState } from 'react'
 
@@ -65,6 +66,7 @@ const LOADING_GRID_DATA: { rows: OwnedCard[] } = {
 
 export default () => {
   const router = useRouter()
+  const { session } = useSession()
   const [showNotOwnedCards, setShowNotOwnedCards] = useState<boolean>(false)
   const [playerName, setPlayerName] = useState<string>('')
   const [teams, setTeams] = useState<string[]>([])
@@ -74,8 +76,16 @@ export default () => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
   const [tablePage, setTablePage] = useState<number>(1)
 
-  const [loggedInUid] = useCookie(config.userIDCookieName)
   const uid = router.query.uid as string
+
+  const { payload: user } = query<UserData>({
+    queryKey: ['collectionUser', session?.token],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/user/${uid}`,
+      }),
+  })
 
   const { payload, isLoading, refetch } = query<ListResponse<OwnedCard>>({
     queryKey: [
@@ -131,11 +141,16 @@ export default () => {
 
   return (
     <PageWrapper>
-      {uid && loggedInUid && loggedInUid === uid ? (
-        <p>My Collection</p>
-      ) : (
-        <p>{uid}'s Collection</p>
-      )}
+      <span>
+        {user?.username}
+        {user?.username.endsWith('s') ? "'" : "'s"}&nbsp;Collection
+      </span>
+      {/* <div className="flex h-full items-center space-x-1">
+        <span className="hidden sm:inline">
+          Collection Owner: {user?.username}
+        </span>
+        <Avatar size="sm" name={user?.username} src={user?.avatar} />
+      </div> */}
       <div className="flex flex-row justify-between">
         <div className="flex flex-row justify-start items-end">
           <FormControl className="mx-2 w-auto">
@@ -147,7 +162,7 @@ export default () => {
           </FormControl>
           <FormControl className="mx-2 w-auto cursor-pointer">
             <Menu closeOnSelect={false}>
-              <MenuButton className="border border-1 rounded p-1.5 cursor-crosshair">
+              <MenuButton className="border border-1 rounded p-1.5 cursor-pointer">
                 Teams&nbsp;{`(${teams.length})`}
               </MenuButton>
               <MenuList>
@@ -257,7 +272,6 @@ export default () => {
           </FormControl>
         </div>
       </div>
-
       <SimpleGrid columns={{ sm: 2, md: 3, lg: 6 }}>
         {(isLoading ? LOADING_GRID_DATA : payload)?.rows.map((card, index) => (
           <div
@@ -274,7 +288,7 @@ export default () => {
               }
             />
             {!isLoading && (
-              <Badge className="absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-1/2 bg-neutral-800 rounded-full">
+              <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
                 {`${card.card_rarity} - ${card.quantity}`}
               </Badge>
             )}
