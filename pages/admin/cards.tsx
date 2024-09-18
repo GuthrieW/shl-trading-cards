@@ -1,4 +1,4 @@
-import { CheckIcon, ChevronDownIcon, CloseIcon } from '@chakra-ui/icons'
+import { ChevronDownIcon } from '@chakra-ui/icons'
 import {
   Button,
   FormControl,
@@ -124,8 +124,8 @@ export default () => {
         method: GET,
         url: '/api/v3/cards',
         params: {
-          offset: (tablePage - 1) * ROWS_PER_PAGE,
           limit: ROWS_PER_PAGE,
+          offset: (tablePage - 1) * ROWS_PER_PAGE,
           viewSkaters,
           viewNeedsAuthor,
           viewNeedsImage,
@@ -184,19 +184,19 @@ export default () => {
                       value="NeedsAuthor"
                       onClick={() => setViewNeedsAuthor(!viewNeedsAuthor)}
                     >
-                      NeedsAuthor&nbsp;
+                      NeedsAuthor
                     </MenuItemOption>
                     <MenuItemOption
                       value="NeedsImage"
                       onClick={() => setviewNeedsImage(!viewNeedsImage)}
                     >
-                      NeedsImage&nbsp;
+                      NeedsImage
                     </MenuItemOption>
                     <MenuItemOption
                       value="NeedsApproval"
                       onClick={() => setviewNeedsApproval(!viewNeedsApproval)}
                     >
-                      NeedsApproval&nbsp;
+                      NeedsApproval
                     </MenuItemOption>
                     <MenuItemOption
                       value="NeedsAuthorPaid"
@@ -204,13 +204,13 @@ export default () => {
                         setviewNeedsAuthorPaid(!viewNeedsAuthorPaid)
                       }
                     >
-                      NeedsAuthorPaid&nbsp;
+                      NeedsAuthorPaid
                     </MenuItemOption>
                     <MenuItemOption
                       value="Done"
                       onClick={() => setViewDone(!viewDone)}
                     >
-                      Done&nbsp;
+                      Done
                     </MenuItemOption>
                   </MenuOptionGroup>
                 </MenuList>

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, ListResponse, ListTotal } from '..'
+import { ApiResponse, ListResponse, ListTotal, SortDirection } from '..'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import { GET, PATCH } from '@constants/http-methods'
@@ -15,7 +15,7 @@ const cors = Cors({
 
 export default async function cardsEndpoint(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<ListResponse<Card> | ListResponse<null>>>
+  res: NextApiResponse<ApiResponse<ListResponse<Card>>>
 ): Promise<void> {
   await middleware(req, res, cors)
 
@@ -24,7 +24,7 @@ export default async function cardsEndpoint(
     const offset = (req.query.offset ?? 0) as string
     const sortColumn = (req.query.sortColumn ??
       'cardID') as keyof Readonly<Card>
-    const sortDirection = (req.query.sortDirection ?? 'ASC') as 'ASC' | 'DESC'
+    const sortDirection = (req.query.sortDirection ?? 'ASC') as SortDirection
     const viewSkaters = (req.query.viewSkaters ?? 'false') as 'true' | 'false'
     const viewNeedsAuthor = (req.query.viewNeedsAuthor ?? 'false') as
       | 'true'
@@ -39,8 +39,6 @@ export default async function cardsEndpoint(
       | 'true'
       | 'false'
     const viewDone = (req.query.viewDone ?? 'false') as 'true' | 'false'
-
-    console.log('req.query', req.query)
 
     const hasSortStatus: boolean = [
       viewNeedsAuthor,
@@ -156,32 +154,29 @@ export default async function cardsEndpoint(
     }
 
     statusesToAppend.forEach((s) => console.log('s', s))
-    if (sortColumn) {
-      query.append(SQL` ORDER BY`)
 
-      if (sortColumn === 'player_name') query.append(SQL` player_name`)
-      if (sortColumn === 'cardID') query.append(SQL` cardID`)
-      if (sortColumn === 'playerID') query.append(SQL` playerID`)
-      if (sortColumn === 'teamID') query.append(SQL` teamID`)
-      if (sortColumn === 'author_userID') query.append(SQL` author_userID`)
-      if (sortColumn === 'pullable') query.append(SQL` pullable`)
-      if (sortColumn === 'approved') query.append(SQL` approved`)
-      if (sortColumn === 'author_paid') query.append(SQL` author_paid`)
-      if (sortColumn === 'season') query.append(SQL` season`)
-      if (sortColumn === 'overall') query.append(SQL` overall`)
-      if (sortColumn === 'skating') query.append(SQL` skating`)
-      if (sortColumn === 'shooting') query.append(SQL` shooting`)
-      if (sortColumn === 'hands') query.append(SQL` hands`)
-      if (sortColumn === 'checking') query.append(SQL` checking`)
-      if (sortColumn === 'defense') query.append(SQL` defense`)
-      if (sortColumn === 'high_shots') query.append(SQL` high_shots`)
-      if (sortColumn === 'low_shots') query.append(SQL` low_shots`)
-      if (sortColumn === 'quickness') query.append(SQL` quickness`)
-      if (sortColumn === 'control') query.append(SQL` control`)
-      if (sortColumn === 'conditioning') query.append(SQL` conditioning`)
-
-      sortDirection === 'ASC' ? query.append(SQL` ASC`) : query.append(` DESC`)
-    }
+    query.append(SQL` ORDER BY`)
+    if (sortColumn === 'player_name') query.append(SQL` player_name`)
+    if (sortColumn === 'cardID') query.append(SQL` cardID`)
+    if (sortColumn === 'playerID') query.append(SQL` playerID`)
+    if (sortColumn === 'teamID') query.append(SQL` teamID`)
+    if (sortColumn === 'author_userID') query.append(SQL` author_userID`)
+    if (sortColumn === 'pullable') query.append(SQL` pullable`)
+    if (sortColumn === 'approved') query.append(SQL` approved`)
+    if (sortColumn === 'author_paid') query.append(SQL` author_paid`)
+    if (sortColumn === 'season') query.append(SQL` season`)
+    if (sortColumn === 'overall') query.append(SQL` overall`)
+    if (sortColumn === 'skating') query.append(SQL` skating`)
+    if (sortColumn === 'shooting') query.append(SQL` shooting`)
+    if (sortColumn === 'hands') query.append(SQL` hands`)
+    if (sortColumn === 'checking') query.append(SQL` checking`)
+    if (sortColumn === 'defense') query.append(SQL` defense`)
+    if (sortColumn === 'high_shots') query.append(SQL` high_shots`)
+    if (sortColumn === 'low_shots') query.append(SQL` low_shots`)
+    if (sortColumn === 'quickness') query.append(SQL` quickness`)
+    if (sortColumn === 'control') query.append(SQL` control`)
+    if (sortColumn === 'conditioning') query.append(SQL` conditioning`)
+    sortDirection === 'ASC' ? query.append(SQL` ASC`) : query.append(` DESC`)
 
     if (limit) {
       query.append(SQL` LIMIT ${parseInt(limit)}`)
