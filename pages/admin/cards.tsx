@@ -44,7 +44,7 @@ type ColumnName = keyof Readonly<Card>
 const ROWS_PER_PAGE: number = 10 as const
 
 const LOADING_TABLE_DATA: { rows: Card[] } = {
-  rows: Array.from({ length: 10 }, (_, index) => ({
+  rows: Array.from({ length: ROWS_PER_PAGE }, (_, index) => ({
     cardID: index,
     teamID: 0,
     playerID: 0,

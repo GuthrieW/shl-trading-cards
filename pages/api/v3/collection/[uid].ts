@@ -14,6 +14,7 @@ export type OwnedCard = {
   player_name: string
   position: 'F' | 'D' | 'G'
   season: number
+  card_rarity: string
   image_url: string
   overall: number
   skating: number
@@ -49,17 +50,9 @@ export default async function collectionEndpoint(
     const sortColumn = (req.query.sortColumn ??
       'overall') as keyof Readonly<Card>
     const sortDirection = (req.query.sortDirection ?? 'DESC') as SortDirection
-
-    console.log('args', {
-      uid,
-      playerName,
-      teams,
-      rarities,
-      limit,
-      offset,
-      sortColumn,
-      sortDirection,
-    })
+    const showNotOwnedCards = (req.query.showNotOwnedCards ?? 'false') as
+      | 'true'
+      | 'false'
 
     const countQuery: SQLStatement = SQL`
       SELECT count(*) as total
@@ -68,16 +61,17 @@ export default async function collectionEndpoint(
         ON card.cardID=ownedCard.cardID
       LEFT JOIN team_data team
         ON card.teamID=team.teamID
-      WHERE ownedCard.userID=${parseInt(uid)}
     `
 
     const query: SQLStatement = SQL`
       SELECT ownedCard.quantity,
         ownedCard.cardID,
         team.Name,
+        team.Nickname,
         card.teamID,
         card.player_name,
         card.position,
+        card.card_rarity,
         card.season,
         card.image_url,
         card.overall,
@@ -96,12 +90,27 @@ export default async function collectionEndpoint(
         ON card.cardID=ownedCard.cardID
       LEFT JOIN team_data team
         ON card.teamID=team.teamID
-      WHERE ownedCard.userID=${parseInt(uid)}
     `
 
+    if (
+      showNotOwnedCards === 'false' ||
+      playerName.length !== 0 ||
+      teams.length !== 0 ||
+      rarities.length !== 0
+    ) {
+      countQuery.append(SQL` WHERE `)
+      query.append(SQL` WHERE`)
+    }
+
+    // TODO: implement showing unowned cards
+    // if (showNotOwnedCards === 'false') {
+    countQuery.append(SQL` ownedCard.userID=${parseInt(uid)}`)
+    query.append(SQL` ownedCard.userID=${parseInt(uid)}`)
+    // }
+
     if (playerName.length !== 0) {
-      countQuery.append(SQL` AND player_name LIKE "%${playerName}%"`)
-      query.append(SQL` AND player_name LIKE "%${playerName}%"`)
+      countQuery.append(SQL` AND card.player_name LIKE ${`%${playerName}%`}`)
+      query.append(SQL` AND card.player_name LIKE ${`%${playerName}%`}`)
     }
 
     if (teams.length !== 0) {
@@ -119,7 +128,7 @@ export default async function collectionEndpoint(
           ? query.append(SQL`team.teamID=${parseInt(team)}`)
           : query.append(SQL` OR team.teamID=${parseInt(team)}`)
       )
-      query.append(')')
+      query.append(SQL`)`)
     }
 
     if (rarities.length !== 0) {
@@ -137,7 +146,7 @@ export default async function collectionEndpoint(
           ? query.append(SQL`card.card_rarity=${rarity}`)
           : query.append(SQL` OR card.card_rarity=${rarity}`)
       )
-      query.append(')')
+      query.append(SQL`)`)
     }
 
     query.append(SQL` ORDER BY`)
@@ -150,7 +159,7 @@ export default async function collectionEndpoint(
 
     if (sortColumn === 'player_name') {
       query.append(SQL` card.player_name`)
-      sortDirection === 'ASC'
+      sortDirection === 'DESC'
         ? query.append(SQL` ASC`)
         : query.append(SQL` DESC`)
       query.append(SQL`, card.overall DESC`)
@@ -158,7 +167,7 @@ export default async function collectionEndpoint(
 
     if (sortColumn === 'teamID') {
       query.append(SQL` team.Name`)
-      sortDirection === 'ASC'
+      sortDirection === 'DESC'
         ? query.append(SQL` ASC`)
         : query.append(SQL` DESC`)
       query.append(SQL`, card.overall DESC`)
@@ -184,7 +193,6 @@ export default async function collectionEndpoint(
 
     const queryResult = await cardsQuery<OwnedCard>(query)
 
-    console.log('query', query)
     if ('error' in queryResult) {
       console.error(queryResult.error)
       res

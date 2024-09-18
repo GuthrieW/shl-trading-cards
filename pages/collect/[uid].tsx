@@ -1,3 +1,4 @@
+import { CheckIcon } from '@chakra-ui/icons'
 import {
   Badge,
   FormControl,
@@ -11,6 +12,7 @@ import {
   MenuOptionGroup,
   Select,
   SimpleGrid,
+  Switch,
 } from '@chakra-ui/react'
 import { PageWrapper } from '@components/common/PageWrapper'
 import TablePagination from '@components/table/TablePagination'
@@ -35,12 +37,35 @@ const SORT_OPTIONS: SortOption[] = [
   { value: 'teamID', label: 'Team Name' },
 ] as const
 
-const ROWS_PER_PAGE: number = 15 as const
+const ROWS_PER_PAGE: number = 12 as const
 
-const LOADING_GRID_DATA: { rows: {}[] } = { rows: [] }
+const LOADING_GRID_DATA: { rows: OwnedCard[] } = {
+  rows: Array.from({ length: ROWS_PER_PAGE }, (_, index) => ({
+    quantity: 1,
+    cardID: index,
+    Name: 'name',
+    player_name: 'player_name',
+    position: 'F',
+    season: 1,
+    card_rarity: 'Bronze',
+    image_url: 'image_url',
+    overall: 1,
+    skating: 1,
+    shooting: 1,
+    hands: 1,
+    checking: 1,
+    defense: 1,
+    high_shots: 1,
+    low_shots: 1,
+    quickness: 1,
+    control: 1,
+    conditioning: 1,
+  })),
+} as const
 
 export default () => {
   const router = useRouter()
+  const [showNotOwnedCards, setShowNotOwnedCards] = useState<boolean>(false)
   const [playerName, setPlayerName] = useState<string>('')
   const [teams, setTeams] = useState<string[]>([])
   const [rarities, setRarities] = useState<string[]>([])
@@ -51,7 +76,6 @@ export default () => {
 
   const [loggedInUid] = useCookie(config.userIDCookieName)
   const uid = router.query.uid as string
-  console.log('uid', uid)
 
   const { payload, isLoading, refetch } = query<ListResponse<OwnedCard>>({
     queryKey: [
@@ -73,9 +97,10 @@ export default () => {
           teams: JSON.stringify(teams),
           rarities: JSON.stringify(rarities),
           limit: ROWS_PER_PAGE,
-          offset: (tablePage - 1) * ROWS_PER_PAGE,
+          offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
           sortColumn,
           sortDirection,
+          showNotOwnedCards,
         },
       }),
   })
@@ -112,58 +137,102 @@ export default () => {
         <p>{uid}'s Collection</p>
       )}
       <div className="flex flex-row justify-between">
-        <div className="flex flex-row justify-start items-end w-1/2">
+        <div className="flex flex-row justify-start items-end">
           <FormControl className="mx-2 w-auto">
             <FormLabel>Player Name</FormLabel>
-            <Input onChange={(event) => setPlayerName(event.target.value)} />
+            <Input
+              className="min-w-80"
+              onChange={(event) => setPlayerName(event.target.value)}
+            />
           </FormControl>
-          <FormControl className="mx-2 w-auto">
+          <FormControl className="mx-2 w-auto cursor-pointer">
             <Menu closeOnSelect={false}>
-              <MenuButton className="border border-1 rounded p-1.5">
+              <MenuButton className="border border-1 rounded p-1.5 cursor-crosshair">
                 Teams&nbsp;{`(${teams.length})`}
               </MenuButton>
               <MenuList>
                 <MenuOptionGroup type="checkbox">
-                  {Object.entries(shlTeamsMap).map(([key, value]) => (
-                    <MenuItemOption
-                      isChecked={teams.includes(String(value.teamID))}
-                      key={value.teamID}
-                      value={String(value.teamID)}
-                      onClick={() => toggleTeam(String(value.teamID))}
-                    >
-                      {value.label}
-                    </MenuItemOption>
-                  ))}
+                  <MenuItemOption
+                    icon={null}
+                    isChecked={false}
+                    aria-checked={false}
+                    closeOnSelect
+                    onClick={() => setTeams([])}
+                  >
+                    Deselect All
+                  </MenuItemOption>
+                  {Object.entries(shlTeamsMap).map(([key, value]) => {
+                    const isChecked: boolean = teams.includes(
+                      String(value.teamID)
+                    )
+                    return (
+                      <MenuItemOption
+                        icon={null}
+                        isChecked={isChecked}
+                        aria-checked={isChecked}
+                        key={value.teamID}
+                        value={String(value.teamID)}
+                        onClick={() => toggleTeam(String(value.teamID))}
+                      >
+                        {value.label}
+                        {isChecked && <CheckIcon className="mx-2" />}
+                      </MenuItemOption>
+                    )
+                  })}
                 </MenuOptionGroup>
               </MenuList>
             </Menu>
           </FormControl>
-          <FormControl className="mx-2 w-auto">
+          <FormControl className="border border-1 rounded mx-2 w-auto flex flex-row items-center">
             <Menu closeOnSelect={false}>
-              <MenuButton className="border border-1 rounded p-1.5">
+              <MenuButton className="p-1.5">
                 Rarities&nbsp;{`(${rarities.length})`}
               </MenuButton>
               <MenuList>
                 <MenuOptionGroup type="checkbox">
-                  {Object.entries(rarityMap).map(([key, value]) => (
-                    <MenuItemOption
-                      isChecked={rarities.includes(value.value)}
-                      key={value.value}
-                      value={value.value}
-                      onClick={() => toggleRarity(value.value)}
-                    >
-                      {value.label}
-                    </MenuItemOption>
-                  ))}
+                  <MenuItemOption
+                    icon={null}
+                    isChecked={false}
+                    aria-checked={false}
+                    closeOnSelect
+                    onClick={() => setRarities([])}
+                  >
+                    Deselect All
+                  </MenuItemOption>
+                  {Object.entries(rarityMap).map(([key, value]) => {
+                    const isChecked: boolean = rarities.includes(value.value)
+                    return (
+                      <MenuItemOption
+                        icon={null}
+                        isChecked={isChecked}
+                        aria-checked={isChecked}
+                        key={value.value}
+                        value={value.value}
+                        onClick={() => toggleRarity(value.value)}
+                      >
+                        {value.label}
+                        {isChecked && <CheckIcon className="mx-2" />}
+                      </MenuItemOption>
+                    )
+                  })}
                 </MenuOptionGroup>
               </MenuList>
             </Menu>
           </FormControl>
+          <FormControl className="m-2 flex flex-row justify-start items-center">
+            <FormLabel className="flex items-center">
+              Show Unowned Cards
+            </FormLabel>
+            <Switch
+              disabled={true}
+              className="flex items-center"
+              onChange={() => setShowNotOwnedCards(!showNotOwnedCards)}
+            />
+          </FormControl>
         </div>
-
         <div>
           <FormControl className="mx-2">
-            <FormLabel>Sort:</FormLabel>
+            <FormLabel>Sort</FormLabel>
             <Select
               className="cursor-pointer"
               onChange={(event) => {
@@ -179,7 +248,7 @@ export default () => {
                   <option value={`${option.value}:DESC`}>
                     {option.label} {'(Descending)'}
                   </option>
-                  <option value={`${option.value}:ASC}`}>
+                  <option value={`${option.value}:ASC`}>
                     {option.label} {'(Ascending)'}
                   </option>
                 </Fragment>
@@ -189,18 +258,26 @@ export default () => {
         </div>
       </div>
 
-      <SimpleGrid columns={{ sm: 2, md: 3, lg: 5 }}>
-        {payload?.rows.map((card, index) => (
+      <SimpleGrid columns={{ sm: 2, md: 3, lg: 6 }}>
+        {(isLoading ? LOADING_GRID_DATA : payload)?.rows.map((card, index) => (
           <div
             key={`${card.cardID}-${index}`}
             className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
           >
             <Image
               src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+              fallback={
+                <div className="relative z-10">
+                  <Image src="/images/cardback.png" />
+                  <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+                </div>
+              }
             />
-            <Badge className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 sm:translate-x-1/2 -translate-y-1/2 bg-neutral-800 rounded-full">
-              {card.quantity}
-            </Badge>
+            {!isLoading && (
+              <Badge className="absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-1/2 bg-neutral-800 rounded-full">
+                {`${card.card_rarity} - ${card.quantity}`}
+              </Badge>
+            )}
           </div>
         ))}
       </SimpleGrid>

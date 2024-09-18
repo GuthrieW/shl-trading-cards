@@ -24,9 +24,10 @@ export default ({
   }, [currentPage])
 
   useEffect(() => {
-    if (totalRows && Math.ceil(totalRows / rowsPerPage) !== totalPages) {
-      setTotalPages(Math.ceil(totalRows / rowsPerPage))
-      setCurrentPage(1)
+    const newTotalPages = Math.ceil(totalRows / rowsPerPage)
+    if (typeof totalRows !== 'undefined' && newTotalPages !== totalPages) {
+      setTotalPages(newTotalPages)
+      setCurrentPage(newTotalPages === 0 ? 0 : 1)
     }
   }, [totalRows, rowsPerPage])
 
