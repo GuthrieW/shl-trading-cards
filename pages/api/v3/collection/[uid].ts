@@ -11,7 +11,9 @@ import methodNotAllowed from '../lib/methodNotAllowed'
 export type OwnedCard = {
   quantity: number
   cardID: number
-  Name: string
+  teamID: number
+  teamName: string
+  teamNickName: string
   player_name: string
   position: 'F' | 'D' | 'G'
   season: number
@@ -28,6 +30,13 @@ export type OwnedCard = {
   quickness: number
   control: number
   conditioning: number
+}
+
+export type OwnedCardSortValue = keyof OwnedCard
+export type OwnedCardSortOption = {
+  value: keyof OwnedCard
+  label: string
+  sortLabel: (direction: SortDirection) => string
 }
 
 const allowedMethods: string[] = [GET] as const
@@ -55,6 +64,14 @@ export default async function collectionEndpoint(
       | 'true'
       | 'false'
 
+    if (!uid) {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        status: 'error',
+        message: 'Please provide a uid in your request',
+      })
+      return
+    }
+
     const countQuery: SQLStatement = SQL`
       SELECT count(*) as total
       FROM cards card
@@ -67,8 +84,8 @@ export default async function collectionEndpoint(
     const query: SQLStatement = SQL`
       SELECT ownedCard.quantity,
         ownedCard.cardID,
-        team.Name,
-        team.Nickname,
+        team.Name as teamName,
+        team.Nickname as teamNickName,
         card.teamID,
         card.player_name,
         card.position,

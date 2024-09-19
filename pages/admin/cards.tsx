@@ -161,10 +161,6 @@ export default () => {
     }
   }
 
-  const handlePageChange = (newPage) => {
-    setTablePage(newPage)
-  }
-
   return (
     <>
       <PageWrapper
@@ -564,7 +560,7 @@ export default () => {
           <TablePagination
             totalRows={payload?.total}
             rowsPerPage={ROWS_PER_PAGE}
-            onPageChange={handlePageChange}
+            onPageChange={(newPage) => setTablePage(newPage)}
           />
         </div>
       </PageWrapper>

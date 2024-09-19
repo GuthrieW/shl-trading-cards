@@ -1,6 +1,5 @@
 import { CheckIcon } from '@chakra-ui/icons'
 import {
-  Avatar,
   Badge,
   FormControl,
   FormLabel,
@@ -22,20 +21,37 @@ import rarityMap from '@constants/rarity-map'
 import { shlTeamsMap } from '@constants/teams-map'
 import { query } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
-import { OwnedCard } from '@pages/api/v3/collection/[uid]'
+import {
+  OwnedCard,
+  OwnedCardSortOption,
+  OwnedCardSortValue,
+} from '@pages/api/v3/collection/[uid]'
 import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
+import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
 import { Fragment, useEffect, useState } from 'react'
 
-type SortValue = keyof Card
-type SortOption = { value: SortValue; label: string }
-
-const SORT_OPTIONS: SortOption[] = [
-  { value: 'overall', label: 'Overall' },
-  { value: 'player_name', label: 'Player Name' },
-  { value: 'teamID', label: 'Team Name' },
+const SORT_OPTIONS: OwnedCardSortOption[] = [
+  {
+    value: 'overall',
+    label: 'Overall',
+    sortLabel: (direction: SortDirection) =>
+      direction === 'DESC' ? '(Descending)' : '(Ascending)',
+  },
+  {
+    value: 'player_name',
+    label: 'Player Name',
+    sortLabel: (direction: SortDirection) =>
+      direction === 'DESC' ? '(A-Z)' : '(Z-A)',
+  },
+  {
+    value: 'teamID',
+    label: 'Team Name',
+    sortLabel: (direction: SortDirection) =>
+      direction === 'DESC' ? '(A-Z)' : '(Z-A)',
+  },
 ] as const
 
 const ROWS_PER_PAGE: number = 12 as const
@@ -44,7 +60,9 @@ const LOADING_GRID_DATA: { rows: OwnedCard[] } = {
   rows: Array.from({ length: ROWS_PER_PAGE }, (_, index) => ({
     quantity: 1,
     cardID: index,
-    Name: 'name',
+    teamID: 1,
+    teamName: 'name',
+    teamNickName: 'nickName',
     player_name: 'player_name',
     position: 'F',
     season: 1,
@@ -72,7 +90,9 @@ export default () => {
   const [teams, setTeams] = useState<string[]>([])
   const [rarities, setRarities] = useState<string[]>([])
 
-  const [sortColumn, setSortColumn] = useState<SortValue>(SORT_OPTIONS[0].value)
+  const [sortColumn, setSortColumn] = useState<OwnedCardSortValue>(
+    SORT_OPTIONS[0].value
+  )
   const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
   const [tablePage, setTablePage] = useState<number>(1)
 
@@ -141,16 +161,7 @@ export default () => {
 
   return (
     <PageWrapper>
-      <span>
-        {user?.username}
-        {user?.username.endsWith('s') ? "'" : "'s"}&nbsp;Collection
-      </span>
-      {/* <div className="flex h-full items-center space-x-1">
-        <span className="hidden sm:inline">
-          Collection Owner: {user?.username}
-        </span>
-        <Avatar size="sm" name={user?.username} src={user?.avatar} />
-      </div> */}
+      <span>{pluralizeName(user?.username)}&nbsp;Collection</span>
       <div className="flex flex-row justify-between">
         <div className="flex flex-row justify-start items-end">
           <FormControl className="mx-2 w-auto">
@@ -253,7 +264,7 @@ export default () => {
               onChange={(event) => {
                 const [sortColumn, sortDirection] = event.target.value.split(
                   ':'
-                ) as [SortValue, SortDirection]
+                ) as [OwnedCardSortValue, SortDirection]
                 setSortColumn(sortColumn)
                 setSortDirection(sortDirection)
               }}
@@ -261,10 +272,10 @@ export default () => {
               {SORT_OPTIONS.map((option, index) => (
                 <Fragment key={`${option.value}-${index}`}>
                   <option value={`${option.value}:DESC`}>
-                    {option.label} {'(Descending)'}
+                    {option.label}&nbsp;{option.sortLabel('DESC')}
                   </option>
                   <option value={`${option.value}:ASC`}>
-                    {option.label} {'(Ascending)'}
+                    {option.label}&nbsp;{option.sortLabel('ASC')}
                   </option>
                 </Fragment>
               ))}
