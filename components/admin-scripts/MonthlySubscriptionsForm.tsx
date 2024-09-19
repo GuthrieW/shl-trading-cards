@@ -1,6 +1,7 @@
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import {
   Button,
+  Input,
   Menu,
   MenuButton,
   MenuItem,
@@ -41,6 +42,7 @@ export default function MonthlySubscriptionsForm({
 }: {
   onError: (errorMessage) => void
 }) {
+  const [username, setUsername] = useState<string>('')
   const [sortColumn, setSortColumn] = useState<ColumnName>('username')
   const [sortDirection, setSortDirection] = useState<SortDirection>('ASC')
   const [tablePage, setTablePage] = useState<number>(1)
@@ -57,13 +59,20 @@ export default function MonthlySubscriptionsForm({
     rows: SettingsData[]
     total: number
   }>({
-    queryKey: ['subscriptions', String(tablePage), sortColumn, sortDirection],
+    queryKey: [
+      'subscriptions',
+      username,
+      String(tablePage),
+      sortColumn,
+      sortDirection,
+    ],
     queryFn: () =>
       axios({
         method: GET,
         url: '/api/v3/settings',
         params: {
-          offset: (tablePage - 1) * ROWS_PER_PAGE,
+          username,
+          offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
           limit: ROWS_PER_PAGE,
           sortColumn,
           sortDirection,
@@ -111,15 +120,25 @@ export default function MonthlySubscriptionsForm({
 
   return (
     <div>
-      <div className="flex justify-end items-center">
+      <div className="flex justify-between items-center mt-4 mx-1">
+        <div className=" flex flex-row justify-start items-end">
+          <Input
+            placeholder="Username"
+            type="text"
+            onChange={(event) => setUsername(event.target.value)}
+          />
+          <Button className="mx-2" onClick={refetch}>
+            Submit
+          </Button>
+        </div>
         <Button
           disabled={!isValid || isSubmitting || isLoading}
           type="submit"
-          className="mt-4 mx-1"
+          className="flex items-center"
           isLoading={isSubmitting}
           loadingText="Submitting..."
         >
-          Distribute Subscription Packs
+          Distribute Packs
         </Button>
       </div>
 

@@ -125,7 +125,7 @@ export default () => {
         url: '/api/v3/cards',
         params: {
           limit: ROWS_PER_PAGE,
-          offset: (tablePage - 1) * ROWS_PER_PAGE,
+          offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
           viewSkaters,
           viewNeedsAuthor,
           viewNeedsImage,
@@ -172,54 +172,52 @@ export default () => {
         className="h-full flex flex-col justify-center items-center w-11/12 md:w-3/4"
       >
         <div className="rounded border border-1 border-inherit mt-4">
+          <div className="m-2">
+            <Menu closeOnSelect={false}>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                <span className="pr-2">Statuses</span>
+              </MenuButton>
+              <MenuList>
+                <MenuOptionGroup type="checkbox">
+                  <MenuItemOption
+                    value="NeedsAuthor"
+                    onClick={() => setViewNeedsAuthor(!viewNeedsAuthor)}
+                  >
+                    NeedsAuthor
+                  </MenuItemOption>
+                  <MenuItemOption
+                    value="NeedsImage"
+                    onClick={() => setviewNeedsImage(!viewNeedsImage)}
+                  >
+                    NeedsImage
+                  </MenuItemOption>
+                  <MenuItemOption
+                    value="NeedsApproval"
+                    onClick={() => setviewNeedsApproval(!viewNeedsApproval)}
+                  >
+                    NeedsApproval
+                  </MenuItemOption>
+                  <MenuItemOption
+                    value="NeedsAuthorPaid"
+                    onClick={() => setviewNeedsAuthorPaid(!viewNeedsAuthorPaid)}
+                  >
+                    NeedsAuthorPaid
+                  </MenuItemOption>
+                  <MenuItemOption
+                    value="Done"
+                    onClick={() => setViewDone(!viewDone)}
+                  >
+                    Done
+                  </MenuItemOption>
+                </MenuOptionGroup>
+              </MenuList>
+            </Menu>
+            <FormControl className="flex items-center m-2">
+              <FormLabel className="mb-0">Toggle Goaltenders:</FormLabel>
+              <Switch onChange={() => setViewSkaters(!viewSkaters)} />
+            </FormControl>
+          </div>
           <TableContainer>
-            <div className="m-2">
-              <Menu closeOnSelect={false}>
-                <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                  <span className="pr-2">Statuses</span>
-                </MenuButton>
-                <MenuList>
-                  <MenuOptionGroup type="checkbox">
-                    <MenuItemOption
-                      value="NeedsAuthor"
-                      onClick={() => setViewNeedsAuthor(!viewNeedsAuthor)}
-                    >
-                      NeedsAuthor
-                    </MenuItemOption>
-                    <MenuItemOption
-                      value="NeedsImage"
-                      onClick={() => setviewNeedsImage(!viewNeedsImage)}
-                    >
-                      NeedsImage
-                    </MenuItemOption>
-                    <MenuItemOption
-                      value="NeedsApproval"
-                      onClick={() => setviewNeedsApproval(!viewNeedsApproval)}
-                    >
-                      NeedsApproval
-                    </MenuItemOption>
-                    <MenuItemOption
-                      value="NeedsAuthorPaid"
-                      onClick={() =>
-                        setviewNeedsAuthorPaid(!viewNeedsAuthorPaid)
-                      }
-                    >
-                      NeedsAuthorPaid
-                    </MenuItemOption>
-                    <MenuItemOption
-                      value="Done"
-                      onClick={() => setViewDone(!viewDone)}
-                    >
-                      Done
-                    </MenuItemOption>
-                  </MenuOptionGroup>
-                </MenuList>
-              </Menu>
-              <FormControl className="flex items-center m-2">
-                <FormLabel className="mb-0">Toggle Goaltenders:</FormLabel>
-                <Switch onChange={() => setViewSkaters(!viewSkaters)} />
-              </FormControl>
-            </div>
             <Table className="mt-4" size="md">
               <Thead>
                 <Tr>
@@ -425,7 +423,12 @@ export default () => {
                 {(isLoading ? LOADING_TABLE_DATA : payload)?.rows.map(
                   (card: Card) => (
                     <Tr key={card.cardID}>
-                      <Td isLoading={isLoading} position="sticky" left="0">
+                      <Td
+                        isLoading={isLoading}
+                        position="sticky"
+                        left="0"
+                        className="bg-black"
+                      >
                         <Menu>
                           <MenuButton
                             as={Button}

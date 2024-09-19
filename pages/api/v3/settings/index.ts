@@ -26,16 +26,18 @@ export default async function settingsEndpoint(
   await middleware(req, res, cors)
 
   if (req.method === GET) {
+    const username: string = (req.query.username ?? '') as string
     const limit: string = (req.query.limit ?? 10) as string
     const offset: string = (req.query.offset ?? 0) as string
     const sortColumn: string = (req.query.sortColumn ?? 'username') as string
     const sortDirection: string = (req.query.sortDirection ?? 'ASC') as string
 
-    const count = await cardsQuery<ListTotal>(SQL`
+    const countQuery: SQLStatement = SQL`
       SELECT count(*) as total
-      FROM settings
-      WHERE subscription > 0;
-    `)
+      FROM settings s
+      LEFT JOIN admin_mybb.mybb_users u ON s.userID = u.uid
+      WHERE subscription > 0
+    `
 
     const query: SQLStatement = SQL`
       SELECT u.uid, u.username, s.subscription 
@@ -43,6 +45,11 @@ export default async function settingsEndpoint(
       LEFT JOIN admin_mybb.mybb_users u ON s.userID = u.uid
       WHERE s.subscription > 0
     `
+
+    if (username) {
+      countQuery.append(SQL` AND u.username LIKE ${`%${username}%`}`)
+      query.append(SQL` AND u.username LIKE ${`%${username}%`}`)
+    }
 
     if (sortColumn) {
       query.append(SQL` ORDER BY`)
@@ -65,9 +72,18 @@ export default async function settingsEndpoint(
       query.append(SQL` OFFSET ${parseInt(offset)}`)
     }
 
+    const countResult = await cardsQuery<ListTotal>(countQuery)
     const queryResult = await cardsQuery<SettingsData>(query)
 
-    if ('error' in count || 'error' in queryResult) {
+    if ('error' in countResult) {
+      console.error(countResult)
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .end('Server connection failed')
+      return
+    }
+
+    if ('error' in queryResult) {
       console.error(queryResult)
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -77,7 +93,7 @@ export default async function settingsEndpoint(
 
     res.status(StatusCodes.OK).json({
       status: 'success',
-      payload: { rows: queryResult, total: count[0].total },
+      payload: { rows: queryResult, total: countResult[0].total },
     })
     return
   }
