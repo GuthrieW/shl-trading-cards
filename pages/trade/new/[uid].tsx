@@ -30,10 +30,10 @@ import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthentica
 import { query } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
 import {
-  OwnedCard,
-  OwnedCardSortOption,
-  OwnedCardSortValue,
-} from '@pages/api/v3/collection/[uid]'
+  TradeCard,
+  TradeCardSortOption,
+  TradeCardSortValue,
+} from '@pages/api/v3/trades/collection/[uid]'
 import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
@@ -43,14 +43,7 @@ import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
 import { Fragment, useContext, useEffect, useState } from 'react'
 
-type TradeCardData = {
-  cardID: string
-  image_url: string
-  quantity: number
-  card_rarity: string
-}
-
-const SORT_OPTIONS: OwnedCardSortOption[] = [
+const SORT_OPTIONS: TradeCardSortOption[] = [
   {
     value: 'overall',
     label: 'Overall',
@@ -73,13 +66,13 @@ const SORT_OPTIONS: OwnedCardSortOption[] = [
 
 const ROWS_PER_PAGE: number = 5 as const
 
-const LOADING_GRID_DATA: { rows: OwnedCard[] } = {
+const LOADING_GRID_DATA: { rows: TradeCard[] } = {
   rows: Array.from({ length: ROWS_PER_PAGE }, (_, index) => ({
-    quantity: 1,
     cardID: index,
-    teamID: 1,
+    ownedCardID: 1,
     teamName: 'name',
     teamNickName: 'nickName',
+    teamID: 1,
     player_name: 'player_name',
     position: 'F',
     season: 1,
@@ -110,18 +103,17 @@ export default () => {
   const [playerName, setPlayerName] = useState<string>('')
   const [teams, setTeams] = useState<string[]>([])
   const [rarities, setRarities] = useState<string[]>([])
-  const [sortColumn, setSortColumn] = useState<OwnedCardSortValue>(
+  const [sortColumn, setSortColumn] = useState<TradeCardSortValue>(
     SORT_OPTIONS[0].value
   )
   const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
   const [tablePage, setTablePage] = useState<number>(1)
-  const [editingTradeData, setEditingTradeData] = useState<boolean>(false)
   const [loggedInUserCardsToTrade, setloggedInUserCardsToTrade] = useState<
-    Record<string, TradeCardData>
-  >({})
+    TradeCard[]
+  >([])
   const [partnerUserCardsToTrade, setPartnerUserCardsToTrade] = useState<
-    Record<string, TradeCardData>
-  >({})
+    TradeCard[]
+  >([])
 
   const { isCheckingAuthentication } = useRedirectIfNotAuthenticated()
 
@@ -161,7 +153,7 @@ export default () => {
     payload: selectedUserCards,
     isLoading: selectedUserCardsIsLoading,
     refetch,
-  } = query<ListResponse<OwnedCard>>({
+  } = query<ListResponse<TradeCard>>({
     queryKey: [
       'collection',
       selectedUserId,
@@ -174,7 +166,7 @@ export default () => {
     ],
     queryFn: () =>
       axios({
-        url: `/api/v3/collection/${selectedUserId}`,
+        url: `/api/v3/trades/collection/${selectedUserId}`,
         method: GET,
         params: {
           playerName,
@@ -219,58 +211,30 @@ export default () => {
   }
 
   const addCardToTrade = (
-    tradeCardData: TradeCardData,
+    tradeCardData: TradeCard,
     isLoggedInUser: boolean
   ) => {
     const [cardsToTrade, setCardsToTrade] = isLoggedInUser
       ? [loggedInUserCardsToTrade, setloggedInUserCardsToTrade]
       : [partnerUserCardsToTrade, setPartnerUserCardsToTrade]
 
-    const card = cardsToTrade[tradeCardData.cardID]
-
-    if (card) {
-      if (card.quantity === tradeCardData.quantity) {
-        addToast({
-          title: 'Cannot Add Card',
-          description: 'All copies of card already in trade',
-          status: 'warning',
-        })
-        return
-      }
-      cardsToTrade[tradeCardData.cardID] = {
-        ...tradeCardData,
-        quantity: tradeCardData.quantity + 1,
-      }
-    } else {
-      cardsToTrade[tradeCardData.cardID] = {
-        ...tradeCardData,
-        quantity: 1,
-      }
-    }
-
-    setCardsToTrade(cardsToTrade)
+    setCardsToTrade([...cardsToTrade, tradeCardData])
   }
 
   const removeCardFromTrade = (
-    tradeCardData: TradeCardData,
+    tradeCardData: TradeCard,
     isLoggedInUser: boolean
   ) => {
+    console.log(tradeCardData, isLoggedInUser)
     const [cardsToTrade, setCardsToTrade] = isLoggedInUser
       ? [loggedInUserCardsToTrade, setloggedInUserCardsToTrade]
       : [partnerUserCardsToTrade, setPartnerUserCardsToTrade]
 
-    const card = cardsToTrade[tradeCardData.cardID]
-
-    if (card.quantity === 1) {
-      delete cardsToTrade[tradeCardData.cardID]
-    } else {
-      cardsToTrade[tradeCardData.cardID] = {
-        ...tradeCardData,
-        quantity: card.quantity - 1,
-      }
-    }
-
-    setCardsToTrade(cardsToTrade)
+    setCardsToTrade(
+      cardsToTrade.filter(
+        (card: TradeCard) => card.ownedCardID !== tradeCardData.ownedCardID
+      )
+    )
   }
 
   const selectedUser: UserData =
@@ -289,18 +253,7 @@ export default () => {
                 <Image
                   className="cursor-pointer"
                   onClick={() => {
-                    if (editingTradeData) return
-                    setEditingTradeData(true)
-                    removeCardFromTrade(
-                      {
-                        cardID: card.cardID,
-                        image_url: card.image_url,
-                        quantity: card.quantity,
-                        card_rarity: card.card_rarity,
-                      },
-                      true
-                    )
-                    setEditingTradeData(false)
+                    removeCardFromTrade(card, true)
                   }}
                   src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
                   fallback={
@@ -311,7 +264,7 @@ export default () => {
                   }
                 />
                 <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
-                  {`${card.card_rarity} - ${card.quantity}`}
+                  {card.card_rarity}
                 </Badge>
               </div>
             ))}
@@ -329,18 +282,7 @@ export default () => {
                 <Image
                   className="cursor-pointer"
                   onClick={() => {
-                    if (editingTradeData) return
-                    setEditingTradeData(true)
-                    removeCardFromTrade(
-                      {
-                        cardID: card.cardID,
-                        image_url: card.image_url,
-                        quantity: card.quantity,
-                        card_rarity: card.card_rarity,
-                      },
-                      false
-                    )
-                    setEditingTradeData(false)
+                    removeCardFromTrade(card, false)
                   }}
                   src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
                   fallback={
@@ -351,7 +293,7 @@ export default () => {
                   }
                 />
                 <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
-                  {`${card.card_rarity} - ${card.quantity}`}
+                  {card.card_rarity}
                 </Badge>
               </div>
             ))}
@@ -460,7 +402,7 @@ export default () => {
                     onChange={(event) => {
                       const [sortColumn, sortDirection] =
                         event.target.value.split(':') as [
-                          OwnedCardSortValue,
+                          TradeCardSortValue,
                           SortDirection,
                         ]
                       setSortColumn(sortColumn)
@@ -485,42 +427,48 @@ export default () => {
               {(selectedUserCardsIsLoading
                 ? LOADING_GRID_DATA
                 : selectedUserCards
-              )?.rows.map((card, index) => (
-                <div
-                  key={`${card.cardID}-${index}`}
-                  className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
-                >
-                  <Image
-                    className="cursor-pointer"
-                    onClick={() => {
-                      if (editingTradeData) return
-                      setEditingTradeData(true)
-                      addCardToTrade(
-                        {
-                          cardID: String(card.cardID),
-                          image_url: card.image_url,
-                          quantity: card.quantity,
-                          card_rarity: card.card_rarity,
-                        },
-                        selectedUserId === String(loggedInUser.uid)
-                      )
-                      setEditingTradeData(false)
-                    }}
-                    src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
-                    fallback={
-                      <div className="relative z-10">
-                        <Image src="/images/cardback.png" />
-                        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
-                      </div>
-                    }
-                  />
-                  {!selectedUserCardsIsLoading && (
-                    <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
-                      {`${card.card_rarity} - ${card.quantity}`}
-                    </Badge>
-                  )}
-                </div>
-              ))}
+              )?.rows.map((card, index) => {
+                const isLoggedInUser: boolean =
+                  selectedUserId === String(loggedInUser?.uid)
+                const selectedUserAssets: TradeCard[] = isLoggedInUser
+                  ? loggedInUserCardsToTrade
+                  : partnerUserCardsToTrade
+
+                const isInTrade: boolean = selectedUserAssets.some(
+                  (asset) => asset.ownedCardID === card.ownedCardID
+                )
+
+                return (
+                  <div
+                    key={`${card.cardID}-${index}`}
+                    className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
+                  >
+                    <Image
+                      className={`cursor-pointer ${
+                        isInTrade ? 'grayscale' : ''
+                      }`}
+                      onClick={() => {
+                        if (isInTrade) {
+                          return
+                        }
+                        addCardToTrade(card, isLoggedInUser)
+                      }}
+                      src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+                      fallback={
+                        <div className="relative z-10">
+                          <Image src="/images/cardback.png" />
+                          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+                        </div>
+                      }
+                    />
+                    {!selectedUserCardsIsLoading && (
+                      <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
+                        {card.card_rarity}
+                      </Badge>
+                    )}
+                  </div>
+                )
+              })}
             </SimpleGrid>
             <TablePagination
               totalRows={selectedUserCards?.total}

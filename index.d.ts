@@ -57,16 +57,6 @@ type CollectionCard = {
   teamID: number
 }
 
-type TradeCard = {
-  cardID: number
-  ownedCardID: number
-  image_url: string
-  card_rarity: string
-  player_name: string
-  overall: number
-  teamID: number
-}
-
 type SetCard = {
   cardID: number
   setID: number
