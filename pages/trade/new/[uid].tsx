@@ -18,7 +18,6 @@ import {
   MenuOptionGroup,
   Select,
   SimpleGrid,
-  Switch,
   useDisclosure,
 } from '@chakra-ui/react'
 import { PageWrapper } from '@components/common/PageWrapper'
@@ -43,6 +42,13 @@ import config from 'lib/config'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
 import { Fragment, useContext, useEffect, useState } from 'react'
+
+type TradeCardData = {
+  cardID: string
+  image_url: string
+  quantity: number
+  card_rarity: string
+}
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {
@@ -109,6 +115,13 @@ export default () => {
   )
   const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
   const [tablePage, setTablePage] = useState<number>(1)
+  const [editingTradeData, setEditingTradeData] = useState<boolean>(false)
+  const [loggedInUserCardsToTrade, setloggedInUserCardsToTrade] = useState<
+    Record<string, TradeCardData>
+  >({})
+  const [partnerUserCardsToTrade, setPartnerUserCardsToTrade] = useState<
+    Record<string, TradeCardData>
+  >({})
 
   const { isCheckingAuthentication } = useRedirectIfNotAuthenticated()
 
@@ -124,29 +137,26 @@ export default () => {
     return
   }
 
-  const { payload: tradePartnerUser, isLoading: tradePartnerIsLoading } =
-    query<UserData>({
-      queryKey: ['user', tradePartnerUid],
-      queryFn: () =>
-        axios({
-          method: GET,
-          url: `/api/v3/user/${tradePartnerUid}`,
-        }),
-    })
+  const { payload: tradePartnerUser } = query<UserData>({
+    queryKey: ['user', tradePartnerUid],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/user/${tradePartnerUid}`,
+      }),
+  })
 
-  const { payload: currentUser, isLoading: currentUserIsLoading } =
-    query<UserData>({
-      queryKey: ['baseUser', session?.token],
-      queryFn: () =>
-        axios({
-          method: GET,
-          url: '/api/v3/user',
-          headers: { Authorization: `Bearer ${session?.token}` },
-        }),
-      enabled: loggedIn,
-    })
+  const { payload: loggedInUser } = query<UserData>({
+    queryKey: ['baseUser', session?.token],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: '/api/v3/user',
+        headers: { Authorization: `Bearer ${session?.token}` },
+      }),
+    enabled: loggedIn,
+  })
 
-  console.log('selectedUserId', !!selectedUserId)
   const {
     payload: selectedUserCards,
     isLoading: selectedUserCardsIsLoading,
@@ -208,7 +218,63 @@ export default () => {
     onOpen()
   }
 
-  const selectedUser = selectedUserId === uid ? currentUser : tradePartnerUser
+  const addCardToTrade = (
+    tradeCardData: TradeCardData,
+    isLoggedInUser: boolean
+  ) => {
+    const [cardsToTrade, setCardsToTrade] = isLoggedInUser
+      ? [loggedInUserCardsToTrade, setloggedInUserCardsToTrade]
+      : [partnerUserCardsToTrade, setPartnerUserCardsToTrade]
+
+    const card = cardsToTrade[tradeCardData.cardID]
+
+    if (card) {
+      if (card.quantity === tradeCardData.quantity) {
+        addToast({
+          title: 'Cannot Add Card',
+          description: 'All copies of card already in trade',
+          status: 'warning',
+        })
+        return
+      }
+      cardsToTrade[tradeCardData.cardID] = {
+        ...tradeCardData,
+        quantity: tradeCardData.quantity + 1,
+      }
+    } else {
+      cardsToTrade[tradeCardData.cardID] = {
+        ...tradeCardData,
+        quantity: 1,
+      }
+    }
+
+    setCardsToTrade(cardsToTrade)
+  }
+
+  const removeCardFromTrade = (
+    tradeCardData: TradeCardData,
+    isLoggedInUser: boolean
+  ) => {
+    const [cardsToTrade, setCardsToTrade] = isLoggedInUser
+      ? [loggedInUserCardsToTrade, setloggedInUserCardsToTrade]
+      : [partnerUserCardsToTrade, setPartnerUserCardsToTrade]
+
+    const card = cardsToTrade[tradeCardData.cardID]
+
+    if (card.quantity === 1) {
+      delete cardsToTrade[tradeCardData.cardID]
+    } else {
+      cardsToTrade[tradeCardData.cardID] = {
+        ...tradeCardData,
+        quantity: card.quantity - 1,
+      }
+    }
+
+    setCardsToTrade(cardsToTrade)
+  }
+
+  const selectedUser: UserData =
+    selectedUserId === uid ? loggedInUser : tradePartnerUser
 
   return (
     <PageWrapper loading={isCheckingAuthentication}>
@@ -217,14 +283,79 @@ export default () => {
           <div className="flex justify-start">
             <Button onClick={() => openDrawer(uid)}>Open My Cards</Button>
           </div>
+          <SimpleGrid columns={3} className="m-2">
+            {Object.entries(loggedInUserCardsToTrade).map(([cardID, card]) => (
+              <div className="m-2">
+                <Image
+                  className="cursor-pointer"
+                  onClick={() => {
+                    if (editingTradeData) return
+                    setEditingTradeData(true)
+                    removeCardFromTrade(
+                      {
+                        cardID: card.cardID,
+                        image_url: card.image_url,
+                        quantity: card.quantity,
+                        card_rarity: card.card_rarity,
+                      },
+                      true
+                    )
+                    setEditingTradeData(false)
+                  }}
+                  src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+                  fallback={
+                    <div className="relative z-10">
+                      <Image src="/images/cardback.png" />
+                      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+                    </div>
+                  }
+                />
+                <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
+                  {`${card.card_rarity} - ${card.quantity}`}
+                </Badge>
+              </div>
+            ))}
+          </SimpleGrid>
         </div>
-
         <div className="w-1/2">
           <div className="flex justify-end">
             <Button onClick={() => openDrawer(tradePartnerUid)}>
               Open&nbsp;{pluralizeName(tradePartnerUser?.username)}&nbsp;Cards
             </Button>
           </div>
+          <SimpleGrid columns={3} className="m-2">
+            {Object.entries(partnerUserCardsToTrade).map(([key, card]) => (
+              <div className="m-2">
+                <Image
+                  className="cursor-pointer"
+                  onClick={() => {
+                    if (editingTradeData) return
+                    setEditingTradeData(true)
+                    removeCardFromTrade(
+                      {
+                        cardID: card.cardID,
+                        image_url: card.image_url,
+                        quantity: card.quantity,
+                        card_rarity: card.card_rarity,
+                      },
+                      false
+                    )
+                    setEditingTradeData(false)
+                  }}
+                  src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+                  fallback={
+                    <div className="relative z-10">
+                      <Image src="/images/cardback.png" />
+                      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+                    </div>
+                  }
+                />
+                <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
+                  {`${card.card_rarity} - ${card.quantity}`}
+                </Badge>
+              </div>
+            ))}
+          </SimpleGrid>
         </div>
       </div>
       <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
@@ -360,6 +491,21 @@ export default () => {
                   className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
                 >
                   <Image
+                    className="cursor-pointer"
+                    onClick={() => {
+                      if (editingTradeData) return
+                      setEditingTradeData(true)
+                      addCardToTrade(
+                        {
+                          cardID: String(card.cardID),
+                          image_url: card.image_url,
+                          quantity: card.quantity,
+                          card_rarity: card.card_rarity,
+                        },
+                        selectedUserId === String(loggedInUser.uid)
+                      )
+                      setEditingTradeData(false)
+                    }}
                     src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
                     fallback={
                       <div className="relative z-10">
