@@ -19,6 +19,7 @@ export default async function deleteDuplicatesEndpoint(
 
   if (req.method === DELETE) {
     res.status(StatusCodes.NOT_IMPLEMENTED).end('Endpoint not implemented')
+    return
   }
 
   methodNotAllowed(req, res, allowedMethods)

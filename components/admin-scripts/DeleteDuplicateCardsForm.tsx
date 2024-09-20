@@ -1,5 +1,5 @@
 import { Button } from '@chakra-ui/react'
-import { POST } from '@constants/http-methods'
+import { DELETE } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
 import axios from 'axios'
 import { useFormik } from 'formik'
@@ -11,10 +11,10 @@ export default function DeleteDuplicateCardsForm({
 }) {
   const { mutate: deleteDuplicateCards } = mutation<void, void>({
     mutationFn: () =>
-      axios({ method: POST, url: '/api/v3/cards/delete-duplicates' }),
+      axios({ method: DELETE, url: '/api/v3/cards/delete-duplicates' }),
   })
 
-  const { isSubmitting, isValid } = useFormik<{}>({
+  const { isSubmitting, isValid, handleSubmit } = useFormik<{}>({
     validateOnBlur: true,
     validateOnChange: true,
     initialValues: {},
@@ -39,15 +39,17 @@ export default function DeleteDuplicateCardsForm({
   return (
     <div>
       <div className="flex justify-end items-center">
-        <Button
-          disabled={!isValid || isSubmitting}
-          type="submit"
-          className="mt-4 mx-1"
-          isLoading={isSubmitting}
-          loadingText="Submitting..."
-        >
-          Delete Duplicate Cards
-        </Button>
+        <form onSubmit={handleSubmit}>
+          <Button
+            disabled={!isValid || isSubmitting}
+            type="submit"
+            className="mt-4 mx-1"
+            isLoading={isSubmitting}
+            loadingText="Submitting..."
+          >
+            Delete Duplicate Cards
+          </Button>
+        </form>
       </div>
     </div>
   )

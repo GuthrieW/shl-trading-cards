@@ -76,7 +76,7 @@ export default async function collectionEndpoint(
       showNotOwnedCards === 'true'
         ? SQL`
         WITH usercollection AS (
-          select * from admin_cards.ownedCards where userid=${parseInt(uid)}
+          select * from ownedCards where userid=${parseInt(uid)}
         )
 
         SELECT count(*) as total
@@ -97,7 +97,7 @@ export default async function collectionEndpoint(
       showNotOwnedCards === 'true'
         ? SQL`
         WITH usercollection AS (
-          select * from admin_cards.ownedCards where userid=${parseInt(uid)}
+          select * from ownedCards where userid=${parseInt(uid)}
         )
 
         SELECT COALESCE(ownedCard.quantity, 0) as quantity,

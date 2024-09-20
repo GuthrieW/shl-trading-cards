@@ -214,10 +214,13 @@ export default () => {
             </FormControl>
           </div>
           <TableContainer>
-            <Table className="mt-4" size="md">
+            <Table variant="striped" className="mt-4" size="md">
               <Thead>
                 <Tr>
-                  <Th position="sticky" left="0"></Th>
+                  <Th
+                    // position="sticky"
+                    left="0"
+                  ></Th>
                   <Th>Status</Th>
                   <Th
                     className="cursor-pointer"
@@ -421,9 +424,8 @@ export default () => {
                     <Tr key={card.cardID}>
                       <Td
                         isLoading={isLoading}
-                        position="sticky"
+                        // position="sticky"
                         left="0"
-                        className="bg-black"
                       >
                         <Menu>
                           <MenuButton

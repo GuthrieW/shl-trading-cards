@@ -54,13 +54,13 @@ export default ({
     <Box className="flex flex-row justify-center itmes-center mt-6 mb-4">
       <IconButton
         onClick={goToFirstPage}
-        className="mx-2"
+        className="mx-2 cursor-pointer"
         aria-label="go-to-first-page"
         icon={<ChevronDoubleLeftIcon />}
       />
       <IconButton
         onClick={goToPreviousPage}
-        className="mx-2"
+        className="mx-2 cursor-pointer"
         aria-label="go-to-previous-page"
         icon={<ChevronLeftIcon />}
       />
@@ -69,13 +69,13 @@ export default ({
       </span>
       <IconButton
         onClick={goToNextPage}
-        className="mx-2"
+        className="mx-2 cursor-pointer"
         aria-label="go-to-next-page"
         icon={<ChevronRightIcon />}
       />
       <IconButton
         onClick={goToLastPage}
-        className="mx-2"
+        className="mx-2 cursor-pointer"
         aria-label="go-to-final-page"
         icon={<ChevronDoubleRightIcon />}
       />

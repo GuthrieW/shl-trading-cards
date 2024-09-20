@@ -28,7 +28,7 @@ export default function AddCardsToUsersForm({
         axios({
           method: POST,
           url: '/api/v3/collection/add-cards',
-          data: newCardsJson,
+          data: { newCardsJson },
         }),
     })
 

@@ -48,7 +48,7 @@ export default function DeleteMonthlySubscriptionDialog({
         setSubmitting(true)
         onFormError(null)
         await deleteMonthlySubscription(
-          { uid: setting.uid },
+          { uid: setting?.uid },
           {
             onSuccess: () => {
               queryClient.invalidateQueries(['monthly-subscriptions'])
@@ -78,7 +78,7 @@ export default function DeleteMonthlySubscriptionDialog({
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader>
-            Delete Subscription for {setting.username}
+            Delete Subscription for {setting?.username}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody>

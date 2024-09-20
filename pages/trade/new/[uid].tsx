@@ -258,7 +258,7 @@ export default () => {
                   src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
                   fallback={
                     <div className="relative z-10">
-                      <Image src="/images/cardback.png" />
+                      <Image src="/cardback.png" />
                       <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
                     </div>
                   }
@@ -287,7 +287,7 @@ export default () => {
                   src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
                   fallback={
                     <div className="relative z-10">
-                      <Image src="/images/cardback.png" />
+                      <Image src="/cardback.png" />
                       <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
                     </div>
                   }
@@ -456,7 +456,7 @@ export default () => {
                       src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
                       fallback={
                         <div className="relative z-10">
-                          <Image src="/images/cardback.png" />
+                          <Image src="/cardback.png" />
                           <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
                         </div>
                       }

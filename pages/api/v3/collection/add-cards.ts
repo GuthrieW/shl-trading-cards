@@ -30,11 +30,11 @@ export default async function addCardsEndpoint(
     const errors: Record<string, string> = {}
     await Promise.all(
       Object.entries(newCards).map(async ([userId, cardIds]) => {
-        const query = SQL`INSERT INTO collection (userID. cardID, packID) VALUES`
+        const query = SQL`INSERT INTO collection (userID, cardID, packID) VALUES`
         cardIds.forEach((cardId, index) =>
           index === 0
-            ? query.append(SQL` (${userId}, ${cardId}, -1)`)
-            : query.append(SQL`, (${userId}, ${cardId}, -1)`)
+            ? query.append(SQL` (${parseInt(userId)}, ${cardId}, -1)`)
+            : query.append(SQL`, (${parseInt(userId)}, ${cardId}, -1)`)
         )
 
         const addResult = await cardsQuery(query)

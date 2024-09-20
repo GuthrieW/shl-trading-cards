@@ -73,13 +73,15 @@ export default function UpdateMonthlySubscriptionModal({
     isValid,
     handleSubmit,
   } = useFormik<UpdateFormValues>({
+    enableReinitialize: true,
     validateOnBlur: true,
     validateOnChange: true,
     initialValues: {
-      uid: setting.uid,
-      username: setting.username,
-      subscription: setting.subscription,
+      uid: setting?.uid,
+      username: setting?.username,
+      subscription: setting?.subscription,
     },
+    validationSchema: updateValidationSchema,
     onSubmit: async (
       subscriptionUpdates: MonthlySettingsData,
       { setSubmitting }
@@ -97,7 +99,7 @@ export default function UpdateMonthlySubscriptionModal({
         setFormError(null)
 
         await updateMonthlySubscription(
-          { uid: setting.uid, subscription: subscriptionUpdates.subscription },
+          { uid: setting?.uid, subscription: subscriptionUpdates.subscription },
           {
             onSuccess: () => {
               queryClient.invalidateQueries(['monthly-subscriptions'])
@@ -123,63 +125,63 @@ export default function UpdateMonthlySubscriptionModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          Update {pluralizeName(setting.username)} Subscription
+          Update {pluralizeName(setting?.username)} Subscription
         </ModalHeader>
+        {formError && (
+          <Alert status="error">
+            <AlertIcon />
+            {formError}
+          </Alert>
+        )}
+        <form onSubmit={handleSubmit}>
+          <ModalBody>
+            <Input
+              label="User ID"
+              value={values.uid}
+              disabled={true}
+              type="number"
+              name="uid"
+              isInvalid={!!errors.uid && touched.uid}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            <Input
+              label="Username"
+              value={values.username}
+              disabled={true}
+              type="string"
+              name="username"
+              isInvalid={!!errors.username && touched.username}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            <Input
+              label="Subscription"
+              value={values.subscription}
+              disabled={isSubmitting}
+              type="number"
+              name="subscription"
+              isInvalid={!!errors.subscription && touched.subscription}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button
+              colorScheme="red"
+              type="submit"
+              disabled={!isValid || isSubmitting}
+              isLoading={isSubmitting}
+              loadingText="Submitting..."
+            >
+              Submit Update
+            </Button>
+          </ModalFooter>
+        </form>
       </ModalContent>
-      {formError && (
-        <Alert status="error">
-          <AlertIcon />
-          {formError}
-        </Alert>
-      )}
-      <form onSubmit={handleSubmit}>
-        <ModalBody>
-          <Input
-            label="User ID"
-            value={values.uid}
-            disabled={true}
-            type="number"
-            name="uid"
-            isInvalid={!!errors.uid && touched.uid}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          <Input
-            label="Username"
-            value={values.username}
-            disabled={true}
-            type="string"
-            name="username"
-            isInvalid={!!errors.username && touched.username}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          <Input
-            label="Subscription"
-            value={values.subscription}
-            disabled={isSubmitting}
-            type="number"
-            name="subscription"
-            isInvalid={!!errors.subscription && touched.subscription}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-        </ModalBody>
-        <ModalFooter>
-          <Button mr={3} onClick={onClose}>
-            Close
-          </Button>
-          <Button
-            colorScheme="red"
-            type="submit"
-            disabled={!isValid || isSubmitting}
-            isLoading={isSubmitting}
-            loadingText="Submitting..."
-          >
-            Submit Update
-          </Button>
-        </ModalFooter>
-      </form>
     </Modal>
   )
 }

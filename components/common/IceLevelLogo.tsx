@@ -1,6 +1,15 @@
-import Image from 'next/image'
-import IceLevelSvg from 'public/images/ice-level.svg'
+import IceLevelSvg from '/public/ice-level.svg'
 
-export const IceLevelLogo = ({ className }: { className?: string }) => {
-  return <Image src={IceLevelSvg} alt="Ice Level Logo" className={className} />
-}
+export const IceLevelLogo = ({
+  className,
+  ...props
+}: React.SVGProps<SVGSVGElement>) => <IceLevelSvg {...props} />
+
+// return (
+//   <Image
+//     onClick={onClick}
+//     src={'/ice-level.svg'}
+//     alt="Ice Level Logo"
+//     className={className}
+//   />
+// )

@@ -6,7 +6,7 @@ import { dehydrate, QueryClient } from 'react-query'
 
 export default () => {
   return (
-    <PageWrapper className="flex flex-col justify-start">
+    <PageWrapper className="space-y-4">
       <p>Home Page</p>
 
       <DiscordWidget />
