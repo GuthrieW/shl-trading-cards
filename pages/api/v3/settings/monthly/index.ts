@@ -2,18 +2,18 @@ import { GET } from '@constants/http-methods'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, ListResponse, ListTotal } from '..'
+import { ApiResponse, ListResponse, ListTotal } from '../..'
 import { cardsQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
-import methodNotAllowed from '../lib/methodNotAllowed'
+import methodNotAllowed from '../../lib/methodNotAllowed'
 
 const allowedMethods: string[] = [GET] as const
 const cors = Cors({
   methods: allowedMethods,
 })
 
-export type SettingsData = {
+export type MonthlySettingsData = {
   uid: number
   username: string
   subscription: number
@@ -21,7 +21,7 @@ export type SettingsData = {
 
 export default async function settingsEndpoint(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<ListResponse<SettingsData>>>
+  res: NextApiResponse<ApiResponse<ListResponse<MonthlySettingsData>>>
 ): Promise<void> {
   await middleware(req, res, cors)
 
@@ -73,7 +73,7 @@ export default async function settingsEndpoint(
     }
 
     const countResult = await cardsQuery<ListTotal>(countQuery)
-    const queryResult = await cardsQuery<SettingsData>(query)
+    const queryResult = await cardsQuery<MonthlySettingsData>(query)
 
     if ('error' in countResult) {
       console.error(countResult)

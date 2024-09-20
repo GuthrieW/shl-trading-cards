@@ -206,7 +206,7 @@ export default function UpdateCardModal({
               <Input
                 label="Team ID"
                 value={values.teamID}
-                disabled={!isValid || isSubmitting}
+                disabled={isSubmitting}
                 type="number"
                 name="teamID"
                 isInvalid={!!errors.teamID && touched.teamID}
@@ -216,7 +216,7 @@ export default function UpdateCardModal({
               <Input
                 label="Player ID"
                 value={values.playerID}
-                disabled={!isValid || isSubmitting}
+                disabled={isSubmitting}
                 type="number"
                 name="playerID"
                 isInvalid={!!errors.playerID && touched.playerID}
@@ -225,7 +225,7 @@ export default function UpdateCardModal({
               />
               <Select
                 name="card_rarity"
-                disabled={!isValid || isSubmitting}
+                disabled={isSubmitting}
                 value={values.card_rarity}
                 label="Rarity"
                 options={Object.values(rarityMap).map((rarity) => ({
@@ -240,7 +240,7 @@ export default function UpdateCardModal({
               <Input
                 label="Sub Rarity"
                 value={values.sub_type}
-                disabled={!isValid || isSubmitting}
+                disabled={isSubmitting}
                 type="string"
                 name="sub_type"
                 isInvalid={!!errors.sub_type && touched.sub_type}
@@ -250,7 +250,7 @@ export default function UpdateCardModal({
               <Input
                 label="Player Name"
                 value={values.player_name}
-                disabled={!isValid || isSubmitting}
+                disabled={isSubmitting}
                 type="string"
                 name="player_name"
                 isInvalid={!!errors.player_name && touched.player_name}
@@ -260,7 +260,7 @@ export default function UpdateCardModal({
               <Input
                 label="Pullable"
                 value={values.pullable}
-                disabled={!isValid || isSubmitting}
+                disabled={isSubmitting}
                 type="number"
                 name="pullable"
                 isInvalid={!!errors.pullable && touched.pullable}
@@ -270,7 +270,7 @@ export default function UpdateCardModal({
               <Input
                 label="Approved"
                 value={values.approved}
-                disabled={!isValid || isSubmitting}
+                disabled={isSubmitting}
                 type="number"
                 name="approved"
                 isInvalid={!!errors.approved && touched.approved}
@@ -280,7 +280,7 @@ export default function UpdateCardModal({
             </Stack>
             <Stack className="mx-2">
               <Input
-                disabled={!isValid || isSubmitting}
+                disabled={isSubmitting}
                 label="Image URL"
                 value={values.image_url}
                 type="string"
@@ -291,7 +291,7 @@ export default function UpdateCardModal({
               />
               <Select
                 name="position"
-                disabled={!isValid || isSubmitting}
+                disabled={isSubmitting}
                 value={values.position}
                 label="Position"
                 options={Object.values(positionMap).map((position) => ({
@@ -306,7 +306,7 @@ export default function UpdateCardModal({
               <Input
                 label="Overall"
                 value={values.overall}
-                disabled={!isValid || isSubmitting}
+                disabled={isSubmitting}
                 type="number"
                 name="overall"
                 isInvalid={!!errors.overall && touched.overall}
@@ -318,7 +318,7 @@ export default function UpdateCardModal({
                   <Input
                     label="Skating"
                     value={values.skating}
-                    disabled={!isValid || isSubmitting}
+                    disabled={isSubmitting}
                     type="number"
                     name="skating"
                     isInvalid={!!errors.skating && touched.skating}
@@ -328,7 +328,7 @@ export default function UpdateCardModal({
                   <Input
                     label="Shooting"
                     value={values.shooting}
-                    disabled={!isValid || isSubmitting}
+                    disabled={isSubmitting}
                     type="number"
                     name="shooting"
                     isInvalid={!!errors.shooting && touched.shooting}
@@ -338,7 +338,7 @@ export default function UpdateCardModal({
                   <Input
                     label="Hands"
                     value={values.hands}
-                    disabled={!isValid || isSubmitting}
+                    disabled={isSubmitting}
                     type="number"
                     name="hands"
                     isInvalid={!!errors.hands && touched.hands}
@@ -348,7 +348,7 @@ export default function UpdateCardModal({
                   <Input
                     label="Checking"
                     value={values.checking}
-                    disabled={!isValid || isSubmitting}
+                    disabled={isSubmitting}
                     type="number"
                     name="checking"
                     isInvalid={!!errors.checking && touched.checking}
@@ -358,7 +358,7 @@ export default function UpdateCardModal({
                   <Input
                     label="Defense"
                     value={values.defense}
-                    disabled={!isValid || isSubmitting}
+                    disabled={isSubmitting}
                     type="number"
                     name="defense"
                     isInvalid={!!errors.defense && touched.defense}
@@ -371,7 +371,7 @@ export default function UpdateCardModal({
                   <Input
                     label="High Shots"
                     value={values.high_shots}
-                    disabled={!isValid || isSubmitting}
+                    disabled={isSubmitting}
                     type="number"
                     name="high_shots"
                     isInvalid={!!errors.high_shots && touched.high_shots}
@@ -381,7 +381,7 @@ export default function UpdateCardModal({
                   <Input
                     label="Low Shots"
                     value={values.low_shots}
-                    disabled={!isValid || isSubmitting}
+                    disabled={isSubmitting}
                     type="number"
                     name="low_shots"
                     isInvalid={!!errors.low_shots && touched.low_shots}
@@ -391,7 +391,7 @@ export default function UpdateCardModal({
                   <Input
                     label="Quickness"
                     value={values.quickness}
-                    disabled={!isValid || isSubmitting}
+                    disabled={isSubmitting}
                     type="number"
                     name="quickness"
                     isInvalid={!!errors.quickness && touched.quickness}
@@ -401,7 +401,7 @@ export default function UpdateCardModal({
                   <Input
                     label="Control"
                     value={values.control}
-                    disabled={!isValid || isSubmitting}
+                    disabled={isSubmitting}
                     type="number"
                     name="control"
                     isInvalid={!!errors.control && touched.control}
@@ -411,7 +411,7 @@ export default function UpdateCardModal({
                   <Input
                     label="Conditioning"
                     value={values.conditioning}
-                    disabled={!isValid || isSubmitting}
+                    disabled={isSubmitting}
                     type="number"
                     name="conditioning"
                     isInvalid={!!errors.conditioning && touched.conditioning}
