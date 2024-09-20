@@ -117,6 +117,7 @@ export default () => {
       String(tablePage),
       sortColumn,
       sortDirection,
+      String(showNotOwnedCards),
     ],
     queryFn: () =>
       axios({
@@ -137,7 +138,16 @@ export default () => {
 
   useEffect(() => {
     refetch()
-  }, [uid, playerName, teams, rarities, sortColumn, sortDirection, tablePage])
+  }, [
+    uid,
+    playerName,
+    teams,
+    rarities,
+    sortColumn,
+    sortDirection,
+    tablePage,
+    showNotOwnedCards,
+  ])
 
   const toggleTeam = (team: string) => {
     setTeams((currentValue) => {
@@ -250,7 +260,6 @@ export default () => {
               Show Unowned Cards
             </FormLabel>
             <Switch
-              disabled={true}
               className="flex items-center"
               onChange={() => setShowNotOwnedCards(!showNotOwnedCards)}
             />
@@ -290,6 +299,7 @@ export default () => {
             className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
           >
             <Image
+              className={`${card.quantity === 0 ? 'grayscale' : ''}`}
               src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
               fallback={
                 <div className="relative z-10">

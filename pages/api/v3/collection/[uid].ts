@@ -72,59 +72,91 @@ export default async function collectionEndpoint(
       return
     }
 
-    const countQuery: SQLStatement = SQL`
-      SELECT count(*) as total
-      FROM cards card
-      LEFT JOIN ownedCards ownedCard
-        ON card.cardID=ownedCard.cardID
-      LEFT JOIN team_data team
-        ON card.teamID=team.teamID
-    `
+    const countQuery: SQLStatement =
+      showNotOwnedCards === 'true'
+        ? SQL`
+        WITH usercollection AS (
+          select * from admin_cards.ownedCards where userid=${parseInt(uid)}
+        )
 
-    const query: SQLStatement = SQL`
-      SELECT ownedCard.quantity,
-        ownedCard.cardID,
-        team.Name as teamName,
-        team.Nickname as teamNickName,
-        card.teamID,
-        card.player_name,
-        card.position,
-        card.card_rarity,
-        card.season,
-        card.image_url,
-        card.overall,
-        card.skating,
-        card.shooting,
-        card.hands,
-        card.checking,
-        card.defense,
-        card.high_shots,
-        card.low_shots,
-        card.quickness,
-        card.control,
-        card.conditioning
-      FROM cards card
-      LEFT JOIN ownedCards ownedCard
-        ON card.cardID=ownedCard.cardID
-      LEFT JOIN team_data team
-        ON card.teamID=team.teamID
-    `
+        SELECT count(*) as total
+        FROM cards card
+        LEFT JOIN userCollection ownedCard
+          ON card.cardID=ownedCard.cardID
+        WHERE approved=1
+      `
+        : SQL`
+        SELECT count(*) as total
+        FROM cards card
+        LEFT JOIN ownedCards ownedCard
+          ON card.cardID=ownedCard.cardID
+        WHERE ownedCard.userID=${parseInt(uid)} 
+      `
 
-    if (
-      showNotOwnedCards === 'false' ||
-      playerName.length !== 0 ||
-      teams.length !== 0 ||
-      rarities.length !== 0
-    ) {
-      countQuery.append(SQL` WHERE `)
-      query.append(SQL` WHERE`)
-    }
+    const query: SQLStatement =
+      showNotOwnedCards === 'true'
+        ? SQL`
+        WITH usercollection AS (
+          select * from admin_cards.ownedCards where userid=${parseInt(uid)}
+        )
 
-    // TODO: implement showing unowned cards
-    // if (showNotOwnedCards === 'false') {
-    countQuery.append(SQL` ownedCard.userID=${parseInt(uid)}`)
-    query.append(SQL` ownedCard.userID=${parseInt(uid)}`)
-    // }
+        SELECT COALESCE(ownedCard.quantity, 0) as quantity,
+          ownedCard.cardID,
+          team.Name as teamName,
+          team.Nickname as teamNickName,
+          card.teamID,
+          card.player_name,
+          card.position,
+          card.card_rarity,
+          card.season,
+          card.image_url,
+          card.overall,
+          card.skating,
+          card.shooting,
+          card.hands,
+          card.checking,
+          card.defense,
+          card.high_shots,
+          card.low_shots,
+          card.quickness,
+          card.control,
+          card.conditioning
+        FROM cards card
+        LEFT JOIN userCollection ownedCard
+          ON card.cardID=ownedCard.cardID
+        LEFT JOIN team_data team
+          ON card.teamID=team.teamID
+        WHERE approved=1
+      `
+        : SQL`
+        SELECT ownedCard.quantity,
+          ownedCard.cardID,
+          team.Name as teamName,
+          team.Nickname as teamNickName,
+          card.teamID,
+          card.player_name,
+          card.position,
+          card.card_rarity,
+          card.season,
+          card.image_url,
+          card.overall,
+          card.skating,
+          card.shooting,
+          card.hands,
+          card.checking,
+          card.defense,
+          card.high_shots,
+          card.low_shots,
+          card.quickness,
+          card.control,
+          card.conditioning
+        FROM cards card
+        LEFT JOIN ownedCards ownedCard
+          ON card.cardID=ownedCard.cardID
+        LEFT JOIN team_data team
+          ON card.teamID=team.teamID
+        WHERE ownedCard.userID=${parseInt(uid)}
+      `
 
     if (playerName.length !== 0) {
       countQuery.append(SQL` AND card.player_name LIKE ${`%${playerName}%`}`)
@@ -135,16 +167,16 @@ export default async function collectionEndpoint(
       countQuery.append(SQL` AND (`)
       teams.forEach((team, index) =>
         index === 0
-          ? countQuery.append(SQL`team.teamID=${parseInt(team)}`)
-          : countQuery.append(SQL` OR team.teamID=${parseInt(team)}`)
+          ? countQuery.append(SQL`card.teamID=${parseInt(team)}`)
+          : countQuery.append(SQL` OR card.teamID=${parseInt(team)}`)
       )
       countQuery.append(SQL`)`)
 
       query.append(SQL` AND (`)
       teams.forEach((team, index) =>
         index === 0
-          ? query.append(SQL`team.teamID=${parseInt(team)}`)
-          : query.append(SQL` OR team.teamID=${parseInt(team)}`)
+          ? query.append(SQL`card.teamID=${parseInt(team)}`)
+          : query.append(SQL` OR card.teamID=${parseInt(team)}`)
       )
       query.append(SQL`)`)
     }

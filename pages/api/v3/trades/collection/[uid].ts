@@ -118,16 +118,16 @@ export default async function tradeCollectionEndpoint(
       countQuery.append(SQL` AND (`)
       teams.forEach((team, index) =>
         index === 0
-          ? countQuery.append(SQL`team.teamID=${parseInt(team)}`)
-          : countQuery.append(SQL` OR team.teamID=${parseInt(team)}`)
+          ? countQuery.append(SQL`card.teamID=${parseInt(team)}`)
+          : countQuery.append(SQL` OR card.teamID=${parseInt(team)}`)
       )
       countQuery.append(SQL`)`)
 
       query.append(SQL` AND (`)
       teams.forEach((team, index) =>
         index === 0
-          ? query.append(SQL`team.teamID=${parseInt(team)}`)
-          : query.append(SQL` OR team.teamID=${parseInt(team)}`)
+          ? query.append(SQL`card.teamID=${parseInt(team)}`)
+          : query.append(SQL` OR card.teamID=${parseInt(team)}`)
       )
       query.append(SQL`)`)
     }
