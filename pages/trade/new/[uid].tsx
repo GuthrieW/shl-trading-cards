@@ -225,7 +225,6 @@ export default () => {
     tradeCardData: TradeCard,
     isLoggedInUser: boolean
   ) => {
-    console.log(tradeCardData, isLoggedInUser)
     const [cardsToTrade, setCardsToTrade] = isLoggedInUser
       ? [loggedInUserCardsToTrade, setloggedInUserCardsToTrade]
       : [partnerUserCardsToTrade, setPartnerUserCardsToTrade]
