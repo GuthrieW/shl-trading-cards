@@ -2,14 +2,14 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, ListResponse } from '..'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
-import { GET } from '@constants/http-methods'
+import { GET, POST } from '@constants/http-methods'
 import { cardsQuery, usersQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { checkUserAuthorization } from '../lib/checkUserAuthorization'
 import { StatusCodes } from 'http-status-codes'
 import { UserData } from '../user'
 
-const allowedMethods: string[] = [GET] as const
+const allowedMethods: string[] = [GET, POST] as const
 const cors = Cors({
   methods: allowedMethods,
 })
@@ -23,7 +23,6 @@ export default async function tradesEndpoint(
   if (req.method === GET) {
     const username = (req.query.username ?? '') as string
     const status = (req.query.status ?? '') as string
-    console.log('username', username, 'status', status)
 
     if (!(await checkUserAuthorization(req))) {
       res.status(StatusCodes.UNAUTHORIZED).end('Not authorized')
@@ -49,8 +48,6 @@ export default async function tradesEndpoint(
 
       tradePartners = partnerUserQueryResult
     }
-
-    console.log('tradePartners', tradePartners)
 
     const userId = req.cookies.userid
     const tradesQuery = SQL`SELECT * FROM trades`
@@ -88,8 +85,6 @@ export default async function tradesEndpoint(
       tradesQuery.append(SQL` AND trade_status=${status}`)
     }
 
-    console.log('tradesQuery', tradesQuery)
-
     const queryResult = await cardsQuery<Trade>(tradesQuery)
 
     if ('error' in queryResult) {
@@ -109,5 +104,8 @@ export default async function tradesEndpoint(
         total: queryResult.length,
       },
     })
+  }
+
+  if (req.method === POST) {
   }
 }

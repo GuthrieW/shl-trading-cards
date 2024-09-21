@@ -107,7 +107,7 @@ export default () => {
       }),
   })
 
-  const { payload, isLoading, refetch } = query<ListResponse<OwnedCard>>({
+  const { payload, isLoading } = query<ListResponse<OwnedCard>>({
     queryKey: [
       'collection',
       uid,
@@ -135,19 +135,6 @@ export default () => {
         },
       }),
   })
-
-  useEffect(() => {
-    refetch()
-  }, [
-    uid,
-    playerName,
-    teams,
-    rarities,
-    sortColumn,
-    sortDirection,
-    tablePage,
-    showNotOwnedCards,
-  ])
 
   const toggleTeam = (team: string) => {
     setTeams((currentValue) => {

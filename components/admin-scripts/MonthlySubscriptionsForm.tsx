@@ -88,10 +88,6 @@ export default function MonthlySubscriptionsForm({
       }),
   })
 
-  useEffect(() => {
-    refetch()
-  }, [tablePage, sortColumn, sortDirection])
-
   const { isSubmitting, isValid } = useFormik<{}>({
     initialValues: {},
     onSubmit: async ({}, { setSubmitting }) => {

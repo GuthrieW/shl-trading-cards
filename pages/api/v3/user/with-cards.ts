@@ -8,6 +8,7 @@ import SQL, { SQLStatement } from 'sql-template-strings'
 import { cardsQuery } from '@pages/api/database/database'
 import methodNotAllowed from '../lib/methodNotAllowed'
 import { StatusCodes } from 'http-status-codes'
+import { checkUserAuthorization } from '../lib/checkUserAuthorization'
 
 const allowedMethods = [GET]
 const cors = Cors({
@@ -23,6 +24,11 @@ export default async function usersWithCardsEndpoint(
   if (req.method === GET) {
     const username = req.query.username as string
 
+    if (!(await checkUserAuthorization(req))) {
+      res.status(StatusCodes.UNAUTHORIZED).end('Not authorized')
+      return
+    }
+
     const countQuery: SQLStatement = SQL`
       SELECT count(*) as total
       FROM user_info u
@@ -37,8 +43,13 @@ export default async function usersWithCardsEndpoint(
       WHERE`
 
     if (username) {
-      countQuery.append(SQL` u.username LIKE ${`%${username}%`} AND`)
-      query.append(SQL` u.username LIKE ${`%${username}%`} AND`)
+      const userid = req.cookies.userid
+      countQuery.append(
+        SQL` u.username LIKE ${`%${username}%`} AND u.uid !=${userid} AND`
+      )
+      query.append(
+        SQL` u.username LIKE ${`%${username}%`} AND u.uid !=${userid} AND`
+      )
     }
 
     countQuery.append(SQL` u.uid IN
