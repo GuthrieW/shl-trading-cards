@@ -186,12 +186,14 @@ export default function MonthlySubscriptionsForm({
                         <Menu>
                           <MenuButton
                             as={Button}
+                            className="hover:!bg-highlighted/40 hover:!text-primary"
                             rightIcon={<ChevronDownIcon />}
                           >
                             Actions
                           </MenuButton>
                           <MenuList>
                             <MenuItem
+                              className="hover:!bg-highlighted/40 hover:!text-primary"
                               onClick={() => {
                                 updateModal.onOpen()
                                 setSelectedSetting(setting)
@@ -200,6 +202,7 @@ export default function MonthlySubscriptionsForm({
                               Update
                             </MenuItem>
                             <MenuItem
+                              className="hover:!bg-highlighted/40 hover:!text-primary"
                               onClick={() => {
                                 deleteDialog.onOpen()
                                 setSelectedSetting(setting)

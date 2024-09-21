@@ -22,9 +22,13 @@ export const chakraTheme: Partial<ChakraTheme> = {
           minWidth: 'max-content',
           w: '100%',
           zIndex: 100,
+          bg: colors.background.primary,
+          borderColor: colors.border.primary,
         },
         item: {
           fontFamily: 'var(--font-montserrat)',
+          color: colors.text.primary,
+          bg: colors.background.primary,
         },
       },
     },
@@ -44,11 +48,11 @@ export const chakraTheme: Partial<ChakraTheme> = {
         },
       },
     },
-    code: {      
-      baseStyle: {        
-        background: colors.background.secondary,        
-        color: colors.text.primary,      
-      },    
+    Code: {
+      baseStyle: {
+        background: colors.background.secondary,
+        color: colors.text.primary,
+      },
     },
     Table: {
       variants: {

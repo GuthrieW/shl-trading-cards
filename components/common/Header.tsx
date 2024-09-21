@@ -18,8 +18,6 @@ import {
 import {
   ChevronDownIcon,
   ChevronUpIcon,
-  MoonIcon,
-  SunIcon,
 } from '@chakra-ui/icons'
 import axios from 'axios'
 import classnames from 'classnames'
@@ -38,6 +36,21 @@ const linkClasses = (router: NextRouter, path: string): string =>
     LINK_CLASSES
   )
 
+const externalLinks = [
+  {
+    name: 'Forums',
+    href: 'https://simulationhockey.com/index.php',
+  },
+  {
+    name: 'Portal',
+    href: 'https://portal.simulationhockey.com/',
+  },
+  {
+    name: 'Index',
+    href: 'https://Index.simulationhockey.com/',
+  },
+];
+
 export const Header = ({ showAuthButtons = true }) => {
   const { session, loggedIn, handleLogout } = useSession()
   const [drawerVisible, setDrawerVisible] = useState<boolean>(false)
@@ -55,7 +68,7 @@ export const Header = ({ showAuthButtons = true }) => {
   })
 
   return (
-    <div className="flex flex-row justify-between px-[5%] h-16">
+    <div className="flex flex-row justify-between px-[5%] h-16 bg-black text-grey100">
       <div className="relative flex flex-row">
         <Icon
           onClick={() => router.push('/')}
@@ -66,44 +79,63 @@ export const Header = ({ showAuthButtons = true }) => {
             className="relative top-[5%] h-[500%] sm:top-[2.5%] w-16"
           />
         </Icon>
-        <Link href="/collect" className={linkClasses(router, '/collect')}>
-          Collections
+        <Link
+          href="/collect"
+          className={classnames(
+            "!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600",
+            linkClasses(router, "/collect")
+          )}
+        >
+          Collect
         </Link>
-        <Link href="/shop" className={linkClasses(router, '/shop')}>
+
+        <Link
+          href="/shop"
+          className={classnames(
+            "!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600",
+            linkClasses(router, "/shop")
+          )}
+        >
           Shop
         </Link>
-        <Link href="/trade" className={linkClasses(router, '/trade')}>
+
+        <Link
+          href="/trade"
+          className={classnames(
+            "!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600",
+            linkClasses(router, "/trade")
+          )}
+        >
           Trade
         </Link>
+
         <Menu>
-          <MenuButton className={linkClasses(router, '/more')}>More</MenuButton>
+          <MenuButton className="!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-grey100 hover:bg-blue600 sm:h-full sm:w-max">
+            More
+          </MenuButton>
           <MenuList>
-            <MenuItem
-              onClick={() => router.push('https://www.simulationhockey.com')}
-            >
-              Forums
-            </MenuItem>
-            <MenuItem
-              onClick={() => router.push('https://index.simulationhockey.com')}
-            >
-              Index
-            </MenuItem>
-            <MenuItem
-              onClick={() => router.push('https://portal.simulationhockey.com')}
-            >
-              Portal
-            </MenuItem>
+            {externalLinks.map(({ name, href }) => (
+              <MenuItem
+                className="hover:!bg-highlighted/40 hover:!text-primary"
+                key={name}
+                as="a"
+                href={href}
+                target="_blank"
+              >
+                {name}
+              </MenuItem>
+            ))}
           </MenuList>
         </Menu>
         <Menu>
-          <MenuButton className={linkClasses(router, '/admin')}>
+          <MenuButton className={classnames("!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600", linkClasses(router, '/admin'))}>
             Admin
           </MenuButton>
           <MenuList>
-            <MenuItem onClick={() => router.push('/admin/cards')}>
+            <MenuItem className="hover:!bg-highlighted/40 hover:!text-primary" onClick={() => router.push('/admin/cards')}>
               Cards
             </MenuItem>
-            <MenuItem onClick={() => router.push('/admin/scripts')}>
+            <MenuItem className="hover:!bg-highlighted/40 hover:!text-primary" onClick={() => router.push('/admin/scripts')}>
               Scripts
             </MenuItem>
           </MenuList>
@@ -120,9 +152,9 @@ export const Header = ({ showAuthButtons = true }) => {
           <Menu isLazy>
             {({ isOpen }) => (
               <>
-                <MenuButton className="font-mont text-secondary hover:underline">
+                <MenuButton className="font-mont !text-white hover:underline">
                   <div className="flex h-full items-center space-x-1">
-                    <span className="hidden sm:inline">{user?.username}</span>
+                    <span className="hidden sm:inline !text-white">{user?.username}</span>
                     {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
                     <Avatar
                       size="sm"
