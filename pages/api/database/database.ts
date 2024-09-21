@@ -14,15 +14,15 @@ const initializeDB = (database: string | undefined): ServerlessMysql =>
   })
 
 const cardsDatabase: ServerlessMysql = initializeDB(
-  process.env.APP_ENV === 'production' ? 'admin_cards' : 'dev_cards'
+  process.env.NODE_ENV === 'production' ? 'admin_cards' : 'dev_cards'
 )
 
 const usersDatabase: ServerlessMysql = initializeDB(
-  process.env.APP_ENV === 'production' ? 'admin_mybb' : 'admin_testdb'
+  process.env.NODE_ENV === 'production' ? 'admin_mybb' : 'admin_testdb'
 )
 
 const portalDatabase: ServerlessMysql = initializeDB(
-  process.env.APP_ENV === 'production' ? 'admin_portal' : 'dev_portal'
+  process.env.NODE_ENV === 'production' ? 'admin_portal' : 'dev_portal'
 )
 
 const getQueryFn =

@@ -87,9 +87,9 @@ type StartingLineup = {
 type TradeStatus = 'COMPLETE' | 'PENDING' | 'DECLINED' | 'AUTO_DECLINED'
 
 type Trade = {
-  tradeid: number
-  initiatorid: number
-  recipientid: number
+  tradeID: number
+  initiatorID: number
+  recipientID: number
   declineUserID: number
   trade_status: TradeStatus
   update_date: Date

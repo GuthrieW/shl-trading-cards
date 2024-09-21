@@ -1,4 +1,7 @@
+import { ChevronDownIcon } from '@chakra-ui/icons'
 import {
+  Alert,
+  AlertIcon,
   Button,
   Card,
   CardBody,
@@ -16,13 +19,17 @@ import {
   MenuList,
   MenuOptionGroup,
   Select,
+  Stack,
+  StackDivider,
 } from '@chakra-ui/react'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
-import { useState } from 'react'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { useDebounce } from 'use-debounce'
 
 const TRADE_STATUS_OPTIONS: {
   value: TradeStatus
@@ -55,67 +62,76 @@ const TRADE_STATUS_OPTIONS: {
   },
 ] as const
 
-export default async function TradesDrawer() {
-  const [tradeStatusFilter, setTradeStatusFilter] = useState<string[]>([])
+export default function TradesDrawer({
+  onClose,
+  isOpen,
+}: {
+  onClose: () => void
+  isOpen: boolean
+}) {
+  const [tradeStatusFilter, setTradeStatusFilter] = useState<TradeStatus>(
+    TRADE_STATUS_OPTIONS[1].value
+  )
   const [partnerUsername, setPartnerUsername] = useState<string>(null)
+  const [debouncedUsername] = useDebounce(partnerUsername, 1000)
 
   const { session, loggedIn } = useSession()
+  const router = useRouter()
 
-  const { payload: loggedIntrades, isLoading: loggedInTradesIsLoading } = query<
-    ListResponse<Trade>
-  >({
-    queryKey: ['trades', session?.token],
+  const {
+    payload: loggedInTrades,
+    isLoading: loggedInTradesIsLoading,
+    refetch,
+  } = query<ListResponse<Trade>>({
+    queryKey: [
+      'trades',
+      session?.token,
+      JSON.stringify(tradeStatusFilter),
+      debouncedUsername,
+    ],
     queryFn: () =>
       axios({
         method: GET,
         url: `/api/v3/trades`,
+        headers: { Authorization: `Bearer ${session?.token}` },
         params: {
-          headers: { Authorization: `Bearer ${session?.token}` },
+          username: debouncedUsername?.length > 3 ? debouncedUsername : '',
+          status: tradeStatusFilter,
         },
       }),
     enabled: loggedIn,
   })
 
-  const toggleStatus = (statusToToggle: TradeStatus) => {
-    if (tradeStatusFilter.includes(status)) {
-      setTradeStatusFilter([...tradeStatusFilter, statusToToggle])
-    } else {
-      setTradeStatusFilter(
-        tradeStatusFilter.filter(
-          (status: TradeStatus) => status !== statusToToggle
-        )
-      )
-    }
-  }
+  useEffect(() => {
+    refetch()
+  }, [session?.token, tradeStatusFilter, debouncedUsername])
+  console.log('testing', loggedInTrades)
 
-  // Current Trades
-  // 1. Filtering by tradeStatus, tradePartnerName
-  // 2. Sorting by tradePartnerName, tradeDate
   return (
-    <Drawer placement="left" isOpen={true} onClose={null}>
+    <Drawer placement="left" isOpen={isOpen} onClose={onClose}>
       <DrawerContent>
-        <DrawerHeader>Trades</DrawerHeader>
+        <DrawerHeader>My Trades</DrawerHeader>
         <DrawerBody>
           <div className="flex flex-row">
-            <FormControl>
-              <Menu>
-                <MenuButton>Status</MenuButton>
-                <MenuList>
-                  <MenuOptionGroup type="checkbox">
-                    {TRADE_STATUS_OPTIONS.map((option) => (
-                      <MenuItemOption
-                        onClick={() => toggleStatus(option.value)}
-                        key={option.value}
-                        value={`${option.value}`}
-                      >
-                        {option.label}
-                      </MenuItemOption>
-                    ))}
-                  </MenuOptionGroup>
-                </MenuList>
-              </Menu>
+            <FormControl className="mx-1">
+              <FormLabel>Status</FormLabel>
+              <Select
+                onChange={(event) =>
+                  setTradeStatusFilter(event.target.value as TradeStatus)
+                }
+              >
+                {TRADE_STATUS_OPTIONS.map((option) => (
+                  <option
+                    selected={option.value === 'PENDING'}
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </option>
+                ))}
+              </Select>
             </FormControl>
-            <FormControl>
+            <FormControl className="mx-1">
               <FormLabel>Partner</FormLabel>
               <Input
                 placeholder="Partner"
@@ -124,21 +140,33 @@ export default async function TradesDrawer() {
               />
             </FormControl>
           </div>
-          <div className="flex flex--col">
-            {!loggedInTradesIsLoading &&
-              loggedIntrades.rows.map((trade) => (
-                <Card>
+          {debouncedUsername?.length > 0 && debouncedUsername?.length < 3 && (
+            <Alert status="info">
+              <AlertIcon />
+              At least three charaters required to search for a username
+            </Alert>
+          )}
+          <Stack className="mt-2" divider={<StackDivider />}>
+            {loggedInTrades?.rows.map((trade, index) => {
+              console.log('trade', trade)
+              const otherUserId =
+                trade.initiatorID === parseInt(session.userId)
+                  ? trade.recipientID
+                  : trade.initiatorID
+              return (
+                <Card
+                  className="cursor-pointer hover:bg-primaryDark transition-colors"
+                  key={trade?.tradeID}
+                  onClick={() => router.push(`/trades/${trade.tradeID}`)}
+                >
                   <CardHeader>
-                    #{trade.tradeid} - {trade.recipientid}
+                    #{trade?.tradeID} - {otherUserId}
                   </CardHeader>
-                  <CardBody>
-                    Status: {trade.trade_status}
-                    <br />
-                    Date: {trade.create_date.toDateString()}
-                  </CardBody>
+                  <CardBody>Status: {trade?.trade_status}</CardBody>
                 </Card>
-              ))}
-          </div>
+              )
+            })}
+          </Stack>
         </DrawerBody>
       </DrawerContent>
     </Drawer>

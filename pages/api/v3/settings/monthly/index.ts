@@ -35,14 +35,14 @@ export default async function settingsEndpoint(
     const countQuery: SQLStatement = SQL`
       SELECT count(*) as total
       FROM admin_cards.monthly_subscriptions s
-      LEFT JOIN admin_mybb.mybb_users u ON s.userID = u.uid
+      LEFT JOIN admin_mybb.mybb_users u ON s.uid = u.uid
       WHERE subscription > 0
     `
 
     const query: SQLStatement = SQL`
       SELECT u.uid, u.username, s.subscription 
       FROM admin_cards.monthly_subscriptions s
-      LEFT JOIN admin_mybb.mybb_users u ON s.userID = u.uid
+      LEFT JOIN admin_mybb.mybb_users u ON s.uid = u.uid
       WHERE s.subscription > 0
     `
 

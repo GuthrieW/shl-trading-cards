@@ -3,23 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "APP_ENV=development next dev -p 9000",
+    "dev": "next dev -p 9000",
     "build": "next build",
-    "start": "APP_ENV=production next start -p 9000",
-    "start:dev": "APP_ENV=development next start -p 6500",
-    "add-cards-to-users": "APP_ENV=script tsx bin/add-cards-to-users/add-cards-to-users.ts",
-    "base-requests": "APP_ENV=script tsx bin/base-requests/base-requests.ts --season=77",
-    "charity-requests": "APP_ENV=script tsx bin/charity-requests/charity-requests.ts",
-    "convert-all-pngs-to-webps": "APP_ENV=script tsx bin/convert-all-pngs-to-webps/convert-all-pngs-to-webps.ts",
-    "convert-single-png-to-webp": "APP_ENV=script tsx bin/convert-single-png-to-webp/convert-single-png-to-webp.ts",
-    "delete-duplicates": "APP_ENV=script tsx bin/delete-duplicate-cards/delete-duplicate-cards.ts",
-    "pay-card-creators": "APP_ENV=script tsx bin/pay-card-creators/pay-card-creators.ts",
-    "smoke-test": "APP_ENV=script tsx bin/smoke-test/smoke-test.ts",
-    "temp-script": "APP_ENV=script tsx bin/temp-script/temp-script.ts",
-    "monthly-subscription": "APP_ENV=script tsx bin/monthly-subscription/monthly-subscription.ts"
+    "start": "next start -p 9000",
+    "start:dev": "next start -p 6500"
   },
   "dependencies": {
-    "@svgr/webpack": "^8.0.1",
     "@babel/core": "^7.23.5",
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
@@ -29,6 +18,7 @@
     "@heroicons/react": "^2.0.18",
     "@next/font": "^14.2.11",
     "@react-spring/web": "^9.7.3",
+    "@svgr/webpack": "^8.0.1",
     "axios": "^1.6.2",
     "babel-plugin-emotion": "^11.0.0",
     "classnames": "^2.3.1",
@@ -68,6 +58,7 @@
     "ts-node": "^10.9.1",
     "tsx": "^4.6.2",
     "typescript": "^5.3.2",
+    "use-debounce": "^10.0.3",
     "uuid": "^10.0.0",
     "webpack": "^5.89.0",
     "yup": "^1.4.0"

@@ -20,13 +20,11 @@ import {
   SimpleGrid,
   useDisclosure,
 } from '@chakra-ui/react'
-import { PageWrapper } from '@components/common/PageWrapper'
 import TablePagination from '@components/table/TablePagination'
 import { GET } from '@constants/http-methods'
 import rarityMap from '@constants/rarity-map'
 import { shlTeamsMap } from '@constants/teams-map'
 import { useCookie } from '@hooks/useCookie'
-import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated'
 import { query } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
 import {
@@ -36,16 +34,17 @@ import {
 } from '@pages/api/v3/trades/collection/[uid]'
 import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
-import { useSession } from 'contexts/AuthContext'
 import { ToastContext } from 'contexts/ToastContext'
 import config from 'lib/config'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
 import { Fragment, useContext, useEffect, useState } from 'react'
 
-const SORT_OPTIONS: TradeCardSortOption[] = [
+// type ColumnName = 'username' | 'create_date' | 'update_date'
+
+const SORT_OPTIONS: any[] = [
   {
-    value: 'overall',
+    value: 'username',
     label: 'Overall',
     sortLabel: (direction: SortDirection) =>
       direction === 'DESC' ? '(Descending)' : '(Ascending)',
@@ -92,11 +91,14 @@ const LOADING_GRID_DATA: { rows: TradeCard[] } = {
   })),
 } as const
 
-export default () => {
+export default function NewTrade({
+  loggedInUser,
+  tradePartnerUid,
+}: {
+  loggedInUser: UserData
+  tradePartnerUid: string
+}) {
   const router = useRouter()
-  const tradePartnerUid = router.query.uid as string
-
-  const { session, loggedIn } = useSession()
   const { addToast } = useContext(ToastContext)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedUserId, setSelectedUserId] = useState<string>('')
@@ -114,8 +116,6 @@ export default () => {
   const [partnerUserCardsToTrade, setPartnerUserCardsToTrade] = useState<
     TradeCard[]
   >([])
-
-  const { isCheckingAuthentication } = useRedirectIfNotAuthenticated()
 
   const [uid] = useCookie(config.userIDCookieName)
 
@@ -136,17 +136,6 @@ export default () => {
         method: GET,
         url: `/api/v3/user/${tradePartnerUid}`,
       }),
-  })
-
-  const { payload: loggedInUser } = query<UserData>({
-    queryKey: ['baseUser', session?.token],
-    queryFn: () =>
-      axios({
-        method: GET,
-        url: '/api/v3/user',
-        headers: { Authorization: `Bearer ${session?.token}` },
-      }),
-    enabled: loggedIn,
   })
 
   const {
@@ -240,7 +229,7 @@ export default () => {
     selectedUserId === uid ? loggedInUser : tradePartnerUser
 
   return (
-    <PageWrapper loading={isCheckingAuthentication}>
+    <>
       <div className="flex flex-row">
         <div className="w-1/2">
           <div className="flex justify-start">
@@ -477,6 +466,6 @@ export default () => {
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </PageWrapper>
+    </>
   )
 }

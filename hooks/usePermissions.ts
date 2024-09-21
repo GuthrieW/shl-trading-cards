@@ -48,6 +48,7 @@ export const usePermissions = (): {
         headers: {
           Authorization: `Bearer ${session?.token}`,
         },
+        params: {},
       }),
     enabled: loggedIn,
   })
