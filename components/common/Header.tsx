@@ -130,20 +130,7 @@ export const Header = ({ showAuthButtons = true }) => {
         </Menu>
       </div>
       <div className="flex flex-row items-center">
-        <IconButton
-          className="mx-2"
-          aria-label={`Toggle Dark Mode`}
-          icon={
-            localStorage.getItem('theme') === 'dark' ? (
-              <SunIcon />
-            ) : (
-              <MoonIcon />
-            )
-          }
-          onClick={handleToggleDarkMode}
-          variant="ghost"
-          color="white"
-        />
+        <ColorModeSwitcher className="mr-1 !text-grey100 hover:!text-grey900 md:mr-2" />
         {!loggedIn && showAuthButtons && (
           <Button className="mx-2" onClick={() => router.push('/login')}>
             Log In

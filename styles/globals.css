@@ -2,40 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-.light {
-  --hyperlink: 30, 136, 229; /* all the hyperlink colors */
-  --borderblue: 30, 136, 229; /* same as hyperlink, but for the borders */
-  --darkerBorderBlue: 25, 118, 210; /* darker border for some cases */
-  --primary: 33, 37, 41; /* used for all headings of tables, and backgrounds of headings, footers, etc */
-  --LabelHeadings: 52, 58, 64;
-  --tpeChart: 73, 80, 87; /* only used in TPEChart.tsx */
-  --commonSubHeading: 107, 115, 123; /* only used in SubHeading.tsx */
-  --sudoButton: 108, 117, 125; /* only used in SudoButton.tsx */
-  --boxborder: 173, 181, 189; /* box's borders */
-  --hoverSelect: 206, 212, 218;
-  --attributeUnderline: 222, 226, 230; /* color of the underline beneath Attributes and box in banker approval */
-  --alternatedColor: 233, 236, 239; /*Color underneath the AC button, and Alternate color to Awardtables */
-  --secondary: 248, 249, 251; /* mostly texts */
-  --secondaryText: 248, 249, 251;
-  --red: 239, 154, 154; /*anything negative or regression based*/
-  --offWhite: 235, 234, 227;
-}
+@layer base {
+  html,
+  body {
+    @apply bg-secondary text-primary;
+  }
 
-.dark {
-  --hyperlinkDark: 82, 156, 236;
-  --borderblueDark: 82, 156, 236;
-  --darkerBorderBlueDark: 62, 128, 204;
-  --primaryDark: 20, 20, 25; /*33, 37, 41; */
-  --LabelHeadingsDark: 20, 20, 25;
-  --tpeChartDark: 104, 111, 118;
-  --commonSubHeadingDark: 94, 102, 109;
-  --sudoButtonDark: 91, 99, 107;
-  --boxborderDark: 78, 86, 94;
-  --hoverSelectDark: 56, 62, 68;
-  --attributeUnderlineDark: 49, 53, 57;
-  --alternatedColorDark: 45, 48, 51;
-  --secondaryDark: 33, 37, 41;
-  --secondaryTextDark: 248, 249, 250;
-  --redDark: 211, 47, 47;
-  --offWhite: 235, 234, 227;
+  * {
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
 }

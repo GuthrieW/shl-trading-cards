@@ -9,6 +9,7 @@ import { SessionProvider, useSession } from 'contexts/AuthContext'
 import { CustomChakraProvider } from 'styles/CustomChakraProvider'
 import { ToastProvider } from 'contexts/ToastContext'
 import { IceLevelLogo } from '@components/common/IceLevelLogo'
+import { ThemeProvider } from 'next-themes';
 import { Footer } from '@components/common/Footer'
 import { Spinner } from '@chakra-ui/react'
 import '../styles/globals.css'
@@ -67,6 +68,16 @@ const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
           className={`${montserrat.variable} ${raleway.variable} relative min-h-screen font-raleway`}
         >
           <DefaultSeo {...SEO} />
+          <ThemeProvider
+            attribute="class"
+            storageKey="index-theme"
+            themes={['light', 'dark']}
+            value={{
+              light: 'index-theme-light',
+              dark: 'index-theme-dark',
+            }}
+            enableColorScheme={false}
+          >
           <CustomChakraProvider>
             <ToastProvider>
               {isLoading ? (
@@ -92,6 +103,7 @@ const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
               )}
             </ToastProvider>
           </CustomChakraProvider>
+          </ThemeProvider>
         </main>
       </Hydrate>
     </QueryClientProvider>
