@@ -72,17 +72,13 @@ export default function TradesDrawer({
   const [tradeStatusFilter, setTradeStatusFilter] = useState<TradeStatus>(
     TRADE_STATUS_OPTIONS[1].value
   )
-  const [partnerUsername, setPartnerUsername] = useState<string>(null)
+  const [partnerUsername, setPartnerUsername] = useState<string>('')
   const [debouncedUsername] = useDebounce(partnerUsername, 1000)
 
   const { session, loggedIn } = useSession()
   const router = useRouter()
 
-  const {
-    payload: loggedInTrades,
-    isLoading: loggedInTradesIsLoading,
-    refetch,
-  } = query<ListResponse<Trade>>({
+  const { payload: loggedInTrades, refetch } = query<ListResponse<Trade>>({
     queryKey: [
       'trades',
       session?.token,
@@ -95,7 +91,7 @@ export default function TradesDrawer({
         url: `/api/v3/trades`,
         headers: { Authorization: `Bearer ${session?.token}` },
         params: {
-          username: debouncedUsername?.length > 3 ? debouncedUsername : '',
+          username: debouncedUsername?.length >= 3 ? debouncedUsername : '',
           status: tradeStatusFilter,
         },
       }),
@@ -105,7 +101,6 @@ export default function TradesDrawer({
   useEffect(() => {
     refetch()
   }, [session?.token, tradeStatusFilter, debouncedUsername])
-  console.log('testing', loggedInTrades)
 
   return (
     <Drawer placement="left" isOpen={isOpen} onClose={onClose}>

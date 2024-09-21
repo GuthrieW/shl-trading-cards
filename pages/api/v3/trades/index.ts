@@ -21,44 +21,67 @@ export default async function tradesEndpoint(
   await middleware(req, res, cors)
 
   if (req.method === GET) {
-    const username = req.query.username as string
-    const status = req.query.status as string
+    const username = (req.query.username ?? '') as string
+    const status = (req.query.status ?? '') as string
+    console.log('username', username, 'status', status)
 
     if (!(await checkUserAuthorization(req))) {
       res.status(StatusCodes.UNAUTHORIZED).end('Not authorized')
       return
     }
 
-    const partnerUserQuery: SQLStatement = SQL` SELECT uid, username FROM mybb_users`
+    let tradePartners = []
+    if (username.length !== 0) {
+      const partnerUserQuery: SQLStatement = SQL` SELECT uid, username FROM mybb_users`
 
-    if (username?.length !== 0) {
       partnerUserQuery.append(SQL` WHERE username LIKE ${`%${username}%`}`)
+
+      const partnerUserQueryResult =
+        await usersQuery<UserData>(partnerUserQuery)
+
+      if ('error' in partnerUserQueryResult) {
+        console.error(partnerUserQueryResult.error)
+        res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .end('Datebase connection failed')
+        return
+      }
+
+      tradePartners = partnerUserQueryResult
     }
 
-    const partnerUserQueryResult = await usersQuery<UserData>(partnerUserQuery)
-
-    if ('error' in partnerUserQueryResult) {
-      console.error(partnerUserQueryResult.error)
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .end('Datebase connection failed')
-      return
-    }
+    console.log('tradePartners', tradePartners)
 
     const userId = req.cookies.userid
     const tradesQuery = SQL`SELECT * FROM trades`
 
-    if (partnerUserQueryResult.length === 0) {
+    if (tradePartners.length === 0) {
       tradesQuery.append(
         SQL` WHERE (initiatorID=${userId} OR recipientID=${userId})`
       )
     } else {
-      const partnerIds = partnerUserQueryResult
-        .map((user) => user.uid)
-        .join(', ')
-      tradesQuery.append(SQL` WHERE 
-        (initiatorID=${userId} AND recipientID IN (${`${partnerIds}`}))
-        OR (initiatorID IN (${`${partnerIds}`}) AND recipientID=${userId})`)
+      const partnerIds = tradePartners.map((partner) => partner.uid)
+      tradesQuery.append(
+        SQL` WHERE ((initiatorID=${userId} AND recipientID IN (`
+      )
+      partnerIds.forEach((id, index) => {
+        if (index === 0) {
+          tradesQuery.append(SQL` ${id}`)
+          return
+        }
+
+        tradesQuery.append(SQL`, ${id}`)
+      })
+      tradesQuery.append(SQL`)) OR (recipientID=${userId} AND initiatorID IN (`)
+      partnerIds.forEach((id, index) => {
+        if (index === 0) {
+          tradesQuery.append(SQL` ${id}`)
+          return
+        }
+
+        tradesQuery.append(SQL`, ${id}`)
+      })
+      tradesQuery.append(SQL`)))`)
     }
 
     if (status.length !== 0) {
@@ -66,6 +89,7 @@ export default async function tradesEndpoint(
     }
 
     console.log('tradesQuery', tradesQuery)
+
     const queryResult = await cardsQuery<Trade>(tradesQuery)
 
     if ('error' in queryResult) {
@@ -75,8 +99,6 @@ export default async function tradesEndpoint(
         .end('Datebase connection failed')
       return
     }
-
-    console.log('queryResult', queryResult.length)
 
     res.status(StatusCodes.OK).json({
       status: 'success',
