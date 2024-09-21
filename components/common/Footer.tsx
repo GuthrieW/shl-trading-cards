@@ -365,7 +365,7 @@ ${issueData.desiredFunctionality}`
 
   return (
     <>
-      <footer className="absolute bottom-0 flex h-16 w-full items-center justify-center bg-primary text-secondaryText dark:bg-primaryDark dark:text-secondaryTextDark">
+      <footer className="absolute bottom-0 flex h-16 w-full items-center justify-center bg-primary text-secondary">
         <div className="font-mont text-xs">
           &copy;&nbsp;{new Date().getFullYear()}&nbsp;|&nbsp;
           <span className="hidden sm:inline">

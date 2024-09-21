@@ -24,6 +24,7 @@ export const lightTheme: ThemeVariables = {
   '--grey200': '#E9ECEF',
   '--grey100': '#F8F9FA',
   '--red200': '#EF9A9A',
+  '--black': '#000000',
   // Border
   '--color-border-primary': '#212529',
   '--color-border-secondary': '#ADB5BD',
@@ -64,6 +65,7 @@ export const darkTheme: ThemeVariables = {
   '--grey200': '#E9ECEF',
   '--grey100': '#F8F9FA',
   '--red200': '#EF9A9A',
+  '--black': '#000000',
   // Border
   '--color-border-primary': '#F8F9FA',
   '--color-border-secondary': '#ADB5BD',

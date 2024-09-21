@@ -13,6 +13,7 @@ export const colorsRaw = {
     grey200: 'var(--grey200)',
     grey100: 'var(--grey100)',
     red200: 'var(--red200)',
+    black: 'var(--black)',
   },
   border: {
     primary: 'var(--color-border-primary)',

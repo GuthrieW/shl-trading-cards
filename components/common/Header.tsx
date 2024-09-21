@@ -28,9 +28,9 @@ import { UserData } from '@pages/api/v3/user'
 import { GET } from '@constants/http-methods'
 
 const CURRENT_PAGE_LINK_CLASSES =
-  'border-b-0 sm:border-b-[4px] border-l-[4px] sm:border-l-0 pt-0 sm:pt-[4px] pr-[14px] sm:pr-[10px] border-secondary dark:border-secondaryDark'
+  'border-b-0 sm:border-b-[4px] border-l-[4px] sm:border-l-0 pt-0 sm:pt-[4px] pr-[14px] sm:pr-[10px] border-secondary'
 const LINK_CLASSES =
-  '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-secondaryText dark:!text-secondaryTextDark hover:bg-borderblue dark:hover:bg-borderblueDark sm:h-full sm:w-max'
+  '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-secondary sm:h-full sm:w-max'
 
 const linkClasses = (router: NextRouter, path: string): string =>
   classnames(
@@ -43,10 +43,6 @@ export const Header = ({ showAuthButtons = true }) => {
   const [drawerVisible, setDrawerVisible] = useState<boolean>(false)
 
   const router = useRouter()
-
-  const { toggleColorMode } = useColorMode()
-  const isDarkMode = useColorModeValue(false, true)
-
   const { payload: user } = query<UserData>({
     queryKey: ['baseUser', session?.token],
     queryFn: () =>
@@ -57,22 +53,6 @@ export const Header = ({ showAuthButtons = true }) => {
       }),
     enabled: loggedIn,
   })
-
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark')
-      document.documentElement.classList.remove('light')
-    } else {
-      document.documentElement.classList.remove('dark')
-      document.documentElement.classList.add('light')
-    }
-  }, [isDarkMode])
-
-  const handleToggleDarkMode = () => {
-    const newIsDarkMode: boolean = !isDarkMode
-    toggleColorMode()
-    localStorage.setItem('theme', newIsDarkMode ? 'dark' : 'light')
-  }
 
   return (
     <div className="flex flex-row justify-between px-[5%] h-16">
@@ -140,7 +120,7 @@ export const Header = ({ showAuthButtons = true }) => {
           <Menu isLazy>
             {({ isOpen }) => (
               <>
-                <MenuButton className="font-mont text-secondaryText hover:underline dark:text-secondaryTextDark">
+                <MenuButton className="font-mont text-secondary hover:underline">
                   <div className="flex h-full items-center space-x-1">
                     <span className="hidden sm:inline">{user?.username}</span>
                     {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
