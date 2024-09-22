@@ -1,12 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, ListResponse, ListTotal, SortDirection } from '..'
+import { ApiResponse, ListResponse, ListTotal, SortDirection } from '../..'
 import middleware from '@pages/api/database/middleware'
 import { GET } from '@constants/http-methods'
 import Cors from 'cors'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { cardsQuery } from '@pages/api/database/database'
 import { StatusCodes } from 'http-status-codes'
-import methodNotAllowed from '../lib/methodNotAllowed'
+import methodNotAllowed from '../../lib/methodNotAllowed'
 
 export type OwnedCard = {
   quantity: number

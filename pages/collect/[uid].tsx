@@ -21,12 +21,12 @@ import { GET } from '@constants/http-methods'
 import rarityMap from '@constants/rarity-map'
 import { shlTeamsMap } from '@constants/teams-map'
 import { query } from '@pages/api/database/query'
-import { ListResponse, SortDirection } from '@pages/api/v3'
+import { ListResponse, SiteUniqueCards, SortDirection, UserUniqueCollection } from '@pages/api/v3'
 import {
   OwnedCard,
   OwnedCardSortOption,
   OwnedCardSortValue,
-} from '@pages/api/v3/collection/[uid]'
+} from '@pages/api/v3/collection/uid'
 import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
@@ -117,6 +117,25 @@ export default () => {
       }),
   })
 
+  const { payload: user_unique_cards } = query<UserUniqueCollection>({
+    queryKey:['userID', uid],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/collection/uid/user-unique-cards?userID=${uid}`,
+      })
+  })
+
+  const { payload: site_unique_cards } = query<SiteUniqueCards>({
+    queryKey: [],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/collection/unique-cards`,
+      })
+  })
+  console.log(site_unique_cards)
+
   const { payload, isLoading, refetch } = query<ListResponse<OwnedCard>>({
     queryKey: [
       'collection',
@@ -132,7 +151,7 @@ export default () => {
     queryFn: () =>
       axios({
         method: GET,
-        url: `/api/v3/collection/${uid}`,
+        url: `/api/v3/collection/uid?uid=${uid}`,
         params: {
           playerName,
           teams: JSON.stringify(teams),
