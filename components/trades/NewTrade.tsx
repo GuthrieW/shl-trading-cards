@@ -261,6 +261,7 @@ export default function NewTrade({
         description: 'Please include at least one card in your request',
         status: 'success',
       })
+      router.reload()
     } catch (error) {
       addToast({
         title: 'Error Creating Trade',
