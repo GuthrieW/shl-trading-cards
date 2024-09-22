@@ -205,7 +205,7 @@ export default () => {
             </FormControl>
           </div>
           <TableContainer>
-            <Table variant="striped" className="mt-4" size="md">
+            <Table variant="cardtable" className="mt-4" size="md">
               <Thead>
                 <Tr>
                   <Th

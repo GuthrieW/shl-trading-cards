@@ -56,10 +56,17 @@ export const chakraTheme: Partial<ChakraTheme> = {
     },
     Table: {
       variants: {
+        cardtable: {
+          tr: {
+            _even: {
+              background: colors.background.primary,
+            },
+          },
+        },
         homePage: {
           tr: {
             _even: {
-              background: 'RGBA(0, 0, 0, 0.06)',
+              background: colors.background.primary,
             },
           },
         },
