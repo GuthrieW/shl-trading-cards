@@ -24,6 +24,7 @@ import classnames from 'classnames'
 import { query } from '@pages/api/database/query'
 import { UserData } from '@pages/api/v3/user'
 import { GET } from '@constants/http-methods'
+import { ColorModeSwitcher } from '@components/ColorModeSwitcher'
 
 const CURRENT_PAGE_LINK_CLASSES =
   'border-b-0 sm:border-b-[4px] border-l-[4px] sm:border-l-0 pt-0 sm:pt-[4px] pr-[14px] sm:pr-[10px] border-secondary'
