@@ -30,6 +30,7 @@ export type OwnedCard = {
   quickness: number
   control: number
   conditioning: number
+  playerID: number
 }
 
 export type OwnedCardSortValue = keyof OwnedCard
@@ -124,7 +125,8 @@ export default async function collectionEndpoint(
           card.low_shots,
           card.quickness,
           card.control,
-          card.conditioning
+          card.conditioning,
+          card.playerID
         FROM cards card
         LEFT JOIN userCollection ownedCard
           ON card.cardID=ownedCard.cardID
@@ -153,7 +155,8 @@ export default async function collectionEndpoint(
           card.low_shots,
           card.quickness,
           card.control,
-          card.conditioning
+          card.conditioning,
+          card.playerID
         FROM cards card
         LEFT JOIN ownedCards ownedCard
           ON card.cardID=ownedCard.cardID

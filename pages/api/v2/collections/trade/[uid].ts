@@ -21,7 +21,6 @@ const index = async (
   await middleware(request, response, cors)
   const { method, query } = request
 
-  // Get all of the unique cards in a user's collection
   if (method === GET) {
     const { uid } = query
     const result = await queryDatabase<Card>(

@@ -20,6 +20,7 @@ import {
 } from '@chakra-ui/react'
 import DisplayCollection from '@components/collection/DisplayCollection'
 import { PageWrapper } from '@components/common/PageWrapper'
+import CardLightBoxModal from '@components/modals/card-lightbox-modal'
 import TablePagination from '@components/table/TablePagination'
 import { GET } from '@constants/http-methods'
 import rarityMap from '@constants/rarity-map'
@@ -95,6 +96,7 @@ const LOADING_GRID_DATA: { rows: OwnedCard[] } = {
     quickness: 1,
     control: 1,
     conditioning: 1,
+    playerID: 1,
   })),
 } as const
 
@@ -107,7 +109,8 @@ export default () => {
   const [playerName, setPlayerName] = useState<string>('')
   const [teams, setTeams] = useState<string[]>([])
   const [rarities, setRarities] = useState<string[]>([])
-
+  const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
+  const [selectedCard, setSelectedCard] = useState<CollectionCard | null>(null)
   const [sortColumn, setSortColumn] = useState<OwnedCardSortValue>(
     SORT_OPTIONS[0].value
   )
@@ -144,7 +147,6 @@ export default () => {
           url: `/api/v3/collection/unique-cards`,
         }),
     })
-  console.log(user_unique_cards)
 
   const { payload, isLoading, refetch } = query<ListResponse<OwnedCard>>({
     queryKey: [
@@ -174,7 +176,6 @@ export default () => {
         },
       }),
   })
-
   useEffect(() => {
     if (payload) {
       setTotalCards(payload.total)
@@ -228,6 +229,7 @@ export default () => {
     }
     return activeFilters.join(' | ')
   }
+
   return (
     <PageWrapper>
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
@@ -246,7 +248,7 @@ export default () => {
       <VStack spacing={4} align="stretch" className="px-4">
         <FormControl>
           <Input
-            className="w-full bg-secondary border-grey100 !text-grey100"
+            className="w-full bg-secondary border-grey100"
             placeholder="Search By Player Name"
             size="lg"
             onChange={(event) => setPlayerName(event.target.value)}
@@ -381,6 +383,10 @@ export default () => {
         {(isLoading ? LOADING_GRID_DATA : payload)?.rows.map((card, index) => (
           <div
             key={`${card.cardID}-${index}`}
+            onClick={() => {
+              setSelectedCard(card)
+              setLightBoxIsOpen(true)
+            }}
             className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
           >
             <Image
@@ -398,6 +404,15 @@ export default () => {
                 {`${card.card_rarity} - ${card.quantity}`}
               </Badge>
             )}
+            {lightBoxIsOpen && (
+            <CardLightBoxModal
+              cardName={selectedCard.player_name}
+              cardImage={selectedCard.image_url}
+              owned={selectedCard.quantity}
+              playerID={selectedCard.playerID}
+              setShowModal={() => setLightBoxIsOpen(false)}
+            />
+          )}
           </div>
         ))}
       </SimpleGrid>

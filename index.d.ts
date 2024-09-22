@@ -55,6 +55,7 @@ type CollectionCard = {
   player_name: string
   overall: number
   teamID: number
+  playerID: number
 }
 
 type SetCard = {

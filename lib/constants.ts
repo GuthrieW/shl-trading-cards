@@ -18,6 +18,14 @@ export const userGroups = {
   TRADING_CARD_TEAM: 165,
 } as const
 
+export const generateIndexLink = (
+  playerID: number,
+  withPortalMode?: string,
+) =>
+  `https://index.simulationhockey.com/${LEAGUE_LINK_MAP[
+    0
+  ].toLowerCase()}/player/${playerID}${withPortalMode ? `?portalView=${withPortalMode}` : ''}`;
+
 export type RoleGroup = (keyof Readonly<typeof userGroups>)[]
 
 export const CAN_RUN_SCRIPTS: RoleGroup = ['TRADING_CARD_ADMIN']
@@ -29,3 +37,4 @@ export const CAN_CLAIM_CARDS: RoleGroup = ['TRADING_CARD_TEAM']
 export const CAN_EDIT_CARDS: RoleGroup = ['TRADING_CARD_ADMIN']
 export const CAN_SUBMIT_CARDS: RoleGroup = ['TRADING_CARD_TEAM']
 export const CAN_PROCESS_CARDS: RoleGroup = ['TRADING_CARD_ADMIN']
+export const LEAGUE_LINK_MAP = ['SHL', 'SMJHL', 'IIHF', 'WJC'];
