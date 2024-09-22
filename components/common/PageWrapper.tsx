@@ -27,7 +27,7 @@ export const PageWrapper = ({
       />
     )}
     <Header />
-    <div className="mx-auto w-full bg-secondary pb-20 2xl:w-4/5">
+    <div className="mx-auto w-full bg-primary pb-20 2xl:w-4/5">
       {loading ? (
         <div className="m-auto flex h-[calc(100vh-10rem)] w-full items-center justify-center">
           <Spinner size="xl" thickness="4px" />

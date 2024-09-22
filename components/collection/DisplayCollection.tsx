@@ -6,7 +6,6 @@ import {
     AccordionIcon,
     Badge,
     Box,
-    Text,
     Skeleton,
     VStack,
     Wrap,
@@ -28,11 +27,12 @@ import {
     };
   
     return (
+        
       <Accordion allowToggle>
         <AccordionItem>
           <h2>
             <AccordionButton>
-              <Box flex="1" textAlign="left" fontWeight="bold" fontSize="lg">
+              <Box flex="2" textAlign="left" fontWeight="bold" fontSize="lg">
                 Card Rarities
               </Box>
               <AccordionIcon />

@@ -83,7 +83,7 @@ const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
               {isLoading ? (
                 <>
                   <div
-                    className="z-50 h-16 w-full bg-primary"
+                    className="z-50 h-16 w-full"
                     role="navigation"
                     aria-label="Main"
                   >
@@ -91,7 +91,7 @@ const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
                       <IceLevelLogo className="relative top-[5%] h-[90%] sm:top-[2.5%]" />
                     </div>
                   </div>
-                  <div className="m-auto w-full bg-secondary pb-8 2xl:w-4/5 ">
+                  <div className="m-auto w-full pb-8 2xl:w-4/5">
                     <div className="m-auto flex h-[calc(100vh-10rem)] w-full items-center justify-center">
                       <Spinner size="xl" thickness="4px" />
                     </div>
