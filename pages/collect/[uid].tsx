@@ -15,6 +15,7 @@ import {
   Switch,
   Text,
 } from '@chakra-ui/react'
+import DisplayCollection from '@components/collection/DisplayCollection'
 import { PageWrapper } from '@components/common/PageWrapper'
 import TablePagination from '@components/table/TablePagination'
 import { GET } from '@constants/http-methods'
@@ -117,8 +118,8 @@ export default () => {
       }),
   })
 
-  const { payload: user_unique_cards } = query<UserUniqueCollection>({
-    queryKey:['userID', uid],
+  const { payload: user_unique_cards, isLoading: user_unique_cards_loading } = query<UserUniqueCollection[]>({
+    queryKey: ['userID', uid],
     queryFn: () =>
       axios({
         method: GET,
@@ -126,7 +127,7 @@ export default () => {
       })
   })
 
-  const { payload: site_unique_cards } = query<SiteUniqueCards>({
+  const { payload: site_unique_cards, isLoading: site_unique_cards_loading } = query<SiteUniqueCards[]>({
     queryKey: [],
     queryFn: () =>
       axios({
@@ -134,7 +135,7 @@ export default () => {
         url: `/api/v3/collection/unique-cards`,
       })
   })
-  console.log(site_unique_cards)
+  console.log(user_unique_cards)
 
   const { payload, isLoading, refetch } = query<ListResponse<OwnedCard>>({
     queryKey: [
@@ -215,10 +216,15 @@ export default () => {
     }
     return activeFilters.join(' | ')
   }
-
+  console.log(site_unique_cards)
   return (
     <PageWrapper>
       <span>{pluralizeName(user?.username)}&nbsp;Collection</span>
+      <DisplayCollection
+        siteUniqueCards={site_unique_cards}
+        userUniqueCards={user_unique_cards}
+        isLoading={user_unique_cards_loading || site_unique_cards_loading}
+      />
       {showNotOwnedCards && (
         <Text>
           Owned Cards: {totalOwnedCards} / {totalCards} ({((totalOwnedCards / totalCards) * 100).toFixed(2)}%)
