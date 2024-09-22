@@ -31,7 +31,7 @@ import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useState } from 'react'
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {

@@ -24,10 +24,7 @@ export default async function usersWithCardsEndpoint(
   if (req.method === GET) {
     const username = req.query.username as string
 
-    if (!(await checkUserAuthorization(req))) {
-      res.status(StatusCodes.UNAUTHORIZED).end('Not authorized')
-      return
-    }
+    const isAuthenticated: boolean = await checkUserAuthorization(req)
 
     const countQuery: SQLStatement = SQL`
       SELECT count(*) as total
@@ -43,13 +40,14 @@ export default async function usersWithCardsEndpoint(
       WHERE`
 
     if (username) {
+      countQuery.append(SQL` u.username LIKE ${`%${username}%`} AND`)
+      query.append(SQL` u.username LIKE ${`%${username}%`} AND`)
+    }
+
+    if (isAuthenticated) {
       const userid = req.cookies.userid
-      countQuery.append(
-        SQL` u.username LIKE ${`%${username}%`} AND u.uid !=${userid} AND`
-      )
-      query.append(
-        SQL` u.username LIKE ${`%${username}%`} AND u.uid !=${userid} AND`
-      )
+      countQuery.append(SQL` u.uid !=${userid} AND`)
+      query.append(SQL` u.uid !=${userid} AND`)
     }
 
     countQuery.append(SQL` u.uid IN
