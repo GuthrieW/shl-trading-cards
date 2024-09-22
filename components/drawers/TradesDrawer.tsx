@@ -8,6 +8,7 @@ import {
   CardHeader,
   Drawer,
   DrawerBody,
+  DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
   FormControl,
@@ -72,17 +73,13 @@ export default function TradesDrawer({
   const [tradeStatusFilter, setTradeStatusFilter] = useState<TradeStatus>(
     TRADE_STATUS_OPTIONS[1].value
   )
-  const [partnerUsername, setPartnerUsername] = useState<string>(null)
-  const [debouncedUsername] = useDebounce(partnerUsername, 1000)
+  const [partnerUsername, setPartnerUsername] = useState<string>('')
+  const [debouncedUsername] = useDebounce(partnerUsername, 500)
 
   const { session, loggedIn } = useSession()
   const router = useRouter()
 
-  const {
-    payload: loggedInTrades,
-    isLoading: loggedInTradesIsLoading,
-    refetch,
-  } = query<ListResponse<Trade>>({
+  const { payload: loggedInTrades } = query<ListResponse<Trade>>({
     queryKey: [
       'trades',
       session?.token,
@@ -95,21 +92,17 @@ export default function TradesDrawer({
         url: `/api/v3/trades`,
         headers: { Authorization: `Bearer ${session?.token}` },
         params: {
-          username: debouncedUsername?.length > 3 ? debouncedUsername : '',
+          username: debouncedUsername?.length >= 3 ? debouncedUsername : '',
           status: tradeStatusFilter,
         },
       }),
     enabled: loggedIn,
   })
 
-  useEffect(() => {
-    refetch()
-  }, [session?.token, tradeStatusFilter, debouncedUsername])
-  console.log('testing', loggedInTrades)
-
   return (
     <Drawer placement="left" isOpen={isOpen} onClose={onClose}>
       <DrawerContent>
+        <DrawerCloseButton />
         <DrawerHeader>My Trades</DrawerHeader>
         <DrawerBody>
           <div className="flex flex-row">
@@ -148,7 +141,6 @@ export default function TradesDrawer({
           )}
           <Stack className="mt-2" divider={<StackDivider />}>
             {loggedInTrades?.rows.map((trade, index) => {
-              console.log('trade', trade)
               const otherUserId =
                 trade.initiatorID === parseInt(session.userId)
                   ? trade.recipientID
@@ -157,7 +149,7 @@ export default function TradesDrawer({
                 <Card
                   className="cursor-pointer hover:bg-primaryDark transition-colors"
                   key={trade?.tradeID}
-                  onClick={() => router.push(`/trades/${trade.tradeID}`)}
+                  onClick={() => router.push(`/trade/${trade.tradeID}`)}
                 >
                   <CardHeader>
                     #{trade?.tradeID} - {otherUserId}

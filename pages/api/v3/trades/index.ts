@@ -2,70 +2,91 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, ListResponse } from '..'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
-import { GET } from '@constants/http-methods'
+import { GET, POST } from '@constants/http-methods'
 import { cardsQuery, usersQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { checkUserAuthorization } from '../lib/checkUserAuthorization'
 import { StatusCodes } from 'http-status-codes'
 import { UserData } from '../user'
+import methodNotAllowed from '../lib/methodNotAllowed'
+import { TradeAsset } from '@pages/api/mutations/use-create-trade'
 
-const allowedMethods: string[] = [GET] as const
+const allowedMethods: string[] = [GET, POST] as const
 const cors = Cors({
   methods: allowedMethods,
 })
 
 export default async function tradesEndpoint(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<ListResponse<Trade>>>
+  res: NextApiResponse<ApiResponse<ListResponse<Trade | null>>>
 ): Promise<void> {
   await middleware(req, res, cors)
 
   if (req.method === GET) {
-    const username = req.query.username as string
-    const status = req.query.status as string
+    const username = (req.query.username ?? '') as string
+    const status = (req.query.status ?? '') as string
 
     if (!(await checkUserAuthorization(req))) {
       res.status(StatusCodes.UNAUTHORIZED).end('Not authorized')
       return
     }
 
-    const partnerUserQuery: SQLStatement = SQL` SELECT uid, username FROM mybb_users`
+    let tradePartners = []
+    if (username.length !== 0) {
+      const partnerUserQuery: SQLStatement = SQL` SELECT uid, username FROM mybb_users`
 
-    if (username?.length !== 0) {
       partnerUserQuery.append(SQL` WHERE username LIKE ${`%${username}%`}`)
-    }
 
-    const partnerUserQueryResult = await usersQuery<UserData>(partnerUserQuery)
+      const partnerUserQueryResult =
+        await usersQuery<UserData>(partnerUserQuery)
 
-    if ('error' in partnerUserQueryResult) {
-      console.error(partnerUserQueryResult.error)
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .end('Datebase connection failed')
-      return
+      if ('error' in partnerUserQueryResult) {
+        console.error(partnerUserQueryResult.error)
+        res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .end('Datebase connection failed')
+        return
+      }
+
+      tradePartners = partnerUserQueryResult
     }
 
     const userId = req.cookies.userid
     const tradesQuery = SQL`SELECT * FROM trades`
 
-    if (partnerUserQueryResult.length === 0) {
+    if (tradePartners.length === 0) {
       tradesQuery.append(
         SQL` WHERE (initiatorID=${userId} OR recipientID=${userId})`
       )
     } else {
-      const partnerIds = partnerUserQueryResult
-        .map((user) => user.uid)
-        .join(', ')
-      tradesQuery.append(SQL` WHERE 
-        (initiatorID=${userId} AND recipientID IN (${`${partnerIds}`}))
-        OR (initiatorID IN (${`${partnerIds}`}) AND recipientID=${userId})`)
+      const partnerIds = tradePartners.map((partner) => partner.uid)
+      tradesQuery.append(
+        SQL` WHERE ((initiatorID=${userId} AND recipientID IN (`
+      )
+      partnerIds.forEach((id, index) => {
+        if (index === 0) {
+          tradesQuery.append(SQL` ${id}`)
+          return
+        }
+
+        tradesQuery.append(SQL`, ${id}`)
+      })
+      tradesQuery.append(SQL`)) OR (recipientID=${userId} AND initiatorID IN (`)
+      partnerIds.forEach((id, index) => {
+        if (index === 0) {
+          tradesQuery.append(SQL` ${id}`)
+          return
+        }
+
+        tradesQuery.append(SQL`, ${id}`)
+      })
+      tradesQuery.append(SQL`)))`)
     }
 
     if (status.length !== 0) {
       tradesQuery.append(SQL` AND trade_status=${status}`)
     }
 
-    console.log('tradesQuery', tradesQuery)
     const queryResult = await cardsQuery<Trade>(tradesQuery)
 
     if ('error' in queryResult) {
@@ -75,8 +96,6 @@ export default async function tradesEndpoint(
         .end('Datebase connection failed')
       return
     }
-
-    console.log('queryResult', queryResult.length)
 
     res.status(StatusCodes.OK).json({
       status: 'success',
@@ -88,4 +107,67 @@ export default async function tradesEndpoint(
       },
     })
   }
+
+  if (req.method === POST) {
+    const initiatorId = req.body.initiatorId as string
+    const recipientId = req.body.recipientId as string
+    const tradeAssets = req.body.tradeAssets as TradeAsset[]
+
+    if (
+      !initiatorId ||
+      !recipientId ||
+      !tradeAssets ||
+      tradeAssets.length === 0
+    ) {
+      res.status(StatusCodes.BAD_REQUEST).end('Malformed request')
+      return
+    }
+
+    if (initiatorId === recipientId) {
+      res.status(StatusCodes.BAD_REQUEST).end('You cannot trade with yourself')
+      return
+    }
+
+    let tradeError: boolean = false
+    await Promise.all(
+      tradeAssets.map(async (asset: TradeAsset) => {
+        const cardOwner = await cardsQuery<{ userID: string }>(
+          SQL`SELECT userID FROM collection WHERE ownedCardId=${asset.ownedCardId} LIMIT 1`
+        )
+
+        console.log('card', cardOwner[0].userID, asset.fromId)
+        if (cardOwner[0].userID != asset.fromId) {
+          tradeError = true
+        }
+      })
+    )
+
+    if (tradeError) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).end('Trade contains errors')
+      return
+    }
+
+    const createTradeResult = await cardsQuery(
+      SQL`CALL create_trade(${initiatorId},${recipientId})`
+    )
+
+    const newTrade = createTradeResult[0][0]
+
+    await Promise.all(
+      tradeAssets.map(
+        async (asset: TradeAsset) =>
+          await cardsQuery(
+            SQL`CALL add_trade_asset(${newTrade.tradeID}, ${asset.ownedCardId}, ${asset.toId}, ${asset.fromId});`
+          )
+      )
+    )
+
+    res.status(StatusCodes.OK).json({
+      status: 'success',
+      payload: null,
+    })
+    return
+  }
+
+  methodNotAllowed(req, res, allowedMethods)
 }

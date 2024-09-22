@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Link } from './Link'
 import { IceLevelLogo } from './IceLevelLogo'
 import { useSession } from 'contexts/AuthContext'
-import { Squash as Hamburger } from 'hamburger-react'
 import {
   Avatar,
   Button,
@@ -11,7 +10,6 @@ import {
   IconButton,
   Menu,
   MenuButton,
-  MenuDivider,
   MenuItem,
   MenuList,
   useColorMode,
@@ -28,8 +26,6 @@ import classnames from 'classnames'
 import { query } from '@pages/api/database/query'
 import { UserData } from '@pages/api/v3/user'
 import { GET } from '@constants/http-methods'
-import { RoleGuard } from '@components/auth/RoleGuard'
-import { PermissionGuard } from '@components/auth/PermissionGuard'
 
 const CURRENT_PAGE_LINK_CLASSES =
   'border-b-0 sm:border-b-[4px] border-l-[4px] sm:border-l-0 pt-0 sm:pt-[4px] pr-[14px] sm:pr-[10px] border-secondary dark:border-secondaryDark'
@@ -51,7 +47,7 @@ export const Header = ({ showAuthButtons = true }) => {
   const { toggleColorMode } = useColorMode()
   const isDarkMode = useColorModeValue(false, true)
 
-  const { payload: user, isLoading } = query<UserData>({
+  const { payload: user } = query<UserData>({
     queryKey: ['baseUser', session?.token],
     queryFn: () =>
       axios({
@@ -91,7 +87,7 @@ export const Header = ({ showAuthButtons = true }) => {
           />
         </Icon>
         <Link href="/collect" className={linkClasses(router, '/collect')}>
-          Collect
+          Collections
         </Link>
         <Link href="/shop" className={linkClasses(router, '/shop')}>
           Shop

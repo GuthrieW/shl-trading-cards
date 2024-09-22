@@ -4,6 +4,7 @@ import {
   Button,
   Drawer,
   DrawerBody,
+  DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
@@ -384,6 +385,7 @@ ${issueData.desiredFunctionality}`
       <Drawer placement="bottom" isOpen={isOpen} onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
+          <DrawerCloseButton />
           <DrawerHeader>
             {drawerId === 'bug' && bugDrawerData.header}
             {drawerId === 'feature' && featureDrawerData.header}

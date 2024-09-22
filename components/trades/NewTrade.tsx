@@ -4,6 +4,7 @@ import {
   Button,
   Drawer,
   DrawerBody,
+  DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
@@ -21,11 +22,13 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import TablePagination from '@components/table/TablePagination'
-import { GET } from '@constants/http-methods'
+import { GET, POST } from '@constants/http-methods'
 import rarityMap from '@constants/rarity-map'
 import { shlTeamsMap } from '@constants/teams-map'
 import { useCookie } from '@hooks/useCookie'
+import { mutation } from '@pages/api/database/mutation'
 import { query } from '@pages/api/database/query'
+import { TradeAsset } from '@pages/api/mutations/use-create-trade'
 import { ListResponse, SortDirection } from '@pages/api/v3'
 import {
   TradeCard,
@@ -38,13 +41,12 @@ import { ToastContext } from 'contexts/ToastContext'
 import config from 'lib/config'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
-import { Fragment, useContext, useEffect, useState } from 'react'
+import { Fragment, useContext, useState } from 'react'
+import { useQueryClient } from 'react-query'
 
-// type ColumnName = 'username' | 'create_date' | 'update_date'
-
-const SORT_OPTIONS: any[] = [
+const SORT_OPTIONS: TradeCardSortOption[] = [
   {
-    value: 'username',
+    value: 'overall',
     label: 'Overall',
     sortLabel: (direction: SortDirection) =>
       direction === 'DESC' ? '(Descending)' : '(Ascending)',
@@ -98,6 +100,7 @@ export default function NewTrade({
   loggedInUser: UserData
   tradePartnerUid: string
 }) {
+  const queryClient = useQueryClient()
   const router = useRouter()
   const { addToast } = useContext(ToastContext)
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -138,41 +141,46 @@ export default function NewTrade({
       }),
   })
 
-  const {
-    payload: selectedUserCards,
-    isLoading: selectedUserCardsIsLoading,
-    refetch,
-  } = query<ListResponse<TradeCard>>({
-    queryKey: [
-      'collection',
-      selectedUserId,
-      playerName,
-      JSON.stringify(teams),
-      JSON.stringify(rarities),
-      String(tablePage),
-      sortColumn,
-      sortDirection,
-    ],
-    queryFn: () =>
-      axios({
-        url: `/api/v3/trades/collection/${selectedUserId}`,
-        method: GET,
-        params: {
-          playerName,
-          teams: JSON.stringify(teams),
-          rarities: JSON.stringify(rarities),
-          limit: ROWS_PER_PAGE,
-          offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
-          sortColumn,
-          sortDirection,
-        },
-      }),
-    enabled: !!selectedUserId,
-  })
+  const { payload: selectedUserCards, isLoading: selectedUserCardsIsLoading } =
+    query<ListResponse<TradeCard>>({
+      queryKey: [
+        'collection',
+        selectedUserId,
+        playerName,
+        JSON.stringify(teams),
+        JSON.stringify(rarities),
+        String(tablePage),
+        sortColumn,
+        sortDirection,
+      ],
+      queryFn: () =>
+        axios({
+          url: `/api/v3/trades/collection/${selectedUserId}`,
+          method: GET,
+          params: {
+            playerName,
+            teams: JSON.stringify(teams),
+            rarities: JSON.stringify(rarities),
+            limit: ROWS_PER_PAGE,
+            offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
+            sortColumn,
+            sortDirection,
+          },
+        }),
+      enabled: !!selectedUserId,
+    })
 
-  useEffect(() => {
-    refetch()
-  }, [uid, playerName, teams, rarities, sortColumn, sortDirection, tablePage])
+  const { mutateAsync: submitTrade, isLoading: isSubmittingTrade } = mutation<
+    void,
+    { initiatorId: string; recipientId: string; tradeAssets: TradeAsset[] }
+  >({
+    mutationFn: ({ initiatorId, recipientId, tradeAssets }) =>
+      axios({
+        method: POST,
+        url: '/api/v3/trades',
+        data: { initiatorId, recipientId, tradeAssets },
+      }),
+  })
 
   const toggleTeam = (team: string) => {
     setTeams((currentValue) => {
@@ -225,75 +233,148 @@ export default function NewTrade({
     )
   }
 
+  const handleSubmitTrade = async () => {
+    try {
+      await submitTrade({
+        initiatorId: uid,
+        recipientId: selectedUserId,
+        tradeAssets: [
+          ...loggedInUserCardsToTrade.map(
+            (card): TradeAsset => ({
+              ownedCardId: String(card.ownedCardID),
+              toId: selectedUserId,
+              fromId: uid,
+            })
+          ),
+          ...partnerUserCardsToTrade.map(
+            (card): TradeAsset => ({
+              ownedCardId: String(card.ownedCardID),
+              toId: uid,
+              fromId: selectedUserId,
+            })
+          ),
+        ],
+      })
+      queryClient.invalidateQueries(['trades'])
+      addToast({
+        title: 'Trade Created',
+        description: 'Please include at least one card in your request',
+        status: 'success',
+      })
+      router.reload()
+    } catch (error) {
+      addToast({
+        title: 'Error Creating Trade',
+        description: error,
+        status: 'error',
+      })
+    }
+  }
   const selectedUser: UserData =
     selectedUserId === uid ? loggedInUser : tradePartnerUser
 
   return (
     <>
-      <div className="flex flex-row">
-        <div className="w-1/2">
-          <div className="flex justify-start">
-            <Button onClick={() => openDrawer(uid)}>Open My Cards</Button>
-          </div>
-          <SimpleGrid columns={3} className="m-2">
-            {Object.entries(loggedInUserCardsToTrade).map(([cardID, card]) => (
-              <div className="m-2">
-                <Image
-                  className="cursor-pointer"
-                  onClick={() => {
-                    removeCardFromTrade(card, true)
-                  }}
-                  src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
-                  fallback={
-                    <div className="relative z-10">
-                      <Image src="/cardback.png" />
-                      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
-                    </div>
-                  }
-                />
-                <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
-                  {card.card_rarity}
-                </Badge>
-              </div>
-            ))}
-          </SimpleGrid>
+      <div className="flex flex-col mt-2">
+        <div className="flex justify-end">
+          <Button
+            className="disabled:bg-primaryDark"
+            disabled={
+              isSubmittingTrade ||
+              loggedInUserCardsToTrade.length === 0 ||
+              partnerUserCardsToTrade.length === 0
+            }
+            onClick={handleSubmitTrade}
+          >
+            Submit Trade
+          </Button>
         </div>
-        <div className="w-1/2">
-          <div className="flex justify-end">
-            <Button onClick={() => openDrawer(tradePartnerUid)}>
-              Open&nbsp;{pluralizeName(tradePartnerUser?.username)}&nbsp;Cards
-            </Button>
-          </div>
-          <SimpleGrid columns={3} className="m-2">
-            {Object.entries(partnerUserCardsToTrade).map(([key, card]) => (
-              <div className="m-2">
-                <Image
-                  className="cursor-pointer"
-                  onClick={() => {
-                    removeCardFromTrade(card, false)
-                  }}
-                  src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
-                  fallback={
-                    <div className="relative z-10">
-                      <Image src="/cardback.png" />
-                      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
-                    </div>
+        <div className="flex flex-row mt-2">
+          <div className="w-1/2 border-r">
+            <div className="flex justify-start">
+              <Button
+                onClick={() => {
+                  if (isSubmittingTrade) {
+                    return
                   }
-                />
-                <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
-                  {card.card_rarity}
-                </Badge>
-              </div>
-            ))}
-          </SimpleGrid>
+                  openDrawer(uid)
+                }}
+              >
+                Open My Cards
+              </Button>
+            </div>
+            <SimpleGrid columns={3} className="m-2">
+              {Object.entries(loggedInUserCardsToTrade).map(
+                ([cardID, card]) => (
+                  <div className="m-2" key={card.ownedCardID}>
+                    <Image
+                      className="cursor-pointer"
+                      onClick={() => {
+                        if (isSubmittingTrade) {
+                          return
+                        }
+                        removeCardFromTrade(card, true)
+                      }}
+                      src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+                      fallback={
+                        <div className="relative z-10">
+                          <Image src="/cardback.png" />
+                          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+                        </div>
+                      }
+                    />
+                    <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
+                      {card.card_rarity}
+                    </Badge>
+                  </div>
+                )
+              )}
+            </SimpleGrid>
+          </div>
+          <div className="w-1/2">
+            <div className="flex justify-end">
+              <Button
+                onClick={() => {
+                  if (isSubmittingTrade) {
+                    return
+                  }
+                  openDrawer(tradePartnerUid)
+                }}
+              >
+                Open&nbsp;{pluralizeName(tradePartnerUser?.username)}&nbsp;Cards
+              </Button>
+            </div>
+            <SimpleGrid columns={3} className="m-2">
+              {Object.entries(partnerUserCardsToTrade).map(([key, card]) => (
+                <div className="m-2" key={card.ownedCardID}>
+                  <Image
+                    className="cursor-pointer"
+                    onClick={() => {
+                      removeCardFromTrade(card, false)
+                    }}
+                    src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+                    fallback={
+                      <div className="relative z-10">
+                        <Image src="/cardback.png" />
+                        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+                      </div>
+                    }
+                  />
+                  <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
+                    {card.card_rarity}
+                  </Badge>
+                </div>
+              ))}
+            </SimpleGrid>
+          </div>
         </div>
       </div>
       <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
+          <DrawerCloseButton />
           <DrawerHeader className="flex flex-row justify-between items-center">
             <span>{pluralizeName(selectedUser?.username)}&nbsp;Cards</span>
-            <Button onClick={onClose}>Close</Button>
           </DrawerHeader>
           <DrawerBody>
             <div className="flex flex-row justify-between">

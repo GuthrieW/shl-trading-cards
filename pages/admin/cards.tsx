@@ -106,7 +106,7 @@ export default () => {
     roles: ['TRADING_CARD_ADMIN', 'TRADING_CARD_TEAM'],
   })
 
-  const { payload, isLoading, refetch } = query<ListResponse<Card>>({
+  const { payload, isLoading } = query<ListResponse<Card>>({
     queryKey: [
       'cards',
       String(viewSkaters),
@@ -137,20 +137,6 @@ export default () => {
         },
       }),
   })
-
-  useEffect(() => {
-    refetch()
-  }, [
-    viewSkaters,
-    viewNeedsAuthor,
-    viewNeedsImage,
-    viewNeedsApproval,
-    viewNeedsAuthorPaid,
-    viewDone,
-    sortColumn,
-    sortDirection,
-    tablePage,
-  ])
 
   const handleSortChange = (columnName: ColumnName) => {
     if (columnName === sortColumn) {
