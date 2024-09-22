@@ -12,11 +12,14 @@ export type ApiResponse<T> =
 
 export type ListTotal = {
   total: number
+  totalOwned: number
+
 }
 
 export type ListResponse<T> = {
   rows: T[]
   total: number
+  totalOwned: number
 }
 
 export type SortDirection = 'ASC' | 'DESC'

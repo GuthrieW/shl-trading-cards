@@ -58,7 +58,7 @@ export default async function collectionEndpoint(
     const limit = (req.query.limit ?? 10) as string
     const offset = (req.query.offset ?? 0) as string
     const sortColumn = (req.query.sortColumn ??
-      'overall') as keyof Readonly<Card>
+      'overall') as keyof Readonly<OwnedCard>
     const sortDirection = (req.query.sortDirection ?? 'DESC') as SortDirection
     const showNotOwnedCards = (req.query.showNotOwnedCards ?? 'false') as
       | 'true'
@@ -76,22 +76,26 @@ export default async function collectionEndpoint(
       showNotOwnedCards === 'true'
         ? SQL`
         WITH usercollection AS (
-          select * from ownedCards where userid=${parseInt(uid)}
+          SELECT * FROM ownedCards WHERE userid=${parseInt(uid)}
         )
-
-        SELECT count(*) as total
+        SELECT 
+          COUNT(*) AS total, 
+          SUM(CASE WHEN ownedCard.quantity > 0 THEN 1 ELSE 0 END) AS totalOwned
         FROM cards card
         LEFT JOIN userCollection ownedCard
           ON card.cardID=ownedCard.cardID
         WHERE approved=1
       `
         : SQL`
-        SELECT count(*) as total
+        SELECT 
+          COUNT(*) AS total, 
+          SUM(CASE WHEN ownedCard.quantity > 0 THEN 1 ELSE 0 END) AS totalOwned
         FROM cards card
         LEFT JOIN ownedCards ownedCard
           ON card.cardID=ownedCard.cardID
-        WHERE ownedCard.userID=${parseInt(uid)} 
+        WHERE ownedCard.userID=${parseInt(uid)}
       `
+
 
     const query: SQLStatement =
       showNotOwnedCards === 'true'
@@ -207,6 +211,13 @@ export default async function collectionEndpoint(
         : query.append(SQL` DESC`)
     }
 
+    if (sortColumn === 'quantity') {
+      query.append(SQL` ownedCard.quantity`)
+      sortDirection === 'ASC'
+        ? query.append(SQL` ASC`)
+        : query.append(SQL` DESC`)
+    }
+
     if (sortColumn === 'player_name') {
       query.append(SQL` card.player_name`)
       sortDirection === 'DESC'
@@ -253,7 +264,11 @@ export default async function collectionEndpoint(
 
     res.status(StatusCodes.OK).json({
       status: 'success',
-      payload: { rows: queryResult, total: countResult[0].total },
+      payload: {
+        rows: queryResult,
+        total: countResult[0].total,
+        totalOwned: countResult[0].totalOwned
+      },
     })
     return
   }

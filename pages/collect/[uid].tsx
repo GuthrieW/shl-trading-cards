@@ -13,6 +13,7 @@ import {
   Select,
   SimpleGrid,
   Switch,
+  Text,
 } from '@chakra-ui/react'
 import { PageWrapper } from '@components/common/PageWrapper'
 import TablePagination from '@components/table/TablePagination'
@@ -31,7 +32,7 @@ import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {
@@ -51,6 +52,12 @@ const SORT_OPTIONS: OwnedCardSortOption[] = [
     label: 'Team Name',
     sortLabel: (direction: SortDirection) =>
       direction === 'DESC' ? '(A-Z)' : '(Z-A)',
+  },
+  {
+    value: 'quantity',
+    label: 'Cards Owned',
+    sortLabel: (direction: SortDirection) =>
+      direction === 'DESC' ? '(Most to Least)' : '(Least to Most)',
   },
 ] as const
 
@@ -84,6 +91,8 @@ const LOADING_GRID_DATA: { rows: OwnedCard[] } = {
 
 export default () => {
   const router = useRouter()
+  const [totalCards, setTotalCards] = useState<number>(0)
+  const [totalOwnedCards, setTotalOwnedCards] = useState<number>(0)
   const { session } = useSession()
   const [showNotOwnedCards, setShowNotOwnedCards] = useState<boolean>(false)
   const [playerName, setPlayerName] = useState<string>('')
@@ -98,6 +107,7 @@ export default () => {
 
   const uid = router.query.uid as string
 
+
   const { payload: user } = query<UserData>({
     queryKey: ['collectionUser', session?.token],
     queryFn: () =>
@@ -107,7 +117,7 @@ export default () => {
       }),
   })
 
-  const { payload, isLoading } = query<ListResponse<OwnedCard>>({
+  const { payload, isLoading, refetch } = query<ListResponse<OwnedCard>>({
     queryKey: [
       'collection',
       uid,
@@ -136,6 +146,27 @@ export default () => {
       }),
   })
 
+  useEffect(() => {
+    if (payload) {
+      setTotalCards(payload.total);
+      setTotalOwnedCards(payload.totalOwned);
+    }
+  }, [payload]);
+
+
+  useEffect(() => {
+    refetch()
+  }, [
+    uid,
+    playerName,
+    teams,
+    rarities,
+    sortColumn,
+    sortDirection,
+    tablePage,
+    showNotOwnedCards,
+  ])
+
   const toggleTeam = (team: string) => {
     setTeams((currentValue) => {
       const teamIndex: number = currentValue.indexOf(team)
@@ -155,10 +186,28 @@ export default () => {
       return [...currentValue]
     })
   }
+  const getActiveFilters = () => {
+    const activeFilters = []
+    if (teams.length > 0) {
+      activeFilters.push(`Teams: ${teams.map(id => shlTeamsMap[id].label).join(', ')}`)
+    }
+    if (rarities.length > 0) {
+      activeFilters.push(`Rarities: ${rarities.map(r => rarityMap[r]?.label || r).join(', ')}`)
+    }
+    return activeFilters.join(' | ')
+  }
 
   return (
     <PageWrapper>
       <span>{pluralizeName(user?.username)}&nbsp;Collection</span>
+      {showNotOwnedCards && (
+        <Text>
+          Owned Cards: {totalOwnedCards} / {totalCards} ({((totalOwnedCards / totalCards) * 100).toFixed(2)}%)
+        </Text>
+      )}
+      {getActiveFilters() && (
+        <Text className="text-sm">Active Filters: {getActiveFilters()}</Text>
+      )}
       <div className="flex flex-row justify-between">
         <div className="flex flex-row justify-start items-end">
           <FormControl className="mx-2 w-auto">
