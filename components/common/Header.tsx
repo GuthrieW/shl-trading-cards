@@ -18,19 +18,18 @@ import {
 import {
   ChevronDownIcon,
   ChevronUpIcon,
-  MoonIcon,
-  SunIcon,
 } from '@chakra-ui/icons'
 import axios from 'axios'
 import classnames from 'classnames'
 import { query } from '@pages/api/database/query'
 import { UserData } from '@pages/api/v3/user'
 import { GET } from '@constants/http-methods'
+import { ColorModeSwitcher } from '@components/ColorModeSwitcher'
 
 const CURRENT_PAGE_LINK_CLASSES =
-  'border-b-0 sm:border-b-[4px] border-l-[4px] sm:border-l-0 pt-0 sm:pt-[4px] pr-[14px] sm:pr-[10px] border-secondary dark:border-secondaryDark'
+  'border-b-0 sm:border-b-[4px] border-l-[4px] sm:border-l-0 pt-0 sm:pt-[4px] pr-[14px] sm:pr-[10px] border-secondary'
 const LINK_CLASSES =
-  '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-secondaryText dark:!text-secondaryTextDark hover:bg-borderblue dark:hover:bg-borderblueDark sm:h-full sm:w-max'
+  '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-secondary sm:h-full sm:w-max'
 
 const linkClasses = (router: NextRouter, path: string): string =>
   classnames(
@@ -38,15 +37,26 @@ const linkClasses = (router: NextRouter, path: string): string =>
     LINK_CLASSES
   )
 
+const externalLinks = [
+  {
+    name: 'Forums',
+    href: 'https://simulationhockey.com/index.php',
+  },
+  {
+    name: 'Portal',
+    href: 'https://portal.simulationhockey.com/',
+  },
+  {
+    name: 'Index',
+    href: 'https://Index.simulationhockey.com/',
+  },
+];
+
 export const Header = ({ showAuthButtons = true }) => {
   const { session, loggedIn, handleLogout } = useSession()
   const [drawerVisible, setDrawerVisible] = useState<boolean>(false)
 
   const router = useRouter()
-
-  const { toggleColorMode } = useColorMode()
-  const isDarkMode = useColorModeValue(false, true)
-
   const { payload: user } = query<UserData>({
     queryKey: ['baseUser', session?.token],
     queryFn: () =>
@@ -58,24 +68,8 @@ export const Header = ({ showAuthButtons = true }) => {
     enabled: loggedIn,
   })
 
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark')
-      document.documentElement.classList.remove('light')
-    } else {
-      document.documentElement.classList.remove('dark')
-      document.documentElement.classList.add('light')
-    }
-  }, [isDarkMode])
-
-  const handleToggleDarkMode = () => {
-    const newIsDarkMode: boolean = !isDarkMode
-    toggleColorMode()
-    localStorage.setItem('theme', newIsDarkMode ? 'dark' : 'light')
-  }
-
   return (
-    <div className="flex flex-row justify-between px-[5%] h-16">
+    <div className="flex flex-row justify-between px-[5%] h-16 bg-black text-grey100">
       <div className="relative flex flex-row">
         <Icon
           onClick={() => router.push('/')}
@@ -86,64 +80,70 @@ export const Header = ({ showAuthButtons = true }) => {
             className="relative top-[5%] h-[500%] sm:top-[2.5%] w-16"
           />
         </Icon>
-        <Link href="/collect" className={linkClasses(router, '/collect')}>
-          Collections
+        <Link
+          href="/collect"
+          className={classnames(
+            "!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600",
+            linkClasses(router, "/collect")
+          )}
+        >
+          Collect
         </Link>
-        <Link href="/shop" className={linkClasses(router, '/shop')}>
+
+        <Link
+          href="/shop"
+          className={classnames(
+            "!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600",
+            linkClasses(router, "/shop")
+          )}
+        >
           Shop
         </Link>
-        <Link href="/trade" className={linkClasses(router, '/trade')}>
+
+        <Link
+          href="/trade"
+          className={classnames(
+            "!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600",
+            linkClasses(router, "/trade")
+          )}
+        >
           Trade
         </Link>
+
         <Menu>
-          <MenuButton className={linkClasses(router, '/more')}>More</MenuButton>
+          <MenuButton className="!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-grey100 hover:bg-blue600 sm:h-full sm:w-max">
+            More
+          </MenuButton>
           <MenuList>
-            <MenuItem
-              onClick={() => router.push('https://www.simulationhockey.com')}
-            >
-              Forums
-            </MenuItem>
-            <MenuItem
-              onClick={() => router.push('https://index.simulationhockey.com')}
-            >
-              Index
-            </MenuItem>
-            <MenuItem
-              onClick={() => router.push('https://portal.simulationhockey.com')}
-            >
-              Portal
-            </MenuItem>
+            {externalLinks.map(({ name, href }) => (
+              <MenuItem
+                className="hover:!bg-highlighted/40 hover:!text-primary"
+                key={name}
+                as="a"
+                href={href}
+                target="_blank"
+              >
+                {name}
+              </MenuItem>
+            ))}
           </MenuList>
         </Menu>
         <Menu>
-          <MenuButton className={linkClasses(router, '/admin')}>
+          <MenuButton className={classnames("!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600", linkClasses(router, '/admin'))}>
             Admin
           </MenuButton>
           <MenuList>
-            <MenuItem onClick={() => router.push('/admin/cards')}>
+            <MenuItem className="hover:!bg-highlighted/40 hover:!text-primary" onClick={() => router.push('/admin/cards')}>
               Cards
             </MenuItem>
-            <MenuItem onClick={() => router.push('/admin/scripts')}>
+            <MenuItem className="hover:!bg-highlighted/40 hover:!text-primary" onClick={() => router.push('/admin/scripts')}>
               Scripts
             </MenuItem>
           </MenuList>
         </Menu>
       </div>
       <div className="flex flex-row items-center">
-        <IconButton
-          className="mx-2"
-          aria-label={`Toggle Dark Mode`}
-          icon={
-            localStorage.getItem('theme') === 'dark' ? (
-              <SunIcon />
-            ) : (
-              <MoonIcon />
-            )
-          }
-          onClick={handleToggleDarkMode}
-          variant="ghost"
-          color="white"
-        />
+        <ColorModeSwitcher className="mr-1 !text-grey100 hover:!text-grey900 md:mr-2" />
         {!loggedIn && showAuthButtons && (
           <Button className="mx-2" onClick={() => router.push('/login')}>
             Log In
@@ -153,9 +153,9 @@ export const Header = ({ showAuthButtons = true }) => {
           <Menu isLazy>
             {({ isOpen }) => (
               <>
-                <MenuButton className="font-mont text-secondaryText hover:underline dark:text-secondaryTextDark">
+                <MenuButton className="font-mont !text-white hover:underline">
                   <div className="flex h-full items-center space-x-1">
-                    <span className="hidden sm:inline">{user?.username}</span>
+                    <span className="hidden sm:inline !text-white">{user?.username}</span>
                     {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
                     <Avatar
                       size="sm"

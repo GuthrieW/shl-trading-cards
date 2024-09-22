@@ -163,33 +163,38 @@ export default () => {
                 <MenuOptionGroup type="checkbox">
                   <MenuItemOption
                     value="NeedsAuthor"
+                    className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
                     onClick={() => setViewNeedsAuthor(!viewNeedsAuthor)}
                   >
-                    NeedsAuthor
+                    Author Needed
                   </MenuItemOption>
                   <MenuItemOption
                     value="NeedsImage"
+                    className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
                     onClick={() => setviewNeedsImage(!viewNeedsImage)}
                   >
-                    NeedsImage
+                    Needs Image
                   </MenuItemOption>
                   <MenuItemOption
                     value="NeedsApproval"
+                    className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
                     onClick={() => setviewNeedsApproval(!viewNeedsApproval)}
                   >
-                    NeedsApproval
+                    Needs Approval
                   </MenuItemOption>
                   <MenuItemOption
                     value="NeedsAuthorPaid"
+                    className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
                     onClick={() => setviewNeedsAuthorPaid(!viewNeedsAuthorPaid)}
                   >
-                    NeedsAuthorPaid
+                    Needs Author Paid
                   </MenuItemOption>
                   <MenuItemOption
                     value="Done"
+                    className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
                     onClick={() => setViewDone(!viewDone)}
                   >
-                    Done
+                    Completed
                   </MenuItemOption>
                 </MenuOptionGroup>
               </MenuList>
@@ -200,7 +205,7 @@ export default () => {
             </FormControl>
           </div>
           <TableContainer>
-            <Table variant="striped" className="mt-4" size="md">
+            <Table variant="cardtable" className="mt-4" size="md">
               <Thead>
                 <Tr>
                   <Th

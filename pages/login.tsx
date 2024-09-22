@@ -157,7 +157,7 @@ export default function () {
             <Link
               isExternal
               href="https://simulationhockey.com/member.php?action=lostpw"
-              className="font-mont !text-hyperlink dark:!text-hyperlinkDark"
+              className="font-mont !text-hyperlink"
             >
               Forgot your password?
             </Link>
@@ -167,13 +167,13 @@ export default function () {
             <Link
               isExternal
               href="https://simulationhockey.com/member.php?action=register"
-              className=" !text-hyperlink dark:!text-hyperlinkDark"
+              className=" !text-hyperlink"
             >
               Sign up
             </Link>
           </div>
           {loginError && (
-            <div className="text-red dark:text-redDark">{loginError}</div>
+            <div className="text-red500 ">{loginError}</div>
           )}
         </div>
       </div>

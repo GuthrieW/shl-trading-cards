@@ -9,6 +9,7 @@ import { SessionProvider, useSession } from 'contexts/AuthContext'
 import { CustomChakraProvider } from 'styles/CustomChakraProvider'
 import { ToastProvider } from 'contexts/ToastContext'
 import { IceLevelLogo } from '@components/common/IceLevelLogo'
+import { ThemeProvider } from 'next-themes';
 import { Footer } from '@components/common/Footer'
 import { Spinner } from '@chakra-ui/react'
 import '../styles/globals.css'
@@ -67,12 +68,22 @@ const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
           className={`${montserrat.variable} ${raleway.variable} relative min-h-screen font-raleway`}
         >
           <DefaultSeo {...SEO} />
+          <ThemeProvider
+            attribute="class"
+            storageKey="index-theme"
+            themes={['light', 'dark']}
+            value={{
+              light: 'index-theme-light',
+              dark: 'index-theme-dark',
+            }}
+            enableColorScheme={false}
+          >
           <CustomChakraProvider>
             <ToastProvider>
               {isLoading ? (
                 <>
                   <div
-                    className="z-50 h-16 w-full bg-primary dark:bg-primaryDark"
+                    className="z-50 h-16 w-full bg-primary"
                     role="navigation"
                     aria-label="Main"
                   >
@@ -80,7 +91,7 @@ const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
                       <IceLevelLogo className="relative top-[5%] h-[90%] sm:top-[2.5%]" />
                     </div>
                   </div>
-                  <div className="m-auto w-full bg-secondary pb-8 dark:bg-secondaryDark 2xl:w-4/5 ">
+                  <div className="m-auto w-full bg-secondary pb-8 2xl:w-4/5 ">
                     <div className="m-auto flex h-[calc(100vh-10rem)] w-full items-center justify-center">
                       <Spinner size="xl" thickness="4px" />
                     </div>
@@ -92,6 +103,7 @@ const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
               )}
             </ToastProvider>
           </CustomChakraProvider>
+          </ThemeProvider>
         </main>
       </Hydrate>
     </QueryClientProvider>

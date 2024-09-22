@@ -125,14 +125,14 @@ export default function MonthlySubscriptionsForm({
   return (
     <>
       <div>
-        <div className="flex justify-between items-center mt-4 mx-1">
-          <div className=" flex flex-row justify-start items-end">
+        <div className="flex justify-between items-center mt-4 mx-1 text-primary bg-primary">
+          <div className=" flex flex-row justify-start items-end text-primary">
             <Input
               placeholder="Username"
               type="text"
               onChange={(event) => setUsername(event.target.value)}
             />
-            <Button className="mx-2" onClick={refetch}>
+            <Button className="mx-2 text-secondary bg-secondary" onClick={refetch}>
               Submit
             </Button>
           </div>
@@ -147,7 +147,7 @@ export default function MonthlySubscriptionsForm({
           </Button>
         </div>
 
-        <div className="rounded border border-1 border-inherit mt-4">
+        <div className="rounded border border-1 border-inherit mt-4 border-table">
           <TableContainer>
             <Table className="mt-4" size="md" layout="fixed">
               <Thead>
@@ -186,12 +186,14 @@ export default function MonthlySubscriptionsForm({
                         <Menu>
                           <MenuButton
                             as={Button}
+                            className="hover:!bg-highlighted/40 hover:!text-primary"
                             rightIcon={<ChevronDownIcon />}
                           >
                             Actions
                           </MenuButton>
                           <MenuList>
                             <MenuItem
+                              className="hover:!bg-highlighted/40 hover:!text-primary"
                               onClick={() => {
                                 updateModal.onOpen()
                                 setSelectedSetting(setting)
@@ -200,6 +202,7 @@ export default function MonthlySubscriptionsForm({
                               Update
                             </MenuItem>
                             <MenuItem
+                              className="hover:!bg-highlighted/40 hover:!text-primary"
                               onClick={() => {
                                 deleteDialog.onOpen()
                                 setSelectedSetting(setting)

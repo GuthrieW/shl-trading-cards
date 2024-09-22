@@ -20,7 +20,7 @@ class ImageService {
    */
   async saveImage(imageBuffer: Buffer, filename: string): Promise<OutputInfo> {
     const location =
-      process.env.APP_ENV === 'production'
+      process.env.NODE_ENV === 'production'
         ? `${pathToCardsForUpload}${filename}`
         : `temp/${filename}`
     return await sharp(imageBuffer).toFile(location)
