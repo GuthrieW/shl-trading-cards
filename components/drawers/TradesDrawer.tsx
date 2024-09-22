@@ -149,7 +149,7 @@ export default function TradesDrawer({
                 <Card
                   className="cursor-pointer hover:bg-primaryDark transition-colors"
                   key={trade?.tradeID}
-                  onClick={() => router.push(`/trades/${trade.tradeID}`)}
+                  onClick={() => router.push(`/trade/${trade.tradeID}`)}
                 >
                   <CardHeader>
                     #{trade?.tradeID} - {otherUserId}
