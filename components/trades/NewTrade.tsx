@@ -41,7 +41,7 @@ import { ToastContext } from 'contexts/ToastContext'
 import config from 'lib/config'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
-import { Fragment, useContext, useEffect, useState } from 'react'
+import { Fragment, useContext, useState } from 'react'
 import { useQueryClient } from 'react-query'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
@@ -180,22 +180,6 @@ export default function NewTrade({
         url: '/api/v3/trades',
         data: { initiatorId, recipientId, tradeAssets },
       }),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['trades'])
-      addToast({
-        title: 'Trade Created',
-        description: 'Please include at least one card in your request',
-        status: 'success',
-      })
-      return
-    },
-    onError: () => {
-      addToast({
-        title: 'Error Creating Trade',
-        description: '',
-        status: 'error',
-      })
-    },
   })
 
   const toggleTeam = (team: string) => {
@@ -249,28 +233,42 @@ export default function NewTrade({
     )
   }
 
-  const handleSubmitTrade = () =>
-    submitTrade({
-      initiatorId: uid,
-      recipientId: selectedUserId,
-      tradeAssets: [
-        ...loggedInUserCardsToTrade.map(
-          (card): TradeAsset => ({
-            ownedCardId: String(card.ownedCardID),
-            toId: uid,
-            fromId: selectedUserId,
-          })
-        ),
-        ...partnerUserCardsToTrade.map(
-          (card): TradeAsset => ({
-            ownedCardId: String(card.ownedCardID),
-            toId: selectedUserId,
-            fromId: uid,
-          })
-        ),
-      ],
-    })
-
+  const handleSubmitTrade = async () => {
+    try {
+      await submitTrade({
+        initiatorId: uid,
+        recipientId: selectedUserId,
+        tradeAssets: [
+          ...loggedInUserCardsToTrade.map(
+            (card): TradeAsset => ({
+              ownedCardId: String(card.ownedCardID),
+              toId: selectedUserId,
+              fromId: uid,
+            })
+          ),
+          ...partnerUserCardsToTrade.map(
+            (card): TradeAsset => ({
+              ownedCardId: String(card.ownedCardID),
+              toId: uid,
+              fromId: selectedUserId,
+            })
+          ),
+        ],
+      })
+      queryClient.invalidateQueries(['trades'])
+      addToast({
+        title: 'Trade Created',
+        description: 'Please include at least one card in your request',
+        status: 'success',
+      })
+    } catch (error) {
+      addToast({
+        title: 'Error Creating Trade',
+        description: error,
+        status: 'error',
+      })
+    }
+  }
   const selectedUser: UserData =
     selectedUserId === uid ? loggedInUser : tradePartnerUser
 
@@ -291,7 +289,7 @@ export default function NewTrade({
           </Button>
         </div>
         <div className="flex flex-row mt-2">
-          <div className="w-1/2">
+          <div className="w-1/2 border-r">
             <div className="flex justify-start">
               <Button
                 onClick={() => {

@@ -8,6 +8,8 @@ import SQL, { SQLStatement } from 'sql-template-strings'
 import { checkUserAuthorization } from '../lib/checkUserAuthorization'
 import { StatusCodes } from 'http-status-codes'
 import { UserData } from '../user'
+import methodNotAllowed from '../lib/methodNotAllowed'
+import { TradeAsset } from '@pages/api/mutations/use-create-trade'
 
 const allowedMethods: string[] = [GET, POST] as const
 const cors = Cors({
@@ -16,7 +18,7 @@ const cors = Cors({
 
 export default async function tradesEndpoint(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<ListResponse<Trade>>>
+  res: NextApiResponse<ApiResponse<ListResponse<Trade | null>>>
 ): Promise<void> {
   await middleware(req, res, cors)
 
@@ -107,5 +109,65 @@ export default async function tradesEndpoint(
   }
 
   if (req.method === POST) {
+    const initiatorId = req.body.initiatorId as string
+    const recipientId = req.body.recipientId as string
+    const tradeAssets = req.body.tradeAssets as TradeAsset[]
+
+    if (
+      !initiatorId ||
+      !recipientId ||
+      !tradeAssets ||
+      tradeAssets.length === 0
+    ) {
+      res.status(StatusCodes.BAD_REQUEST).end('Malformed request')
+      return
+    }
+
+    if (initiatorId === recipientId) {
+      res.status(StatusCodes.BAD_REQUEST).end('You cannot trade with yourself')
+      return
+    }
+
+    let tradeError: boolean = false
+    await Promise.all(
+      tradeAssets.map(async (asset: TradeAsset) => {
+        const cardOwner = await cardsQuery<{ userID: string }>(
+          SQL`SELECT userID FROM collection WHERE ownedCardId=${asset.ownedCardId} LIMIT 1`
+        )
+
+        console.log('card', cardOwner[0].userID, asset.fromId)
+        if (cardOwner[0].userID != asset.fromId) {
+          tradeError = true
+        }
+      })
+    )
+
+    if (tradeError) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).end('Trade contains errors')
+      return
+    }
+
+    const createTradeResult = await cardsQuery(
+      SQL`CALL create_trade(${initiatorId},${recipientId})`
+    )
+
+    const newTrade = createTradeResult[0][0]
+
+    await Promise.all(
+      tradeAssets.map(
+        async (asset: TradeAsset) =>
+          await cardsQuery(
+            SQL`CALL add_trade_asset(${newTrade.tradeID}, ${asset.ownedCardId}, ${asset.toId}, ${asset.fromId});`
+          )
+      )
+    )
+
+    res.status(StatusCodes.OK).json({
+      status: 'success',
+      payload: null,
+    })
+    return
   }
+
+  methodNotAllowed(req, res, allowedMethods)
 }
