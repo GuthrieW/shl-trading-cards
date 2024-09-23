@@ -342,7 +342,7 @@ export default () => {
         <FormControl>
           <FormLabel>Sort</FormLabel>
           <Select
-            className="cursor-pointer"
+            className="cursor-pointer w-full sm:w-auto border-grey800 border-1 rounded p-2  !bg-secondary"
             onChange={(event) => {
               const [sortColumn, sortDirection] = event.target.value.split(
                 ':'
@@ -351,16 +351,18 @@ export default () => {
               setSortDirection(sortDirection)
             }}
           >
+            
             {SORT_OPTIONS.map((option, index) => (
               <Fragment key={`${option.value}-${index}`}>
-                <option value={`${option.value}:DESC`}>
+                <option className="!bg-secondary" value={`${option.value}:DESC`}>
                   {option.label}&nbsp;{option.sortLabel('DESC')}
                 </option>
-                <option value={`${option.value}:ASC`}>
+                <option className="!bg-secondary" value={`${option.value}:ASC`}>
                   {option.label}&nbsp;{option.sortLabel('ASC')}
                 </option>
               </Fragment>
             ))}
+            
           </Select>
         </FormControl>
       </VStack>
