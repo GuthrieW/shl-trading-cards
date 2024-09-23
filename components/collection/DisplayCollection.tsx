@@ -4,12 +4,13 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
-  Badge,
   Box,
   Skeleton,
   VStack,
   Wrap,
   WrapItem,
+  Progress,
+  Text,
 } from '@chakra-ui/react';
 import { Fragment } from 'react';
 import { SiteUniqueCards, UserUniqueCollection } from '@pages/api/v3';
@@ -26,21 +27,13 @@ const DisplayCollection = ({ siteUniqueCards = [], userUniqueCards = [], isLoadi
     return userCard ? userCard.owned_count : 0;
   };
 
-  const getDynamicBadgeColor = (ownedCount: number, totalCount: number) => {
-    const percentage = (ownedCount / totalCount) * 100;
-    const red = Math.floor((1 - percentage / 110) * 150);
-    const green = Math.floor((percentage / 110) * 150);
-
-    return `rgb(${red}, ${green}, 0)`;
-  };
-
   return (
     <Accordion allowToggle>
       <AccordionItem>
         <h2>
           <AccordionButton>
             <Box flex="2" textAlign="left" fontWeight="bold" fontSize="lg">
-              Card Rarities
+              Collection Sets
             </Box>
             <AccordionIcon />
           </AccordionButton>
@@ -57,22 +50,23 @@ const DisplayCollection = ({ siteUniqueCards = [], userUniqueCards = [], isLoadi
               <Wrap spacing={4} mt={2}>
                 {siteUniqueCards.map((siteCard) => {
                   const ownedCount = getUserOwnedCount(siteCard.card_rarity);
-                  const badgeColor = getDynamicBadgeColor(ownedCount, siteCard.total_count);
-                  const isComplete = ownedCount === siteCard.total_count;
+                  const totalCount = siteCard.total_count;
+                  const progressValue = (ownedCount / totalCount) * 100;
+                  const isComplete = ownedCount === totalCount;
 
                   return (
-                    <WrapItem key={siteCard.card_rarity}>
-                      <Badge
-                        backgroundColor={badgeColor}
-                        color="white"
-                        px={3}
-                        py={1}
-                        borderRadius="md"
-                        fontSize="md"
-                        border={isComplete ? "2px solid black" : "2px solid transparent"}
-                      >
-                        {siteCard.card_rarity}: {ownedCount} / {siteCard.total_count}
-                      </Badge>
+                    <WrapItem key={siteCard.card_rarity} width="100%">
+                      <Box width="100%">
+                        <Text fontWeight="bold" mb={1}>
+                          {siteCard.card_rarity}: {ownedCount} / {totalCount}
+                        </Text>
+                        <Progress
+                          value={progressValue}
+                          colorScheme={isComplete ? 'green' : 'blue'}
+                          borderRadius="md"
+                          hasStripe
+                        />
+                      </Box>
                     </WrapItem>
                   );
                 })}

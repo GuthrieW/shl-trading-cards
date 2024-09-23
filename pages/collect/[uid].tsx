@@ -42,6 +42,7 @@ import { useSession } from 'contexts/AuthContext'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
 import { Fragment, useEffect, useState } from 'react'
+import DisplayPacks from '@components/collection/DisplayPacks'
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {
@@ -245,6 +246,11 @@ export default () => {
         isLoading={userUniqueCardsIsLoading || siteUniqueCardsIsLoading}
       />
       <div className="mb-3" />
+      <DisplayPacks
+          userID={uid}
+      />
+      <div className="mb-3" />
+
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl mb-6">
         <Text>Filters</Text>
       </div>

@@ -33,4 +33,21 @@ export type SiteUniqueCards = {
   total_count: number
 }
 
+export type UserLatestPack = {
+  packID: string;
+  userID: number;
+  packType: string;
+  opened: number;
+  purchaseDate: Date;
+  openDate: Date;
+  source; string;
+}
+
+export type LatestCards = {
+  ownedCardID: number;
+  userID: number;
+  cardID: string;
+  packID: number;
+}
+
 export type SortDirection = 'ASC' | 'DESC'
