@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import {
   Modal,
-  ModalOverlay,
   ModalContent,
   ModalBody,
   ModalCloseButton,
@@ -190,9 +189,7 @@ const CardLightBoxModal = ({
             <Button onClick={onDrawerOpen} mr={2}>
               Show Stats
             </Button>
-            <Button onClick={handleFlip}>
-              Flip
-            </Button>
+            <Button onClick={handleFlip}>Flip</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

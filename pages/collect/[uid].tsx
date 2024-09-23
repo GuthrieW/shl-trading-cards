@@ -1,4 +1,4 @@
-import { CheckIcon, SearchIcon } from '@chakra-ui/icons'
+import { CheckIcon } from '@chakra-ui/icons'
 import {
   Badge,
   FormControl,
@@ -12,11 +12,10 @@ import {
   MenuOptionGroup,
   Select,
   SimpleGrid,
+  Spinner,
   Switch,
   Text,
-  Flex,
   VStack,
-  InputLeftElement,
 } from '@chakra-ui/react'
 import DisplayCollection from '@components/collection/DisplayCollection'
 import { PageWrapper } from '@components/common/PageWrapper'
@@ -119,7 +118,7 @@ export default () => {
 
   const uid = router.query.uid as string
 
-  const { payload: user } = query<UserData>({
+  const { payload: user, isLoading: userIsLoading } = query<UserData>({
     queryKey: ['collectionUser', session?.token],
     queryFn: () =>
       axios({
@@ -128,7 +127,7 @@ export default () => {
       }),
   })
 
-  const { payload: user_unique_cards, isLoading: user_unique_cards_loading } =
+  const { payload: userUniqueCards, isLoading: userUniqueCardsIsLoading } =
     query<UserUniqueCollection[]>({
       queryKey: ['userID', uid],
       queryFn: () =>
@@ -138,7 +137,7 @@ export default () => {
         }),
     })
 
-  const { payload: site_unique_cards, isLoading: site_unique_cards_loading } =
+  const { payload: siteUniqueCards, isLoading: siteUniqueCardsIsLoading } =
     query<SiteUniqueCards[]>({
       queryKey: [],
       queryFn: () =>
@@ -233,13 +232,17 @@ export default () => {
   return (
     <PageWrapper>
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
-        <Text>{pluralizeName(user?.username)}&nbsp;Collection</Text>
+        {userIsLoading ? (
+          <Spinner />
+        ) : (
+          <Text>{pluralizeName(user?.username)}&nbsp;Collection</Text>
+        )}
       </div>
       <div className="mb-3" />
       <DisplayCollection
-        siteUniqueCards={site_unique_cards}
-        userUniqueCards={user_unique_cards}
-        isLoading={user_unique_cards_loading || site_unique_cards_loading}
+        siteUniqueCards={siteUniqueCards}
+        userUniqueCards={userUniqueCards}
+        isLoading={userUniqueCardsIsLoading || siteUniqueCardsIsLoading}
       />
       <div className="mb-3" />
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl mb-6">
@@ -342,7 +345,7 @@ export default () => {
         <FormControl>
           <FormLabel>Sort</FormLabel>
           <Select
-            className="cursor-pointer w-full sm:w-auto border-grey800 border-1 rounded p-2  !bg-secondary"
+            className="cursor-pointer w-full sm:w-auto border-grey800 border-1 rounded px-2 !bg-secondary"
             onChange={(event) => {
               const [sortColumn, sortDirection] = event.target.value.split(
                 ':'
@@ -351,10 +354,12 @@ export default () => {
               setSortDirection(sortDirection)
             }}
           >
-            
             {SORT_OPTIONS.map((option, index) => (
               <Fragment key={`${option.value}-${index}`}>
-                <option className="!bg-secondary" value={`${option.value}:DESC`}>
+                <option
+                  className="!bg-secondary"
+                  value={`${option.value}:DESC`}
+                >
                   {option.label}&nbsp;{option.sortLabel('DESC')}
                 </option>
                 <option className="!bg-secondary" value={`${option.value}:ASC`}>
@@ -362,7 +367,6 @@ export default () => {
                 </option>
               </Fragment>
             ))}
-            
           </Select>
         </FormControl>
       </VStack>
@@ -392,7 +396,9 @@ export default () => {
             className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
           >
             <Image
-              className={`${card.quantity === 0 ? 'grayscale' : ''}`}
+              className={`cursor-pointer ${
+                card.quantity === 0 ? 'grayscale' : ''
+              }`}
               src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
               fallback={
                 <div className="relative z-10">
@@ -407,14 +413,14 @@ export default () => {
               </Badge>
             )}
             {lightBoxIsOpen && (
-            <CardLightBoxModal
-              cardName={selectedCard.player_name}
-              cardImage={selectedCard.image_url}
-              owned={selectedCard.quantity}
-              playerID={selectedCard.playerID}
-              setShowModal={() => setLightBoxIsOpen(false)}
-            />
-          )}
+              <CardLightBoxModal
+                cardName={selectedCard.player_name}
+                cardImage={selectedCard.image_url}
+                owned={selectedCard.quantity}
+                playerID={selectedCard.playerID}
+                setShowModal={() => setLightBoxIsOpen(false)}
+              />
+            )}
           </div>
         ))}
       </SimpleGrid>
