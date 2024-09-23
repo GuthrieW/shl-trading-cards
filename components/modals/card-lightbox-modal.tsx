@@ -191,7 +191,7 @@ const CardLightBoxModal = ({
               Show Stats
             </Button>
             <Button onClick={handleFlip}>
-              {isFlipped ? 'Show Card' : 'Show Awards'}
+              Flip
             </Button>
           </ModalFooter>
         </ModalContent>
