@@ -1,4 +1,4 @@
-import { CheckIcon } from '@chakra-ui/icons'
+import { CheckIcon, SearchIcon } from '@chakra-ui/icons'
 import {
   Badge,
   FormControl,
@@ -13,25 +13,36 @@ import {
   Select,
   SimpleGrid,
   Switch,
+  Text,
+  Flex,
+  VStack,
+  InputLeftElement,
 } from '@chakra-ui/react'
+import DisplayCollection from '@components/collection/DisplayCollection'
 import { PageWrapper } from '@components/common/PageWrapper'
+import CardLightBoxModal from '@components/modals/card-lightbox-modal'
 import TablePagination from '@components/table/TablePagination'
 import { GET } from '@constants/http-methods'
 import rarityMap from '@constants/rarity-map'
 import { shlTeamsMap } from '@constants/teams-map'
 import { query } from '@pages/api/database/query'
-import { ListResponse, SortDirection } from '@pages/api/v3'
+import {
+  ListResponse,
+  SiteUniqueCards,
+  SortDirection,
+  UserUniqueCollection,
+} from '@pages/api/v3'
 import {
   OwnedCard,
   OwnedCardSortOption,
   OwnedCardSortValue,
-} from '@pages/api/v3/collection/[uid]'
+} from '@pages/api/v3/collection/uid'
 import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {
@@ -51,6 +62,12 @@ const SORT_OPTIONS: OwnedCardSortOption[] = [
     label: 'Team Name',
     sortLabel: (direction: SortDirection) =>
       direction === 'DESC' ? '(A-Z)' : '(Z-A)',
+  },
+  {
+    value: 'quantity',
+    label: 'Cards Owned',
+    sortLabel: (direction: SortDirection) =>
+      direction === 'DESC' ? '(Most to Least)' : '(Least to Most)',
   },
 ] as const
 
@@ -79,17 +96,21 @@ const LOADING_GRID_DATA: { rows: OwnedCard[] } = {
     quickness: 1,
     control: 1,
     conditioning: 1,
+    playerID: 1,
   })),
 } as const
 
 export default () => {
   const router = useRouter()
+  const [totalCards, setTotalCards] = useState<number>(0)
+  const [totalOwnedCards, setTotalOwnedCards] = useState<number>(0)
   const { session } = useSession()
   const [showNotOwnedCards, setShowNotOwnedCards] = useState<boolean>(false)
   const [playerName, setPlayerName] = useState<string>('')
   const [teams, setTeams] = useState<string[]>([])
   const [rarities, setRarities] = useState<string[]>([])
-
+  const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
+  const [selectedCard, setSelectedCard] = useState<CollectionCard | null>(null)
   const [sortColumn, setSortColumn] = useState<OwnedCardSortValue>(
     SORT_OPTIONS[0].value
   )
@@ -107,7 +128,27 @@ export default () => {
       }),
   })
 
-  const { payload, isLoading } = query<ListResponse<OwnedCard>>({
+  const { payload: user_unique_cards, isLoading: user_unique_cards_loading } =
+    query<UserUniqueCollection[]>({
+      queryKey: ['userID', uid],
+      queryFn: () =>
+        axios({
+          method: GET,
+          url: `/api/v3/collection/uid/user-unique-cards?userID=${uid}`,
+        }),
+    })
+
+  const { payload: site_unique_cards, isLoading: site_unique_cards_loading } =
+    query<SiteUniqueCards[]>({
+      queryKey: [],
+      queryFn: () =>
+        axios({
+          method: GET,
+          url: `/api/v3/collection/unique-cards`,
+        }),
+    })
+
+  const { payload, isLoading, refetch } = query<ListResponse<OwnedCard>>({
     queryKey: [
       'collection',
       uid,
@@ -122,7 +163,7 @@ export default () => {
     queryFn: () =>
       axios({
         method: GET,
-        url: `/api/v3/collection/${uid}`,
+        url: `/api/v3/collection/uid?uid=${uid}`,
         params: {
           playerName,
           teams: JSON.stringify(teams),
@@ -135,6 +176,25 @@ export default () => {
         },
       }),
   })
+  useEffect(() => {
+    if (payload) {
+      setTotalCards(payload.total)
+      setTotalOwnedCards(payload.totalOwned)
+    }
+  }, [payload])
+
+  useEffect(() => {
+    refetch()
+  }, [
+    uid,
+    playerName,
+    teams,
+    rarities,
+    sortColumn,
+    sortDirection,
+    tablePage,
+    showNotOwnedCards,
+  ])
 
   const toggleTeam = (team: string) => {
     setTeams((currentValue) => {
@@ -155,22 +215,49 @@ export default () => {
       return [...currentValue]
     })
   }
+  const getActiveFilters = () => {
+    const activeFilters = []
+    if (teams.length > 0) {
+      activeFilters.push(
+        `Teams: ${teams.map((id) => shlTeamsMap[id].label).join(', ')}`
+      )
+    }
+    if (rarities.length > 0) {
+      activeFilters.push(
+        `Rarities: ${rarities.map((r) => rarityMap[r]?.label || r).join(', ')}`
+      )
+    }
+    return activeFilters.join(' | ')
+  }
 
   return (
     <PageWrapper>
-      <span>{pluralizeName(user?.username)}&nbsp;Collection</span>
-      <div className="flex flex-row justify-between">
-        <div className="flex flex-row justify-start items-end">
-          <FormControl className="mx-2 w-auto">
-            <FormLabel>Player Name</FormLabel>
-            <Input
-              className="min-w-80"
-              onChange={(event) => setPlayerName(event.target.value)}
-            />
-          </FormControl>
-          <FormControl className="mx-2 w-auto cursor-pointer">
+      <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
+        <Text>{pluralizeName(user?.username)}&nbsp;Collection</Text>
+      </div>
+      <div className="mb-3" />
+      <DisplayCollection
+        siteUniqueCards={site_unique_cards}
+        userUniqueCards={user_unique_cards}
+        isLoading={user_unique_cards_loading || site_unique_cards_loading}
+      />
+      <div className="mb-3" />
+      <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl mb-6">
+        <Text>Filters</Text>
+      </div>
+      <VStack spacing={4} align="stretch" className="px-4">
+        <FormControl>
+          <Input
+            className="w-full bg-secondary border-grey100"
+            placeholder="Search By Player Name"
+            size="lg"
+            onChange={(event) => setPlayerName(event.target.value)}
+          />
+        </FormControl>
+        <div className="flex flex-col sm:flex-row justify-start items-stretch gap-4">
+          <FormControl className="w-full sm:w-auto">
             <Menu closeOnSelect={false}>
-              <MenuButton className="border border-1 rounded p-1.5 cursor-pointer">
+              <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary ">
                 Teams&nbsp;{`(${teams.length})`}
               </MenuButton>
               <MenuList>
@@ -206,9 +293,9 @@ export default () => {
               </MenuList>
             </Menu>
           </FormControl>
-          <FormControl className="border border-1 rounded mx-2 w-auto flex flex-row items-center">
+          <FormControl className="w-full sm:w-auto">
             <Menu closeOnSelect={false}>
-              <MenuButton className="p-1.5">
+              <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary">
                 Rarities&nbsp;{`(${rarities.length})`}
               </MenuButton>
               <MenuList>
@@ -242,47 +329,66 @@ export default () => {
               </MenuList>
             </Menu>
           </FormControl>
-          <FormControl className="m-2 flex flex-row justify-start items-center">
-            <FormLabel className="flex items-center">
-              Show Unowned Cards
-            </FormLabel>
-            <Switch
-              className="flex items-center"
-              onChange={() => setShowNotOwnedCards(!showNotOwnedCards)}
-            />
-          </FormControl>
         </div>
-        <div>
-          <FormControl className="mx-2">
-            <FormLabel>Sort</FormLabel>
-            <Select
-              className="cursor-pointer"
-              onChange={(event) => {
-                const [sortColumn, sortDirection] = event.target.value.split(
-                  ':'
-                ) as [OwnedCardSortValue, SortDirection]
-                setSortColumn(sortColumn)
-                setSortDirection(sortDirection)
-              }}
-            >
-              {SORT_OPTIONS.map((option, index) => (
-                <Fragment key={`${option.value}-${index}`}>
-                  <option value={`${option.value}:DESC`}>
-                    {option.label}&nbsp;{option.sortLabel('DESC')}
-                  </option>
-                  <option value={`${option.value}:ASC`}>
-                    {option.label}&nbsp;{option.sortLabel('ASC')}
-                  </option>
-                </Fragment>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-      </div>
-      <SimpleGrid columns={{ sm: 2, md: 3, lg: 6 }}>
+        <FormControl className="flex flex-row justify-start items-center">
+          <FormLabel className="flex items-center mr-4">
+            Show Unowned Cards
+          </FormLabel>
+          <Switch
+            className="flex items-center"
+            onChange={() => setShowNotOwnedCards(!showNotOwnedCards)}
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Sort</FormLabel>
+          <Select
+            className="cursor-pointer w-full sm:w-auto border-grey800 border-1 rounded p-2  !bg-secondary"
+            onChange={(event) => {
+              const [sortColumn, sortDirection] = event.target.value.split(
+                ':'
+              ) as [OwnedCardSortValue, SortDirection]
+              setSortColumn(sortColumn)
+              setSortDirection(sortDirection)
+            }}
+          >
+            
+            {SORT_OPTIONS.map((option, index) => (
+              <Fragment key={`${option.value}-${index}`}>
+                <option className="!bg-secondary" value={`${option.value}:DESC`}>
+                  {option.label}&nbsp;{option.sortLabel('DESC')}
+                </option>
+                <option className="!bg-secondary" value={`${option.value}:ASC`}>
+                  {option.label}&nbsp;{option.sortLabel('ASC')}
+                </option>
+              </Fragment>
+            ))}
+            
+          </Select>
+        </FormControl>
+      </VStack>
+
+      {showNotOwnedCards && (
+        <Text>
+          Owned Cards: {totalOwnedCards} / {totalCards} (
+          {((totalOwnedCards / totalCards) * 100).toFixed(2)}%)
+        </Text>
+      )}
+      {getActiveFilters() && (
+        <Text className="text-sm">Active Filters: {getActiveFilters()}</Text>
+      )}
+
+      <SimpleGrid
+        columns={{ base: 2, sm: 3, md: 4, lg: 6 }}
+        spacing={4}
+        className="mt-6 px-4"
+      >
         {(isLoading ? LOADING_GRID_DATA : payload)?.rows.map((card, index) => (
           <div
             key={`${card.cardID}-${index}`}
+            onClick={() => {
+              setSelectedCard(card)
+              setLightBoxIsOpen(true)
+            }}
             className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
           >
             <Image
@@ -300,6 +406,15 @@ export default () => {
                 {`${card.card_rarity} - ${card.quantity}`}
               </Badge>
             )}
+            {lightBoxIsOpen && (
+            <CardLightBoxModal
+              cardName={selectedCard.player_name}
+              cardImage={selectedCard.image_url}
+              owned={selectedCard.quantity}
+              playerID={selectedCard.playerID}
+              setShowModal={() => setLightBoxIsOpen(false)}
+            />
+          )}
           </div>
         ))}
       </SimpleGrid>

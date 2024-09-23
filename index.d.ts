@@ -55,6 +55,7 @@ type CollectionCard = {
   player_name: string
   overall: number
   teamID: number
+  playerID: number
 }
 
 type SetCard = {
@@ -189,4 +190,15 @@ type MostCardsOwner = {
 type Donator = {
   uid: number
   subscription: number
+}
+
+type InternalUserUniqueCollection = {
+  userID: number
+  card_rarity: string
+  owned_count: number
+}
+
+type InternalSiteUniqueCards = {
+  card_rarity: string
+  total_count: number
 }

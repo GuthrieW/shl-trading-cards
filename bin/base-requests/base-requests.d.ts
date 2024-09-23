@@ -69,6 +69,20 @@ export type PortalPlayer = {
   playerName: string
 }
 
+export type PlayerHistory = {
+  playerUpdateID: number;
+  playerName: string;
+  userID: number;
+  fhmID: number;
+  leagueID: number;
+  seasonID: number;
+  teamID: number;
+  achievement: number;
+  achievementName: string;
+  achievementDescription: string;
+  isAward: boolean;
+  won: boolean
+}
 type ImportError = {
   error: string
   player: IndexPlayer
