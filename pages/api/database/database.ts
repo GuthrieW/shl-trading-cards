@@ -14,7 +14,7 @@ const initializeDB = (database: string | undefined): ServerlessMysql =>
   })
 
 const cardsDatabase: ServerlessMysql = initializeDB(
-  process.env.NODE_ENV === 'production' ? 'admin_cards' : 'admin_cards'
+  process.env.NODE_ENV === 'production' ? 'admin_cards' : 'dev_cards'
 )
 
 const usersDatabase: ServerlessMysql = initializeDB(
