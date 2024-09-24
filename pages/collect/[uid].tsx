@@ -42,6 +42,7 @@ import { useSession } from 'contexts/AuthContext'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
 import { Fragment, useEffect, useState } from 'react'
+import DisplayPacks from '@components/collection/DisplayPacks'
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {
@@ -228,25 +229,31 @@ export default () => {
     }
     return activeFilters.join(' | ')
   }
-
   return (
     <PageWrapper>
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
         {userIsLoading ? (
           <Spinner />
         ) : (
-          <Text>{pluralizeName(user?.username)}&nbsp;Collection</Text>
+          <div>{pluralizeName(user?.username)}&nbsp;Collection</div>
         )}
       </div>
       <div className="mb-3" />
-      <DisplayCollection
-        siteUniqueCards={siteUniqueCards}
-        userUniqueCards={userUniqueCards}
-        isLoading={userUniqueCardsIsLoading || siteUniqueCardsIsLoading}
-      />
+      {payload && payload.totalOwned !== null && (
+        <DisplayCollection
+          siteUniqueCards={siteUniqueCards}
+          userUniqueCards={userUniqueCards}
+          isLoading={userUniqueCardsIsLoading || siteUniqueCardsIsLoading}
+        />
+      )}
       <div className="mb-3" />
+      {payload && payload.totalOwned !== null && (
+      <DisplayPacks userID={uid} />
+      )}
+      <div className="mb-3" />
+
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl mb-6">
-        <Text>Filters</Text>
+        Filters
       </div>
       <VStack spacing={4} align="stretch" className="px-4">
         <FormControl>
@@ -372,13 +379,13 @@ export default () => {
       </VStack>
 
       {showNotOwnedCards && (
-        <Text>
+        <div>
           Owned Cards: {totalOwnedCards} / {totalCards} (
           {((totalOwnedCards / totalCards) * 100).toFixed(2)}%)
-        </Text>
+        </div>
       )}
       {getActiveFilters() && (
-        <Text className="text-sm">Active Filters: {getActiveFilters()}</Text>
+        <div className="text-sm">Active Filters: {getActiveFilters()}</div>
       )}
 
       <SimpleGrid
@@ -418,6 +425,8 @@ export default () => {
                 cardImage={selectedCard.image_url}
                 owned={selectedCard.quantity}
                 playerID={selectedCard.playerID}
+                cardID={selectedCard.cardID}
+                userID={uid}
                 setShowModal={() => setLightBoxIsOpen(false)}
               />
             )}
