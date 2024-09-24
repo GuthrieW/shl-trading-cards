@@ -24,6 +24,7 @@ export default () => {
     'trade',
     'trades',
     'user-unique-cards',
+    'collection',
   ]
 
   const { mutateAsync: acceptTrade, isLoading: isAccepting } = mutation<
