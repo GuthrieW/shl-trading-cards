@@ -28,7 +28,10 @@ export default async function tradeEndpoint(
     }
 
     const queryResult = await cardsQuery<TradeDetails>(
-      SQL`CALL get_trade_details_by_tradeID(${tradeID})`
+      SQL`
+        SELECT * FROM trade_details
+        WHERE tradeID=${parseInt(tradeID)}
+      `
     )
 
     if ('error' in queryResult) {
@@ -39,10 +42,15 @@ export default async function tradeEndpoint(
       return
     }
 
+    if (queryResult.length === 0) {
+      console.error('Trade not found')
+      res.status(StatusCodes.NOT_FOUND).end('Trade not found')
+      return
+    }
+
     res.status(StatusCodes.OK).json({
       status: 'success',
-      // @ts-ignore need to do this because we call a procedure above
-      payload: queryResult[0][0],
+      payload: queryResult,
     })
   }
 
