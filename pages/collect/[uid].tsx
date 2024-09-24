@@ -229,9 +229,6 @@ export default () => {
     }
     return activeFilters.join(' | ')
   }
-
-  console.log(payload)
-
   return (
     <PageWrapper>
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
