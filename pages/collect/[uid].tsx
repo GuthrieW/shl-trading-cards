@@ -230,6 +230,8 @@ export default () => {
     return activeFilters.join(' | ')
   }
 
+  console.log(payload)
+
   return (
     <PageWrapper>
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
@@ -240,15 +242,17 @@ export default () => {
         )}
       </div>
       <div className="mb-3" />
-      <DisplayCollection
-        siteUniqueCards={siteUniqueCards}
-        userUniqueCards={userUniqueCards}
-        isLoading={userUniqueCardsIsLoading || siteUniqueCardsIsLoading}
-      />
+      {payload && payload.totalOwned !== null && (
+        <DisplayCollection
+          siteUniqueCards={siteUniqueCards}
+          userUniqueCards={userUniqueCards}
+          isLoading={userUniqueCardsIsLoading || siteUniqueCardsIsLoading}
+        />
+      )}
       <div className="mb-3" />
-      <DisplayPacks
-          userID={uid}
-      />
+      {payload && payload.totalOwned !== null && (
+      <DisplayPacks userID={uid} />
+      )}
       <div className="mb-3" />
 
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl mb-6">

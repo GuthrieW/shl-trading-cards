@@ -88,16 +88,16 @@ const PackPage: React.FC<PackPageProps> = ({
   return (
     <PageWrapper>
       <Box p={6}>
-        <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl mb-6">
+        <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg sm:text-xl font-bold text-secondaryText mb-6">
           <VStack spacing={4} align="start">
             <HStack justify="space-between" width="100%">
               <div className="font-bold">
-                <div>Opened By: {username}</div>
-                <div>Pack #: {packID}</div>
+                <div className="text-xs sm:text-lg">Opened By: {username}</div>
+                <div className="text-xs sm:text-lg">Pack #: {packID}</div>
               </div>
               <div className="font-bold">
-                <div>Bought On: {formatDateTime(pack.purchaseDate)}</div>
-                <div>Opened On: {formatDateTime(pack.openDate)}</div>
+                <div className="text-xs sm:text-lg">Bought On: {formatDateTime(pack.purchaseDate)}</div>
+                <div className="text-xs sm:text-lg">Opened On: {formatDateTime(pack.openDate)}</div>
               </div>
             </HStack>
           </VStack>
@@ -105,7 +105,7 @@ const PackPage: React.FC<PackPageProps> = ({
         {cards && cards.length > 0 ? (
           <PackOpen packID={packID} />
         ) : (
-          <div>No cards available for this pack.</div>
+          <div className="text-base sm:text-lg">No cards available for this pack.</div>
         )}
       </Box>
     </PageWrapper>
