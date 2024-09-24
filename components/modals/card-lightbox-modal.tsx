@@ -21,7 +21,7 @@ import {
 import pathToCards from '@constants/path-to-cards'
 import { IndexRecordTable } from 'components/collection/IndexRecordTable'
 import axios from 'axios'
-import { DisplayHistory } from '@components/collection/DisplayHistory'
+import { BackOfCard } from '@components/collection/BackOfCard'
 
 type CardLightBoxModalProps = {
   setShowModal: Function
@@ -29,6 +29,8 @@ type CardLightBoxModalProps = {
   cardImage: string
   owned: number
   playerID: number
+  cardID: number
+  userID: string
 }
 
 const THRESHOLD = 30
@@ -39,6 +41,8 @@ const CardLightBoxModal = ({
   cardImage,
   owned,
   playerID,
+  cardID,
+  userID,
 }: CardLightBoxModalProps) => {
   const { isOpen, onClose } = useDisclosure({
     isOpen: true,
@@ -50,7 +54,6 @@ const CardLightBoxModal = ({
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
   } = useDisclosure()
-
   const [isFlipped, setIsFlipped] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [playerHistory, setPlayerHistory] = useState(null)
@@ -179,7 +182,7 @@ const CardLightBoxModal = ({
                   {isLoading ? (
                     <Spinner />
                   ) : (
-                    playerHistory && <DisplayHistory playerID={playerID} />
+                    playerHistory && <BackOfCard cardID={String(cardID)} userID={userID} />
                   )}
                 </Box>
               </Box>

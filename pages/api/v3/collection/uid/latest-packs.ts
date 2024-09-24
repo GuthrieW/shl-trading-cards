@@ -8,6 +8,7 @@ import methodNotAllowed from '../../lib/methodNotAllowed';
 import { ApiResponse, UserLatestPack } from '../..';
 import { cardsQuery } from '@pages/api/database/database';
 
+
 const allowedMethods: string[] = [GET];
 const cors = Cors({
     methods: allowedMethods,
@@ -15,26 +16,42 @@ const cors = Cors({
 
 export default async function userPacksEndpoint(
     req: NextApiRequest,
-    res: NextApiResponse<ApiResponse<UserLatestPack[] | null>>
+    res: NextApiResponse<ApiResponse<UserLatestPack[]>>
 ): Promise<void> {
     await middleware(req, res, cors);
 
     if (req.method === GET) {
         const userID = req.query.userID as string;
+        const packID = req.query.packID as string;
 
-        if (!userID) {
+        if (!userID && !packID) {
             res
                 .status(StatusCodes.BAD_REQUEST)
-                .json({ status: 'error', message: 'Missing userID' });
+                .json({ status: 'error', message: 'Missing userID or packID' });
             return;
         }
 
-        const queryResult = await cardsQuery<UserLatestPack>(SQL`
-            SELECT * FROM packs_owned
-            WHERE userID = ${userID} AND opened = 1
-            ORDER BY openDate DESC
-            LIMIT 3
-        `);
+        const query = SQL`
+            SELECT packID, userID, packType, opened, purchaseDate, openDate, source
+            FROM packs_owned
+            WHERE opened = 1
+        `;
+
+        if (userID) {
+            query.append(SQL` AND userID = ${userID}`);
+        }
+
+        if (packID) {
+            query.append(SQL` AND packID = ${packID}`);
+        }
+
+        query.append(SQL` ORDER BY openDate DESC`);
+
+        if (userID && !packID) {
+            query.append(SQL` LIMIT 3`);
+        }
+
+        const queryResult = await cardsQuery<UserLatestPack>(query);
 
         if ('error' in queryResult) {
             console.error(queryResult.error);

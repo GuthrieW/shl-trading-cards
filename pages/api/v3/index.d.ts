@@ -33,13 +33,20 @@ export type SiteUniqueCards = {
   total_count: number
 }
 
+export type UserCollection ={
+  ownedCardID: number;
+  userID: number;
+  cardID: number;
+  packID: number;
+}
+
 export type UserLatestPack = {
   packID: string;
   userID: number;
   packType: string;
   opened: number;
-  purchaseDate: Date;
-  openDate: Date;
+  purchaseDate: string;
+  openDate: string;
   source; string;
 }
 

@@ -34,16 +34,16 @@ const PackOpen: React.FC<PackOpenProps> = ({ packID }) => {
     );
   }
   return (
-    <SimpleGrid columns={5} spacing={4}>
+    <SimpleGrid columns={3} spacing={4}>
       {cards.map((card: LatestCards) => (
         <Image
           loader={() => customLoader(card.cardID)}
           key={card.cardID}
           src={`${pathToCards}${card.cardID}.png`}
-          width={50}
-          height={75}
+          width={300}
+          height={475}
           alt={`Card ${card.cardID}`}
-          className="w-full h-full cursor-pointer rounded-sm"
+          className={`rounded-sm`}
           loading="lazy"
           unoptimized={true}
         />

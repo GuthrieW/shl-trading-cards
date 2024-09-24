@@ -69,7 +69,7 @@ import {
                 ))}
               </SimpleGrid>
             ) : (
-              <Text>No packs available.</Text>
+              <div>No packs available.</div>
             )}
             {selectedPackID && (
               <Box mt={4}>

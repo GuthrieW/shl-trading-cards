@@ -142,19 +142,19 @@ export const IndexRecordTable = ({
                   rounded="md"
                   mb={2}
                 >
-                  <Text
-                    fontWeight={
-                      record.isAward && record.won ? 'bold' : 'normal'
-                    }
+                  <div
+                    className={` ${
+                      record.isAward && record.won ? 'font-bold' : 'font-normal'
+                    }`}
                   >
                     S{record.seasonID} - {record.achievementName}{' '}
                     {record.isAward && (record.won ? '(won)' : '(nom)')}
-                  </Text>
-                  <Text fontSize="sm">{record.achievementDescription}</Text>
+                  </div>
+                  <div className="text-sm">{record.achievementDescription}</div>
                 </Box>
               ))
           ) : (
-            <Text>No awards found for this player.</Text>
+            <div>No awards found for this player.</div>
           )}
         </AccordionPanel>
       </AccordionItem>
