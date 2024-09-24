@@ -129,7 +129,7 @@ export default () => {
 
   const { payload: userUniqueCards, isLoading: userUniqueCardsIsLoading } =
     query<UserUniqueCollection[]>({
-      queryKey: ['userID', uid],
+      queryKey: ['user-unique-cards', uid],
       queryFn: () =>
         axios({
           method: GET,
@@ -139,7 +139,7 @@ export default () => {
 
   const { payload: siteUniqueCards, isLoading: siteUniqueCardsIsLoading } =
     query<SiteUniqueCards[]>({
-      queryKey: [],
+      queryKey: ['unique-cards'],
       queryFn: () =>
         axios({
           method: GET,

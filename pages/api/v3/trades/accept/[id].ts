@@ -14,21 +14,31 @@ const cors = Cors({
   methods: allowedMethods,
 })
 
-const index = async (
+export default async function acceptTradeEndpoint(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<null>>
-): Promise<void> => {
+): Promise<void> {
   await middleware(req, res, cors)
 
   if (req.method === POST) {
-    const tradeID = req.query.id as string
     if (!(await checkUserAuthorization(req))) {
       res.status(StatusCodes.UNAUTHORIZED).end('Not authorized')
       return
     }
 
+    const tradeID = req.query.id as string
+
+    if (!tradeID) {
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .end('Provide a tradeID in your request')
+      return
+    }
+
     const tradeResult = await cardsQuery<{ recipientID: string }>(
-      SQL`SELECT recipientID FROM trades WHERE tradeID=${parseInt(tradeID)}`
+      SQL`
+      SELECT recipientID 
+      FROM trades WHERE tradeID=${parseInt(tradeID)}`
     )
 
     if ('error' in tradeResult) {
@@ -52,13 +62,6 @@ const index = async (
       return
     }
 
-    if (!tradeID) {
-      res
-        .status(StatusCodes.BAD_REQUEST)
-        .end('Provide a tradeID in your request')
-      return
-    }
-
     const queryResult = await cardsQuery(
       SQL`CALL accept_trade(${parseInt(tradeID)})`
     )
@@ -77,5 +80,3 @@ const index = async (
 
   methodNotAllowed(req, res, allowedMethods)
 }
-
-export default index

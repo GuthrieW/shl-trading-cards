@@ -9,13 +9,22 @@ import { query } from '@pages/api/database/query'
 import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
+import { ToastContext } from 'contexts/ToastContext'
 import { useRouter } from 'next/router'
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
+import { useQueryClient } from 'react-query'
 
 export default () => {
+  const { addToast } = useContext(ToastContext)
   const { session, loggedIn } = useSession()
   const router = useRouter()
   const tradeid = router.query.tradeid as string
+  const queryClient = useQueryClient()
+  const tradeResolutionEffectedQueries: string[] = [
+    'trade',
+    'trades',
+    'user-unique-cards',
+  ]
 
   const { mutateAsync: acceptTrade, isLoading: isAccepting } = mutation<
     void,
@@ -27,6 +36,20 @@ export default () => {
         method: POST,
         headers: { Authorization: `Bearer ${session?.token}` },
       }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(tradeResolutionEffectedQueries)
+      addToast({
+        title: 'Trade Accepted',
+        status: 'success',
+      })
+      router.push('/trades')
+    },
+    onError: () => {
+      addToast({
+        title: 'Error Accepting Trade',
+        status: 'error',
+      })
+    },
   })
 
   const { mutateAsync: declineTrade, isLoading: isDeclining } = mutation<
@@ -39,6 +62,20 @@ export default () => {
         method: POST,
         headers: { Authorization: `Bearer ${session?.token}` },
       }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(tradeResolutionEffectedQueries)
+      addToast({
+        title: 'Trade Declined',
+        status: 'success',
+      })
+      router.push('/trades')
+    },
+    onError: () => {
+      addToast({
+        title: 'Error Declining Trade',
+        status: 'error',
+      })
+    },
   })
 
   const { payload: tradeInformation, isLoading: tradeInformationIsLoading } =
@@ -119,6 +156,7 @@ export default () => {
             <div>
               {loggedInUser?.uid && loggedInUser.uid === recipientUser?.uid && (
                 <Button
+                  disabled={isAccepting || isDeclining}
                   className="mx-1"
                   onClick={() => acceptTrade({ tradeID: tradeid })}
                 >
@@ -128,6 +166,7 @@ export default () => {
               {(loggedInUser?.uid && loggedInUser.uid === initiatorUser?.uid) ||
                 (loggedInUser?.uid === recipientUser?.uid && (
                   <Button
+                    disabled={isAccepting || isDeclining}
                     className="mx-1"
                     onClick={() => declineTrade({ tradeID: tradeid })}
                   >
