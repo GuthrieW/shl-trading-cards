@@ -155,7 +155,7 @@ export default () => {
         <AuthGuard>
           {!loggedInUserIsLoading && (
             <div>
-              {loggedInUser?.uid && loggedInUser.uid === recipientUser?.uid && (
+              {loggedInUser?.uid && loggedInUser.uid == recipientUser?.uid && (
                 <Button
                   disabled={isAccepting || isDeclining}
                   className="mx-1"
@@ -164,8 +164,9 @@ export default () => {
                   Accept
                 </Button>
               )}
-              {(loggedInUser?.uid && loggedInUser.uid === initiatorUser?.uid) ||
-                (loggedInUser?.uid === recipientUser?.uid && (
+              {loggedInUser?.uid &&
+                (loggedInUser.uid == initiatorUser?.uid ||
+                  loggedInUser?.uid == recipientUser?.uid) && (
                   <Button
                     disabled={isAccepting || isDeclining}
                     className="mx-1"
@@ -173,7 +174,7 @@ export default () => {
                   >
                     Decline
                   </Button>
-                ))}
+                )}
             </div>
           )}
         </AuthGuard>

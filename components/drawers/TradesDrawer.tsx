@@ -1,11 +1,6 @@
-import { ChevronDownIcon } from '@chakra-ui/icons'
 import {
   Alert,
   AlertIcon,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -14,22 +9,17 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Menu,
-  MenuButton,
-  MenuItemOption,
-  MenuList,
-  MenuOptionGroup,
   Select,
   Stack,
   StackDivider,
 } from '@chakra-ui/react'
+import { TradeCard } from '@components/cards/TradeCard'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
 const TRADE_STATUS_OPTIONS: {
@@ -77,7 +67,6 @@ export default function TradesDrawer({
   const [debouncedUsername] = useDebounce(partnerUsername, 500)
 
   const { session, loggedIn } = useSession()
-  const router = useRouter()
 
   const { payload: loggedInTrades } = query<ListResponse<Trade>>({
     queryKey: [
@@ -140,24 +129,9 @@ export default function TradesDrawer({
             </Alert>
           )}
           <Stack className="mt-2" divider={<StackDivider />}>
-            {loggedInTrades?.rows.map((trade, index) => {
-              const otherUserId =
-                trade.initiatorID === parseInt(session.userId)
-                  ? trade.recipientID
-                  : trade.initiatorID
-              return (
-                <Card
-                  className="cursor-pointer hover:bg-primaryDark transition-colors"
-                  key={trade?.tradeID}
-                  onClick={() => router.push(`/trade/${trade.tradeID}`)}
-                >
-                  <CardHeader>
-                    #{trade?.tradeID} - {otherUserId}
-                  </CardHeader>
-                  <CardBody>Status: {trade?.trade_status}</CardBody>
-                </Card>
-              )
-            })}
+            {loggedInTrades?.rows.map((trade) => (
+              <TradeCard key={trade.tradeID} trade={trade} />
+            ))}
           </Stack>
         </DrawerBody>
       </DrawerContent>
