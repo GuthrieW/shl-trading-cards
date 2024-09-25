@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useQuery } from 'react-query';
-import { Input } from '@chakra-ui/react';
+import { Input, Skeleton, SkeletonText, Box } from '@chakra-ui/react';
 import { PropagateLoader } from 'react-spinners';
 import UserCard from '@components/cards/user-card';
 import TablePagination from '@components/table/TablePagination';
@@ -60,8 +60,18 @@ const UserTables: React.FC = () => {
         onChange={handleSearchChange}
       />
       {isLoading ? (
-        <div className="flex justify-center">
-          <PropagateLoader />
+        <div className="w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {Array.from({ length: ROWS_PER_PAGE }).map((_, index) => (
+              <Box key={index} p="6" boxShadow="lg" bg="white">
+                <Skeleton height="150px" />
+                <SkeletonText mt="4" noOfLines={2} spacing="4" />
+              </Box>
+            ))}
+          </div>
+          <div className="flex justify-center">
+            <PropagateLoader />
+          </div>
         </div>
       ) : users ? (
         <div className="w-full">

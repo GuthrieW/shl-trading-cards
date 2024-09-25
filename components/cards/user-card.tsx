@@ -17,8 +17,8 @@ const UserCard = ({ user, quantity }: UserCardProps) => {
   }
 
   return (
-    <div className="flex flex-col justify-start items-center">
-      <div className="flex flex-col justify-center items-center bg-neutral-800 p-2 m-2 rounded text-gray-200 hover:shadow-lg hover:shadow-neutral-800">
+    <div className="flex flex-col justify-start items-center hover:scale-105 hover:shadow-xl">
+      <div className="flex flex-col justify-center items-center bg-neutral-800 p-2 m-2 rounded text-gray-200 ">
         <img
           alt={`${user.username} avatar`}
           className="w-24 h-24 mt-6 mx-6 rounded-full"
