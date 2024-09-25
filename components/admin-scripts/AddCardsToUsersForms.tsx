@@ -22,7 +22,7 @@ export default function AddCardsToUsersForm({
   const [cardsToAdd, setCardsToAdd] = useState<Record<string, string[]>>({})
   const { addToast } = useContext(ToastContext)
 
-  const { mutate: addCardsToUsers, isLoading: addCardsToUsersIsLoading } =
+  const { mutateAsync: addCardsToUsers, isLoading: addCardsToUsersIsLoading } =
     mutation<void, Record<string, string[]>>({
       mutationFn: (newCardsJson: Record<string, string[]>) =>
         axios({
@@ -55,7 +55,7 @@ export default function AddCardsToUsersForm({
         if (userId === 0) throw new Error('0 is not a valid User ID')
         if (cardId === 0) throw new Error('0 is not a valid Card ID')
 
-        setCardsToAdd((oldState) => ({
+        await setCardsToAdd((oldState) => ({
           ...oldState,
           [userId]: [...(oldState[userId] ?? []), cardId],
         }))

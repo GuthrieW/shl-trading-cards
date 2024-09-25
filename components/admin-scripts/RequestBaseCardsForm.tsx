@@ -16,7 +16,7 @@ export default function RequestBaseCardsForm({
 }: {
   onError: (errorMessage) => void
 }) {
-  const { mutate: requestBaseCards } = mutation<void, { season: number }>({
+  const { mutateAsync: requestBaseCards } = mutation<void, { season: number }>({
     mutationFn: ({ season }: { season: number }) =>
       axios({ method: POST, url: '/api/v3/cards/base-requests', data: season }),
   })
@@ -32,7 +32,7 @@ export default function RequestBaseCardsForm({
         try {
           setSubmitting(true)
           onError(null)
-          requestBaseCards({ season })
+          await requestBaseCards({ season })
         } catch (error) {
           console.error(error)
           const errorMessage: string =

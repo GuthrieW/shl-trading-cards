@@ -55,7 +55,7 @@ export default function MonthlySubscriptionsForm({
   const updateModal = useDisclosure()
   const deleteDialog = useDisclosure()
 
-  const { mutate: distributeMonthlyPacks } = mutation<void, void>({
+  const { mutateAsync: distributeMonthlyPacks } = mutation<void, void>({
     mutationFn: () =>
       axios({
         method: POST,
@@ -94,7 +94,7 @@ export default function MonthlySubscriptionsForm({
       try {
         setSubmitting(true)
         onError(null)
-        distributeMonthlyPacks()
+        await distributeMonthlyPacks()
       } catch (error) {
         console.error(error)
         const errorMessage: string =
@@ -132,7 +132,10 @@ export default function MonthlySubscriptionsForm({
               type="text"
               onChange={(event) => setUsername(event.target.value)}
             />
-            <Button className="mx-2 text-secondary bg-secondary" onClick={refetch}>
+            <Button
+              className="mx-2 text-secondary bg-secondary"
+              onClick={refetch}
+            >
               Submit
             </Button>
           </div>

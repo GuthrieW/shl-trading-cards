@@ -1,39 +1,50 @@
-import { Alert, AlertIcon } from '@chakra-ui/react';
-import AddCardsToUsersForm from '@components/admin-scripts/AddCardsToUsersForms';
-import DeleteDuplicateCardsForm from '@components/admin-scripts/DeleteDuplicateCardsForm';
-import MonthlySubscriptionsForm from '@components/admin-scripts/MonthlySubscriptionsForm';
-import RequestBaseCardsForm from '@components/admin-scripts/RequestBaseCardsForm';
-import { PageWrapper } from '@components/common/PageWrapper';
-import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated';
-import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized';
-import { Select } from '@components/common/Select'; 
+import { Alert, AlertIcon } from '@chakra-ui/react'
+import AddCardsToUsersForm from '@components/admin-scripts/AddCardsToUsersForms'
+import DeleteDuplicateCardsForm from '@components/admin-scripts/DeleteDuplicateCardsForm'
+import MonthlySubscriptionsForm from '@components/admin-scripts/MonthlySubscriptionsForm'
+import RequestBaseCardsForm from '@components/admin-scripts/RequestBaseCardsForm'
+import { PageWrapper } from '@components/common/PageWrapper'
+import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated'
+import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
+import { Select } from '@components/common/Select'
 
-import { useState } from 'react';
+import { useState } from 'react'
+import RequestCustomCardsForm from '@components/admin-scripts/RequestCustomCardsForm'
 
-type ScriptId = 'add-cards-to-users' | 'monthly-subscriptions' | 'request-base-cards' | 'delete-duplicates';
+type ScriptId =
+  | 'add-cards-to-users'
+  | 'monthly-subscriptions'
+  | 'request-base-cards'
+  | 'request-charity-card-for-player'
+  | 'request-custom-cards'
+  | 'delete-duplicates'
 
 type ScriptData = {
-  id: ScriptId;
-  name: string;
-};
+  id: ScriptId
+  name: string
+}
 
 const scripts: ScriptData[] = [
   { id: 'add-cards-to-users', name: 'Add Cards to Users' },
   { id: 'monthly-subscriptions', name: 'Distribute Monthly Subscription' },
   { id: 'request-base-cards', name: 'Request Base Cards' },
+  { id: 'request-custom-cards', name: 'Request Custom Cards' },
+  { id: 'request-charity-card-for-player', name: 'Request Charity Card' },
   { id: 'delete-duplicates', name: 'Delete Duplicate Cards' },
-] as const;
+] as const
 
 export default () => {
-  const [selectedScript, setSelectedScript] = useState<ScriptId>();
-  const [formError, setFormError] = useState<string>('');
+  const [selectedScript, setSelectedScript] = useState<ScriptId>()
+  const [formError, setFormError] = useState<string>('')
 
-  const { isCheckingAuthentication } = useRedirectIfNotAuthenticated();
+  const { isCheckingAuthentication } = useRedirectIfNotAuthenticated()
   const { isCheckingAuthorization } = useRedirectIfNotAuthorized({
     roles: ['TRADING_CARD_ADMIN'],
-  });
+  })
 
-  const optionsMap = new Map<ScriptId, string>(scripts.map((script) => [script.id, script.name]));
+  const optionsMap = new Map<ScriptId, string>(
+    scripts.map((script) => [script.id, script.name])
+  )
 
   return (
     <PageWrapper
@@ -41,7 +52,7 @@ export default () => {
       className="h-full flex flex-col justify-center items-center w-11/12 md:w-3/4"
     >
       <div className="max-w-md bg-secondary border-grey100 !text-grey100">
-      <Select
+        <Select
           options={scripts.map((script) => script.id)}
           selectedOption={selectedScript}
           onSelection={(option) => setSelectedScript(option)}
@@ -71,7 +82,10 @@ export default () => {
         {selectedScript === 'request-base-cards' && (
           <RequestBaseCardsForm onError={setFormError} />
         )}
+        {selectedScript === 'request-custom-cards' && (
+          <RequestCustomCardsForm onError={setFormError} />
+        )}
       </div>
     </PageWrapper>
-  );
-};
+  )
+}
