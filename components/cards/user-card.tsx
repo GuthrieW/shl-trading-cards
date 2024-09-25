@@ -31,7 +31,9 @@ const UserCard = ({ user, quantity }: UserCardProps) => {
             <IconButton
               className="h-8 w-8"
               disabled={false}
-              onClick={() => Router.push(`/collect/${user.uid}`)} aria-label={''}            >
+              onClick={() => Router.push(`/collect/${user.uid}`)}
+              aria-label={''}
+            >
               <Squares2X2Icon />
             </IconButton>
             <span className="text-sm mt-1">Collection</span>
@@ -40,7 +42,9 @@ const UserCard = ({ user, quantity }: UserCardProps) => {
             <IconButton
               className="h-8 w-8"
               disabled={false}
-              onClick={() => Router.push(`/trade`)} aria-label={''}            >
+              onClick={() => Router.push(`/trade?partnerId=${user.uid}`)}
+              aria-label={''}
+            >
               <ChatBubbleLeftRightIcon />
             </IconButton>
             <span className="text-sm mt-1">Trade</span>
