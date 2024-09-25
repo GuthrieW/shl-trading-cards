@@ -17,11 +17,12 @@ import {
   DrawerCloseButton,
   DrawerHeader,
   Spinner,
+  useBreakpointValue,
 } from '@chakra-ui/react'
 import pathToCards from '@constants/path-to-cards'
 import { IndexRecordTable } from 'components/collection/IndexRecordTable'
 import axios from 'axios'
-import { DisplayHistory } from '@components/collection/DisplayHistory'
+import { BackOfCard } from '@components/collection/BackOfCard'
 
 type CardLightBoxModalProps = {
   setShowModal: Function
@@ -29,6 +30,8 @@ type CardLightBoxModalProps = {
   cardImage: string
   owned: number
   playerID: number
+  cardID: number
+  userID: string
 }
 
 const THRESHOLD = 30
@@ -39,6 +42,8 @@ const CardLightBoxModal = ({
   cardImage,
   owned,
   playerID,
+  cardID,
+  userID,
 }: CardLightBoxModalProps) => {
   const { isOpen, onClose } = useDisclosure({
     isOpen: true,
@@ -50,7 +55,6 @@ const CardLightBoxModal = ({
     onOpen: onDrawerOpen,
     onClose: onDrawerClose,
   } = useDisclosure()
-
   const [isFlipped, setIsFlipped] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [playerHistory, setPlayerHistory] = useState(null)
@@ -119,7 +123,9 @@ const CardLightBoxModal = ({
               ref={cardContainerRef}
               position="relative"
               width="100%"
-              height="550px"
+              height={useBreakpointValue({ base: '450px', md: '550px' })}
+              maxW="800px"
+              mx="auto"
               style={{
                 perspective: '1200px',
               }}
@@ -147,8 +153,8 @@ const CardLightBoxModal = ({
                     className={`${!isOwned ? 'grayscale' : ''}`}
                     alt={cardName}
                     src={`${pathToCards}${cardImage}`}
-                    w="100%"
-                    h="100%"
+                    width="100%"
+                    height="100%"
                     objectFit="cover"
                     rounded="md"
                     boxShadow="lg"
@@ -179,7 +185,9 @@ const CardLightBoxModal = ({
                   {isLoading ? (
                     <Spinner />
                   ) : (
-                    playerHistory && <DisplayHistory playerID={playerID} />
+                    playerHistory && (
+                      <BackOfCard cardID={String(cardID)} userID={userID} />
+                    )
                   )}
                 </Box>
               </Box>
