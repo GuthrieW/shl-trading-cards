@@ -1,74 +1,84 @@
-import UserCard from '@components/cards/user-card'
-import { useEffect, useState } from 'react'
-import useGetAllUsersWithCards from '@pages/api/queries/use-get-all-users-with-cards'
-import Pagination from '@components/tables/pagination'
-import { PropagateLoader } from 'react-spinners'
-import TablePagination from '@components/table/TablePagination'
-import { Input } from '@chakra-ui/react'
-import { GET } from '@constants/http-methods'
-import { query } from '@pages/api/database/query'
-import { ListResponse } from '@pages/api/v3'
-import { UserData } from '@pages/api/v3/user'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useQuery } from 'react-query';
+import { Input } from '@chakra-ui/react';
+import { PropagateLoader } from 'react-spinners';
+import UserCard from '@components/cards/user-card';
+import TablePagination from '@components/table/TablePagination';
+import { GET } from '@constants/http-methods';
+import { ListResponse } from '@pages/api/v3';
+import { UserData } from '@pages/api/v3/user';
 
-export type UserGridProps = {}
-const ROWS_PER_PAGE: number = 10 as const
+const ROWS_PER_PAGE = 10;
 
-const UserTables = ({}: UserGridProps) => {
-  const [tablePage, setTablePage] = useState<number>(1)
-  const [searchString, setSearchString] = useState<string>('')
+const UserTables: React.FC = () => {
+  const [tablePage, setTablePage] = useState<number>(1);
+  const [searchString, setSearchString] = useState<string>('');
 
-  const {
-    payload: users,
-    isLoading,
-    refetch,
-  } = query<ListResponse<UserData>>({
-    queryKey: ['with-cards', searchString, String(tablePage),],
-    queryFn: () =>
-      axios({
-        method: GET,
-        url: '/api/v3/user/with-cards',
-        params: {
-            username: searchString,
-            limit: ROWS_PER_PAGE,
-            offset: (tablePage - 1) * ROWS_PER_PAGE, 
-        }
-      }),
-  })
+  const fetchUsers = async ({ queryKey }: any) => {
+    const [_, search, page] = queryKey;
+    const { data } = await axios({
+      method: GET,
+      url: '/api/v3/user/with-cards',
+      params: {
+        username: search,
+        limit: ROWS_PER_PAGE,
+        offset: (page - 1) * ROWS_PER_PAGE,
+      }
+    });
+    return data.payload;
+  };
+
+  const { data: users, isLoading, refetch } = useQuery<ListResponse<UserData>>(
+    ['with-cards', searchString, tablePage],
+    fetchUsers,
+    {
+      keepPreviousData: true,
+      staleTime: 5000,
+    }
+  );
 
   useEffect(() => {
-    refetch();
-  }, [tablePage]);
+    setTablePage(1); // Reset to first page when search changes
+  }, [searchString]);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchString(event.target.value);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setTablePage(newPage);
+  };
 
   return (
     <div className="w-full h-full mx-2">
       <Input
-        className="w-full bg-secondary border-grey100"
+        className="w-full bg-secondary border-grey100 mb-4"
         placeholder="Search Username"
         size="lg"
-        onChange={(event) => setSearchString(event.target.value)}
+        value={searchString}
+        onChange={handleSearchChange}
       />
       {isLoading ? (
         <div className="flex justify-center">
           <PropagateLoader />
         </div>
-      ) : (
-        <>
-          <div className="flex justify-start w-64"></div>
-          <TablePagination
-            totalRows={users.total}
-            rowsPerPage={ROWS_PER_PAGE}
-            onPageChange={(newPage) => setTablePage(newPage)}
-          />
-          <div className={`grid ${'grid-cols-5'}`}>
+      ) : users ? (
+        <div className="w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {users.rows.map((user) => (
               <UserCard key={user.uid} user={user} />
             ))}
           </div>
-        </>
-      )}
+          <TablePagination
+            totalRows={users.total}
+            rowsPerPage={ROWS_PER_PAGE}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      ) : null}
     </div>
-  )
-}
+  );
+};
 
-export default UserTables
+export default UserTables;
