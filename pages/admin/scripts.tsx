@@ -7,7 +7,6 @@ import { PageWrapper } from '@components/common/PageWrapper'
 import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated'
 import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
 import { Select } from '@components/common/Select'
-
 import { useState } from 'react'
 import RequestCustomCardsForm from '@components/admin-scripts/RequestCustomCardsForm'
 
@@ -15,7 +14,7 @@ type ScriptId =
   | 'add-cards-to-users'
   | 'monthly-subscriptions'
   | 'request-base-cards'
-  | 'request-charity-card-for-player'
+  // | 'request-charity-card'
   | 'request-custom-cards'
   | 'delete-duplicates'
 
@@ -29,7 +28,7 @@ const scripts: ScriptData[] = [
   { id: 'monthly-subscriptions', name: 'Distribute Monthly Subscription' },
   { id: 'request-base-cards', name: 'Request Base Cards' },
   { id: 'request-custom-cards', name: 'Request Custom Cards' },
-  { id: 'request-charity-card-for-player', name: 'Request Charity Card' },
+  // { id: 'request-charity-card', name: 'Request Charity Card' },
   { id: 'delete-duplicates', name: 'Delete Duplicate Cards' },
 ] as const
 
