@@ -1,4 +1,4 @@
-import IconButton from '@components/buttons/icon-button'
+import { IconButton } from '@chakra-ui/react'
 import { ChatBubbleLeftRightIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 import fixAvatar from '@utils/fix-avatar-url'
 import Router from 'next/router'
@@ -31,8 +31,7 @@ const UserCard = ({ user, quantity }: UserCardProps) => {
             <IconButton
               className="h-8 w-8"
               disabled={false}
-              onClick={() => Router.push(`/collection?uid=${user.uid}`)}
-            >
+              onClick={() => Router.push(`/collect/${user.uid}`)} aria-label={''}            >
               <Squares2X2Icon />
             </IconButton>
             <span className="text-sm mt-1">Collection</span>
@@ -41,8 +40,7 @@ const UserCard = ({ user, quantity }: UserCardProps) => {
             <IconButton
               className="h-8 w-8"
               disabled={false}
-              onClick={() => Router.push(`/trade-hub/${user.uid}`)}
-            >
+              onClick={() => Router.push(`/trade`)} aria-label={''}            >
               <ChatBubbleLeftRightIcon />
             </IconButton>
             <span className="text-sm mt-1">Trade</span>

@@ -23,6 +23,8 @@ export default async function usersWithCardsEndpoint(
 
   if (req.method === GET) {
     const username = req.query.username as string
+    const limit = parseInt(req.query.limit as string, 10) || 10;
+    const offset = parseInt(req.query.offset as string, 10) || 0;
 
     const isAuthenticated: boolean = await checkUserAuthorization(req)
 
@@ -53,12 +55,14 @@ export default async function usersWithCardsEndpoint(
     countQuery.append(SQL` u.uid IN
       (SELECT DISTINCT userID FROM collection)
       ORDER BY username ASC
-    `)
+    `);
+  
     query.append(SQL` u.uid IN
       (SELECT DISTINCT userID FROM collection)
       ORDER BY username ASC
-      LIMIT 10
-    `)
+      LIMIT ${limit}
+      OFFSET ${offset}
+    `);
 
     const countResult = await cardsQuery<ListTotal>(countQuery)
     const queryResult = await cardsQuery<UserData>(query)

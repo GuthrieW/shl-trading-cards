@@ -1,4 +1,5 @@
 import { PageWrapper } from '@components/common/PageWrapper'
+import UserTables from '@components/tables/user-table'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import { ListResponse } from '@pages/api/v3'
@@ -29,6 +30,7 @@ export default () => {
   return (
     <PageWrapper>
       <p>Collect Home</p>
+      <UserTables />
     </PageWrapper>
   )
 }
