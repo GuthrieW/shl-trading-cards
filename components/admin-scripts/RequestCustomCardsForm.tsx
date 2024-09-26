@@ -50,7 +50,7 @@ export default function RequestCustomCardsForm({
         player_name: row[2],
         season: parseInt(row[3]),
         card_rarity: row[4],
-        sub_type: row[5].length === 0 ? null : row[5].length,
+        sub_type: row[5].length === 0 ? null : row[5],
         position: row[6],
         overall: parseInt(row[7]),
         skating: row[6] !== 'G' ? parseInt(row[8]) : null,
@@ -65,16 +65,19 @@ export default function RequestCustomCardsForm({
         conditioning: row[6] !== 'G' ? null : parseInt(row[17]),
       }
 
-      const validation = validateCard(newCard, index + 1)
+      const validation = validateCard(newCard, index)
       if (validation.status === false) {
         errors.push(validation.error)
+        return null
       }
+
+      return newCard
     })
 
     if (errors.length === 0) {
       await requestCustomCards({ cards })
     } else {
-      onError(errors.join('\n'))
+      onError(errors.join('. '))
     }
 
     setIsSubmitting(false)
@@ -84,7 +87,7 @@ export default function RequestCustomCardsForm({
     <div>
       <CSVReader
         cssClass="react-csv-input"
-        label="Upload CSV"
+        label="Upload CSV&nbsp;"
         onFileLoaded={handleSelectCsv}
       />
       <div className="mb-5 flex justify-start items-center">
@@ -107,6 +110,7 @@ const validateCard = (
   card: Partial<Card>,
   index: number
 ): { status: true } | { status: false; error: string } => {
+  console.log('card', card)
   if (
     !card.teamID ||
     !Object.keys(shlTeamsMap).some((teamId) => teamId === String(card.teamID))
@@ -124,7 +128,9 @@ const validateCard = (
 
   if (
     !card.card_rarity ||
-    Object.values(rarityMap).some((rarity) => rarity.value === card.card_rarity)
+    !Object.values(rarityMap).some(
+      (rarity) => rarity.value === card.card_rarity
+    )
   ) {
     return {
       status: false,

@@ -33,7 +33,7 @@ const scripts: ScriptData[] = [
 ] as const
 
 export default () => {
-  const [selectedScript, setSelectedScript] = useState<ScriptId>()
+  const [selectedScript, setSelectedScript] = useState<ScriptId>(scripts[0].id)
   const [formError, setFormError] = useState<string>('')
 
   const { isCheckingAuthentication } = useRedirectIfNotAuthenticated()
@@ -50,7 +50,7 @@ export default () => {
       loading={isCheckingAuthentication || isCheckingAuthorization}
       className="h-full flex flex-col justify-center items-center w-11/12 md:w-3/4"
     >
-      <div className="max-w-md bg-secondary border-grey100 !text-grey100">
+      <div className="border-grey100 !text-grey100">
         <Select
           options={scripts.map((script) => script.id)}
           selectedOption={selectedScript}
