@@ -11,17 +11,13 @@ interface MostCardsTableProps {
 const MostCardsTable: React.FC<MostCardsTableProps> = ({ data, isLoading }) => {
   const router = useRouter();
 
-  const handleSeeAllCollections = () => {
-    console.log("See All Collections clicked");
-  };
-
   const handleRowClick = (userID: number) => {
     router.push(`/collect/${userID}`);
   };
 
   return (
     <Box className="bg-primary text-secondary border border-gray-200 rounded-lg p-4 shadow-md">
-      <Text className="font-bold mb-4 lg:text-xl sm:text-lg">User Collections</Text>
+      <div className="font-bold mb-4 lg:text-xl sm:text-lg">User Collections</div>
       <VStack spacing={2} align="stretch">
         {isLoading
           ? Array(5).fill(null).map((_, index) => (
@@ -47,7 +43,7 @@ const MostCardsTable: React.FC<MostCardsTableProps> = ({ data, isLoading }) => {
       <Button 
         mt={4} 
         className="w-full bg-blue-500 !hover:bg-blue-600 hover:shadow-xl text-secondary font-bold py-2 px-4 rounded text-sm sm:text-xs"
-        onClick={handleSeeAllCollections}
+        onClick={() => router.push('/community')}
       >
         See All Collections
       </Button>
