@@ -423,6 +423,7 @@ export default () => {
                 cardName={selectedCard.player_name}
                 cardImage={selectedCard.image_url}
                 owned={selectedCard.quantity}
+                rarity={selectedCard.card_rarity}
                 playerID={selectedCard.playerID}
                 cardID={selectedCard.cardID}
                 userID={uid}

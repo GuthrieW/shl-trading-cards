@@ -98,7 +98,7 @@ export const Header = ({ showAuthButtons = true }) => {
                   linkClasses(router, `/collect/${uid}`)
                 )}
               >
-                Collections
+                Collection
               </Link>
             </AuthGuard>
             <Link
