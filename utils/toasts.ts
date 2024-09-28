@@ -1,41 +1,43 @@
-export type WarningToastProps = {
-  warningText: string
-}
+import { useToast } from '@chakra-ui/react';
 
-export type SuccessToastProps = {
-  successText: string
-}
+export type ToastProps = {
+  title: string;
+  description?: string;
+};
 
-export type ErrorToastProps = {
-  errorText: string
-}
+export const warningToast = ({ title, description }: ToastProps) => {
+  const toast = useToast();
+  toast({
+    title,
+    description,
+    status: 'warning',
+    duration: 2500,
+    isClosable: true,
+    position: 'bottom-left',
+  });
+};
 
-export const warningToast = ({ warningText }: WarningToastProps) => {
-  // toast.warning(warningText, {
-  //   position: 'bottom-left',
-  //   autoClose: 2500,
-  //   hideProgressBar: false,
-  //   closeOnClick: true,
-  //   draggable: false,
-  // })
-}
+export const successToast = ({ title, description }: ToastProps) => {
+  console.log("successToast")
+  const toast = useToast();
+  toast({
+    title,
+    description,
+    status: 'success',
+    duration: 2500,
+    isClosable: true,
+    position: 'bottom-left',
+  });
+};
 
-export const successToast = ({ successText }: SuccessToastProps) => {
-  // toast.success(successText, {
-  //   position: 'bottom-left',
-  //   autoClose: 2500,
-  //   hideProgressBar: false,
-  //   closeOnClick: true,
-  //   draggable: false,
-  // })
-}
-
-export const errorToast = ({ errorText }: ErrorToastProps) => {
-  // toast.error(errorText, {
-  //   position: 'bottom-left',
-  //   autoClose: 2500,
-  //   hideProgressBar: false,
-  //   closeOnClick: true,
-  //   draggable: false,
-  // })
-}
+export const errorToast = ({ title, description }: ToastProps) => {
+  const toast = useToast();
+  toast({
+    title,
+    description,
+    status: 'error',
+    duration: 2500,
+    isClosable: true,
+    position: 'bottom-left',
+  });
+};

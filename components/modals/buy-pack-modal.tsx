@@ -1,52 +1,59 @@
-// import Button from '@components/buttons/button'
-// import { PackInfo, getBasePackCover } from '@constants/packs-map'
-// import { warningToast } from '@utils/toasts'
-// import React from 'react'
-// import Modal from './modal'
-// import { PackInfoWithCover } from '@pages/_old/pack-shop'
+import React from 'react'
+import { Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton, useToast } from "@chakra-ui/react"
+import { PackInfo } from 'services/packService'
+import { PackInfoWithCover } from '@pages/shop/index'
 
-// type BuyPackModalProps = {
-//   onAccept: Function
-//   setShowModal: Function
-//   pack: PackInfoWithCover
-// }
+type BuyPackModalProps = {
+  isOpen: boolean
+  onClose: () => void
+  onAccept: (packId: string) => void
+  pack: PackInfoWithCover
+}
 
-// const BuyPackModal = ({ onAccept, setShowModal, pack }: BuyPackModalProps) => (
-//   <Modal
-//     setShowModal={setShowModal}
-//     title={`${pack.label} - ${pack.priceLabel}`}
-//     subtitle={pack.description}
-//   >
-//     <div className="flex flex-col justify-center items-center">
-//       <div className="w-1/2 flex flex-col justify-center items-center">
-//         <img className="select-none" src={pack.cover} />
-//       </div>
-//       <div className="flex items-center justify-end p-6">
-//         <Button
-//           disabled={false}
-//           className="text-red-500 background-transparent font-bold uppercase px-6 py-3 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 hover:bg-red-100 rounded hover:shadow-lg select-none"
-//           onClick={() => setShowModal(false)}
-//         >
-//           Cancel
-//         </Button>
-//         <Button
-//           disabled={false}
-//           className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 select-none"
-//           onClick={
-//             false
-//               ? () =>
-//                   warningToast({
-//                     warningText:
-//                       'You have already purchased 3 base packs today',
-//                   })
-//               : () => onAccept(pack.id)
-//           }
-//         >
-//           Buy Pack
-//         </Button>
-//       </div>
-//     </div>
-//   </Modal>
-// )
+const BuyPackModal = ({ isOpen, onClose, onAccept, pack }: BuyPackModalProps) => {
+    const toast = useToast()
+    return (
+        <Modal isOpen={isOpen} onClose={onClose}>
+    <ModalOverlay />
+    <ModalContent>
+      <ModalHeader className = 'bg-primary text-secondary'>{`${pack.label} - ${pack.priceLabel}`}</ModalHeader>
+      <ModalCloseButton />
+      <ModalBody className = 'bg-primary text-secondary'>
+        <div className="flex flex-col justify-center items-center bg-primary text-secondary">
+          <div className="w-1/2 flex flex-col justify-center items-center">
+            <img className="select-none" src={pack.cover} alt={`${pack.label} Pack`} />
+          </div>
+          <p>{pack.description}</p>
+        </div>
+      </ModalBody>
+      <ModalFooter className = 'bg-primary text-secondary'>
+        <Button colorScheme="red" mr={3} onClick={onClose}>
+          Cancel
+        </Button>
+        <Button
+          colorScheme="green"
+          disabled={false}
+          className="font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 select-none"
+          onClick={
+            false
+              ? () =>
+                toast({
+                    title: 'max packs purchased',
+                    description: 'Please try again tomorrow.',
+                    status: 'error',
+                    duration: 2500,
+                    isClosable: true,
+                  })
+              : () => onAccept(pack.id)
+          }
+        >
+          Buy Pack
+        </Button>
+      </ModalFooter>
+    </ModalContent>
+  </Modal>
+    )
+}
 
-// export default BuyPackModal
+export default BuyPackModal
+

@@ -130,6 +130,17 @@ export const Header = ({ showAuthButtons = true }) => {
                 Trade
               </Link>
             </AuthGuard>
+            <AuthGuard>
+              <Link
+                href="/packs"
+                className={classnames(
+                  '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600',
+                  linkClasses(router, `/packs`)
+                )}
+              >
+                Open Packs
+              </Link>
+            </AuthGuard>
             <Menu>
               <MenuButton className="!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-grey100 hover:bg-blue600 sm:h-full sm:w-max">
                 More
