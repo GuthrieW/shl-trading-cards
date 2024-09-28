@@ -14,7 +14,6 @@ import {
   SimpleGrid,
   Spinner,
   Switch,
-  Text,
   VStack,
 } from '@chakra-ui/react'
 import DisplayCollection from '@components/collection/DisplayCollection'

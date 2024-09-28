@@ -278,7 +278,7 @@ export default function NewTrade({
       <div className="flex flex-col mt-2">
         <div className="flex justify-end">
           <Button
-            className="disabled:bg-primaryDark"
+            className="disabled:bg-primary"
             disabled={
               isSubmittingTrade ||
               loggedInUserCardsToTrade.length === 0 ||
@@ -373,14 +373,14 @@ export default function NewTrade({
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader className="flex flex-row justify-between items-center">
+          <DrawerHeader className="flex flex-row justify-between items-center bg-primary">
             <span>{pluralizeName(selectedUser?.username)}&nbsp;Cards</span>
           </DrawerHeader>
-          <DrawerBody>
-            <div className="flex flex-row justify-between">
+          <DrawerBody className="bg-primary">
+            <div className="flex flex-row justify-between bg-primary">
               <div className="flex flex-row justify-start items-end">
                 <FormControl className="mx-2 w-auto">
-                  <FormLabel>Player Name</FormLabel>
+                  <FormLabel className="!text-secondary">Player Name</FormLabel>
                   <Input
                     className="min-w-80"
                     onChange={(event) => setPlayerName(event.target.value)}
@@ -388,7 +388,7 @@ export default function NewTrade({
                 </FormControl>
                 <FormControl className="mx-2 w-auto cursor-pointer">
                   <Menu closeOnSelect={false}>
-                    <MenuButton className="border border-1 rounded p-1.5 cursor-pointer">
+                    <MenuButton className="border border-1 rounded p-1.5 cursor-pointer !bg-secondary">
                       Teams&nbsp;{`(${teams.length})`}
                     </MenuButton>
                     <MenuList>
@@ -398,6 +398,7 @@ export default function NewTrade({
                           isChecked={false}
                           aria-checked={false}
                           closeOnSelect
+                          className="!bg-secondary"
                           onClick={() => setTeams([])}
                         >
                           Deselect All
@@ -413,6 +414,7 @@ export default function NewTrade({
                               aria-checked={isChecked}
                               key={value.teamID}
                               value={String(value.teamID)}
+                              className="!bg-secondary"
                               onClick={() => toggleTeam(String(value.teamID))}
                             >
                               {value.label}
@@ -424,9 +426,9 @@ export default function NewTrade({
                     </MenuList>
                   </Menu>
                 </FormControl>
-                <FormControl className="border border-1 rounded mx-2 w-auto flex flex-row items-center">
+                <FormControl className="border border-1 rounded mx-2 w-auto flex flex-row items-center !bg-secondary">
                   <Menu closeOnSelect={false}>
-                    <MenuButton className="p-1.5">
+                    <MenuButton className="p-1.5 !bg-secondary">
                       Rarities&nbsp;{`(${rarities.length})`}
                     </MenuButton>
                     <MenuList>
@@ -436,6 +438,7 @@ export default function NewTrade({
                           isChecked={false}
                           aria-checked={false}
                           closeOnSelect
+                          className="!bg-secondary"
                           onClick={() => setRarities([])}
                         >
                           Deselect All
@@ -451,6 +454,7 @@ export default function NewTrade({
                               aria-checked={isChecked}
                               key={value.value}
                               value={value.value}
+                              className="!bg-secondary"
                               onClick={() => toggleRarity(value.value)}
                             >
                               {value.label}
@@ -467,7 +471,7 @@ export default function NewTrade({
                 <FormControl className="mx-2">
                   <FormLabel>Sort</FormLabel>
                   <Select
-                    className="cursor-pointer"
+                    className="cursor-pointer w-full sm:w-auto border-grey800 border-1 rounded px-2 !bg-secondary"
                     onChange={(event) => {
                       const [sortColumn, sortDirection] =
                         event.target.value.split(':') as [
@@ -480,10 +484,10 @@ export default function NewTrade({
                   >
                     {SORT_OPTIONS.map((option, index) => (
                       <Fragment key={`${option.value}-${index}`}>
-                        <option value={`${option.value}:DESC`}>
+                        <option className="!bg-secondary" value={`${option.value}:DESC`}>
                           {option.label}&nbsp;{option.sortLabel('DESC')}
                         </option>
-                        <option value={`${option.value}:ASC`}>
+                        <option className="!bg-secondary" value={`${option.value}:ASC`}>
                           {option.label}&nbsp;{option.sortLabel('ASC')}
                         </option>
                       </Fragment>
@@ -492,7 +496,7 @@ export default function NewTrade({
                 </FormControl>
               </div>
             </div>
-            <SimpleGrid className="m-2" columns={ROWS_PER_PAGE}>
+            <SimpleGrid className="m-2 bg-primary" columns={ROWS_PER_PAGE}>
               {(selectedUserCardsIsLoading
                 ? LOADING_GRID_DATA
                 : selectedUserCards
@@ -531,7 +535,7 @@ export default function NewTrade({
                       }
                     />
                     {!selectedUserCardsIsLoading && (
-                      <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
+                      <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-primary transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
                         {card.card_rarity}
                       </Badge>
                     )}

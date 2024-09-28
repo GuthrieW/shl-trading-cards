@@ -13,6 +13,8 @@ import { ThemeProvider } from 'next-themes';
 import { Footer } from '@components/common/Footer'
 import { Spinner } from '@chakra-ui/react'
 import '../styles/globals.css'
+import '../styles/style.css'
+
 
 const montserrat = Montserrat({
   subsets: ['latin'],
