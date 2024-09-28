@@ -25,6 +25,7 @@ type Card = {
   season: number
   author_paid: 0 | 1
   packID?: number
+  quantity?: number;
 }
 
 type CardRequest = {

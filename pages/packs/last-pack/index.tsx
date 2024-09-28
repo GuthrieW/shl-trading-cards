@@ -6,14 +6,13 @@ import Router from 'next/router'
 import ReactCardFlip from 'react-card-flip'
 import rarityMap from '@constants/rarity-map'
 import pathToCards from '@constants/path-to-cards'
-import { Button, useToast } from '@chakra-ui/react'
+import { Button, useToast, Badge } from '@chakra-ui/react' // Import Badge from Chakra UI
 import { PageWrapper } from '@components/common/PageWrapper'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
-import useGetNewCard from '@pages/api/queries/use-get-new-card'
 
 const HexCodes = {
   Ruby: '#E0115F',
@@ -65,11 +64,11 @@ const LastOpenedPack = () => {
       revealedCards.length === latestPackCards.length ? [] : [0, 1, 2, 3, 4, 5]
     )
   }
+
   const shareMessage = () => {
     const packID = latestPackCards[0]?.packID
     const emojis = latestPackCards
       .map((card) => {
-        console.log(card.card_rarity)
         const rarity = cardRarityShadows.find(
           (shadow) => shadow.id === card.card_rarity
         )
@@ -110,47 +109,63 @@ const LastOpenedPack = () => {
           <div className="flex justify-center items-start h-full">
             <div className="flex h-full flex-col sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-2 overflow-x-auto py-6">
               {latestPackCards.map((card, index) => (
-                <ReactCardFlip
+                <div
+                  className="relative flex flex-col items-center"
                   key={index}
-                  isFlipped={revealedCards.includes(index)}
                 >
-                  <img
-                    width="320"
-                    height="440"
-                    key={index}
-                    draggable={false}
-                    className={`rounded-sm transition-all duration-200 cursor-pointer select-none`}
-                    style={{
-                      boxShadow: `${
-                        revealedCards.includes(index)
-                          ? `0px 0px 16px 10px ${cardRarityShadows.find(
-                              (shadow) => shadow.id === card.card_rarity
-                            )?.color}`
-                          : 'none'
-                      }`,
-                    }}
-                    src={`/cardback.png`}
-                    onClick={() => updateRevealedCards(index)}
-                  />
+                  <ReactCardFlip isFlipped={revealedCards.includes(index)}>
+                    <img
+                      width="320"
+                      height="440"
+                      key={index}
+                      draggable={false}
+                      className={`rounded-sm transition-all duration-200 cursor-pointer select-none`}
+                      style={{
+                        boxShadow: `${
+                          revealedCards.includes(index)
+                            ? `0px 0px 16px 10px ${cardRarityShadows.find(
+                                (shadow) => shadow.id === card.card_rarity
+                              )?.color}`
+                            : 'none'
+                        }`,
+                      }}
+                      src={`/cardback.png`}
+                      onClick={() => updateRevealedCards(index)}
+                    />
 
-                  <img
-                    width="320"
-                    height="440"
-                    key={index}
-                    draggable={false}
-                    className={`rounded-sm transition-all duration-200 select-none`}
-                    style={{
-                      boxShadow: `${
-                        revealedCards.includes(index)
-                          ? `0px 0px 16px 10px ${cardRarityShadows.find(
-                              (shadow) => shadow.id === card.card_rarity
-                            )?.color}`
-                          : 'none'
-                      }`,
-                    }}
-                    src={`${pathToCards}${card.image_url}`}
-                  />
-                </ReactCardFlip>
+                    <img
+                      width="320"
+                      height="440"
+                      key={index}
+                      draggable={false}
+                      className={`rounded-sm transition-all duration-200 select-none`}
+                      style={{
+                        boxShadow: `${
+                          revealedCards.includes(index)
+                            ? `0px 0px 16px 10px ${cardRarityShadows.find(
+                                (shadow) => shadow.id === card.card_rarity
+                              )?.color}`
+                            : 'none'
+                        }`,
+                      }}
+                      src={`${pathToCards}${card.image_url}`}
+                    />
+                  </ReactCardFlip>
+
+                  {/* Show badge only when the card is not flipped */}
+                  {revealedCards.includes(index) &&
+                    card.quantity === 1 && ( // Check for quantity and show badge
+                      <Badge
+                        colorScheme="green"
+                        variant="outline"
+                        border="2px solid"
+                        borderColor="green.500"
+                        className="shine-effect mt-2" // Added margin-top for spacing
+                      >
+                        New Card
+                      </Badge>
+                    )}
+                </div>
               ))}
             </div>
           </div>
