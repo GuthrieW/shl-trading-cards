@@ -5,6 +5,7 @@ import { UseGetUserPacksKey } from '@pages/api/queries/use-get-user-packs'
 import { UseGetUserCardsKey } from '@pages/api/queries/use-get-user-cards'
 import { errorToast, successToast } from '@utils/toasts'
 import { invalidateQueries } from './invalidate-queries'
+import { useToast } from '@chakra-ui/react'
 
 type UseOpenPackRequest = {
   packID: number
@@ -19,22 +20,34 @@ type UseOpenPack = {
 }
 
 const useOpenPack = (): UseOpenPack => {
+  const toast = useToast()
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     async ({ packID }: UseOpenPackRequest) => {
       return await axios({
         method: POST,
-        url: `/api/v2/packs/open/${packID}`,
+        url: `/api/v3/packs/open/${packID}`,
         data: {},
       })
     },
     {
-      onSuccess: () => {
-        invalidateQueries(queryClient, [UseGetUserPacksKey, UseGetUserCardsKey])
-        successToast({ successText: 'Pack Opened' })
+      onSuccess: (data) => {
+        invalidateQueries(queryClient, [`daily-subscription`]);
+        toast({
+          title: 'Opening Pack',
+          description: `Good luck!`,
+          status: 'success',
+          duration: 2500,
+          isClosable: true,
+        });
       },
       onError: () => {
-        errorToast({ errorText: 'Error Opening Pack' })
+        toast({
+          title: 'Error Opening Pack',
+          status: 'error',
+          duration: 2500,
+          isClosable: true,
+        });
       },
     }
   )

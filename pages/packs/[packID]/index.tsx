@@ -14,7 +14,7 @@ import {
 import { query } from '@pages/api/database/query'
 import { GET } from '@constants/http-methods'
 import axios from 'axios'
-import { LatestCards, UserLatestPack } from '@pages/api/v3'
+import { LatestCards, UserPacks } from '@pages/api/v3'
 import { PageWrapper } from '@components/common/PageWrapper'
 import { UserData } from '@pages/api/v3/user'
 import { formatDateTime } from '@utils/formatDateTime'
@@ -46,7 +46,7 @@ const PackPage: React.FC<PackPageProps> = ({
     enabled: !!packID,
   })
 
-  const { payload: packs, isLoading: packsLoading } = query<UserLatestPack[]>({
+  const { payload: packs, isLoading: packsLoading } = query<UserPacks[]>({
     queryKey: ['latest-packs', packID],
     queryFn: () =>
       axios({

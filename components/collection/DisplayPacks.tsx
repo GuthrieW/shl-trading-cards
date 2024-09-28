@@ -15,7 +15,7 @@ import {
   import { query } from '@pages/api/database/query';
   import { GET } from '@constants/http-methods';
   import PackOpen from '@components/collection/PackOpen';
-  import { UserLatestPack } from '@pages/api/v3';
+  import { UserPacks } from '@pages/api/v3';
   
   interface DisplayPacksProps {
     userID: string;
@@ -24,7 +24,7 @@ import {
   const DisplayPacks: React.FC<DisplayPacksProps> = ({ userID }) => {
     const [selectedPackID, setSelectedPackID] = useState<string | null>(null);
   
-    const { payload: packs, isLoading: packsLoading } = query<UserLatestPack[]>({
+    const { payload: packs, isLoading: packsLoading } = query<UserPacks[]>({
       queryKey: ['latest-cards', userID],
       queryFn: () =>
         axios({

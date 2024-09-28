@@ -48,7 +48,8 @@ export type UserCollection ={
   packID: number;
 }
 
-export type UserLatestPack = {
+
+export type UserPacks = {
   packID: string;
   userID: number;
   packType: string;
