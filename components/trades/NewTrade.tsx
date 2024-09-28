@@ -46,7 +46,7 @@ import axios from 'axios'
 import config from 'lib/config'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
-import { Fragment, useState } from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 import { useQueryClient } from 'react-query'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
@@ -101,9 +101,11 @@ const LOADING_GRID_DATA: { rows: TradeCard[] } = {
 export default function NewTrade({
   loggedInUser,
   tradePartnerUid,
+  cardID,
 }: {
   loggedInUser: UserData
   tradePartnerUid: string
+  cardID?: number
 }) {
   const toast = useToast()
   const queryClient = useQueryClient()
@@ -174,6 +176,32 @@ export default function NewTrade({
         }),
       enabled: !!selectedUserId,
     })
+    const {
+      payload: showSelectedCard,
+      isLoading: showSelectedCardLoading
+    } = query<ListResponse<TradeCard>>({
+      queryKey: ['check-card', tradePartnerUid, String(cardID)],
+      queryFn: () =>
+        axios({
+          method: 'GET',
+          url: `/api/v3/trades/collection/check-card?uid=${tradePartnerUid}&cardID=${cardID}`,
+        }),
+      enabled: !!tradePartnerUid && !!cardID,
+    });
+    useEffect(() => {
+      if (!showSelectedCardLoading && showSelectedCard) {
+        if (showSelectedCard.rows.length > 0) {
+          const cardToAdd = showSelectedCard.rows[0];
+          addCardToTrade(cardToAdd, false);
+        } else {
+          addToast({
+            title: 'Card Not Found',
+            description: "The specified card could not be found in the collection.",
+            status: 'warning',
+          });
+        }
+      }
+    }, [showSelectedCard, showSelectedCardLoading, loggedInUser.uid, tradePartnerUid]);
 
   const { mutateAsync: submitTrade, isLoading: isSubmittingTrade } = mutation<
     void,
@@ -242,12 +270,12 @@ export default function NewTrade({
     try {
       await submitTrade({
         initiatorId: uid,
-        recipientId: selectedUserId,
+        recipientId: tradePartnerUid,
         tradeAssets: [
           ...loggedInUserCardsToTrade.map(
             (card): TradeAsset => ({
               ownedCardId: String(card.ownedCardID),
-              toId: selectedUserId,
+              toId: tradePartnerUid,
               fromId: uid,
             })
           ),
@@ -255,7 +283,7 @@ export default function NewTrade({
             (card): TradeAsset => ({
               ownedCardId: String(card.ownedCardID),
               toId: uid,
-              fromId: selectedUserId,
+              fromId: tradePartnerUid,
             })
           ),
         ],
@@ -266,6 +294,7 @@ export default function NewTrade({
         description: 'Please include at least one card in your request',
         ...successToastOptions,
       })
+      router.push("/trade")
       router.reload()
     } catch (error) {
       toast({
@@ -277,6 +306,17 @@ export default function NewTrade({
   }
   const selectedUser: UserData =
     selectedUserId === uid ? loggedInUser : tradePartnerUser
+
+  const waitForSelectedUserCards = () => {
+    return new Promise<void>((resolve) => {
+      const checkInterval = setInterval(() => {
+        if (selectedUserCards && !selectedUserCardsIsLoading) {
+          clearInterval(checkInterval)
+          resolve()
+        }
+      }, 100)
+    })
+  }
 
   return (
     <>

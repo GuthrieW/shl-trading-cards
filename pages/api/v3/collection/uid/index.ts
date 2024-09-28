@@ -106,7 +106,7 @@ export default async function collectionEndpoint(
         )
 
         SELECT COALESCE(ownedCard.quantity, 0) as quantity,
-          ownedCard.cardID,
+          card.cardID,
           team.Name as teamName,
           team.Nickname as teamNickName,
           card.teamID,

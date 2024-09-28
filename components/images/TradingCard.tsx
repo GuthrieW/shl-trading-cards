@@ -18,6 +18,11 @@ const TradingCard = ({
   const aspectRatio = useBreakpointValue({ base: 4 / 5, md: 3 / 4 })
   const maxHeight = useBreakpointValue({ base: '70vh', md: '80vh' })
 
+  const imageSource = playerName === "backOfCard"
+  ? "/cardback.png"
+  : `https://simulationhockey.com/tradingcards/${source}`;
+
+
   return (
     <Box
       width="100%"

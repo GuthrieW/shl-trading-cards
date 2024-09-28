@@ -81,7 +81,6 @@ const CardLightBoxModal = ({
 
     setIsLoading(false)
   }
-
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose} isCentered motionPreset="scale">
@@ -90,7 +89,7 @@ const CardLightBoxModal = ({
             {cardName}
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody className="bg-secondary">
+          <ModalBody className="bg-secondary flex-grow overflow-y-auto p-0">
             <Box
               ref={cardContainerRef}
               position="relative"
@@ -121,6 +120,7 @@ const CardLightBoxModal = ({
                   position="absolute"
                   width="100%"
                   height="100%"
+                  className="flex-grow overflow-y-auto p-0"
                   style={{
                     backfaceVisibility: 'hidden',
                   }}
@@ -158,7 +158,7 @@ const CardLightBoxModal = ({
                     <Spinner />
                   ) : (
                     playerHistory && (
-                      <BackOfCard cardID={String(cardID)} userID={userID} />
+                      <BackOfCard cardID={String(cardID)} userID={userID} isOwned={isOwned} />
                     )
                   )}
                 </Box>
@@ -167,7 +167,7 @@ const CardLightBoxModal = ({
           </ModalBody>
           <ModalFooter className="bg-secondary">
             <Button onClick={onDrawerOpen} mr={2}>
-              Show Stats
+              Show Info
             </Button>
             <Button onClick={handleFlip}>Flip</Button>
           </ModalFooter>
@@ -183,10 +183,10 @@ const CardLightBoxModal = ({
         <DrawerContent>
           <DrawerCloseButton className="bg-primary" />
           <DrawerHeader className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
-            Player Stats
+            Card Information
           </DrawerHeader>
           <DrawerBody className="bg-secondary">
-            <IndexRecordTable owned={owned} playerID={playerID} />
+            <IndexRecordTable owned={isOwned} playerID={playerID} cardID={cardID} userID={userID} />
           </DrawerBody>
         </DrawerContent>
       </Drawer>
