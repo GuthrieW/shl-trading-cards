@@ -48,7 +48,8 @@ const index = async (
         card.defense,
         card.author_userID,
         card.season,
-        card.author_paid
+        card.author_paid,
+        collection.packID
       FROM 
         cards as card
       INNER JOIN collection AS collection

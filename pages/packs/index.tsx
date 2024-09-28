@@ -45,7 +45,7 @@ const OpenPacks = () => {
   })
 
   const packsWithCovers: UserPackWithCover[] = useMemo(() => {
-    if (!packs) return [] // Return an empty array if packs is null
+    if (!packs) return []
     return packs.map((pack) => ({ ...pack, cover: packService.basePackCover() }))
   }, [packs])
 
