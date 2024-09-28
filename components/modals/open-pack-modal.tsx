@@ -1,55 +1,58 @@
-// import React from 'react'
-// import packsMap, { getBasePackCover } from '@constants/packs-map'
-// import Modal from './modal'
-// import Button from '@components/buttons/button'
-// import { UserPackWithCover } from '@pages/_old/open-packs'
+import React from 'react'
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Image, Text } from '@chakra-ui/react'
+import { packService, PackInfo } from 'services/packService'
+import { UserPackWithCover } from '@pages/packs'
 
-// type OpenPackModalProps = {
-//   onAccept: Function
-//   setShowModal: Function
-//   pack: UserPackWithCover
-// }
+type OpenPackModalProps = {
+  onAccept: (packID: number) => void
+  setShowModal: (show: boolean) => void
+  pack: UserPackWithCover
+}
 
-// const getPackTypeData = (pack: UserPackWithCover) => {
-//   if (pack.packType === packsMap.base.id) {
-//     return packsMap.base
-//   }
-// }
+const getPackTypeData = (pack: UserPackWithCover) => {
+  if (pack.packType === packService.packs.base.id) {
+    return packService.packs.base
+  }
+}
 
-// const OpenPackModal = ({
-//   onAccept,
-//   setShowModal,
-//   pack,
-// }: OpenPackModalProps) => {
-//   const packTypeData = getPackTypeData(pack)
-//   return (
-//     <Modal
-//       setShowModal={setShowModal}
-//       title={packTypeData.label}
-//       subtitle={packTypeData.description}
-//     >
-//       <div className="flex flex-col justify-center items-center">
-//         <div className="w-1/2 flex flex-col justify-center items-center">
-//           <img className="select-none" src={pack.cover} />
-//         </div>
-//         <div className="flex items-center justify-end p-6">
-//           <Button
-//             disabled={false}
-//             className="text-red-500 background-transparent font-bold uppercase px-6 py-3 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 hover:bg-red-100 rounded hover:shadow-lg select-none"
-//             onClick={() => setShowModal(false)}
-//           >
-//             Open Later
-//           </Button>
-//           <Button
-//             disabled={false}
-//             className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 select-none"
-//             onClick={() => onAccept(pack.packID)}
-//           >
-//             Open Pack
-//           </Button>
-//         </div>
-//       </div>
-//     </Modal>
-//   )
-// }
-// export default OpenPackModal
+const OpenPackModal = ({
+  onAccept,
+  setShowModal,
+  pack,
+}: OpenPackModalProps) => {
+  const packTypeData = getPackTypeData(pack)
+
+  return (
+    <Modal isOpen={true} onClose={() => setShowModal(false)}>
+      <ModalOverlay />
+      <ModalContent className='bg-primary text-secondary'>
+        <ModalHeader className='bg-primary text-secondary'>
+          <div className= 'select-none'>{packTypeData.label}</div>
+        </ModalHeader>
+        <ModalBody className="flex flex-col justify-center items-center bg-primary text-secondary">
+          <Image src={pack.cover} alt={packTypeData.label} className="select-none" />
+          <Text mt={2}>{packTypeData.description}</Text>
+        </ModalBody>
+        <ModalFooter className="flex justify-end bg-primary text-secondary">
+          <Button
+            variant="ghost"
+            colorScheme="red"
+            className='border-2 border-secondary'
+            onClick={() => setShowModal(false)}
+            mr={2}
+          >
+            Open Later
+          </Button>
+          <Button
+            colorScheme="green"
+            onClick={() => onAccept(Number(pack.packID) )}
+          >
+            Open Pack
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  )
+}
+
+export default OpenPackModal

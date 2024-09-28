@@ -73,3 +73,19 @@
 .dark .slick-next:before {
   color: var(--blue-color);
 }
+
+.shine-effect {
+  animation: shine 1.5s infinite;
+}
+
+@keyframes shine {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0);
+  }
+  50% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0);
+  }
+}

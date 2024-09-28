@@ -1,17 +1,12 @@
-import pathToCards from '@constants/path-to-cards'
-import { useResponsive } from '@hooks/useResponsive'
-import Image from 'next/image'
+import React from 'react';
+import { Box, Image, useBreakpointValue } from '@chakra-ui/react';
 
 export type TradingCardProps = {
-  source: string
-  playerName: string
-  rarity: string
-  className?: string
-}
-
-const customLoader = (src: string) => {
-  return `https://simulationhockey.com/tradingcards/${src}`
-}
+  source: string;
+  playerName: string;
+  rarity: string;
+  className?: string;
+};
 
 const TradingCard = ({
   source,
@@ -19,27 +14,37 @@ const TradingCard = ({
   rarity,
   className,
 }: TradingCardProps) => {
-  const { isMobile, isTablet, isDesktop } = useResponsive()
-  const dimensions: { width: number; height: number } = isMobile
-    ? { width: 211, height: 290 }
-    : isTablet
-      ? { width: 200, height: 276 }
-      : isDesktop
-        ? { width: 142, height: 195 }
-        : { width: 320, height: 440 }
+  const aspectRatio = useBreakpointValue({ base: 4/5, md: 3/4 });
+  const maxHeight = useBreakpointValue({ base: "70vh", md: "80vh" });
 
   return (
-    <Image
-      loader={() => customLoader(source)}
-      width={dimensions.width}
-      height={dimensions.height}
-      src={`${pathToCards}${source}`}
-      alt={`${rarity} ${playerName}`}
-      className={`w-full h-full cursor-pointer rounded-sm mx-1 ${className}`}
-      loading="lazy"
-      unoptimized={true}
-    />
-  )
-}
+    <Box
+      width="100%"
+      height="100%"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      overflow="hidden"
+    >
+      <Box
+        width="auto"
+        height={`min(${maxHeight}, 100%)`}
+        position="relative"
+        aspectRatio={aspectRatio}
+      >
+        <Image
+          src={`https://simulationhockey.com/tradingcards/${source}`}
+          alt={`${rarity} ${playerName}`}
+          loading="lazy"
+          fallbackSrc="/cardback.png"
+          objectFit="contain"
+          width="100%"
+          height="100%"
+          className={`rounded-sm ${className}`}
+        />
+      </Box>
+    </Box>
+  );
+};
 
-export default TradingCard
+export default TradingCard;
