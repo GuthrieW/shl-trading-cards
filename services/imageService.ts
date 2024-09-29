@@ -32,7 +32,7 @@ class ImageService {
 
       return { success: true, error: null }
     } catch (error) {
-      console.log('error', error)
+      console.error(error)
       return { success: false, error }
     }
   }

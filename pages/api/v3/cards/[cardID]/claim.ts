@@ -78,8 +78,6 @@ export default async function claimEndpoint(
       return
     }
 
-    console.log('queryResult', queryResult)
-
     res.status(StatusCodes.OK).json({ status: 'success', payload: null })
     return
   }
