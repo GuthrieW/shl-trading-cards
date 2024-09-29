@@ -36,7 +36,7 @@ const useCreateCard = (): UseCreateCard => {
         ])
       },
       onError: () => {
-        errorToast({ errorText: 'Failed to create card' })
+        errorToast({ title: 'Failed to create card' })
       },
     }
   )

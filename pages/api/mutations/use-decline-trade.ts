@@ -34,10 +34,10 @@ const useDeclineTrade = (): UseDeclineTrade => {
           UseGetUserTradesKey,
           UseGetNumberOfPendingTradesKey,
         ])
-        successToast({ successText: 'Trade Declined' })
+        successToast({ title: 'Trade Declined' })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Declining Trade' })
+        errorToast({ title: 'Error Declining Trade' })
       },
     }
   )

@@ -36,10 +36,10 @@ const useClaimCard = (): UseClaimCard => {
           UseGetClaimedCardsKey,
           UseGetRequestedCardsKey,
         ])
-        successToast({ successText: 'Card Claimed' })
+        successToast({ title: 'Card Claimed' })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Claiming Card' })
+        errorToast({ title: 'Error Claiming Card' })
       },
     }
   )

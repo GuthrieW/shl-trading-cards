@@ -1,12 +1,11 @@
-import classnames from 'classnames'
 import { Link } from 'components/common/Link'
-import React, { useMemo } from 'react'
+import React from 'react'
 import Slider, { type Settings } from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import { UserCollection } from '@pages/api/v3'
 import pathToCards from '@constants/path-to-cards'
-import Image from 'next/image';
+import Image from 'next/image'
 import GetUsername from '@components/common/GetUsername'
 
 export const Carousel = React.memo(
@@ -19,10 +18,10 @@ export const Carousel = React.memo(
     noBottomBorder?: boolean
   }) => {
     const settings: Settings = {
-      className: "center",
+      className: 'center',
       centerMode: true,
       infinite: true,
-      centerPadding: "0",
+      centerPadding: '0',
       slidesToShow: 3,
       speed: 500,
       focusOnSelect: true,
@@ -42,12 +41,12 @@ export const Carousel = React.memo(
     }
 
     const customLoader = ({ src }: { src: string }) => {
-      return `https://simulationhockey.com/tradingcards/${src}.png`;
-    };
+      return `https://simulationhockey.com/tradingcards/${src}.png`
+    }
 
     return (
       <div className="w-full carousel-container">
-        <div className='border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl'>
+        <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
           Latest Cards Opened
         </div>
 
@@ -81,8 +80,14 @@ export const Carousel = React.memo(
                       unoptimized
                     />
                     <div className="card-info">
-                      <p>Opened by: <GetUsername userID={card.userID} /></p>
-                      <Link className = "text-blue-600 " href={`/packs/${card.packID}`} target="_blank">
+                      <p>
+                        Opened by: <GetUsername userID={card.userID} />
+                      </p>
+                      <Link
+                        className="text-blue-600 "
+                        href={`/packs/${card.packID}`}
+                        target="_blank"
+                      >
                         View Pack
                       </Link>
                     </div>

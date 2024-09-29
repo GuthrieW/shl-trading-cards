@@ -30,10 +30,10 @@ const useEditDonator = (): UseEditDonator => {
     {
       onSuccess: () => {
         invalidateQueries(queryClient, [])
-        successToast({ successText: 'Donator Edited' })
+        successToast({ title: 'Donator Edited' })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Editing Donator' })
+        errorToast({ title: 'Error Editing Donator' })
       },
     }
   )

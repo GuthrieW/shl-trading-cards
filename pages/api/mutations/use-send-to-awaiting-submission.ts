@@ -31,10 +31,10 @@ const useSendToAwaitingSubmission = (): UseSendToAwaitingSubmission => {
     {
       onSuccess: () => {
         invalidateQueries(queryClient, [UseGetAllCardsKey])
-        successToast({ successText: 'Card Sent to Awaiting Submission' })
+        successToast({ title: 'Card Sent to Awaiting Submission' })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Sending Card to Awaiting Submission' })
+        errorToast({ title: 'Error Sending Card to Awaiting Submission' })
       },
     }
   )

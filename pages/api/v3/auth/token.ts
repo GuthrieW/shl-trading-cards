@@ -44,18 +44,12 @@ export default async function tokenEndpoint(
       WHERE token=${req.body.refreshToken};
     `)
 
-    if ('error' in queryResult) {
-      console.error(queryResult)
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .end('Server connection failed')
-      return
-    }
-
-    if (queryResult.length === 0) {
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .end('No refresh token found')
+    if ('error' in queryResult || queryResult.length === 0) {
+      console.log('queryResult', queryResult)
+      res.status(StatusCodes.OK).json({
+        status: 'logout',
+        message: 'No refresh token found',
+      })
       return
     }
 

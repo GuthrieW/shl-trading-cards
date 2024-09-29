@@ -32,10 +32,10 @@ const useIssuePack = (): UseIssuePack => {
     {
       onSuccess: () => {
         invalidateQueries(queryClient, [])
-        successToast({ successText: 'Pack Issued' })
+        successToast({ title: 'Pack Issued' })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Issuing Pack' })
+        errorToast({ title: 'Error Issuing Pack' })
       },
     }
   )

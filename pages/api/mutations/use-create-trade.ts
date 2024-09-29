@@ -50,10 +50,10 @@ const useCreateTrade = (): UseCreateTrade => {
           UseGetUserTradesKey,
           UseGetNumberOfPendingTradesKey,
         ])
-        successToast({ successText: 'Trade created' })
+        successToast({ title: 'Trade created' })
       },
       onError: () => {
-        errorToast({ errorText: 'Failed to create trade' })
+        errorToast({ title: 'Failed to create trade' })
       },
     }
   )

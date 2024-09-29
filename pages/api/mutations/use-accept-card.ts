@@ -37,10 +37,10 @@ const useAcceptCard = (): UseAcceptCard => {
           UseGetUnapprovedCardsKey,
           UseGetRequestedCardsKey,
         ])
-        successToast({ successText: 'Card Accepted' })
+        successToast({ title: 'Card Accepted' })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Accepting Card' })
+        errorToast({ title: 'Error Accepting Card' })
       },
     }
   )

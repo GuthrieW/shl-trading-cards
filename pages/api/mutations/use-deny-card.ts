@@ -35,10 +35,10 @@ const useDenyCard = (): UseDenyCard => {
           UseGetRequestedCardsKey,
           UseGetUnapprovedCardsKey,
         ])
-        successToast({ successText: 'Card Denied' })
+        successToast({ title: 'Card Denied' })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Denying Card' })
+        errorToast({ title: 'Error Denying Card' })
       },
     }
   )

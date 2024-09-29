@@ -31,10 +31,10 @@ const useSendToAwaitingClaim = (): UseSendToAwaitingClaim => {
     {
       onSuccess: () => {
         invalidateQueries(queryClient, [UseGetAllCardsKey])
-        successToast({ successText: 'Card Sent to Awaiting Claim' })
+        successToast({ title: 'Card Sent to Awaiting Claim' })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Sending Card to Awaiting Claim' })
+        errorToast({ title: 'Error Sending Card to Awaiting Claim' })
       },
     }
   )

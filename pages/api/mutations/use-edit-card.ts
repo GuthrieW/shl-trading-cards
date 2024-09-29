@@ -34,10 +34,10 @@ const useEditCard = (): UseEditCard => {
           UseGetAllCardsKey,
           UseGetApprovedCardsKey,
         ])
-        successToast({ successText: 'Edited Card' })
+        successToast({ title: 'Edited Card' })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Editing Card' })
+        errorToast({ title: 'Error Editing Card' })
       },
     }
   )

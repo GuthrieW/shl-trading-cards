@@ -31,10 +31,10 @@ const useSubmitCardImage = (): UseSubmitCardImage => {
     {
       onSuccess: () => {
         invalidateQueries(queryClient, [UseGetAllCardsKey])
-        successToast({ successText: 'Card Image Submitted' })
+        successToast({ title: 'Card Image Submitted' })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Submitting Card Image' })
+        errorToast({ title: 'Error Submitting Card Image' })
       },
     }
   )

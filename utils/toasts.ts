@@ -1,12 +1,12 @@
-import { useToast } from '@chakra-ui/react';
+import { useToast } from '@chakra-ui/react'
 
 export type ToastProps = {
-  title: string;
-  description?: string;
-};
+  title: string
+  description?: string
+}
 
 export const warningToast = ({ title, description }: ToastProps) => {
-  const toast = useToast();
+  const toast = useToast()
   toast({
     title,
     description,
@@ -14,12 +14,12 @@ export const warningToast = ({ title, description }: ToastProps) => {
     duration: 2500,
     isClosable: true,
     position: 'bottom-left',
-  });
-};
+  })
+}
 
 export const successToast = ({ title, description }: ToastProps) => {
-  console.log("successToast")
-  const toast = useToast();
+  console.log('successToast')
+  const toast = useToast()
   toast({
     title,
     description,
@@ -27,11 +27,11 @@ export const successToast = ({ title, description }: ToastProps) => {
     duration: 2500,
     isClosable: true,
     position: 'bottom-left',
-  });
-};
+  })
+}
 
 export const errorToast = ({ title, description }: ToastProps) => {
-  const toast = useToast();
+  const toast = useToast()
   toast({
     title,
     description,
@@ -39,5 +39,5 @@ export const errorToast = ({ title, description }: ToastProps) => {
     duration: 2500,
     isClosable: true,
     position: 'bottom-left',
-  });
-};
+  })
+}

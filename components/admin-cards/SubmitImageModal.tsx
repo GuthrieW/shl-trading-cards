@@ -57,7 +57,7 @@ export default function SubmitImageModal({
 
   const handleSubmit = async () => {
     if (isLoading) {
-      // warningToast({ warningText: 'Already submitting a card' })
+      warningToast({ title: 'Already submitting a card' })
       return
     }
 
