@@ -10,7 +10,6 @@ import {
   Button,
   useColorMode,
   Box,
-  Text,
   Accordion,
   AccordionItem,
   AccordionButton,

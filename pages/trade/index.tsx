@@ -8,11 +8,13 @@ import { query } from '@pages/api/database/query'
 import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
-import { useState } from 'react'
+import { useRouter } from 'next/router'
+import { useState, useEffect } from 'react'
 
 export default () => {
   const { session, loggedIn } = useSession()
   const tradesDrawer = useDisclosure()
+  const router = useRouter()
 
   const [tradePartnerUid, setTradePartnerUid] = useState<number>(null)
 
@@ -26,6 +28,13 @@ export default () => {
       }),
     enabled: loggedIn,
   })
+
+  useEffect(() => {
+    const { partnerId } = router.query
+    if (partnerId && typeof partnerId === 'string') {
+      setTradePartnerUid(parseInt(partnerId))
+    }
+  }, [router.query])
 
   return (
     <PageWrapper>

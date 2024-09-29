@@ -27,7 +27,7 @@ const useGetAllUsersWithCards = ({
     async () => {
       return await axios({
         method: POST,
-        url: '/api/v2/users/with-cards',
+        url: '/api/v3/user/with-cards',
         data: { name, page },
       })
     }

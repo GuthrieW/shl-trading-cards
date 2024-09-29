@@ -5,7 +5,7 @@ import { GET } from '@constants/http-methods';
 import SQL from 'sql-template-strings';
 import { StatusCodes } from 'http-status-codes';
 import methodNotAllowed from '../../lib/methodNotAllowed';
-import { ApiResponse, UserLatestPack } from '../..';
+import { ApiResponse, UserPacks } from '../..';
 import { cardsQuery } from '@pages/api/database/database';
 
 
@@ -16,7 +16,7 @@ const cors = Cors({
 
 export default async function userPacksEndpoint(
     req: NextApiRequest,
-    res: NextApiResponse<ApiResponse<UserLatestPack[]>>
+    res: NextApiResponse<ApiResponse<UserPacks[]>>
 ): Promise<void> {
     await middleware(req, res, cors);
 
@@ -51,7 +51,7 @@ export default async function userPacksEndpoint(
             query.append(SQL` LIMIT 3`);
         }
 
-        const queryResult = await cardsQuery<UserLatestPack>(query);
+        const queryResult = await cardsQuery<UserPacks>(query);
 
         if ('error' in queryResult) {
             console.error(queryResult.error);

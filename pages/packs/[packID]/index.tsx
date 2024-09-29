@@ -14,11 +14,12 @@ import {
 import { query } from '@pages/api/database/query'
 import { GET } from '@constants/http-methods'
 import axios from 'axios'
-import { LatestCards, UserLatestPack } from '@pages/api/v3'
+import { LatestCards, UserPacks } from '@pages/api/v3'
 import { PageWrapper } from '@components/common/PageWrapper'
 import { UserData } from '@pages/api/v3/user'
 import { formatDateTime } from '@utils/formatDateTime'
 import PackOpen from '@components/collection/PackOpen'
+import GetUsername from '@components/common/GetUsername'
 
 interface PackPageProps {
   customImageLoader?: (src: string) => string
@@ -45,7 +46,7 @@ const PackPage: React.FC<PackPageProps> = ({
     enabled: !!packID,
   })
 
-  const { payload: packs, isLoading: packsLoading } = query<UserLatestPack[]>({
+  const { payload: packs, isLoading: packsLoading } = query<UserPacks[]>({
     queryKey: ['latest-packs', packID],
     queryFn: () =>
       axios({
@@ -54,22 +55,11 @@ const PackPage: React.FC<PackPageProps> = ({
       }),
     enabled: !!packID,
   })
-
-  const { payload: user, isLoading: userIsLoading } = query<UserData>({
-    queryKey: ['collectionUser', String(packs?.[0]?.userID)],
-    queryFn: () =>
-      axios({
-        method: GET,
-        url: `/api/v3/user/${packs?.[0]?.userID}`,
-      }),
-    enabled: !!packs?.[0]?.userID,
-  })
-
   if (!packID) {
     return <div>Invalid Pack ID</div>
   }
 
-  if (isLoading || packsLoading || userIsLoading) {
+  if (isLoading || packsLoading ) {
     return (
       <Box
         display="flex"
@@ -83,7 +73,6 @@ const PackPage: React.FC<PackPageProps> = ({
   }
 
   const pack = packs?.[0]
-  const username = user?.username
 
   return (
     <PageWrapper>
@@ -92,7 +81,7 @@ const PackPage: React.FC<PackPageProps> = ({
           <VStack spacing={4} align="start">
             <HStack justify="space-between" width="100%">
               <div className="font-bold">
-                <div className="text-xs sm:text-lg">Opened By: {username}</div>
+                <div className="text-xs sm:text-lg">Opened By: <GetUsername userID={packs?.[0]?.userID} /> </div>
                 <div className="text-xs sm:text-lg">Pack #: {packID}</div>
               </div>
               <div className="font-bold">

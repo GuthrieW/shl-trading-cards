@@ -1,4 +1,4 @@
-import IconButton from '@components/buttons/icon-button'
+import { IconButton } from '@chakra-ui/react'
 import { ChatBubbleLeftRightIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 import fixAvatar from '@utils/fix-avatar-url'
 import Router from 'next/router'
@@ -17,8 +17,8 @@ const UserCard = ({ user, quantity }: UserCardProps) => {
   }
 
   return (
-    <div className="flex flex-col justify-start items-center">
-      <div className="flex flex-col justify-center items-center bg-neutral-800 p-2 m-2 rounded text-gray-200 hover:shadow-lg hover:shadow-neutral-800">
+    <div className="flex flex-col justify-start items-center hover:scale-105 hover:shadow-xl">
+      <div className="flex flex-col justify-center items-center bg-neutral-800 p-2 m-2 rounded text-gray-200 ">
         <img
           alt={`${user.username} avatar`}
           className="w-24 h-24 mt-6 mx-6 rounded-full"
@@ -31,7 +31,8 @@ const UserCard = ({ user, quantity }: UserCardProps) => {
             <IconButton
               className="h-8 w-8"
               disabled={false}
-              onClick={() => Router.push(`/collection?uid=${user.uid}`)}
+              onClick={() => Router.push(`/collect/${user.uid}`)}
+              aria-label={''}
             >
               <Squares2X2Icon />
             </IconButton>
@@ -41,7 +42,8 @@ const UserCard = ({ user, quantity }: UserCardProps) => {
             <IconButton
               className="h-8 w-8"
               disabled={false}
-              onClick={() => Router.push(`/trade-hub/${user.uid}`)}
+              onClick={() => Router.push(`/trade?partnerId=${user.uid}`)}
+              aria-label={''}
             >
               <ChatBubbleLeftRightIcon />
             </IconButton>

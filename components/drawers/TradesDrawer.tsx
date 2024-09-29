@@ -1,6 +1,9 @@
 import {
   Alert,
   AlertIcon,
+  Card,
+  CardBody,
+  CardHeader,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -14,11 +17,14 @@ import {
   StackDivider,
 } from '@chakra-ui/react'
 import { TradeCard } from '@components/cards/TradeCard'
+import GetUsername from '@components/common/GetUsername'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
+import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
@@ -66,6 +72,7 @@ export default function TradesDrawer({
   const [partnerUsername, setPartnerUsername] = useState<string>('')
   const [debouncedUsername] = useDebounce(partnerUsername, 500)
 
+  const router = useRouter()
   const { session, loggedIn } = useSession()
 
   const { payload: loggedInTrades } = query<ListResponse<Trade>>({
@@ -92,9 +99,9 @@ export default function TradesDrawer({
     <Drawer placement="left" isOpen={isOpen} onClose={onClose}>
       <DrawerContent>
         <DrawerCloseButton />
-        <DrawerHeader>My Trades</DrawerHeader>
-        <DrawerBody>
-          <div className="flex flex-row">
+        <DrawerHeader className="bg-secondary">My Trades</DrawerHeader>
+        <DrawerBody className="bg-secondary">
+          <div className="flex flex-row bg-secondary">
             <FormControl className="mx-1">
               <FormLabel>Status</FormLabel>
               <Select
@@ -105,6 +112,7 @@ export default function TradesDrawer({
                 {TRADE_STATUS_OPTIONS.map((option) => (
                   <option
                     selected={option.value === 'PENDING'}
+                    className="!bg-secondary"
                     key={option.value}
                     value={option.value}
                   >
@@ -129,9 +137,32 @@ export default function TradesDrawer({
             </Alert>
           )}
           <Stack className="mt-2" divider={<StackDivider />}>
-            {loggedInTrades?.rows.map((trade) => (
-              <TradeCard key={trade.tradeID} trade={trade} />
-            ))}
+             {/* {loggedInTrades?.rows.map((trade) => (
+               <TradeCard key={trade.tradeID} trade={trade} />
+             ))} */}
+            {loggedInTrades?.rows.map((trade, index) => {
+              const otherUserId =
+                trade.initiatorID === parseInt(session.userId)
+                  ? trade.recipientID
+                  : trade.initiatorID
+              return (
+                <Card
+                  key={trade?.tradeID}
+                  onClick={() => router.push(`/trade/${trade.tradeID}`)}
+                  className="cursor-pointer !border !border-primary hover:scale-105 hover:shadow-xl transition-colors"
+                >
+                  <CardHeader className="bg-secondary text-primary">
+                    #{trade?.tradeID} - {otherUserId}
+                  </CardHeader>
+                  <CardBody className="bg-secondary text-primary">
+                    User: <GetUsername userID={otherUserId} />
+                  </CardBody>
+                  <CardBody className="bg-secondary text-primary">
+                    Status: {trade?.trade_status}
+                  </CardBody>
+                </Card>
+              )
+            })}
           </Stack>
         </DrawerBody>
       </DrawerContent>

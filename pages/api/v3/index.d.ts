@@ -22,6 +22,14 @@ export type ListResponse<T> = {
   totalOwned?: number
 }
 
+export type UserMostCards = {
+  userID: number;
+  uniqueCards: number;
+  totalCards: number;
+  username: string;
+  avatar: string;
+}
+
 export type UserUniqueCollection = {
   userID: number
   card_rarity: string
@@ -40,7 +48,8 @@ export type UserCollection ={
   packID: number;
 }
 
-export type UserLatestPack = {
+
+export type UserPacks = {
   packID: string;
   userID: number;
   packType: string;
@@ -55,6 +64,14 @@ export type LatestCards = {
   userID: number;
   cardID: string;
   packID: number;
+}
+
+export type UserMostCards = {
+  userID: number;
+  uniqueCards: number;
+  totalCards: number;
+  username: string;
+  avatar: string;
 }
 
 export type SortDirection = 'ASC' | 'DESC'

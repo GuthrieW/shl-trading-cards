@@ -27,7 +27,7 @@ import { Squash as Hamburger } from 'hamburger-react'
 const CURRENT_PAGE_LINK_CLASSES =
   'border-b-0 sm:border-b-[4px] border-l-[4px] sm:border-l-0 pt-0 sm:pt-[4px] pr-[14px] sm:pr-[10px] border-secondary'
 const LINK_CLASSES =
-  '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-secondary sm:h-full sm:w-max'
+  '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-grey100 hover:bg-blue600 sm:h-full sm:w-max'
 
 const linkClasses = (router: NextRouter, path: string): string =>
   classnames(
@@ -69,7 +69,7 @@ export const Header = ({ showAuthButtons = true }) => {
 
   return (
     <div>
-      <div className="z-50 h-16 w-full bg-black text-grey100">
+      <div className="z-50 h-16 w-full bg-black text-secondary">
         <div className="relative mx-auto flex h-full w-full items-center justify-between px-[5%] sm:w-11/12 sm:justify-start sm:p-0 lg:w-3/4">
           <Link
             href="/"
@@ -93,44 +93,92 @@ export const Header = ({ showAuthButtons = true }) => {
             <AuthGuard>
               <Link
                 href={`/collect/${uid}`}
-                className={linkClasses(router, `/collect/${uid}`)}
+                className={classnames(
+                  '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600',
+                  linkClasses(router, `/collect/${uid}`)
+                )}
               >
                 Collection
               </Link>
             </AuthGuard>
             <Link
               href={`/community`}
-              className={linkClasses(router, '/community')}
+              className={classnames(
+                '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600',
+                linkClasses(router, `/community`)
+              )}
             >
               Community
             </Link>
-            <Link href="/shop" className={linkClasses(router, '/shop')}>
+            <Link
+              href="/shop"
+              className={classnames(
+                '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600',
+                linkClasses(router, `/shop`)
+              )}
+            >
               Shop
             </Link>
             <AuthGuard>
-              <Link href="/trade" className={linkClasses(router, '/trade')}>
+              <Link
+                href="/trade"
+                className={classnames(
+                  '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600',
+                  linkClasses(router, `/trade`)
+                )}
+              >
                 Trade
               </Link>
             </AuthGuard>
+            <AuthGuard>
+              <Link
+                href="/packs"
+                className={classnames(
+                  '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600',
+                  linkClasses(router, `/packs`)
+                )}
+              >
+                Open Packs
+              </Link>
+            </AuthGuard>
             <Menu>
-              <MenuButton className={LINK_CLASSES}>More</MenuButton>
+              <MenuButton className="!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-grey100 hover:bg-blue600 sm:h-full sm:w-max">
+                More
+              </MenuButton>
               <MenuList>
                 {externalLinks.map(({ name, href }) => (
-                  <MenuItem key={name} as="a" href={href} target="_blank">
+                  <MenuItem
+                    className="hover:!bg-highlighted/40 hover:!text-primary"
+                    key={name}
+                    as="a"
+                    href={href}
+                    target="_blank"
+                  >
                     {name}
                   </MenuItem>
                 ))}
               </MenuList>
             </Menu>
             <Menu>
-              <MenuButton className={linkClasses(router, '/admin')}>
+              <MenuButton
+                className={classnames(
+                  '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600',
+                  linkClasses(router, '/admin')
+                )}
+              >
                 Admin
               </MenuButton>
               <MenuList>
-                <MenuItem onClick={() => router.push('/admin/cards')}>
+                <MenuItem
+                  className="hover:!bg-highlighted/40 hover:!text-primary"
+                  onClick={() => router.push('/admin/cards')}
+                >
                   Cards
                 </MenuItem>
-                <MenuItem onClick={() => router.push('/admin/scripts')}>
+                <MenuItem
+                  className="hover:!bg-highlighted/40 hover:!text-primary"
+                  onClick={() => router.push('/admin/scripts')}
+                >
                   Scripts
                 </MenuItem>
               </MenuList>
@@ -167,7 +215,7 @@ export const Header = ({ showAuthButtons = true }) => {
                       </div>
                     </MenuButton>
                     <MenuList>
-                      <MenuItem onClick={handleLogout}>Sign Out</MenuItem>
+                      <MenuItem className="hover:!bg-highlighted/40 hover:!text-primary" onClick={handleLogout}>Sign Out</MenuItem>
                     </MenuList>
                   </>
                 )}

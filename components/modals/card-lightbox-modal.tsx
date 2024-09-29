@@ -23,12 +23,14 @@ import pathToCards from '@constants/path-to-cards'
 import { IndexRecordTable } from 'components/collection/IndexRecordTable'
 import axios from 'axios'
 import { BackOfCard } from '@components/collection/BackOfCard'
+import TradingCard from '@components/images/trading-card'
 
 type CardLightBoxModalProps = {
   setShowModal: Function
   cardName: string
   cardImage: string
   owned: number
+  rarity: string
   playerID: number
   cardID: number
   userID: string
@@ -41,6 +43,7 @@ const CardLightBoxModal = ({
   cardName,
   cardImage,
   owned,
+  rarity,
   playerID,
   cardID,
   userID,
@@ -81,40 +84,11 @@ const CardLightBoxModal = ({
     setIsLoading(false)
   }
 
-  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (isFlipped) return
-
-    const rect = cardContainerRef.current!.getBoundingClientRect()
-    const mouseX = event.clientX - rect.left - rect.width / 2
-    const mouseY = event.clientY - rect.top - rect.height / 2
-
-    const transform = `perspective(1000px) rotateX(${
-      -mouseY / THRESHOLD
-    }deg) rotateY(${mouseX / THRESHOLD}deg) scale3d(1, 1, 1)`
-    cardFrontRef.current!.style.transform = transform
-    shineRef.current!.style.transform = transform
-    shineRef.current!.style.background = `radial-gradient(circle at ${
-      event.clientX - rect.left
-    }px ${
-      event.clientY - rect.top
-    }px, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 100%)`
-  }
-
-  const handleMouseLeave = () => {
-    if (isFlipped) return
-
-    cardFrontRef.current!.style.transform =
-      'perspective(1000px) rotateX(0deg) rotateY(0deg)'
-    shineRef.current!.style.transform =
-      'perspective(1000px) rotateX(0deg) rotateY(0deg)'
-    shineRef.current!.style.background = 'none'
-  }
-
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose} isCentered motionPreset="scale">
         <ModalContent>
-          <ModalHeader className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
+          <ModalHeader className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl ">
             {cardName}
           </ModalHeader>
           <ModalCloseButton />
@@ -123,7 +97,7 @@ const CardLightBoxModal = ({
               ref={cardContainerRef}
               position="relative"
               width="100%"
-              height={useBreakpointValue({ base: '450px', md: '550px' })}
+              height={useBreakpointValue({ base: '500px', md: '550px', lg: '550px' })}
               maxW="800px"
               mx="auto"
               style={{
@@ -149,15 +123,11 @@ const CardLightBoxModal = ({
                     backfaceVisibility: 'hidden',
                   }}
                 >
-                  <Image
+                  <TradingCard
                     className={`${!isOwned ? 'grayscale' : ''}`}
-                    alt={cardName}
-                    src={`${pathToCards}${cardImage}`}
-                    width="100%"
-                    height="100%"
-                    objectFit="cover"
-                    rounded="md"
-                    boxShadow="lg"
+                    source={cardImage}
+                    rarity={rarity}
+                    playerName={cardName}
                   />
                   <Box
                     ref={shineRef}

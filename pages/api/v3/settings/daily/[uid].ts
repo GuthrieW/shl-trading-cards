@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse } from '../..'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
-import { POST } from '@constants/http-methods'
+import { GET, POST } from '@constants/http-methods'
 import methodNotAllowed from '../../lib/methodNotAllowed'
 import { cardsQuery } from '@pages/api/database/database'
 import SQL from 'sql-template-strings'
@@ -13,27 +13,28 @@ const cors = Cors({
   methods: allowedMethods,
 })
 
-export default async function updateDailySubscription(
+export default async function dailySubscription(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<null>>
+  res: NextApiResponse<ApiResponse<any>>
 ): Promise<void> {
-  await middleware(req, res, cors)
+  await middleware(req, res, cors);
+  
+  const { uid } = req.query;
 
   if (req.method === POST) {
-    const uid = req.query.uid as string
-    const subscription = req.body.subscription as number
-
-    if (!uid || !subscription) {
-      console.error('Missing uid or subscription')
+    const { subscription } = req.body;
+    
+    if (subscription === undefined) {
+      console.error('Missing subscription');
       res
         .status(StatusCodes.BAD_REQUEST)
-        .end('Please provide a uid and subscription amount in your request')
-      return
+        .end('Please provide a subscription amount in your request');
+      return;
     }
 
     if (subscription < 0 || subscription > 3) {
-      res.status(StatusCodes.BAD_REQUEST).end('Subscription must be 0 or 3')
-      return
+      res.status(StatusCodes.BAD_REQUEST).end('Subscription must be between 0 and 3');
+      return;
     }
 
     await cardsQuery(SQL`
@@ -42,10 +43,10 @@ export default async function updateDailySubscription(
       VALUES
         (${uid}, ${subscription})
       ON DUPLICATE KEY UPDATE subscription=${subscription};
-    `)
+    `);
 
-    res.status(StatusCodes.OK).json({ status: 'success', payload: null })
+    res.status(StatusCodes.OK).json({ status: 'success', payload: { subscription } });
+  } else {
+    methodNotAllowed(req, res, allowedMethods);
   }
-
-  methodNotAllowed(req, res, allowedMethods)
 }

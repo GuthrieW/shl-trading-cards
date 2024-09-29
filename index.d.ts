@@ -24,6 +24,8 @@ type Card = {
   conditioning?: number | null
   season: number
   author_paid: 0 | 1
+  packID?: number
+  quantity?: number;
 }
 
 type CardRequest = {
@@ -56,6 +58,10 @@ type CollectionCard = {
   overall: number
   teamID: number
   playerID: number
+}
+
+type NewCard = {
+  quantity: number
 }
 
 type SetCard = {

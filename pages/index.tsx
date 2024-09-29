@@ -1,15 +1,53 @@
 import { PageWrapper } from '@components/common/PageWrapper'
 import DiscordWidget from '@components/widgets/DiscordWidget'
+import axios from 'axios'
 import config from 'lib/config'
 import { NextPageContext } from 'next'
 import { dehydrate, QueryClient } from 'react-query'
+import { UserCollection, UserPacks, UserMostCards } from './api/v3'
+import { query } from './api/database/query'
+import { GET } from '@constants/http-methods'
+import MostCardsTable from '@components/tables/Most-cards-table'
+import { Carousel } from '@components/carousel/Carousel'
+import { useMemo } from 'react'
 
 export default () => {
-  return (
-    <PageWrapper className="space-y-4">
-      <p>Home Page</p>
+  const { payload, isLoading } = query<UserMostCards[]>({
+    queryKey: ['most-cards'],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/user/most-cards`,
+      }),
+  })
 
-      <DiscordWidget />
+  const { payload: packs, isLoading: packsLoading } = query<UserCollection[]>({
+    queryKey: ['last-five-packs'],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/cards/last-five-packs`,
+      }),
+  })
+
+  const limitedCards = useMemo(() => (packs?.length ? packs.slice(0, 25) : []), [packs])
+
+  return (
+    <PageWrapper>
+      <div className="space-y-8">
+        <h1 className="text-3xl font-bold text-center mb-4">Welcome to the Ice Level</h1>
+        <div className="mb-4">
+          <Carousel cards={limitedCards} isLoading={packsLoading}/>
+        </div>
+        <div className="bg-primary shadow-md rounded-lg p-6">
+          <h2 className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">Most Cards Collected</h2>
+          <MostCardsTable data={payload} isLoading={isLoading} />
+        </div>
+        <div className="bg-primary shadow-md rounded-lg p-6">
+          <h2 className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">Join Our Community</h2>
+          <DiscordWidget />
+        </div>
+      </div>
     </PageWrapper>
   )
 }
