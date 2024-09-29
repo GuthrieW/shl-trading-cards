@@ -33,8 +33,12 @@ export default function RemoveCardImageDialog({
     mutationFn: ({ cardID }) =>
       axios({
         method: DELETE,
-        url: `/api/v3/cards/image/${cardID}`,
+        url: `/api/v3/cards/${cardID}/image`,
       }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['cards'])
+      onClose()
+    },
   })
 
   const { isSubmitting, isValid, handleSubmit } = useFormik({
@@ -43,15 +47,7 @@ export default function RemoveCardImageDialog({
       try {
         setSubmitting(true)
         onFormError(null)
-        await deleteCardImage(
-          { cardID: card.cardID },
-          {
-            onSuccess: () => {
-              queryClient.invalidateQueries(['cards'])
-              onClose()
-            },
-          }
-        )
+        await deleteCardImage({ cardID: card.cardID })
       } catch (error) {
         console.error(error)
         const errorMessage: string =

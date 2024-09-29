@@ -1,8 +1,9 @@
-import { ChevronDownIcon } from '@chakra-ui/icons'
+import { CheckIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import {
   Button,
   FormControl,
   FormLabel,
+  Input,
   Menu,
   MenuButton,
   MenuItem,
@@ -28,16 +29,21 @@ import { PageWrapper } from '@components/common/PageWrapper'
 import SortIcon from '@components/table/SortIcon'
 import Td from '@components/table/Td'
 import TablePagination from '@components/table/TablePagination'
-import { GET, PATCH } from '@constants/http-methods'
+import { GET } from '@constants/http-methods'
 import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated'
 import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
-import { mutation } from '@pages/api/database/mutation'
 import { query } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
-import { useQueryClient } from 'react-query'
+import { useState } from 'react'
 import { cardService } from 'services/cardService'
+import { shlTeamsMap } from '@constants/teams-map'
+import rarityMap from '@constants/rarity-map'
+import { useCookie } from '@hooks/useCookie'
+import config from 'lib/config'
+import SubmitImageModal from '@components/admin-cards/SubmitImageModal'
+import ClaimCardDialog from '@components/admin-cards/ClaimCardDialog'
+import ProcessImageDialog from '@components/admin-cards/ProcessImageDialog'
 
 type ColumnName = keyof Readonly<Card>
 
@@ -80,26 +86,23 @@ export default () => {
   const [viewNeedsAuthorPaid, setviewNeedsAuthorPaid] = useState<boolean>(false)
   const [viewDone, setViewDone] = useState<boolean>(false)
 
+  const [playerName, setPlayerName] = useState<string>(null)
+  const [teams, setTeams] = useState<string[]>([])
+  const [rarities, setRarities] = useState<string[]>([])
   const [sortColumn, setSortColumn] = useState<ColumnName>('player_name')
   const [sortDirection, setSortDirection] = useState<SortDirection>('ASC')
   const [tablePage, setTablePage] = useState<number>(1)
   const [selectedCard, setSelectedCard] = useState<Card>(null)
 
+  const claimCardDialog = useDisclosure()
   const updateModal = useDisclosure()
   const removeAuthorDialog = useDisclosure()
   const removeImageDialog = useDisclosure()
-  const approveImageDialog = useDisclosure()
+  const submitImageModal = useDisclosure()
+  const processImageDialog = useDisclosure()
   const deleteDialog = useDisclosure()
 
-  const queryClient = useQueryClient()
-
-  const { mutate: claimCard } = mutation<void, { cardID: number }>({
-    mutationFn: ({ cardID }) =>
-      axios({
-        method: PATCH,
-        url: `/api/v3/cards/claim/${cardID}`,
-      }),
-  })
+  const [uid] = useCookie(config.userIDCookieName)
 
   const { isCheckingAuthentication } = useRedirectIfNotAuthenticated()
   const { isCheckingAuthorization } = useRedirectIfNotAuthorized({
@@ -109,6 +112,9 @@ export default () => {
   const { payload, isLoading } = query<ListResponse<Card>>({
     queryKey: [
       'cards',
+      playerName,
+      JSON.stringify(teams),
+      JSON.stringify(rarities),
       String(viewSkaters),
       String(viewNeedsAuthor),
       String(viewNeedsImage),
@@ -126,6 +132,9 @@ export default () => {
         params: {
           limit: ROWS_PER_PAGE,
           offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
+          playerName,
+          teams: JSON.stringify(teams),
+          rarities: JSON.stringify(rarities),
           viewSkaters,
           viewNeedsAuthor,
           viewNeedsImage,
@@ -147,62 +156,175 @@ export default () => {
     }
   }
 
+  const toggleTeam = (team: string) => {
+    setTeams((currentValue) => {
+      const teamIndex: number = currentValue.indexOf(team)
+      teamIndex === -1
+        ? currentValue.push(team)
+        : currentValue.splice(teamIndex)
+      return [...currentValue]
+    })
+  }
+
+  const toggleRarity = (rarity: string) => {
+    setRarities((currentValue) => {
+      const rarityIndex: number = currentValue.indexOf(rarity)
+      rarityIndex === -1
+        ? currentValue.push(rarity)
+        : currentValue.splice(rarityIndex)
+      return [...currentValue]
+    })
+  }
+
   return (
     <>
       <PageWrapper
         loading={isCheckingAuthentication || isCheckingAuthorization}
         className="h-full flex flex-col justify-center items-center w-11/12 md:w-3/4"
       >
+        <p>Card Management</p>
         <div className="rounded border border-1 border-inherit mt-4">
-          <div className="m-2">
-            <Menu closeOnSelect={false}>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                <span className="pr-2">Statuses</span>
-              </MenuButton>
-              <MenuList>
-                <MenuOptionGroup type="checkbox">
-                  <MenuItemOption
-                    value="NeedsAuthor"
-                    className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
-                    onClick={() => setViewNeedsAuthor(!viewNeedsAuthor)}
-                  >
-                    Author Needed
-                  </MenuItemOption>
-                  <MenuItemOption
-                    value="NeedsImage"
-                    className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
-                    onClick={() => setviewNeedsImage(!viewNeedsImage)}
-                  >
-                    Needs Image
-                  </MenuItemOption>
-                  <MenuItemOption
-                    value="NeedsApproval"
-                    className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
-                    onClick={() => setviewNeedsApproval(!viewNeedsApproval)}
-                  >
-                    Needs Approval
-                  </MenuItemOption>
-                  <MenuItemOption
-                    value="NeedsAuthorPaid"
-                    className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
-                    onClick={() => setviewNeedsAuthorPaid(!viewNeedsAuthorPaid)}
-                  >
-                    Needs Author Paid
-                  </MenuItemOption>
-                  <MenuItemOption
-                    value="Done"
-                    className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
-                    onClick={() => setViewDone(!viewDone)}
-                  >
-                    Completed
-                  </MenuItemOption>
-                </MenuOptionGroup>
-              </MenuList>
-            </Menu>
-            <FormControl className="flex items-center m-2">
-              <FormLabel className="mb-0">Toggle Goaltenders:</FormLabel>
-              <Switch onChange={() => setViewSkaters(!viewSkaters)} />
-            </FormControl>
+          <FormControl>
+            <Input
+              className="w-full bg-secondary border-grey100"
+              placeholder="Search By Player Name"
+              size="lg"
+              onChange={(event) => setPlayerName(event.target.value)}
+            />
+          </FormControl>
+          <div className="m-2 flex flex-row justify-between">
+            <div className="flex flex-row space-x-2">
+              <FormControl>
+                <Menu closeOnSelect={false}>
+                  <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary ">
+                    Teams&nbsp;{`(${teams.length})`}
+                  </MenuButton>
+                  <MenuList>
+                    <MenuOptionGroup type="checkbox">
+                      <MenuItemOption
+                        icon={null}
+                        isChecked={false}
+                        aria-checked={false}
+                        closeOnSelect
+                        onClick={() => setTeams([])}
+                      >
+                        Deselect All
+                      </MenuItemOption>
+                      {Object.entries(shlTeamsMap).map(([key, value]) => {
+                        const isChecked: boolean = teams.includes(
+                          String(value.teamID)
+                        )
+                        return (
+                          <MenuItemOption
+                            icon={null}
+                            isChecked={isChecked}
+                            aria-checked={isChecked}
+                            key={value.teamID}
+                            value={String(value.teamID)}
+                            onClick={() => toggleTeam(String(value.teamID))}
+                          >
+                            {value.label}
+                            {isChecked && <CheckIcon className="mx-2" />}
+                          </MenuItemOption>
+                        )
+                      })}
+                    </MenuOptionGroup>
+                  </MenuList>
+                </Menu>
+              </FormControl>
+              <FormControl>
+                <Menu closeOnSelect={false}>
+                  <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary">
+                    Rarities&nbsp;{`(${rarities.length})`}
+                  </MenuButton>
+                  <MenuList>
+                    <MenuOptionGroup type="checkbox">
+                      <MenuItemOption
+                        icon={null}
+                        isChecked={false}
+                        aria-checked={false}
+                        closeOnSelect
+                        onClick={() => setRarities([])}
+                      >
+                        Deselect All
+                      </MenuItemOption>
+                      {Object.entries(rarityMap).map(([key, value]) => {
+                        const isChecked: boolean = rarities.includes(
+                          value.value
+                        )
+                        return (
+                          <MenuItemOption
+                            icon={null}
+                            isChecked={isChecked}
+                            aria-checked={isChecked}
+                            key={value.value}
+                            value={value.value}
+                            onClick={() => toggleRarity(value.value)}
+                          >
+                            {value.label}
+                            {isChecked && <CheckIcon className="mx-2" />}
+                          </MenuItemOption>
+                        )
+                      })}
+                    </MenuOptionGroup>
+                  </MenuList>
+                </Menu>
+              </FormControl>
+              <FormControl>
+                <Menu closeOnSelect={false}>
+                  <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                    <span className="pr-2">Statuses</span>
+                  </MenuButton>
+                  <MenuList>
+                    <MenuOptionGroup type="checkbox">
+                      <MenuItemOption
+                        value="NeedsAuthor"
+                        className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
+                        onClick={() => setViewNeedsAuthor(!viewNeedsAuthor)}
+                      >
+                        Author Needed
+                      </MenuItemOption>
+                      <MenuItemOption
+                        value="NeedsImage"
+                        className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
+                        onClick={() => setviewNeedsImage(!viewNeedsImage)}
+                      >
+                        Needs Image
+                      </MenuItemOption>
+                      <MenuItemOption
+                        value="NeedsApproval"
+                        className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
+                        onClick={() => setviewNeedsApproval(!viewNeedsApproval)}
+                      >
+                        Needs Approval
+                      </MenuItemOption>
+                      <MenuItemOption
+                        value="NeedsAuthorPaid"
+                        className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
+                        onClick={() =>
+                          setviewNeedsAuthorPaid(!viewNeedsAuthorPaid)
+                        }
+                      >
+                        Needs Author Paid
+                      </MenuItemOption>
+                      <MenuItemOption
+                        value="Done"
+                        className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
+                        onClick={() => setViewDone(!viewDone)}
+                      >
+                        Completed
+                      </MenuItemOption>
+                    </MenuOptionGroup>
+                  </MenuList>
+                </Menu>
+              </FormControl>
+            </div>
+            <div className="flex justify-end">
+              <FormControl className="flex items-center m-2">
+                <FormLabel className="mb-0">Toggle Goaltenders:</FormLabel>
+                <Switch onChange={() => setViewSkaters(!viewSkaters)} />
+              </FormControl>
+            </div>
           </div>
           <TableContainer>
             <Table variant="cardtable" className="mt-4" size="md">
@@ -426,27 +548,55 @@ export default () => {
                             Actions
                           </MenuButton>
                           <MenuList>
-                            <RoleGuard
-                              userRoles={[
-                                'TRADING_CARD_ADMIN',
-                                'TRADING_CARD_TEAM',
-                              ]}
-                            >
-                              <MenuItem
-                                onClick={() =>
-                                  claimCard(
-                                    { cardID: card.cardID },
-                                    {
-                                      onSuccess: () => {
-                                        queryClient.invalidateQueries(['cards'])
-                                      },
-                                    }
-                                  )
-                                }
+                            {!card.author_userID && (
+                              <RoleGuard
+                                userRoles={[
+                                  'TRADING_CARD_ADMIN',
+                                  'TRADING_CARD_TEAM',
+                                ]}
                               >
-                                Claim Card
-                              </MenuItem>
-                            </RoleGuard>
+                                <MenuItem
+                                  onClick={() => {
+                                    setSelectedCard(card)
+                                    claimCardDialog.onOpen()
+                                  }}
+                                >
+                                  Claim Card
+                                </MenuItem>
+                              </RoleGuard>
+                            )}
+                            {!card.image_url &&
+                              String(card.author_userID) == uid && (
+                                <RoleGuard
+                                  userRoles={[
+                                    'TRADING_CARD_ADMIN',
+                                    'TRADING_CARD_TEAM',
+                                  ]}
+                                >
+                                  <MenuItem
+                                    onClick={() => {
+                                      setSelectedCard(card)
+                                      submitImageModal.onOpen()
+                                    }}
+                                  >
+                                    Submit Image
+                                  </MenuItem>
+                                </RoleGuard>
+                              )}
+                            {card.image_url && !card.approved && (
+                              <PermissionGuard
+                                userPermissions={['canEditCards']}
+                              >
+                                <MenuItem
+                                  onClick={() => {
+                                    setSelectedCard(card)
+                                    processImageDialog.onOpen()
+                                  }}
+                                >
+                                  Process Image
+                                </MenuItem>
+                              </PermissionGuard>
+                            )}
                             <PermissionGuard userPermissions={['canEditCards']}>
                               <MenuItem
                                 onClick={() => {
@@ -482,20 +632,6 @@ export default () => {
                                   }}
                                 >
                                   Remove Image
-                                </MenuItem>
-                              </PermissionGuard>
-                            )}
-                            {card.image_url && card.approved && (
-                              <PermissionGuard
-                                userPermissions={['canEditCards']}
-                              >
-                                <MenuItem
-                                  onClick={() => {
-                                    setSelectedCard(card)
-                                    approveImageDialog.onOpen()
-                                  }}
-                                >
-                                  Approve Image
                                 </MenuItem>
                               </PermissionGuard>
                             )}
@@ -559,6 +695,30 @@ export default () => {
       </PageWrapper>
       {selectedCard && (
         <>
+          <ClaimCardDialog
+            card={selectedCard}
+            onClose={() => {
+              claimCardDialog.onClose()
+              setSelectedCard(null)
+            }}
+            isOpen={claimCardDialog.isOpen}
+          />
+          <SubmitImageModal
+            card={selectedCard}
+            onClose={() => {
+              submitImageModal.onClose()
+              setSelectedCard(null)
+            }}
+            isOpen={submitImageModal.isOpen}
+          />
+          <ProcessImageDialog
+            card={selectedCard}
+            onClose={() => {
+              processImageDialog.onClose()
+              setSelectedCard(null)
+            }}
+            isOpen={processImageDialog.isOpen}
+          />
           <UpdateCardModal
             card={selectedCard}
             onClose={() => {

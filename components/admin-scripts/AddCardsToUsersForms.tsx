@@ -30,6 +30,9 @@ export default function AddCardsToUsersForm({
           url: '/api/v3/collection/add-cards',
           data: { newCardsJson },
         }),
+      onSuccess: () => {
+        addToast({ title: 'Cards added', status: 'success' })
+      },
     })
 
   const {

@@ -29,7 +29,7 @@ const scripts: ScriptData[] = [
   { id: 'request-base-cards', name: 'Request Base Cards' },
   { id: 'request-custom-cards', name: 'Request Custom Cards' },
   // { id: 'request-charity-card', name: 'Request Charity Card' },
-  { id: 'delete-duplicates', name: 'Delete Duplicate Cards' },
+  // { id: 'delete-duplicates', name: 'Delete Duplicate Cards' },
 ] as const
 
 export default () => {

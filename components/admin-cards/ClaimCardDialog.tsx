@@ -10,14 +10,16 @@ import {
   AlertDialogOverlay,
   AlertIcon,
   Button,
+  useToast,
 } from '@chakra-ui/react'
 import { mutation } from '@pages/api/database/mutation'
 import axios from 'axios'
-import { DELETE } from '@constants/http-methods'
+import { POST } from '@constants/http-methods'
 import { useFormik } from 'formik'
 import { useQueryClient } from 'react-query'
+import { useSession } from 'contexts/AuthContext'
 
-export default function DeleteCardDialog({
+export default function ClaimCardDialog({
   card,
   isOpen,
   onClose,
@@ -26,14 +28,16 @@ export default function DeleteCardDialog({
   isOpen: boolean
   onClose: () => void
 }) {
+  const { session } = useSession()
   const [formError, onFormError] = useState<string>(null)
   const cancelRef = useRef(null)
   const queryClient = useQueryClient()
-  const { mutateAsync: deleteCard } = mutation<void, { cardID: number }>({
+  const { mutateAsync: claimCard } = mutation<void, { cardID: number }>({
     mutationFn: ({ cardID }) =>
       axios({
-        method: DELETE,
-        url: `/api/v3/cards/${cardID}`,
+        method: POST,
+        url: `/api/v3/cards/${cardID}/claim`,
+        headers: { Authorization: `Bearer ${session?.token}` },
       }),
     onSuccess: () => {
       queryClient.invalidateQueries(['cards'])
@@ -47,7 +51,7 @@ export default function DeleteCardDialog({
       try {
         setSubmitting(true)
         onFormError(null)
-        await deleteCard({ cardID: card.cardID })
+        await claimCard({ cardID: card.cardID })
       } catch (error) {
         console.error(error)
         const errorMessage: string =
@@ -70,12 +74,9 @@ export default function DeleteCardDialog({
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Delete Card #{card.cardID}
+            Claim Card #{card.cardID} - {card.player_name}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
-          <AlertDialogBody>
-            Are you sure? You can't undo this action afterwards.
-          </AlertDialogBody>
           <AlertDialogFooter>
             <Button ref={cancelRef} onClick={onClose}>
               Cancel
@@ -83,11 +84,11 @@ export default function DeleteCardDialog({
             <form onSubmit={handleSubmit}>
               <Button
                 disabled={!isValid || isSubmitting}
-                colorScheme="red"
+                colorScheme="green"
                 type="submit"
                 ml={3}
               >
-                Delete Card
+                Claim Card
               </Button>
             </form>
             {formError && (

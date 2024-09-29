@@ -4,7 +4,8 @@ import rarityMap from '@constants/rarity-map'
 import { shlTeamsMap } from '@constants/teams-map'
 import { mutation } from '@pages/api/database/mutation'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { ToastContext } from 'contexts/ToastContext'
+import { useContext, useEffect, useState } from 'react'
 import CSVReader from 'react-csv-reader'
 
 export default function RequestCustomCardsForm({
@@ -16,6 +17,7 @@ export default function RequestCustomCardsForm({
   const [canSubmitCsv, setCanSubmitCsv] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [numberOfCardsToUpload, setNumberOfCardsToUpload] = useState<number>(0)
+  const { addToast } = useContext(ToastContext)
 
   const { mutateAsync: requestCustomCards, isLoading } = mutation<
     void,
@@ -27,6 +29,12 @@ export default function RequestCustomCardsForm({
         url: '/api/v3/cards/custom-requests',
         data: { cards },
       }),
+    onSuccess: () => {
+      addToast({
+        status: 'success',
+        title: 'Cards inserted',
+      })
+    },
   })
 
   useEffect(() => {
@@ -74,6 +82,9 @@ export default function RequestCustomCardsForm({
       return newCard
     })
 
+    // remove header row
+    cards.shift()
+
     if (errors.length === 0) {
       await requestCustomCards({ cards })
     } else {
@@ -110,7 +121,6 @@ const validateCard = (
   card: Partial<Card>,
   index: number
 ): { status: true } | { status: false; error: string } => {
-  console.log('card', card)
   if (
     !card.teamID ||
     !Object.keys(shlTeamsMap).some((teamId) => teamId === String(card.teamID))
