@@ -18,7 +18,6 @@ export const warningToast = ({ title, description }: ToastProps) => {
 }
 
 export const successToast = ({ title, description }: ToastProps) => {
-  console.log('successToast')
   const toast = useToast()
   toast({
     title,

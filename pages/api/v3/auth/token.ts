@@ -45,7 +45,7 @@ export default async function tokenEndpoint(
     `)
 
     if ('error' in queryResult || queryResult.length === 0) {
-      console.log('queryResult', queryResult)
+      console.error('queryResult', queryResult)
       res.status(StatusCodes.OK).json({
         status: 'logout',
         message: 'No refresh token found',

@@ -32,15 +32,12 @@ export default async function baseRequestsEndpoint(
   if (req.method === POST) {
     const cardsToInsert = (req.body.cards ?? []) as Partial<Card>[]
 
-    console.log('cardsToInsert', cardsToInsert)
-
     const insertQuery = SQL`
       INSERT INTO cards
         (player_name, teamID, playerID, card_rarity, sub_type, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season, author_paid)
       VALUES`
 
     cardsToInsert.forEach((card, index) => {
-      console.log('card', card)
       if (index !== 0) {
         insertQuery.append(SQL`,`)
       }
