@@ -63,7 +63,7 @@ export default function ProcessImageDialog({
 
   const handleApprove = async () => {
     if (approveIsLoading || denyIsLoading) {
-      warningToast({ warningText: 'Already processing card' })
+      // warningToast({ warningText: 'Already processing card' })
       return
     }
 
@@ -81,7 +81,7 @@ export default function ProcessImageDialog({
 
   const handleDeny = async () => {
     if (approveIsLoading || denyIsLoading) {
-      warningToast({ warningText: 'Already processing card' })
+      // warningToast({ warningText: 'Already processing card' })
       return
     }
 
