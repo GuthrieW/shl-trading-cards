@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useQuery } from 'react-query';
-import { Input, Skeleton, SkeletonText, Box } from '@chakra-ui/react';
-import { PropagateLoader } from 'react-spinners';
-import UserCard from '@components/cards/user-card';
-import TablePagination from '@components/table/TablePagination';
-import { GET } from '@constants/http-methods';
-import { ListResponse } from '@pages/api/v3';
-import { UserData } from '@pages/api/v3/user';
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import { useQuery } from 'react-query'
+import { Input, Skeleton, SkeletonText, Box } from '@chakra-ui/react'
+import { PropagateLoader } from 'react-spinners'
+import UserCard from '@components/cards/UserCard'
+import TablePagination from '@components/table/TablePagination'
+import { GET } from '@constants/http-methods'
+import { ListResponse } from '@pages/api/v3'
+import { UserData } from '@pages/api/v3/user'
 
-const ROWS_PER_PAGE = 10;
+const ROWS_PER_PAGE = 10
 
 const UserTables: React.FC = () => {
-  const [tablePage, setTablePage] = useState<number>(1);
-  const [searchString, setSearchString] = useState<string>('');
+  const [tablePage, setTablePage] = useState<number>(1)
+  const [searchString, setSearchString] = useState<string>('')
 
   const fetchUsers = async ({ queryKey }: any) => {
-    const [_, search, page] = queryKey;
+    const [_, search, page] = queryKey
     const { data } = await axios({
       method: GET,
       url: '/api/v3/user/with-cards',
@@ -24,31 +24,31 @@ const UserTables: React.FC = () => {
         username: search,
         limit: ROWS_PER_PAGE,
         offset: (page - 1) * ROWS_PER_PAGE,
-      }
-    });
-    return data.payload;
-  };
+      },
+    })
+    return data.payload
+  }
 
-  const { data: users, isLoading, refetch } = useQuery<ListResponse<UserData>>(
+  const { data: users, isLoading } = useQuery<ListResponse<UserData>>(
     ['with-cards', searchString, tablePage],
     fetchUsers,
     {
       keepPreviousData: true,
       staleTime: 5000,
     }
-  );
+  )
 
   useEffect(() => {
-    setTablePage(1); // Reset to first page when search changes
-  }, [searchString]);
+    setTablePage(1) // Reset to first page when search changes
+  }, [searchString])
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchString(event.target.value);
-  };
+    setSearchString(event.target.value)
+  }
 
   const handlePageChange = (newPage: number) => {
-    setTablePage(newPage);
-  };
+    setTablePage(newPage)
+  }
 
   return (
     <div className="w-full h-full mx-2">
@@ -88,7 +88,7 @@ const UserTables: React.FC = () => {
         </div>
       ) : null}
     </div>
-  );
-};
+  )
+}
 
-export default UserTables;
+export default UserTables

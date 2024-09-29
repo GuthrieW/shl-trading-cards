@@ -6,7 +6,6 @@ import {
   ModalCloseButton,
   useDisclosure,
   Box,
-  Image,
   ModalHeader,
   Button,
   ModalFooter,
@@ -19,11 +18,10 @@ import {
   Spinner,
   useBreakpointValue,
 } from '@chakra-ui/react'
-import pathToCards from '@constants/path-to-cards'
 import { IndexRecordTable } from 'components/collection/IndexRecordTable'
 import axios from 'axios'
 import { BackOfCard } from '@components/collection/BackOfCard'
-import TradingCard from '@components/images/trading-card'
+import TradingCard from '@components/images/TradingCard'
 
 type CardLightBoxModalProps = {
   setShowModal: Function
@@ -97,7 +95,11 @@ const CardLightBoxModal = ({
               ref={cardContainerRef}
               position="relative"
               width="100%"
-              height={useBreakpointValue({ base: '500px', md: '550px', lg: '550px' })}
+              height={useBreakpointValue({
+                base: '500px',
+                md: '550px',
+                lg: '550px',
+              })}
               maxW="800px"
               mx="auto"
               style={{

@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react'
 import DisplayCollection from '@components/collection/DisplayCollection'
 import { PageWrapper } from '@components/common/PageWrapper'
-import CardLightBoxModal from '@components/modals/card-lightbox-modal'
+import CardLightBoxModal from '@components/modals/CardLightBoxModal'
 import TablePagination from '@components/table/TablePagination'
 import { GET } from '@constants/http-methods'
 import rarityMap from '@constants/rarity-map'
@@ -246,9 +246,7 @@ export default () => {
         />
       )}
       <div className="mb-3" />
-      {payload && payload.totalOwned !== null && (
-      <DisplayPacks userID={uid} />
-      )}
+      {payload && payload.totalOwned !== null && <DisplayPacks userID={uid} />}
       <div className="mb-3" />
 
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl mb-6">

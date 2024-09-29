@@ -1,12 +1,13 @@
-import React from 'react';
-import { Box, Image, useBreakpointValue } from '@chakra-ui/react';
+import React from 'react'
+import { Box, Image, useBreakpointValue } from '@chakra-ui/react'
+import pathToCards from '@constants/path-to-cards'
 
 export type TradingCardProps = {
-  source: string;
-  playerName: string;
-  rarity: string;
-  className?: string;
-};
+  source: string
+  playerName: string
+  rarity: string
+  className?: string
+}
 
 const TradingCard = ({
   source,
@@ -14,8 +15,8 @@ const TradingCard = ({
   rarity,
   className,
 }: TradingCardProps) => {
-  const aspectRatio = useBreakpointValue({ base: 4/5, md: 3/4 });
-  const maxHeight = useBreakpointValue({ base: "70vh", md: "80vh" });
+  const aspectRatio = useBreakpointValue({ base: 4 / 5, md: 3 / 4 })
+  const maxHeight = useBreakpointValue({ base: '70vh', md: '80vh' })
 
   return (
     <Box
@@ -33,7 +34,7 @@ const TradingCard = ({
         aspectRatio={aspectRatio}
       >
         <Image
-          src={`https://simulationhockey.com/tradingcards/${source}`}
+          src={`${pathToCards}${source}`}
           alt={`${rarity} ${playerName}`}
           loading="lazy"
           fallbackSrc="/cardback.png"
@@ -44,7 +45,7 @@ const TradingCard = ({
         />
       </Box>
     </Box>
-  );
-};
+  )
+}
 
-export default TradingCard;
+export default TradingCard
