@@ -1,8 +1,4 @@
-import {
-  CreateToastFnReturn,
-  useToast,
-  UseToastOptions,
-} from '@chakra-ui/react'
+import { useToast, UseToastOptions } from '@chakra-ui/react'
 
 export type ToastProps = {
   title: string
@@ -10,19 +6,15 @@ export type ToastProps = {
 }
 
 class ToastService {
-  private toast: CreateToastFnReturn = null
   private readonly defaultToastOptions: Partial<UseToastOptions> = {
     duration: 2500,
     isClosable: true,
     position: 'bottom-left',
   }
 
-  constructor() {
-    this.toast = useToast()
-  }
-
   successToast = ({ title, description }: ToastProps) => {
-    this.toast({
+    const toast = useToast()
+    toast({
       title,
       description,
       status: 'success',
@@ -31,7 +23,8 @@ class ToastService {
   }
 
   warningToast = ({ title, description }: ToastProps) => {
-    this.toast({
+    const toast = useToast()
+    toast({
       title,
       description,
       status: 'warning',
@@ -40,7 +33,8 @@ class ToastService {
   }
 
   errorToast = ({ title, description }: ToastProps) => {
-    this.toast({
+    const toast = useToast()
+    toast({
       title,
       description,
       status: 'error',
