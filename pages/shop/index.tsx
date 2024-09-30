@@ -82,9 +82,6 @@ const PackShop = () => {
     if (!loggedIn) {
       toastService.warningToast({
         title: 'Log in to purchase packs',
-        status: 'warning',
-        duration: 1500,
-        isClosable: true,
       })
       return
     }
@@ -97,9 +94,6 @@ const PackShop = () => {
       toastService.warningToast({
         title: 'Already buying a pack',
         description: `Calm down man`,
-        status: 'warning',
-        duration: 1500,
-        isClosable: true,
       })
       return
     }

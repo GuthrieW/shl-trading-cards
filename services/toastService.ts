@@ -16,6 +16,7 @@ class ToastService {
     isClosable: true,
     position: 'bottom-left',
   }
+
   constructor() {
     this.toast = useToast()
   }

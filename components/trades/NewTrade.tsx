@@ -37,12 +37,12 @@ import {
 } from '@pages/api/v3/trades/collection/[uid]'
 import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
-import { ToastContext } from 'contexts/ToastContext'
 import config from 'lib/config'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
-import { Fragment, useContext, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useQueryClient } from 'react-query'
+import { toastService } from 'services/toastService'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
   {
@@ -102,7 +102,6 @@ export default function NewTrade({
 }) {
   const queryClient = useQueryClient()
   const router = useRouter()
-  const { addToast } = useContext(ToastContext)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedUserId, setSelectedUserId] = useState<string>('')
   const [playerName, setPlayerName] = useState<string>('')
@@ -123,10 +122,9 @@ export default function NewTrade({
   const [uid] = useCookie(config.userIDCookieName)
 
   if (tradePartnerUid === uid) {
-    addToast({
+    toastService.warningToast({
       title: 'Ineligible Trade Partner',
       description: 'You cannot trade with yourself',
-      status: 'warning',
     })
     router.replace('/trade')
     return
@@ -256,17 +254,15 @@ export default function NewTrade({
         ],
       })
       queryClient.invalidateQueries(['trades'])
-      addToast({
+      toastService.successToast({
         title: 'Trade Created',
         description: 'Please include at least one card in your request',
-        status: 'success',
       })
       router.reload()
     } catch (error) {
-      addToast({
+      toastService.errorToast({
         title: 'Error Creating Trade',
         description: error,
-        status: 'error',
       })
     }
   }
@@ -484,10 +480,16 @@ export default function NewTrade({
                   >
                     {SORT_OPTIONS.map((option, index) => (
                       <Fragment key={`${option.value}-${index}`}>
-                        <option className="!bg-secondary" value={`${option.value}:DESC`}>
+                        <option
+                          className="!bg-secondary"
+                          value={`${option.value}:DESC`}
+                        >
                           {option.label}&nbsp;{option.sortLabel('DESC')}
                         </option>
-                        <option className="!bg-secondary" value={`${option.value}:ASC`}>
+                        <option
+                          className="!bg-secondary"
+                          value={`${option.value}:ASC`}
+                        >
                           {option.label}&nbsp;{option.sortLabel('ASC')}
                         </option>
                       </Fragment>

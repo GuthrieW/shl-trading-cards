@@ -7,14 +7,12 @@ import { QueryCache, QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
 import { SessionProvider, useSession } from 'contexts/AuthContext'
 import { CustomChakraProvider } from 'styles/CustomChakraProvider'
-import { ToastProvider } from 'contexts/ToastContext'
 import { IceLevelLogo } from '@components/common/IceLevelLogo'
-import { ThemeProvider } from 'next-themes';
+import { ThemeProvider } from 'next-themes'
 import { Footer } from '@components/common/Footer'
-import { Spinner } from '@chakra-ui/react'
+import { Spinner, ToastProvider } from '@chakra-ui/react'
 import '../styles/globals.css'
 import '../styles/style.css'
-
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -80,31 +78,31 @@ const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
             }}
             enableColorScheme={false}
           >
-          <CustomChakraProvider>
-            <ToastProvider>
-              {isLoading ? (
-                <>
-                  <div
-                    className="z-50 h-16 w-full"
-                    role="navigation"
-                    aria-label="Main"
-                  >
-                    <div className="relative mx-auto flex h-full w-full items-center justify-between px-[5%] sm:w-11/12 sm:justify-start sm:p-0 lg:w-3/4">
-                      <IceLevelLogo className="relative top-[5%] h-[90%] sm:top-[2.5%]" />
+            <CustomChakraProvider>
+              <ToastProvider>
+                {isLoading ? (
+                  <>
+                    <div
+                      className="z-50 h-16 w-full"
+                      role="navigation"
+                      aria-label="Main"
+                    >
+                      <div className="relative mx-auto flex h-full w-full items-center justify-between px-[5%] sm:w-11/12 sm:justify-start sm:p-0 lg:w-3/4">
+                        <IceLevelLogo className="relative top-[5%] h-[90%] sm:top-[2.5%]" />
+                      </div>
                     </div>
-                  </div>
-                  <div className="m-auto w-full pb-8 2xl:w-4/5">
-                    <div className="m-auto flex h-[calc(100vh-10rem)] w-full items-center justify-center">
-                      <Spinner size="xl" thickness="4px" />
+                    <div className="m-auto w-full pb-8 2xl:w-4/5">
+                      <div className="m-auto flex h-[calc(100vh-10rem)] w-full items-center justify-center">
+                        <Spinner size="xl" thickness="4px" />
+                      </div>
                     </div>
-                  </div>
-                  <Footer />
-                </>
-              ) : (
-                <Component {...pageProps} />
-              )}
-            </ToastProvider>
-          </CustomChakraProvider>
+                    <Footer />
+                  </>
+                ) : (
+                  <Component {...pageProps} />
+                )}
+              </ToastProvider>
+            </CustomChakraProvider>
           </ThemeProvider>
         </main>
       </Hydrate>

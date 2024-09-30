@@ -9,13 +9,12 @@ import { query } from '@pages/api/database/query'
 import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
-import { ToastContext } from 'contexts/ToastContext'
 import { useRouter } from 'next/router'
-import { useContext, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useQueryClient } from 'react-query'
+import { toastService } from 'services/toastService'
 
 export default () => {
-  const { addToast } = useContext(ToastContext)
   const { session, loggedIn } = useSession()
   const router = useRouter()
   const tradeid = router.query.tradeid as string
@@ -39,16 +38,14 @@ export default () => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries(tradeResolutionEffectedQueries)
-      addToast({
+      toastService.successToast({
         title: 'Trade Accepted',
-        status: 'success',
       })
       router.push('/trades')
     },
     onError: () => {
-      addToast({
+      toastService.errorToast({
         title: 'Error Accepting Trade',
-        status: 'error',
       })
     },
   })
@@ -65,16 +62,14 @@ export default () => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries(tradeResolutionEffectedQueries)
-      addToast({
+      toastService.successToast({
         title: 'Trade Declined',
-        status: 'success',
       })
       router.push('/trades')
     },
     onError: () => {
-      addToast({
+      toastService.errorToast({
         title: 'Error Declining Trade',
-        status: 'error',
       })
     },
   })

@@ -4,9 +4,9 @@ import rarityMap from '@constants/rarity-map'
 import { shlTeamsMap } from '@constants/teams-map'
 import { mutation } from '@pages/api/database/mutation'
 import axios from 'axios'
-import { ToastContext } from 'contexts/ToastContext'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import CSVReader from 'react-csv-reader'
+import { toastService } from 'services/toastService'
 
 export default function RequestCustomCardsForm({
   onError,
@@ -17,7 +17,6 @@ export default function RequestCustomCardsForm({
   const [canSubmitCsv, setCanSubmitCsv] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [numberOfCardsToUpload, setNumberOfCardsToUpload] = useState<number>(0)
-  const { addToast } = useContext(ToastContext)
 
   const { mutateAsync: requestCustomCards, isLoading } = mutation<
     void,
@@ -30,8 +29,7 @@ export default function RequestCustomCardsForm({
         data: { cards },
       }),
     onSuccess: () => {
-      addToast({
-        status: 'success',
+      toastService.successToast({
         title: 'Cards inserted',
       })
     },

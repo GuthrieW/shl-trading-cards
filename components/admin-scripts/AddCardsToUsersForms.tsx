@@ -2,9 +2,9 @@ import { Button, FormControl, FormLabel, Input } from '@chakra-ui/react'
 import { POST } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
 import axios from 'axios'
-import { ToastContext } from 'contexts/ToastContext'
 import { useFormik } from 'formik'
-import { Fragment, useContext, useState } from 'react'
+import { Fragment, useState } from 'react'
+import { toastService } from 'services/toastService'
 import * as Yup from 'yup'
 
 const addCardsToJsonValidationSchema = Yup.object({}).shape({
@@ -20,7 +20,6 @@ export default function AddCardsToUsersForm({
   onError: (errorMessage) => void
 }) {
   const [cardsToAdd, setCardsToAdd] = useState<Record<string, string[]>>({})
-  const { addToast } = useContext(ToastContext)
 
   const { mutateAsync: addCardsToUsers, isLoading: addCardsToUsersIsLoading } =
     mutation<void, Record<string, string[]>>({
@@ -31,7 +30,7 @@ export default function AddCardsToUsersForm({
           data: { newCardsJson },
         }),
       onSuccess: () => {
-        addToast({ title: 'Cards added', status: 'success' })
+        toastService.successToast({ title: 'Cards added' })
       },
     })
 
@@ -101,10 +100,9 @@ export default function AddCardsToUsersForm({
 
   const handleSubmitNewCards = () => {
     if (Object.keys(cardsToAdd).length === 0) {
-      addToast({
+      toastService.warningToast({
         title: 'Invalid Data',
         description: 'Please include at least one card in your request',
-        status: 'warning',
       })
       return
     }
