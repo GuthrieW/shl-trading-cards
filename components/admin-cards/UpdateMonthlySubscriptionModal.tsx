@@ -67,6 +67,7 @@ export default function UpdateMonthlySubscriptionModal({
     onSuccess: () => {
       toast({ title: 'Subscription Updated', ...successToastOptions })
       queryClient.invalidateQueries('monthly-subscriptions')
+      onClose()
     },
   })
 
