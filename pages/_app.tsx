@@ -7,14 +7,12 @@ import { QueryCache, QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
 import { SessionProvider, useSession } from 'contexts/AuthContext'
 import { CustomChakraProvider } from 'styles/CustomChakraProvider'
-import { ToastProvider } from 'contexts/ToastContext'
 import { IceLevelLogo } from '@components/common/IceLevelLogo'
-import { ThemeProvider } from 'next-themes';
+import { ThemeProvider } from 'next-themes'
 import { Footer } from '@components/common/Footer'
-import { Spinner } from '@chakra-ui/react'
+import { Spinner, ToastProvider } from '@chakra-ui/react'
 import '../styles/globals.css'
 import '../styles/style.css'
-
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -80,8 +78,7 @@ const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
             }}
             enableColorScheme={false}
           >
-          <CustomChakraProvider>
-            <ToastProvider>
+            <CustomChakraProvider>
               {isLoading ? (
                 <>
                   <div
@@ -103,8 +100,7 @@ const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
               ) : (
                 <Component {...pageProps} />
               )}
-            </ToastProvider>
-          </CustomChakraProvider>
+            </CustomChakraProvider>
           </ThemeProvider>
         </main>
       </Hydrate>

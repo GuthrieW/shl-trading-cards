@@ -9,7 +9,7 @@ export default function DeleteDuplicateCardsForm({
 }: {
   onError: (errorMessage) => void
 }) {
-  const { mutate: deleteDuplicateCards } = mutation<void, void>({
+  const { mutateAsync: deleteDuplicateCards } = mutation<void, void>({
     mutationFn: () =>
       axios({ method: DELETE, url: '/api/v3/cards/delete-duplicates' }),
   })
@@ -22,7 +22,7 @@ export default function DeleteDuplicateCardsForm({
       try {
         setSubmitting(true)
         onError(null)
-        deleteDuplicateCards()
+        await deleteDuplicateCards()
       } catch (error) {
         console.error(error)
         const errorMessage: string =

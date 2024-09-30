@@ -1,18 +1,18 @@
 import useGetLatestPackCards from '@pages/api/queries/use-get-latest-pack-cards'
-import getUidFromSession from '@utils/get-uid-from-session'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { NextSeo } from 'next-seo'
 import Router from 'next/router'
 import ReactCardFlip from 'react-card-flip'
 import rarityMap from '@constants/rarity-map'
 import pathToCards from '@constants/path-to-cards'
-import { Button, useToast, Badge } from '@chakra-ui/react' // Import Badge from Chakra UI
+import { Button, Badge, useToast } from '@chakra-ui/react' // Import Badge from Chakra UI
 import { PageWrapper } from '@components/common/PageWrapper'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
+import { successToastOptions } from '@utils/toast'
 
 const HexCodes = {
   Ruby: '#E0115F',
@@ -21,9 +21,9 @@ const HexCodes = {
 }
 
 const LastOpenedPack = () => {
+  const toast = useToast()
   const { session, loggedIn } = useSession()
   const [revealedCards, setRevealedCards] = useState<number[]>([])
-  const toast = useToast()
   const { payload: user } = query<UserData>({
     queryKey: ['baseUser', session?.token],
     queryFn: () =>
@@ -80,9 +80,7 @@ const LastOpenedPack = () => {
     navigator.clipboard.writeText(message).then(() => {
       toast({
         title: 'Share with friends!',
-        status: 'success',
-        duration: 1500,
-        isClosable: true,
+        ...successToastOptions,
       })
     })
   }

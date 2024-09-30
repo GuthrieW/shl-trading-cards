@@ -23,10 +23,11 @@ import { query } from '@pages/api/database/query'
 import { SortDirection } from '@pages/api/v3'
 import axios from 'axios'
 import { useFormik } from 'formik'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { MonthlySettingsData } from '@pages/api/v3/settings/monthly'
 import DeleteMonthlySubscriptionDialog from '@components/admin-cards/DeleteMonthlySubscriptionDialog'
 import UpdateMonthlySubscriptionModal from '@components/admin-cards/UpdateMonthlySubscriptionModal'
+import { useQueryClient } from 'react-query'
 
 type ColumnName = 'subscription' | 'username'
 
@@ -55,7 +56,7 @@ export default function MonthlySubscriptionsForm({
   const updateModal = useDisclosure()
   const deleteDialog = useDisclosure()
 
-  const { mutate: distributeMonthlyPacks } = mutation<void, void>({
+  const { mutateAsync: distributeMonthlyPacks } = mutation<void, void>({
     mutationFn: () =>
       axios({
         method: POST,
@@ -63,7 +64,7 @@ export default function MonthlySubscriptionsForm({
       }),
   })
 
-  const { payload, isLoading, refetch } = query<{
+  const { payload, isLoading } = query<{
     rows: MonthlySettingsData[]
     total: number
   }>({
@@ -94,7 +95,7 @@ export default function MonthlySubscriptionsForm({
       try {
         setSubmitting(true)
         onError(null)
-        distributeMonthlyPacks()
+        await distributeMonthlyPacks()
       } catch (error) {
         console.error(error)
         const errorMessage: string =
@@ -132,9 +133,6 @@ export default function MonthlySubscriptionsForm({
               type="text"
               onChange={(event) => setUsername(event.target.value)}
             />
-            <Button className="mx-2 text-secondary bg-secondary" onClick={refetch}>
-              Submit
-            </Button>
           </div>
           <Button
             disabled={!isValid || isSubmitting || isLoading}

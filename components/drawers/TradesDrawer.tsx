@@ -1,8 +1,6 @@
-import { ChevronDownIcon } from '@chakra-ui/icons'
 import {
   Alert,
   AlertIcon,
-  Button,
   Card,
   CardBody,
   CardHeader,
@@ -14,15 +12,11 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Menu,
-  MenuButton,
-  MenuItemOption,
-  MenuList,
-  MenuOptionGroup,
   Select,
   Stack,
   StackDivider,
 } from '@chakra-ui/react'
+import { TradeCard } from '@components/cards/TradeCard'
 import GetUsername from '@components/common/GetUsername'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
@@ -31,7 +25,7 @@ import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
 const TRADE_STATUS_OPTIONS: {
@@ -78,8 +72,8 @@ export default function TradesDrawer({
   const [partnerUsername, setPartnerUsername] = useState<string>('')
   const [debouncedUsername] = useDebounce(partnerUsername, 500)
 
-  const { session, loggedIn } = useSession()
   const router = useRouter()
+  const { session, loggedIn } = useSession()
 
   const { payload: loggedInTrades } = query<ListResponse<Trade>>({
     queryKey: [
@@ -143,6 +137,9 @@ export default function TradesDrawer({
             </Alert>
           )}
           <Stack className="mt-2" divider={<StackDivider />}>
+             {/* {loggedInTrades?.rows.map((trade) => (
+               <TradeCard key={trade.tradeID} trade={trade} />
+             ))} */}
             {loggedInTrades?.rows.map((trade, index) => {
               const otherUserId =
                 trade.initiatorID === parseInt(session.userId)

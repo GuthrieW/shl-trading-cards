@@ -1,15 +1,15 @@
-import sharp, { type OutputInfo } from 'sharp'
 import { pathToCardsForUpload } from '@constants/path-to-cards'
 import { v4 as uuid } from 'uuid'
+import { writeFileSync } from 'fs'
 
 class ImageService {
   /**
    *
-   * @param {string} image
-   * @returns {Buffer}
+   * @param image
+   * @returns
    */
-  async convertToWebp(image: ArrayBuffer | Buffer | string): Promise<Buffer> {
-    return await sharp(image).webp({ lossless: true, quality: 100 }).toBuffer()
+  base64ToString(base64: string): string {
+    return base64.replace(/^data:image\/png;base64/, '')
   }
 
   /**
@@ -18,12 +18,23 @@ class ImageService {
    * @param {string} filename
    * @returns {OutputInfo}
    */
-  async saveImage(imageBuffer: Buffer, filename: string): Promise<OutputInfo> {
-    const location =
-      process.env.NODE_ENV === 'production'
-        ? `${pathToCardsForUpload}${filename}`
-        : `temp/${filename}`
-    return await sharp(imageBuffer).toFile(location)
+  saveImage(
+    decodedImage: string,
+    filename: string
+  ): { success: boolean; error: any } {
+    if (process.env.NODE_ENV !== 'production') {
+      throw new Error('Method does not run in dev')
+    }
+
+    try {
+      const imagePage = `${pathToCardsForUpload}${filename}`
+      writeFileSync(imagePage, decodedImage, 'base64')
+
+      return { success: true, error: null }
+    } catch (error) {
+      console.error(error)
+      return { success: false, error }
+    }
   }
 
   /**
@@ -31,7 +42,7 @@ class ImageService {
    * @returns {string}
    */
   generateFilename(): string {
-    return `${uuid()}.webp`
+    return `${uuid()}.png`
   }
 }
 

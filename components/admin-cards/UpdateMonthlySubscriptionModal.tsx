@@ -8,11 +8,13 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  useToast,
 } from '@chakra-ui/react'
 import Input from '@components/forms/Input'
 import { PATCH } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
 import { MonthlySettingsData } from '@pages/api/v3/settings/monthly'
+import { successToastOptions } from '@utils/toast'
 import axios from 'axios'
 import { useFormik } from 'formik'
 import { pluralizeName } from 'lib/pluralize-name'
@@ -45,6 +47,7 @@ export default function UpdateMonthlySubscriptionModal({
   isOpen: boolean
   onClose: () => void
 }) {
+  const toast = useToast()
   const [formError, setFormError] = useState<string>('')
   const queryClient = useQueryClient()
 
@@ -61,6 +64,11 @@ export default function UpdateMonthlySubscriptionModal({
         url: `/api/v3/settings/monthly/${uid}`,
         data: { subscription },
       }),
+    onSuccess: () => {
+      toast({ title: 'Subscription Updated', ...successToastOptions })
+      queryClient.invalidateQueries('monthly-subscriptions')
+      onClose()
+    },
   })
 
   const {
@@ -98,15 +106,10 @@ export default function UpdateMonthlySubscriptionModal({
         setSubmitting(true)
         setFormError(null)
 
-        await updateMonthlySubscription(
-          { uid: setting?.uid, subscription: subscriptionUpdates.subscription },
-          {
-            onSuccess: () => {
-              queryClient.invalidateQueries(['monthly-subscriptions'])
-              onClose()
-            },
-          }
-        )
+        await updateMonthlySubscription({
+          uid: setting?.uid,
+          subscription: subscriptionUpdates.subscription,
+        })
       } catch (error) {
         console.error(error)
         const errorMessage: string =
@@ -171,7 +174,7 @@ export default function UpdateMonthlySubscriptionModal({
               Close
             </Button>
             <Button
-              colorScheme="red"
+              colorScheme="green"
               type="submit"
               disabled={!isValid || isSubmitting}
               isLoading={isSubmitting}

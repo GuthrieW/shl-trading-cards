@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse, ListResponse, ListTotal, SortDirection } from '..'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
-import { GET, PATCH } from '@constants/http-methods'
+import { GET } from '@constants/http-methods'
 import { cardsQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
@@ -20,6 +20,9 @@ export default async function cardsEndpoint(
   await middleware(req, res, cors)
 
   if (req.method === GET) {
+    const playerName = (req.query.playerName ?? '') as string
+    const teams = JSON.parse(req.query.teams as string) as string[]
+    const rarities = JSON.parse(req.query.rarities as string) as string[]
     const limit = (req.query.limit ?? 10) as string
     const offset = (req.query.offset ?? 0) as string
     const sortColumn = (req.query.sortColumn ??
@@ -46,19 +49,48 @@ export default async function cardsEndpoint(
       viewNeedsApproval,
       viewNeedsAuthorPaid,
       viewDone,
-    ].some((viewStatus) => {
-      console.log('viewStatus', viewStatus === 'true')
-      return viewStatus === 'true'
-    })
+    ].some((viewStatus) => viewStatus === 'true')
 
     const countQuery = SQL`
       SELECT count(*) as total
       FROM cards
     `
 
-    viewSkaters === 'true'
-      ? countQuery.append(SQL` WHERE (position = 'F' OR position = 'D')`)
-      : countQuery.append(SQL` WHERE (position = 'G')`)
+    const query: SQLStatement = SQL`
+      SELECT cardID,
+        teamID,
+        playerID,
+        author_userID,
+        card_rarity,
+        sub_type,
+        player_name,
+        pullable,
+        approved,
+        image_url,
+        position,
+        overall,
+        skating,
+        shooting,
+        hands,
+        checking,
+        defense,
+        high_shots,
+        low_shots,
+        quickness,
+        control,
+        conditioning,
+        season,
+        author_paid
+      FROM cards
+    `
+
+    if (viewSkaters === 'true') {
+      countQuery.append(SQL` WHERE (position = 'F' OR position = 'D')`)
+      query.append(SQL` WHERE (position = 'F' OR position = 'D')`)
+    } else {
+      countQuery.append(SQL` WHERE (position = 'G')`)
+      query.append(SQL` WHERE (position = 'G')`)
+    }
 
     const statusesToAppend: SQLStatement[] = []
 
@@ -105,41 +137,19 @@ export default async function cardsEndpoint(
       countQuery.append(SQL`)`)
     }
 
-    const count = await cardsQuery<ListTotal>(countQuery)
-
-    const query: SQLStatement = SQL`
-      SELECT cardID,
-        teamID,
-        playerID,
-        author_userID,
-        card_rarity,
-        sub_type,
-        player_name,
-        pullable,
-        approved,
-        image_url,
-        position,
-        overall,
-        skating,
-        shooting,
-        hands,
-        checking,
-        defense,
-        high_shots,
-        low_shots,
-        quickness,
-        control,
-        conditioning,
-        season,
-        author_paid
-      FROM cards
-    `
-
-    viewSkaters === 'true'
-      ? query.append(SQL` WHERE (position = 'F' OR position = 'D')`)
-      : query.append(SQL` WHERE (position = 'G')`)
-
     if (hasSortStatus) {
+      countQuery.append(SQL` AND (`)
+
+      statusesToAppend.forEach((statusToAppend, index) => {
+        if (index === 0) {
+          countQuery.append(statusToAppend)
+        } else {
+          countQuery.append(SQL` OR `)
+          countQuery.append(statusToAppend)
+        }
+      })
+      countQuery.append(SQL`)`)
+
       query.append(SQL` AND (`)
 
       statusesToAppend.forEach((statusToAppend, index) => {
@@ -153,7 +163,46 @@ export default async function cardsEndpoint(
       query.append(SQL`)`)
     }
 
-    statusesToAppend.forEach((s) => console.log('s', s))
+    if (playerName.length !== 0) {
+      countQuery.append(SQL` AND player_name LIKE ${`%${playerName}%`}`)
+      query.append(SQL` AND player_name LIKE ${`%${playerName}%`}`)
+    }
+
+    if (teams.length !== 0) {
+      countQuery.append(SQL` AND (`)
+      teams.forEach((team, index) =>
+        index === 0
+          ? countQuery.append(SQL`teamID=${parseInt(team)}`)
+          : countQuery.append(SQL` OR teamID=${parseInt(team)}`)
+      )
+      countQuery.append(SQL`)`)
+
+      query.append(SQL` AND (`)
+      teams.forEach((team, index) =>
+        index === 0
+          ? query.append(SQL`teamID=${parseInt(team)}`)
+          : query.append(SQL` OR teamID=${parseInt(team)}`)
+      )
+      query.append(SQL`)`)
+    }
+
+    if (rarities.length !== 0) {
+      countQuery.append(SQL` AND (`)
+      rarities.forEach((rarity, index) =>
+        index === 0
+          ? countQuery.append(SQL`card_rarity=${rarity}`)
+          : countQuery.append(SQL` OR card_rarity=${rarity}`)
+      )
+      countQuery.append(SQL`)`)
+
+      query.append(SQL` AND (`)
+      rarities.forEach((rarity, index) =>
+        index === 0
+          ? query.append(SQL`card_rarity=${rarity}`)
+          : query.append(SQL` OR card_rarity=${rarity}`)
+      )
+      query.append(SQL`)`)
+    }
 
     query.append(SQL` ORDER BY`)
     if (sortColumn === 'player_name') query.append(SQL` player_name`)
@@ -186,11 +235,19 @@ export default async function cardsEndpoint(
       query.append(SQL` OFFSET ${parseInt(offset)}`)
     }
 
-    console.log('testing query', query)
+    const count = await cardsQuery<ListTotal>(countQuery)
+
+    if ('error' in count) {
+      console.error(count)
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .end('Server connection failed')
+      return
+    }
 
     const queryResult = await cardsQuery<Card>(query)
 
-    if ('error' in count || 'error' in queryResult) {
+    if ('error' in queryResult) {
       console.error(queryResult)
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)

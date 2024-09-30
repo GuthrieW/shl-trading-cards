@@ -2,7 +2,7 @@ import { PageWrapper } from '@components/common/PageWrapper'
 import useBuyPack from '@pages/api/mutations/use-buy-pack'
 import React, { useEffect, useMemo, useState } from 'react'
 import { packService, PackInfo } from 'services/packService'
-import BuyPackModal from '@components/modals/buy-pack-modal'
+import BuyPackModal from '@components/modals/BuyPackModal'
 import subscriptionOptions from '@constants/subscription-options'
 import useUpdateSubscription from '@pages/api/mutations/use-update-subscription'
 import { NextSeo } from 'next-seo'
@@ -18,22 +18,23 @@ import {
   Select,
   SimpleGrid,
   Skeleton,
-  useToast,
   VStack,
   Image as ChakraImage,
+  useToast,
 } from '@chakra-ui/react'
+import { warningToastOptions } from '@utils/toast'
 
 export type PackInfoWithCover = PackInfo & {
   cover: string
 }
 
 const PackShop = () => {
+  const toast = useToast()
   const { session, loggedIn } = useSession()
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalPack, setModalPack] = useState<PackInfoWithCover>(null)
   const [isUserLoading, setIsUserLoading] = useState<boolean>(true)
   const [, setSubscriptionValue] = useState<number>(0)
-  const toast = useToast()
   const { buyPack, isLoading: buyBackIsLoading } = useBuyPack()
   const { updateSubscription } = useUpdateSubscription()
 
@@ -79,14 +80,11 @@ const PackShop = () => {
     })
   }, [])
 
-
   const handleSelectedPack = (pack: PackInfoWithCover): void => {
-    if (!loggedIn){
+    if (!loggedIn) {
       toast({
         title: 'Log in to purchase packs',
-        status: 'warning',
-        duration: 1500,
-        isClosable: true,
+        ...warningToastOptions,
       })
       return
     }
@@ -99,9 +97,7 @@ const PackShop = () => {
       toast({
         title: 'Already buying a pack',
         description: `Calm down man`,
-        status: 'warning',
-        duration: 1500,
-        isClosable: true,
+        ...warningToastOptions,
       })
       return
     }
@@ -135,7 +131,6 @@ const PackShop = () => {
           <div>A new set of packs can be purchased at midnight EST</div>
         </div>
 
-
         {loggedIn && (
           <>
             {userIDLoading || dailySubscriptionLoading ? (
@@ -165,41 +160,41 @@ const PackShop = () => {
         )}
         <SimpleGrid columns={[1, 2, 3]} spacing={8} mt={8}>
           {packsWithCovers.map((pack: PackInfoWithCover, index: number) => (
-                <VStack
-                  key={index}
-                  spacing={4}
-                  align="center"
-                  className="bg-primary text-secondary 0 p-4 rounded-lg shadow-md border-2 border-secondary"
+            <VStack
+              key={index}
+              spacing={4}
+              align="center"
+              className="bg-primary text-secondary 0 p-4 rounded-lg shadow-md border-2 border-secondary"
+            >
+              <ChakraImage
+                src={pack.cover}
+                alt={`${pack.label} Pack`}
+                className="cursor-pointer transition-transform  duration-300 ease-in-out hover:scale-105"
+                onClick={() => handleSelectedPack(pack)}
+                objectFit="cover"
+                height="450px"
+                width="300px"
+              />
+              <Heading as="h2" size="lg">
+                {pack.label} Pack
+              </Heading>
+              <div className='fontSize="xl'>
+                Price: ${new Intl.NumberFormat().format(pack.price)}
+              </div>
+              {loggedIn ? (
+                <Button
+                  colorScheme="blue"
+                  onClick={() => handleSelectedPack(pack)}
                 >
-                  <ChakraImage
-                    src={pack.cover}
-                    alt={`${pack.label} Pack`}
-                    className="cursor-pointer transition-transform  duration-300 ease-in-out hover:scale-105"
-                    onClick={() => handleSelectedPack(pack)}
-                    objectFit="cover"
-                    height="450px"
-                    width="300px"
-                  />
-                  <Heading as="h2" size="lg">
-                    {pack.label} Pack
-                  </Heading>
-                  <div className='fontSize="xl'>
-                    Price: ${new Intl.NumberFormat().format(pack.price)}
-                  </div>
-                  {loggedIn ? (
-                    <Button
-                      colorScheme="blue"
-                      onClick={() => handleSelectedPack(pack)}
-                    >
-                      Buy Pack
-                    </Button>
-                  ) : (
-                    <Button colorScheme="blue" isDisabled>
-                      Sign in to purchase packs
-                    </Button>
-                  )}
-                </VStack>
-              ))}
+                  Buy Pack
+                </Button>
+              ) : (
+                <Button colorScheme="blue" isDisabled>
+                  Sign in to purchase packs
+                </Button>
+              )}
+            </VStack>
+          ))}
         </SimpleGrid>
 
         {showModal && (

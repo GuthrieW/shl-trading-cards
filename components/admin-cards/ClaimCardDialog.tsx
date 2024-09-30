@@ -1,7 +1,7 @@
+import React, { useRef, useState } from 'react'
 import {
   Alert,
   AlertDialog,
-  AlertDialogBody,
   AlertDialogCloseButton,
   AlertDialogContent,
   AlertDialogFooter,
@@ -10,37 +10,35 @@ import {
   AlertIcon,
   Button,
 } from '@chakra-ui/react'
-import { DELETE } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
-import { MonthlySettingsData } from '@pages/api/v3/settings/monthly'
 import axios from 'axios'
+import { POST } from '@constants/http-methods'
 import { useFormik } from 'formik'
-import { useRef, useState } from 'react'
 import { useQueryClient } from 'react-query'
+import { useSession } from 'contexts/AuthContext'
 
-export default function DeleteMonthlySubscriptionDialog({
-  setting,
+export default function ClaimCardDialog({
+  card,
   isOpen,
   onClose,
 }: {
-  setting: MonthlySettingsData
+  card: Card
   isOpen: boolean
   onClose: () => void
 }) {
+  const { session } = useSession()
   const [formError, onFormError] = useState<string>(null)
   const cancelRef = useRef(null)
   const queryClient = useQueryClient()
-  const { mutateAsync: deleteMonthlySubscription } = mutation<
-    void,
-    { uid: number }
-  >({
-    mutationFn: ({ uid }) =>
+  const { mutateAsync: claimCard } = mutation<void, { cardID: number }>({
+    mutationFn: ({ cardID }) =>
       axios({
-        method: DELETE,
-        url: `/api/v3/settings/monthly/${uid}`,
+        method: POST,
+        url: `/api/v3/cards/${cardID}/claim`,
+        headers: { Authorization: `Bearer ${session?.token}` },
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries(['monthly-subscriptions'])
+      queryClient.invalidateQueries(['cards'])
       onClose()
     },
   })
@@ -51,7 +49,7 @@ export default function DeleteMonthlySubscriptionDialog({
       try {
         setSubmitting(true)
         onFormError(null)
-        await deleteMonthlySubscription({ uid: setting?.uid })
+        await claimCard({ cardID: card.cardID })
       } catch (error) {
         console.error(error)
         const errorMessage: string =
@@ -73,22 +71,22 @@ export default function DeleteMonthlySubscriptionDialog({
     >
       <AlertDialogOverlay>
         <AlertDialogContent>
-          <AlertDialogHeader>
-            Delete Subscription for {setting?.username}
+          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+            Claim Card #{card.cardID} - {card.player_name}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
-          <AlertDialogBody>
-            Are you sure? You can't undo this action afterwards.
-          </AlertDialogBody>
           <AlertDialogFooter>
+            <Button ref={cancelRef} onClick={onClose}>
+              Cancel
+            </Button>
             <form onSubmit={handleSubmit}>
               <Button
                 disabled={!isValid || isSubmitting}
-                colorScheme="red"
+                colorScheme="green"
                 type="submit"
                 ml={3}
               >
-                Delete Card
+                Claim Card
               </Button>
             </form>
             {formError && (

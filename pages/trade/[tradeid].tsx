@@ -1,21 +1,21 @@
 // View a specific trade, accept or decline if pending
 
-import { Button, Image, SimpleGrid } from '@chakra-ui/react'
+import { Button, Image, SimpleGrid, useToast } from '@chakra-ui/react'
 import { AuthGuard } from '@components/auth/AuthGuard'
 import { PageWrapper } from '@components/common/PageWrapper'
 import { GET, POST } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
 import { query } from '@pages/api/database/query'
 import { UserData } from '@pages/api/v3/user'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
-import { ToastContext } from 'contexts/ToastContext'
 import { useRouter } from 'next/router'
-import { useContext, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useQueryClient } from 'react-query'
 
 export default () => {
-  const { addToast } = useContext(ToastContext)
+  const toast = useToast()
   const { session, loggedIn } = useSession()
   const router = useRouter()
   const tradeid = router.query.tradeid as string
@@ -39,16 +39,16 @@ export default () => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries(tradeResolutionEffectedQueries)
-      addToast({
+      toast({
         title: 'Trade Accepted',
-        status: 'success',
+        ...successToastOptions,
       })
       router.push('/trades')
     },
     onError: () => {
-      addToast({
+      toast({
         title: 'Error Accepting Trade',
-        status: 'error',
+        ...errorToastOptions,
       })
     },
   })
@@ -65,16 +65,16 @@ export default () => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries(tradeResolutionEffectedQueries)
-      addToast({
+      toast({
         title: 'Trade Declined',
-        status: 'success',
+        ...successToastOptions,
       })
       router.push('/trades')
     },
     onError: () => {
-      addToast({
+      toast({
         title: 'Error Declining Trade',
-        status: 'error',
+        ...errorToastOptions,
       })
     },
   })
@@ -155,7 +155,7 @@ export default () => {
         <AuthGuard>
           {!loggedInUserIsLoading && (
             <div>
-              {loggedInUser?.uid && loggedInUser.uid === recipientUser?.uid && (
+              {loggedInUser?.uid && loggedInUser.uid == recipientUser?.uid && (
                 <Button
                   disabled={isAccepting || isDeclining}
                   className="mx-1"
@@ -164,8 +164,9 @@ export default () => {
                   Accept
                 </Button>
               )}
-              {(loggedInUser?.uid && loggedInUser.uid === initiatorUser?.uid) ||
-                (loggedInUser?.uid === recipientUser?.uid && (
+              {loggedInUser?.uid &&
+                (loggedInUser.uid == initiatorUser?.uid ||
+                  loggedInUser?.uid == recipientUser?.uid) && (
                   <Button
                     disabled={isAccepting || isDeclining}
                     className="mx-1"
@@ -173,7 +174,7 @@ export default () => {
                   >
                     Decline
                   </Button>
-                ))}
+                )}
             </div>
           )}
         </AuthGuard>

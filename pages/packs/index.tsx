@@ -1,5 +1,5 @@
-import OpenPackModal from '@components/modals/open-pack-modal'
-import { packService, PackInfo } from 'services/packService'
+import OpenPackModal from '@components/modals/OpenPackModal'
+import { packService } from 'services/packService'
 import useOpenPack from '@pages/api/mutations/use-open-pack'
 import React, { useMemo, useState } from 'react'
 import Router from 'next/router'
@@ -9,18 +9,19 @@ import { PageWrapper } from '@components/common/PageWrapper'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import axios from 'axios'
-import { useToast, Skeleton, SimpleGrid } from '@chakra-ui/react' 
+import { Skeleton, SimpleGrid, useToast } from '@chakra-ui/react'
 import { UserData } from '@pages/api/v3/user'
 import { useSession } from 'contexts/AuthContext'
+import { warningToastOptions } from '@utils/toast'
 
 export type UserPackWithCover = UserPacks & {
   cover: string
 }
 
 const OpenPacks = () => {
+  const toast = useToast()
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalPack, setModalPack] = useState<UserPackWithCover>(null)
-  const toast = useToast()
   const { session, loggedIn } = useSession()
 
   const { payload: user, isLoading: userIDLoading } = query<UserData>({
@@ -46,7 +47,10 @@ const OpenPacks = () => {
 
   const packsWithCovers: UserPackWithCover[] = useMemo(() => {
     if (!packs) return []
-    return packs.map((pack) => ({ ...pack, cover: packService.basePackCover() }))
+    return packs.map((pack) => ({
+      ...pack,
+      cover: packService.basePackCover(),
+    }))
   }, [packs])
 
   const {
@@ -67,9 +71,7 @@ const OpenPacks = () => {
       toast({
         title: 'Already opening a pack',
         description: `Bro chill we're still opening that pack`,
-        status: 'warning',
-        duration: 1500,
-        isClosable: true,
+        ...warningToastOptions,
       })
       return
     }
@@ -117,7 +119,7 @@ const OpenPacks = () => {
           ) : (
             <>
               <p>Number of packs: {packsWithCovers.length}</p>
-              <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4'>
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
                 {packsWithCovers.map((pack, index) => (
                   <img
                     key={index}

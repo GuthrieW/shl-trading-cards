@@ -35,6 +35,10 @@ export default function DeleteCardDialog({
         method: DELETE,
         url: `/api/v3/cards/${cardID}`,
       }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['cards'])
+      onClose()
+    },
   })
 
   const { isSubmitting, isValid, handleSubmit } = useFormik({
@@ -43,15 +47,7 @@ export default function DeleteCardDialog({
       try {
         setSubmitting(true)
         onFormError(null)
-        await deleteCard(
-          { cardID: card.cardID },
-          {
-            onSuccess: () => {
-              queryClient.invalidateQueries(['cards'])
-              onClose()
-            },
-          }
-        )
+        await deleteCard({ cardID: card.cardID })
       } catch (error) {
         console.error(error)
         const errorMessage: string =

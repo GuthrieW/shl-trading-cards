@@ -14,16 +14,17 @@ import {
   Link,
   Textarea,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react'
 import { useFormik } from 'formik'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import * as Yup from 'yup'
-import { ToastContext } from 'contexts/ToastContext'
 import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
 import axios from 'axios'
 import { POST } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
+import { successToastOptions } from '@utils/toast'
 
 type DrawerId = 'bug' | 'feature'
 
@@ -51,10 +52,10 @@ type FeatureFormValues = Yup.InferType<typeof featureValidationSchema>
 type GithubIssueData = { title: string; body: string; label: 'bug' | 'story' }
 
 export const Footer = () => {
+  const toast = useToast()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const [drawerId, setDrawerId] = useState<DrawerId>(null)
   const [formError, setFormError] = useState<string>('')
-  const { addToast } = useContext(ToastContext)
   const [uid] = useCookie(config.userIDCookieName)
 
   const { mutate: createGithubIssue } = mutation<void, GithubIssueData>({
@@ -65,10 +66,10 @@ export const Footer = () => {
         data: requestData,
       }),
     onSuccess: ({ data }) => {
-      addToast({
+      toast({
         title: 'Ticket Submitted',
         description: data?.payload?.newIssueUrl ?? null,
-        status: 'success',
+        ...successToastOptions,
       })
       onClose()
     },

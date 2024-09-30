@@ -33,8 +33,12 @@ export default function RemoveCardAuthorDialog({
     mutationFn: ({ cardID }) =>
       axios({
         method: DELETE,
-        url: `/api/v3/card/author/${cardID}`,
+        url: `/api/v3/cards/${cardID}/author`,
       }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['cards'])
+      onClose()
+    },
   })
 
   const { isSubmitting, isValid, handleSubmit } = useFormik({
@@ -43,14 +47,7 @@ export default function RemoveCardAuthorDialog({
       try {
         setSubmitting(true)
         onFormError(null)
-        await removeCardAuthor(
-          { cardID: card.cardID },
-          {
-            onSuccess: () => {
-              queryClient.invalidateQueries(['cards'])
-            },
-          }
-        )
+        await removeCardAuthor({ cardID: card.cardID })
       } catch (error) {
         console.error(error)
         const errorMessage: string =

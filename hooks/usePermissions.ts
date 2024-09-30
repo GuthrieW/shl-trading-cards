@@ -2,7 +2,19 @@ import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
-import { CAN_RUN_SCRIPTS, RoleGroup, userGroups } from 'lib/constants'
+import {
+  CAN_CLAIM_CARDS,
+  CAN_EDIT_CARDS,
+  CAN_EDIT_DONATIONS,
+  CAN_ISSUE_PACKS,
+  CAN_PROCESS_CARDS,
+  CAN_RUN_SCRIPTS,
+  CAN_SUBMIT_CARD_REQUESTS,
+  CAN_SUBMIT_CARDS,
+  CAN_VIEW_ALL_CARDS,
+  RoleGroup,
+  userGroups,
+} from 'lib/constants'
 import { useMemo } from 'react'
 
 export type Permissions = {
@@ -57,17 +69,23 @@ export const usePermissions = (): {
   const permissions = useMemo<Permissions>(() => {
     return {
       canRunScripts: checkUserHasPermission(apiUserGroups, CAN_RUN_SCRIPTS),
-      canIssuePacks: checkUserHasPermission(apiUserGroups, CAN_RUN_SCRIPTS),
-      canEditDonations: checkUserHasPermission(apiUserGroups, CAN_RUN_SCRIPTS),
-      canViewAllCards: checkUserHasPermission(apiUserGroups, CAN_RUN_SCRIPTS),
+      canIssuePacks: checkUserHasPermission(apiUserGroups, CAN_ISSUE_PACKS),
+      canEditDonations: checkUserHasPermission(
+        apiUserGroups,
+        CAN_EDIT_DONATIONS
+      ),
+      canViewAllCards: checkUserHasPermission(
+        apiUserGroups,
+        CAN_VIEW_ALL_CARDS
+      ),
       canSubmitCardRequests: checkUserHasPermission(
         apiUserGroups,
-        CAN_RUN_SCRIPTS
+        CAN_SUBMIT_CARD_REQUESTS
       ),
-      canClaimCards: checkUserHasPermission(apiUserGroups, CAN_RUN_SCRIPTS),
-      canEditCards: checkUserHasPermission(apiUserGroups, CAN_RUN_SCRIPTS),
-      canSubmitCards: checkUserHasPermission(apiUserGroups, CAN_RUN_SCRIPTS),
-      canProcessCards: checkUserHasPermission(apiUserGroups, CAN_RUN_SCRIPTS),
+      canClaimCards: checkUserHasPermission(apiUserGroups, CAN_CLAIM_CARDS),
+      canEditCards: checkUserHasPermission(apiUserGroups, CAN_EDIT_CARDS),
+      canSubmitCards: checkUserHasPermission(apiUserGroups, CAN_SUBMIT_CARDS),
+      canProcessCards: checkUserHasPermission(apiUserGroups, CAN_PROCESS_CARDS),
     }
   }, [apiUserGroups])
 

@@ -3,16 +3,16 @@ import { colors } from '@utils/theme/colors'
 
 export const chakraTheme: Partial<ChakraTheme> = {
   components: {
-    button: {      
-      variants: {        
-        outline: {          
-          color: colors.text.primary,          
-          borderColor: colors.border.secondary,         
-          _hover: {            
-            bg: colors.background.secondary,          
-          },        
-        },      
-      },    
+    button: {
+      variants: {
+        outline: {
+          color: colors.text.primary,
+          borderColor: colors.border.secondary,
+          _hover: {
+            bg: colors.background.secondary,
+          },
+        },
+      },
     },
     Menu: {
       baseStyle: {
@@ -35,8 +35,8 @@ export const chakraTheme: Partial<ChakraTheme> = {
     Tabs: {
       variants: {
         line: {
-          tablist: {            
-            borderColor: colors.border.secondary,          
+          tablist: {
+            borderColor: colors.border.secondary,
           },
           tab: {
             color: colors.text.tertiary,
@@ -95,9 +95,9 @@ export const CustomChakraProvider = ({
     theme={theme}
     toastOptions={{
       defaultOptions: {
-        duration: 9000,
+        duration: 2500,
         isClosable: true,
-        position: 'bottom-right',
+        position: 'bottom-left',
       },
     }}
   >

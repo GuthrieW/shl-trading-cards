@@ -92,6 +92,10 @@ export default function UpdateCardModal({
         url: `/api/v3/cards/${cardID}`,
         data: { card },
       }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['cards'])
+      onClose()
+    },
   })
 
   const {
@@ -146,15 +150,7 @@ export default function UpdateCardModal({
         setSubmitting(true)
         setFormError(null)
 
-        await updateCard(
-          { cardID: card.cardID, card: cardUpdates },
-          {
-            onSuccess: () => {
-              queryClient.invalidateQueries(['cards'])
-              onClose()
-            },
-          }
-        )
+        await updateCard({ cardID: card.cardID, card: cardUpdates })
       } catch (error) {
         console.error(error)
         const errorMessage: string =

@@ -25,7 +25,10 @@ export default async function addCardsEndpoint(
       string[]
     >
 
-    console.log('newCards', newCards)
+    if (!newCards) {
+      res.status(StatusCodes.BAD_REQUEST).end('New cards required in request')
+      return
+    }
 
     const errors: Record<string, string> = {}
     await Promise.all(

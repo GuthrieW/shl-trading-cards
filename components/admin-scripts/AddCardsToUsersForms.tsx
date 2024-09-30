@@ -1,10 +1,16 @@
-import { Button, FormControl, FormLabel, Input } from '@chakra-ui/react'
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  useToast,
+} from '@chakra-ui/react'
 import { POST } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
+import { successToastOptions, warningToastOptions } from '@utils/toast'
 import axios from 'axios'
-import { ToastContext } from 'contexts/ToastContext'
 import { useFormik } from 'formik'
-import { Fragment, useContext, useState } from 'react'
+import { Fragment, useState } from 'react'
 import * as Yup from 'yup'
 
 const addCardsToJsonValidationSchema = Yup.object({}).shape({
@@ -20,9 +26,9 @@ export default function AddCardsToUsersForm({
   onError: (errorMessage) => void
 }) {
   const [cardsToAdd, setCardsToAdd] = useState<Record<string, string[]>>({})
-  const { addToast } = useContext(ToastContext)
+  const toast = useToast()
 
-  const { mutate: addCardsToUsers, isLoading: addCardsToUsersIsLoading } =
+  const { mutateAsync: addCardsToUsers, isLoading: addCardsToUsersIsLoading } =
     mutation<void, Record<string, string[]>>({
       mutationFn: (newCardsJson: Record<string, string[]>) =>
         axios({
@@ -30,6 +36,9 @@ export default function AddCardsToUsersForm({
           url: '/api/v3/collection/add-cards',
           data: { newCardsJson },
         }),
+      onSuccess: () => {
+        toast({ title: 'Cards added', ...successToastOptions })
+      },
     })
 
   const {
@@ -55,7 +64,7 @@ export default function AddCardsToUsersForm({
         if (userId === 0) throw new Error('0 is not a valid User ID')
         if (cardId === 0) throw new Error('0 is not a valid Card ID')
 
-        setCardsToAdd((oldState) => ({
+        await setCardsToAdd((oldState) => ({
           ...oldState,
           [userId]: [...(oldState[userId] ?? []), cardId],
         }))
@@ -98,10 +107,10 @@ export default function AddCardsToUsersForm({
 
   const handleSubmitNewCards = () => {
     if (Object.keys(cardsToAdd).length === 0) {
-      addToast({
+      toast({
         title: 'Invalid Data',
         description: 'Please include at least one card in your request',
-        status: 'warning',
+        ...warningToastOptions,
       })
       return
     }

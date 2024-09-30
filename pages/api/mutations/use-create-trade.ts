@@ -1,10 +1,11 @@
 import { POST } from '@constants/http-methods'
-import { errorToast, successToast } from '@utils/toasts'
 import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { invalidateQueries } from './invalidate-queries'
 import { UseGetUserTradesKey } from '@pages/api/queries/use-get-user-trades'
 import { UseGetNumberOfPendingTradesKey } from '../queries/use-get-number-of-pending-trades'
+import { useToast } from '@chakra-ui/react'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
 
 export type TradeAsset = {
   ownedCardId: string
@@ -27,6 +28,7 @@ type UseCreateTrade = {
 }
 
 const useCreateTrade = (): UseCreateTrade => {
+  const toast = useToast()
   const queryClient = useQueryClient()
   const { mutate, data, isLoading, isError, isSuccess } = useMutation(
     async ({
@@ -50,10 +52,10 @@ const useCreateTrade = (): UseCreateTrade => {
           UseGetUserTradesKey,
           UseGetNumberOfPendingTradesKey,
         ])
-        successToast({ successText: 'Trade created' })
+        toast({ title: 'Trade created', ...successToastOptions })
       },
       onError: () => {
-        errorToast({ errorText: 'Failed to create trade' })
+        toast({ title: 'Failed to create trade', ...errorToastOptions })
       },
     }
   )
