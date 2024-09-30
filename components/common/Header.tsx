@@ -23,6 +23,7 @@ import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
 import { AuthGuard } from '@components/auth/AuthGuard'
 import { Squash as Hamburger } from 'hamburger-react'
+import { RoleGuard } from '@components/auth/RoleGuard'
 
 const CURRENT_PAGE_LINK_CLASSES =
   'border-b-0 sm:border-b-[4px] border-l-[4px] sm:border-l-0 pt-0 sm:pt-[4px] pr-[14px] sm:pr-[10px] border-secondary'
@@ -160,27 +161,39 @@ export const Header = ({ showAuthButtons = true }) => {
               </MenuList>
             </Menu>
             <Menu>
-              <MenuButton
-                className={classnames(
-                  '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600',
-                  linkClasses(router, '/admin')
-                )}
+              <RoleGuard
+                userRoles={['TRADING_CARD_ADMIN', 'TRADING_CARD_TEAM']}
               >
-                Admin
-              </MenuButton>
+                <MenuButton
+                  className={classnames(
+                    '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600',
+                    linkClasses(router, '/admin')
+                  )}
+                >
+                  Admin
+                </MenuButton>
+              </RoleGuard>
+
               <MenuList>
-                <MenuItem
-                  className="hover:!bg-highlighted/40 hover:!text-primary"
-                  onClick={() => router.push('/admin/cards')}
+                <RoleGuard
+                  userRoles={['TRADING_CARD_ADMIN', 'TRADING_CARD_TEAM']}
                 >
-                  Cards
-                </MenuItem>
-                <MenuItem
-                  className="hover:!bg-highlighted/40 hover:!text-primary"
-                  onClick={() => router.push('/admin/scripts')}
-                >
-                  Scripts
-                </MenuItem>
+                  <MenuItem
+                    className="hover:!bg-highlighted/40 hover:!text-primary"
+                    onClick={() => router.push('/admin/cards')}
+                  >
+                    Cards
+                  </MenuItem>
+                </RoleGuard>
+
+                <RoleGuard userRoles={['TRADING_CARD_ADMIN']}>
+                  <MenuItem
+                    className="hover:!bg-highlighted/40 hover:!text-primary"
+                    onClick={() => router.push('/admin/scripts')}
+                  >
+                    Scripts
+                  </MenuItem>
+                </RoleGuard>
               </MenuList>
             </Menu>
           </div>
@@ -215,7 +228,12 @@ export const Header = ({ showAuthButtons = true }) => {
                       </div>
                     </MenuButton>
                     <MenuList>
-                      <MenuItem className="hover:!bg-highlighted/40 hover:!text-primary" onClick={handleLogout}>Sign Out</MenuItem>
+                      <MenuItem
+                        className="hover:!bg-highlighted/40 hover:!text-primary"
+                        onClick={handleLogout}
+                      >
+                        Sign Out
+                      </MenuItem>
                     </MenuList>
                   </>
                 )}
