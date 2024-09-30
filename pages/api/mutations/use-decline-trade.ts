@@ -1,10 +1,10 @@
 import { POST } from '@constants/http-methods'
 import { UseGetUserTradesKey } from '@pages/api/queries/use-get-user-trades'
-import { errorToast, successToast } from '@utils/toasts'
 import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { invalidateQueries } from './invalidate-queries'
 import { UseGetNumberOfPendingTradesKey } from '../queries/use-get-number-of-pending-trades'
+import { toastService } from 'services/toastService'
 
 type UseDeclineTradeRequest = {
   id: number
@@ -34,10 +34,10 @@ const useDeclineTrade = (): UseDeclineTrade => {
           UseGetUserTradesKey,
           UseGetNumberOfPendingTradesKey,
         ])
-        successToast({ title: 'Trade Declined' })
+        toastService.successToast({ title: 'Trade Declined' })
       },
       onError: () => {
-        errorToast({ title: 'Error Declining Trade' })
+        toastService.errorToast({ title: 'Error Declining Trade' })
       },
     }
   )

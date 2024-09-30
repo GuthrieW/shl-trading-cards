@@ -16,7 +16,7 @@ import {
   Button,
   Image,
 } from '@chakra-ui/react'
-import { warningToast } from '@utils/toasts'
+import { toastService } from 'services/toastService'
 
 export default function ProcessImageDialog({
   card,
@@ -63,7 +63,7 @@ export default function ProcessImageDialog({
 
   const handleApprove = async () => {
     if (approveIsLoading || denyIsLoading) {
-      warningToast({ title: 'Already processing card' })
+      toastService.warningToast({ title: 'Already processing card' })
       return
     }
 
@@ -81,7 +81,7 @@ export default function ProcessImageDialog({
 
   const handleDeny = async () => {
     if (approveIsLoading || denyIsLoading) {
-      warningToast({ title: 'Already processing card' })
+      toastService.warningToast({ title: 'Already processing card' })
       return
     }
 

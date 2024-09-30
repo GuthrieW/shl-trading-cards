@@ -2,13 +2,13 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { ApiResponse } from '../..'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
-import { POST } from '@constants/http-methods'
+import { PATCH, POST } from '@constants/http-methods'
 import methodNotAllowed from '../../lib/methodNotAllowed'
 import { cardsQuery } from '@pages/api/database/database'
 import SQL from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 
-const allowedMethods = [POST]
+const allowedMethods = [PATCH]
 const cors = Cors({
   methods: allowedMethods,
 })
@@ -19,7 +19,7 @@ export default async function updateMonthlySubscription(
 ): Promise<void> {
   await middleware(req, res, cors)
 
-  if (req.method === POST) {
+  if (req.method === PATCH) {
     const uid = req.query.uid as string
     const subscription = req.body.subscription as number
 
@@ -45,6 +45,7 @@ export default async function updateMonthlySubscription(
     `)
 
     res.status(StatusCodes.OK).json({ status: 'success', payload: null })
+    return
   }
 
   methodNotAllowed(req, res, allowedMethods)

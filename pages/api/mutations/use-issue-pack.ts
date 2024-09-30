@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
-import { errorToast, successToast } from '@utils/toasts'
 import { invalidateQueries } from './invalidate-queries'
+import { toastService } from 'services/toastService'
 
 type IssuePackRequest = {
   packType: PackKey
@@ -32,10 +32,10 @@ const useIssuePack = (): UseIssuePack => {
     {
       onSuccess: () => {
         invalidateQueries(queryClient, [])
-        successToast({ title: 'Pack Issued' })
+        toastService.successToast({ title: 'Pack Issued' })
       },
       onError: () => {
-        errorToast({ title: 'Error Issuing Pack' })
+        toastService.errorToast({ title: 'Error Issuing Pack' })
       },
     }
   )

@@ -4,8 +4,8 @@ import { PATCH } from '@constants/http-methods'
 import { UseGetClaimedCardsKey } from '@pages/api/queries/use-get-claimed-cards'
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
-import { errorToast, successToast } from '@utils/toasts'
 import { invalidateQueries } from './invalidate-queries'
+import { toastService } from 'services/toastService'
 
 type UseClaimCardRequest = {
   cardID: number
@@ -36,10 +36,10 @@ const useClaimCard = (): UseClaimCard => {
           UseGetClaimedCardsKey,
           UseGetRequestedCardsKey,
         ])
-        successToast({ title: 'Card Claimed' })
+        toastService.successToast({ title: 'Card Claimed' })
       },
       onError: () => {
-        errorToast({ title: 'Error Claiming Card' })
+        toastService.errorToast({ title: 'Error Claiming Card' })
       },
     }
   )

@@ -18,10 +18,10 @@ import {
   Select,
   SimpleGrid,
   Skeleton,
-  useToast,
   VStack,
   Image as ChakraImage,
 } from '@chakra-ui/react'
+import { toastService } from 'services/toastService'
 
 export type PackInfoWithCover = PackInfo & {
   cover: string
@@ -33,7 +33,6 @@ const PackShop = () => {
   const [modalPack, setModalPack] = useState<PackInfoWithCover>(null)
   const [isUserLoading, setIsUserLoading] = useState<boolean>(true)
   const [, setSubscriptionValue] = useState<number>(0)
-  const toast = useToast()
   const { buyPack, isLoading: buyBackIsLoading } = useBuyPack()
   const { updateSubscription } = useUpdateSubscription()
 
@@ -81,7 +80,7 @@ const PackShop = () => {
 
   const handleSelectedPack = (pack: PackInfoWithCover): void => {
     if (!loggedIn) {
-      toast({
+      toastService.warningToast({
         title: 'Log in to purchase packs',
         status: 'warning',
         duration: 1500,
@@ -95,7 +94,7 @@ const PackShop = () => {
 
   const handleBuyPack = (packId): void => {
     if (buyBackIsLoading) {
-      toast({
+      toastService.warningToast({
         title: 'Already buying a pack',
         description: `Calm down man`,
         status: 'warning',

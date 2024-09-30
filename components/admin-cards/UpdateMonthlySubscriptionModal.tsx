@@ -18,6 +18,7 @@ import { useFormik } from 'formik'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useState } from 'react'
 import { useQueryClient } from 'react-query'
+import { toastService } from 'services/toastService'
 import * as Yup from 'yup'
 
 const updateValidationSchema = Yup.object({}).shape({
@@ -61,6 +62,10 @@ export default function UpdateMonthlySubscriptionModal({
         url: `/api/v3/settings/monthly/${uid}`,
         data: { subscription },
       }),
+    onSuccess: () => {
+      toastService.successToast({ title: 'Subscription Updated' })
+      queryClient.invalidateQueries('monthly-subscriptions')
+    },
   })
 
   const {
@@ -98,15 +103,10 @@ export default function UpdateMonthlySubscriptionModal({
         setSubmitting(true)
         setFormError(null)
 
-        await updateMonthlySubscription(
-          { uid: setting?.uid, subscription: subscriptionUpdates.subscription },
-          {
-            onSuccess: () => {
-              queryClient.invalidateQueries(['monthly-subscriptions'])
-              onClose()
-            },
-          }
-        )
+        await updateMonthlySubscription({
+          uid: setting?.uid,
+          subscription: subscriptionUpdates.subscription,
+        })
       } catch (error) {
         console.error(error)
         const errorMessage: string =

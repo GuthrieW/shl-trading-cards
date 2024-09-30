@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react'
 import {
   Alert,
   AlertDialog,
-  AlertDialogBody,
   AlertDialogCloseButton,
   AlertDialogContent,
   AlertDialogFooter,
@@ -10,7 +9,6 @@ import {
   AlertDialogOverlay,
   AlertIcon,
   Button,
-  useToast,
 } from '@chakra-ui/react'
 import { mutation } from '@pages/api/database/mutation'
 import axios from 'axios'

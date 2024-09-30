@@ -39,6 +39,10 @@ export default function DeleteMonthlySubscriptionDialog({
         method: DELETE,
         url: `/api/v3/settings/monthly/${uid}`,
       }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['monthly-subscriptions'])
+      onClose()
+    },
   })
 
   const { isSubmitting, isValid, handleSubmit } = useFormik({
@@ -47,15 +51,7 @@ export default function DeleteMonthlySubscriptionDialog({
       try {
         setSubmitting(true)
         onFormError(null)
-        await deleteMonthlySubscription(
-          { uid: setting?.uid },
-          {
-            onSuccess: () => {
-              queryClient.invalidateQueries(['monthly-subscriptions'])
-              onClose()
-            },
-          }
-        )
+        await deleteMonthlySubscription({ uid: setting?.uid })
       } catch (error) {
         console.error(error)
         const errorMessage: string =

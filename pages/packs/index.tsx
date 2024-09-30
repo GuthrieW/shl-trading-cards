@@ -9,9 +9,10 @@ import { PageWrapper } from '@components/common/PageWrapper'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import axios from 'axios'
-import { useToast, Skeleton, SimpleGrid } from '@chakra-ui/react'
+import { Skeleton, SimpleGrid } from '@chakra-ui/react'
 import { UserData } from '@pages/api/v3/user'
 import { useSession } from 'contexts/AuthContext'
+import { toastService } from 'services/toastService'
 
 export type UserPackWithCover = UserPacks & {
   cover: string
@@ -20,7 +21,6 @@ export type UserPackWithCover = UserPacks & {
 const OpenPacks = () => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalPack, setModalPack] = useState<UserPackWithCover>(null)
-  const toast = useToast()
   const { session, loggedIn } = useSession()
 
   const { payload: user, isLoading: userIDLoading } = query<UserData>({
@@ -67,12 +67,9 @@ const OpenPacks = () => {
 
   const handleOpenPack = (packID: number) => {
     if (useOpenPackIsLoading) {
-      toast({
+      toastService.warningToast({
         title: 'Already opening a pack',
         description: `Bro chill we're still opening that pack`,
-        status: 'warning',
-        duration: 1500,
-        isClosable: true,
       })
       return
     }

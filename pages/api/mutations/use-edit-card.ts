@@ -3,8 +3,8 @@ import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
 import { UseGetApprovedCardsKey } from '@pages/api/queries/use-get-approved-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
-import { errorToast, successToast } from '@utils/toasts'
 import { invalidateQueries } from './invalidate-queries'
+import { toastService } from 'services/toastService'
 
 type UseEditCardRequest = {
   card: Card
@@ -34,10 +34,10 @@ const useEditCard = (): UseEditCard => {
           UseGetAllCardsKey,
           UseGetApprovedCardsKey,
         ])
-        successToast({ title: 'Edited Card' })
+        toastService.successToast({ title: 'Edited Card' })
       },
       onError: () => {
-        errorToast({ title: 'Error Editing Card' })
+        toastService.errorToast({ title: 'Error Editing Card' })
       },
     }
   )

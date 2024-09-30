@@ -10,9 +10,9 @@ import {
 } from '@chakra-ui/react'
 import { POST } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
-import { warningToast } from '@utils/toasts'
 import axios from 'axios'
 import { useState } from 'react'
+import { toastService } from 'services/toastService'
 
 export default function SubmitImageModal({
   card,
@@ -57,7 +57,7 @@ export default function SubmitImageModal({
 
   const handleSubmit = async () => {
     if (isLoading) {
-      warningToast({ title: 'Already submitting a card' })
+      toastService.warningToast({ title: 'Already submitting a card' })
       return
     }
 

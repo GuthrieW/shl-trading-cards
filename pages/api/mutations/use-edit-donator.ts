@@ -2,7 +2,7 @@ import { POST } from '@constants/http-methods'
 import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { invalidateQueries } from './invalidate-queries'
-import { errorToast, successToast } from '@utils/toasts'
+import { toastService } from 'services/toastService'
 
 type UseEditDonatorRequest = {
   uid: number
@@ -30,10 +30,10 @@ const useEditDonator = (): UseEditDonator => {
     {
       onSuccess: () => {
         invalidateQueries(queryClient, [])
-        successToast({ title: 'Donator Edited' })
+        toastService.successToast({ title: 'Donator Edited' })
       },
       onError: () => {
-        errorToast({ title: 'Error Editing Donator' })
+        toastService.errorToast({ title: 'Error Editing Donator' })
       },
     }
   )

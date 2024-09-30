@@ -8,9 +8,9 @@ import {
   ModalBody,
   ModalFooter,
   ModalCloseButton,
-  useToast,
 } from '@chakra-ui/react'
 import { PackInfoWithCover } from '@pages/shop/index'
+import { toastService } from 'services/toastService'
 
 type BuyPackModalProps = {
   isOpen: boolean
@@ -25,7 +25,6 @@ const BuyPackModal = ({
   onAccept,
   pack,
 }: BuyPackModalProps) => {
-  const toast = useToast()
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -55,12 +54,9 @@ const BuyPackModal = ({
             onClick={
               false
                 ? () =>
-                    toast({
+                    toastService.errorToast({
                       title: 'max packs purchased',
                       description: 'Please try again tomorrow.',
-                      status: 'error',
-                      duration: 2500,
-                      isClosable: true,
                     })
                 : () => onAccept(pack.id)
             }

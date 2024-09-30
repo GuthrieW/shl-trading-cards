@@ -1,11 +1,8 @@
 import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
-import { UseGetUserCardsKey } from '@pages/api/queries/use-get-user-cards'
-import { UseGetUserKey } from '@pages/api/queries/use-get-user'
-import { errorToast, successToast } from '@utils/toasts'
 import { invalidateQueries } from './invalidate-queries'
-import { useToast } from '@chakra-ui/react'
+import { toastService } from 'services/toastService'
 
 type UseBuyPackRequest = {
   uid: number
@@ -21,7 +18,6 @@ type UseBuyPack = {
 }
 
 const useBuyPack = (): UseBuyPack => {
-  const toast = useToast();
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     ({ uid, packType }: UseBuyPackRequest) => {
@@ -33,23 +29,17 @@ const useBuyPack = (): UseBuyPack => {
     },
     {
       onSuccess: (data) => {
-        invalidateQueries(queryClient, [`daily-subscription`]);
-        toast({
+        invalidateQueries(queryClient, [`daily-subscription`])
+        toastService.successToast({
           title: 'Purchasing Pack',
           description: `Good job!`,
-          status: 'success',
-          duration: 2500,
-          isClosable: true,
-        });
+        })
       },
       onError: () => {
-        toast({
+        toastService.errorToast({
           title: 'Error Purchasing Pack',
           description: 'Could be an error or already purchased 3 packs today',
-          status: 'error',
-          duration: 2500,
-          isClosable: true,
-        });
+        })
       },
     }
   )

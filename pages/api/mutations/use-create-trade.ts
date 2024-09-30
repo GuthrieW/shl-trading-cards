@@ -1,10 +1,10 @@
 import { POST } from '@constants/http-methods'
-import { errorToast, successToast } from '@utils/toasts'
 import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { invalidateQueries } from './invalidate-queries'
 import { UseGetUserTradesKey } from '@pages/api/queries/use-get-user-trades'
 import { UseGetNumberOfPendingTradesKey } from '../queries/use-get-number-of-pending-trades'
+import { toastService } from 'services/toastService'
 
 export type TradeAsset = {
   ownedCardId: string
@@ -50,10 +50,10 @@ const useCreateTrade = (): UseCreateTrade => {
           UseGetUserTradesKey,
           UseGetNumberOfPendingTradesKey,
         ])
-        successToast({ title: 'Trade created' })
+        toastService.successToast({ title: 'Trade created' })
       },
       onError: () => {
-        errorToast({ title: 'Failed to create trade' })
+        toastService.errorToast({ title: 'Failed to create trade' })
       },
     }
   )
