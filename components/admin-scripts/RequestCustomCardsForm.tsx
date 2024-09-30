@@ -1,18 +1,19 @@
-import { Button } from '@chakra-ui/react'
+import { Button, useToast } from '@chakra-ui/react'
 import { POST } from '@constants/http-methods'
 import rarityMap from '@constants/rarity-map'
 import { shlTeamsMap } from '@constants/teams-map'
 import { mutation } from '@pages/api/database/mutation'
+import { successToastOptions } from '@utils/toast'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import CSVReader from 'react-csv-reader'
-import { toastService } from 'services/toastService'
 
 export default function RequestCustomCardsForm({
   onError,
 }: {
   onError: (errorMessage) => void
 }) {
+  const toast = useToast()
   const [csvToUpload, setCsvToUpload] = useState(null)
   const [canSubmitCsv, setCanSubmitCsv] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
@@ -29,8 +30,9 @@ export default function RequestCustomCardsForm({
         data: { cards },
       }),
     onSuccess: () => {
-      toastService.successToast({
+      toast({
         title: 'Cards inserted',
+        ...successToastOptions,
       })
     },
   })

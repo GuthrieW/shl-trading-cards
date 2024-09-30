@@ -2,7 +2,8 @@ import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 import { invalidateQueries } from './invalidate-queries'
-import { toastService } from 'services/toastService'
+import { useToast } from '@chakra-ui/react'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
 
 type UseBuyPackRequest = {
   uid: number
@@ -18,6 +19,7 @@ type UseBuyPack = {
 }
 
 const useBuyPack = (): UseBuyPack => {
+  const toast = useToast()
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     ({ uid, packType }: UseBuyPackRequest) => {
@@ -30,15 +32,17 @@ const useBuyPack = (): UseBuyPack => {
     {
       onSuccess: (data) => {
         invalidateQueries(queryClient, [`daily-subscription`])
-        toastService.successToast({
+        toast({
           title: 'Purchasing Pack',
           description: `Good job!`,
+          ...successToastOptions,
         })
       },
       onError: () => {
-        toastService.errorToast({
+        toast({
           title: 'Error Purchasing Pack',
           description: 'Could be an error or already purchased 3 packs today',
+          ...errorToastOptions,
         })
       },
     }

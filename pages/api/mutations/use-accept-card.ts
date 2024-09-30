@@ -6,7 +6,8 @@ import { UseGetUnapprovedCardsKey } from '@pages/api/queries/use-get-unapproved-
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 import { invalidateQueries } from './invalidate-queries'
-import { toastService } from 'services/toastService'
+import { useToast } from '@chakra-ui/react'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
 
 type UseAcceptCardRequest = {
   cardID: number
@@ -21,6 +22,7 @@ type UseAcceptCard = {
 }
 
 const useAcceptCard = (): UseAcceptCard => {
+  const toast = useToast()
   const queryClient: QueryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     async ({ cardID }: UseAcceptCardRequest) => {
@@ -37,10 +39,10 @@ const useAcceptCard = (): UseAcceptCard => {
           UseGetUnapprovedCardsKey,
           UseGetRequestedCardsKey,
         ])
-        toastService.successToast({ title: 'Card Accepted' })
+        toast({ title: 'Card Accepted', ...successToastOptions })
       },
       onError: () => {
-        toastService.errorToast({ title: 'Error Accepting Card' })
+        toast({ title: 'Error Accepting Card', ...errorToastOptions })
       },
     }
   )

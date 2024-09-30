@@ -4,7 +4,8 @@ import { PATCH } from '@constants/http-methods'
 import { UseGetApprovedCardsKey } from '@pages/api/queries/use-get-approved-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 import { invalidateQueries } from './invalidate-queries'
-import { toastService } from 'services/toastService'
+import { useToast } from '@chakra-ui/react'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
 
 type UseEditCardRequest = {
   card: Card
@@ -19,6 +20,7 @@ type UseEditCard = {
 }
 
 const useEditCard = (): UseEditCard => {
+  const toast = useToast()
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     async ({ card }: UseEditCardRequest) => {
@@ -34,10 +36,10 @@ const useEditCard = (): UseEditCard => {
           UseGetAllCardsKey,
           UseGetApprovedCardsKey,
         ])
-        toastService.successToast({ title: 'Edited Card' })
+        toast({ title: 'Edited Card', ...successToastOptions })
       },
       onError: () => {
-        toastService.errorToast({ title: 'Error Editing Card' })
+        toast({ title: 'Error Editing Card', ...errorToastOptions })
       },
     }
   )

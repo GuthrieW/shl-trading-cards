@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 import { invalidateQueries } from './invalidate-queries'
-import { toastService } from 'services/toastService'
 
 type UseOpenPackRequest = {
   packID: number
@@ -29,16 +28,8 @@ const useOpenPack = (): UseOpenPack => {
     {
       onSuccess: (data) => {
         invalidateQueries(queryClient, [`daily-subscription`])
-        toastService.successToast({
-          title: 'Opening Pack',
-          description: `Good luck!`,
-        })
       },
-      onError: () => {
-        toastService.errorToast({
-          title: 'Error Opening Pack',
-        })
-      },
+      onError: () => {},
     }
   )
 

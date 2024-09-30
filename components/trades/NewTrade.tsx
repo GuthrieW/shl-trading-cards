@@ -20,6 +20,7 @@ import {
   Select,
   SimpleGrid,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react'
 import TablePagination from '@components/table/TablePagination'
 import { GET, POST } from '@constants/http-methods'
@@ -36,13 +37,17 @@ import {
   TradeCardSortValue,
 } from '@pages/api/v3/trades/collection/[uid]'
 import { UserData } from '@pages/api/v3/user'
+import {
+  errorToastOptions,
+  successToastOptions,
+  warningToastOptions,
+} from '@utils/toast'
 import axios from 'axios'
 import config from 'lib/config'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
 import { useQueryClient } from 'react-query'
-import { toastService } from 'services/toastService'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
   {
@@ -100,6 +105,7 @@ export default function NewTrade({
   loggedInUser: UserData
   tradePartnerUid: string
 }) {
+  const toast = useToast()
   const queryClient = useQueryClient()
   const router = useRouter()
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -122,9 +128,10 @@ export default function NewTrade({
   const [uid] = useCookie(config.userIDCookieName)
 
   if (tradePartnerUid === uid) {
-    toastService.warningToast({
+    toast({
       title: 'Ineligible Trade Partner',
       description: 'You cannot trade with yourself',
+      ...warningToastOptions,
     })
     router.replace('/trade')
     return
@@ -254,15 +261,17 @@ export default function NewTrade({
         ],
       })
       queryClient.invalidateQueries(['trades'])
-      toastService.successToast({
+      toast({
         title: 'Trade Created',
         description: 'Please include at least one card in your request',
+        ...successToastOptions,
       })
       router.reload()
     } catch (error) {
-      toastService.errorToast({
+      toast({
         title: 'Error Creating Trade',
         description: error,
+        ...errorToastOptions,
       })
     }
   }

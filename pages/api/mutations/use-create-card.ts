@@ -4,7 +4,8 @@ import { POST } from '@constants/http-methods'
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 import { invalidateQueries } from './invalidate-queries'
-import { toastService } from 'services/toastService'
+import { useToast } from '@chakra-ui/react'
+import { errorToastOptions } from '@utils/toast'
 
 type UseCreateCardRequest = {
   card: CardRequest
@@ -19,6 +20,7 @@ type UseCreateCard = {
 }
 
 const useCreateCard = (): UseCreateCard => {
+  const toast = useToast()
   const queryClient = useQueryClient()
   const { mutate, data, isLoading, isError, isSuccess } = useMutation(
     async ({ card }: UseCreateCardRequest) => {
@@ -36,7 +38,7 @@ const useCreateCard = (): UseCreateCard => {
         ])
       },
       onError: () => {
-        toastService.errorToast({ title: 'Failed to create card' })
+        toast({ title: 'Failed to create card', ...errorToastOptions })
       },
     }
   )

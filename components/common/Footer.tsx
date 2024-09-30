@@ -14,6 +14,7 @@ import {
   Link,
   Textarea,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react'
 import { useFormik } from 'formik'
 import React, { useState } from 'react'
@@ -23,7 +24,7 @@ import config from 'lib/config'
 import axios from 'axios'
 import { POST } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
-import { toastService } from 'services/toastService'
+import { successToastOptions } from '@utils/toast'
 
 type DrawerId = 'bug' | 'feature'
 
@@ -51,6 +52,7 @@ type FeatureFormValues = Yup.InferType<typeof featureValidationSchema>
 type GithubIssueData = { title: string; body: string; label: 'bug' | 'story' }
 
 export const Footer = () => {
+  const toast = useToast()
   const { isOpen, onClose, onOpen } = useDisclosure()
   const [drawerId, setDrawerId] = useState<DrawerId>(null)
   const [formError, setFormError] = useState<string>('')
@@ -64,9 +66,10 @@ export const Footer = () => {
         data: requestData,
       }),
     onSuccess: ({ data }) => {
-      toastService.successToast({
+      toast({
         title: 'Ticket Submitted',
         description: data?.payload?.newIssueUrl ?? null,
+        ...successToastOptions,
       })
       onClose()
     },

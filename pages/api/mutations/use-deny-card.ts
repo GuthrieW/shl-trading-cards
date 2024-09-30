@@ -5,7 +5,8 @@ import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-ca
 import { UseGetUnapprovedCardsKey } from '@pages/api/queries/use-get-unapproved-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 import { invalidateQueries } from './invalidate-queries'
-import { toastService } from 'services/toastService'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
+import { useToast } from '@chakra-ui/react'
 
 type UseDenyCardRequest = {
   cardID: number
@@ -20,6 +21,7 @@ type UseDenyCard = {
 }
 
 const useDenyCard = (): UseDenyCard => {
+  const toast = useToast()
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     async ({ cardID }: UseDenyCardRequest) => {
@@ -35,10 +37,10 @@ const useDenyCard = (): UseDenyCard => {
           UseGetRequestedCardsKey,
           UseGetUnapprovedCardsKey,
         ])
-        toastService.successToast({ title: 'Card Denied' })
+        toast({ title: 'Card Denied', ...successToastOptions })
       },
       onError: () => {
-        toastService.errorToast({ title: 'Error Denying Card' })
+        toast({ title: 'Error Denying Card', ...errorToastOptions })
       },
     }
   )

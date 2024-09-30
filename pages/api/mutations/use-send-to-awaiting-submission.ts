@@ -3,7 +3,6 @@ import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { invalidateQueries } from './invalidate-queries'
 import { UseGetAllCardsKey } from '../queries/use-get-all-cards'
-import { toastService } from 'services/toastService'
 
 type UseSendToAwaitingSubmissionRequest = {
   cardID: number
@@ -31,13 +30,8 @@ const useSendToAwaitingSubmission = (): UseSendToAwaitingSubmission => {
     {
       onSuccess: () => {
         invalidateQueries(queryClient, [UseGetAllCardsKey])
-        toastService.successToast({ title: 'Card Sent to Awaiting Submission' })
       },
-      onError: () => {
-        toastService.errorToast({
-          title: 'Error Sending Card to Awaiting Submission',
-        })
-      },
+      onError: () => {},
     }
   )
 

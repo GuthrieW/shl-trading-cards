@@ -7,12 +7,13 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  useToast,
 } from '@chakra-ui/react'
 import { POST } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
+import { warningToastOptions } from '@utils/toast'
 import axios from 'axios'
 import { useState } from 'react'
-import { toastService } from 'services/toastService'
 
 export default function SubmitImageModal({
   card,
@@ -23,6 +24,7 @@ export default function SubmitImageModal({
   isOpen: boolean
   onClose: () => void
 }) {
+  const toast = useToast()
   const [formError, setFormError] = useState<string>('')
   const [selectedImage, setSelectedImage] = useState(null)
   const [selectedFile, setSelectedFile] = useState(null)
@@ -57,7 +59,7 @@ export default function SubmitImageModal({
 
   const handleSubmit = async () => {
     if (isLoading) {
-      toastService.warningToast({ title: 'Already submitting a card' })
+      toast({ title: 'Already submitting a card', ...warningToastOptions })
       return
     }
 

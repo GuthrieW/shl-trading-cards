@@ -3,7 +3,6 @@ import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
 import { invalidateQueries } from './invalidate-queries'
-import { toastService } from 'services/toastService'
 
 type UseSubmitCardImageRequest = {
   cardID: number
@@ -31,11 +30,8 @@ const useSubmitCardImage = (): UseSubmitCardImage => {
     {
       onSuccess: () => {
         invalidateQueries(queryClient, [UseGetAllCardsKey])
-        toastService.successToast({ title: 'Card Image Submitted' })
       },
-      onError: () => {
-        toastService.errorToast({ title: 'Error Submitting Card Image' })
-      },
+      onError: () => {},
     }
   )
 

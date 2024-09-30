@@ -4,7 +4,8 @@ import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { invalidateQueries } from './invalidate-queries'
 import { UseGetNumberOfPendingTradesKey } from '../queries/use-get-number-of-pending-trades'
-import { toastService } from 'services/toastService'
+import { useToast } from '@chakra-ui/react'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
 
 type UseDeclineTradeRequest = {
   id: number
@@ -20,6 +21,7 @@ type UseDeclineTrade = {
 }
 
 const useDeclineTrade = (): UseDeclineTrade => {
+  const toast = useToast()
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     async ({ id, decliningUid }: UseDeclineTradeRequest) => {
@@ -34,10 +36,10 @@ const useDeclineTrade = (): UseDeclineTrade => {
           UseGetUserTradesKey,
           UseGetNumberOfPendingTradesKey,
         ])
-        toastService.successToast({ title: 'Trade Declined' })
+        toast({ title: 'Trade Declined', ...successToastOptions })
       },
       onError: () => {
-        toastService.errorToast({ title: 'Error Declining Trade' })
+        toast({ title: 'Error Declining Trade', ...errorToastOptions })
       },
     }
   )

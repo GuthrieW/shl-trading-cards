@@ -8,17 +8,18 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  useToast,
 } from '@chakra-ui/react'
 import Input from '@components/forms/Input'
 import { PATCH } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
 import { MonthlySettingsData } from '@pages/api/v3/settings/monthly'
+import { successToastOptions } from '@utils/toast'
 import axios from 'axios'
 import { useFormik } from 'formik'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useState } from 'react'
 import { useQueryClient } from 'react-query'
-import { toastService } from 'services/toastService'
 import * as Yup from 'yup'
 
 const updateValidationSchema = Yup.object({}).shape({
@@ -46,6 +47,7 @@ export default function UpdateMonthlySubscriptionModal({
   isOpen: boolean
   onClose: () => void
 }) {
+  const toast = useToast()
   const [formError, setFormError] = useState<string>('')
   const queryClient = useQueryClient()
 
@@ -63,7 +65,7 @@ export default function UpdateMonthlySubscriptionModal({
         data: { subscription },
       }),
     onSuccess: () => {
-      toastService.successToast({ title: 'Subscription Updated' })
+      toast({ title: 'Subscription Updated', ...successToastOptions })
       queryClient.invalidateQueries('monthly-subscriptions')
     },
   })
@@ -171,7 +173,7 @@ export default function UpdateMonthlySubscriptionModal({
               Close
             </Button>
             <Button
-              colorScheme="red"
+              colorScheme="green"
               type="submit"
               disabled={!isValid || isSubmitting}
               isLoading={isSubmitting}

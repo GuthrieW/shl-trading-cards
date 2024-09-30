@@ -20,14 +20,16 @@ import {
   Skeleton,
   VStack,
   Image as ChakraImage,
+  useToast,
 } from '@chakra-ui/react'
-import { toastService } from 'services/toastService'
+import { warningToastOptions } from '@utils/toast'
 
 export type PackInfoWithCover = PackInfo & {
   cover: string
 }
 
 const PackShop = () => {
+  const toast = useToast()
   const { session, loggedIn } = useSession()
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalPack, setModalPack] = useState<PackInfoWithCover>(null)
@@ -80,8 +82,9 @@ const PackShop = () => {
 
   const handleSelectedPack = (pack: PackInfoWithCover): void => {
     if (!loggedIn) {
-      toastService.warningToast({
+      toast({
         title: 'Log in to purchase packs',
+        ...warningToastOptions,
       })
       return
     }
@@ -91,9 +94,10 @@ const PackShop = () => {
 
   const handleBuyPack = (packId): void => {
     if (buyBackIsLoading) {
-      toastService.warningToast({
+      toast({
         title: 'Already buying a pack',
         description: `Calm down man`,
+        ...warningToastOptions,
       })
       return
     }

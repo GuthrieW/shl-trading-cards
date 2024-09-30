@@ -5,14 +5,14 @@ import Router from 'next/router'
 import ReactCardFlip from 'react-card-flip'
 import rarityMap from '@constants/rarity-map'
 import pathToCards from '@constants/path-to-cards'
-import { Button, Badge } from '@chakra-ui/react' // Import Badge from Chakra UI
+import { Button, Badge, useToast } from '@chakra-ui/react' // Import Badge from Chakra UI
 import { PageWrapper } from '@components/common/PageWrapper'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
-import { toastService } from 'services/toastService'
+import { successToastOptions } from '@utils/toast'
 
 const HexCodes = {
   Ruby: '#E0115F',
@@ -21,6 +21,7 @@ const HexCodes = {
 }
 
 const LastOpenedPack = () => {
+  const toast = useToast()
   const { session, loggedIn } = useSession()
   const [revealedCards, setRevealedCards] = useState<number[]>([])
   const { payload: user } = query<UserData>({
@@ -77,8 +78,9 @@ const LastOpenedPack = () => {
 
     const message = `I opened pack #${packID} \n ${emojis}\nCheck out my cards: https://cards.simulationhockey.com/packs/${packID}`
     navigator.clipboard.writeText(message).then(() => {
-      toastService.successToast({
+      toast({
         title: 'Share with friends!',
+        ...successToastOptions,
       })
     })
   }

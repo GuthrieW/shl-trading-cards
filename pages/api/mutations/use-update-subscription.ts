@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 import { invalidateQueries } from './invalidate-queries'
-import { toastService } from 'services/toastService'
 
 type UseUpdateSubscriptionRequest = {
   uid: number
@@ -30,17 +29,8 @@ const useUpdateSubscription = (): UseUpdateSubscription => {
     {
       onSuccess: (data) => {
         invalidateQueries(queryClient, [`daily-subscription`])
-        toastService.successToast({
-          title: 'Subscription Updated',
-          description: `Subscription updated to ${data.data.payload.subscription}`,
-        })
       },
-      onError: () => {
-        toastService.errorToast({
-          title: 'Error Updating Subscription',
-          description: 'Please try again later.',
-        })
-      },
+      onError: () => {},
     }
   )
 
