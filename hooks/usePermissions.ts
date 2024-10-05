@@ -3,6 +3,7 @@ import { query } from '@pages/api/database/query'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
 import {
+  CAN_ADD_CARDS_TO_USERS,
   CAN_CLAIM_CARDS,
   CAN_EDIT_CARDS,
   CAN_EDIT_DONATIONS,
@@ -27,6 +28,7 @@ export type Permissions = {
   canEditCards: boolean
   canSubmitCards: boolean
   canProcessCards: boolean
+  canAddCardsToUsers: boolean
 }
 
 const UNAUTHENTICATED_PERMISSIONS: Permissions = {
@@ -39,10 +41,11 @@ const UNAUTHENTICATED_PERMISSIONS: Permissions = {
   canEditCards: false,
   canSubmitCards: false,
   canProcessCards: false,
+  canAddCardsToUsers: false,
 } as const
 
 export const usePermissions = (): {
-  permissions: Partial<Permissions>
+  permissions: Permissions
   groups?: (keyof Readonly<typeof userGroups>)[]
   isLoading: boolean
 } => {
@@ -86,6 +89,10 @@ export const usePermissions = (): {
       canEditCards: checkUserHasPermission(apiUserGroups, CAN_EDIT_CARDS),
       canSubmitCards: checkUserHasPermission(apiUserGroups, CAN_SUBMIT_CARDS),
       canProcessCards: checkUserHasPermission(apiUserGroups, CAN_PROCESS_CARDS),
+      canAddCardsToUsers: checkUserHasPermission(
+        apiUserGroups,
+        CAN_ADD_CARDS_TO_USERS
+      ),
     }
   }, [apiUserGroups])
 
@@ -114,7 +121,7 @@ export const usePermissions = (): {
   }
 }
 
-const checkUserHasPermission = (
+export const checkUserHasPermission = (
   apiUserGroups: (typeof userGroups)[keyof typeof userGroups][],
   requiredPermission: RoleGroup
 ): boolean => {

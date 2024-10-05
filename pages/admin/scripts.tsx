@@ -9,6 +9,7 @@ import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
 import { Select } from '@components/common/Select'
 import { useState } from 'react'
 import RequestCustomCardsForm from '@components/admin-scripts/RequestCustomCardsForm'
+import { Permissions, usePermissions } from '@hooks/usePermissions'
 
 type ScriptId =
   | 'add-cards-to-users'
@@ -21,20 +22,46 @@ type ScriptId =
 type ScriptData = {
   id: ScriptId
   name: string
+  requiredPermissions?: (keyof Permissions)[]
 }
 
 const scripts: ScriptData[] = [
-  { id: 'add-cards-to-users', name: 'Add Cards to Users' },
-  { id: 'monthly-subscriptions', name: 'Distribute Monthly Subscription' },
-  { id: 'request-base-cards', name: 'Request Base Cards' },
-  { id: 'request-custom-cards', name: 'Request Custom Cards' },
-  // { id: 'request-charity-card', name: 'Request Charity Card' },
-  // { id: 'delete-duplicates', name: 'Delete Duplicate Cards' },
+  {
+    id: 'add-cards-to-users',
+    name: 'Add Cards to Users',
+    requiredPermissions: ['canAddCardsToUsers'],
+  },
+  {
+    id: 'monthly-subscriptions',
+    name: 'Distribute Monthly Subscription',
+    requiredPermissions: ['canEditDonations'],
+  },
+  {
+    id: 'request-base-cards',
+    name: 'Request Base Cards',
+    requiredPermissions: ['canSubmitCardRequests'],
+  },
+  {
+    id: 'request-custom-cards',
+    name: 'Request Custom Cards',
+    requiredPermissions: ['canSubmitCardRequests'],
+  },
+  // {
+  //   id: 'request-charity-card',
+  //   name: 'Request Charity Card',
+  //   requiredPermissions: ['canSubmitCardRequests'],
+  // },
+  // {
+  //   id: 'delete-duplicates',
+  //   name: 'Delete Duplicate Cards',
+  //   requiredPermissions: ['canEditCards'],
+  // },
 ] as const
 
 export default () => {
   const [selectedScript, setSelectedScript] = useState<ScriptId>(scripts[0].id)
   const [formError, setFormError] = useState<string>('')
+  const { permissions } = usePermissions()
 
   const { isCheckingAuthentication } = useRedirectIfNotAuthenticated()
   const { isCheckingAuthorization } = useRedirectIfNotAuthorized({
@@ -42,7 +69,11 @@ export default () => {
   })
 
   const optionsMap = new Map<ScriptId, string>(
-    scripts.map((script) => [script.id, script.name])
+    scripts
+      .filter((script) =>
+        script.requiredPermissions.some((required) => permissions[required])
+      )
+      .map((script) => [script.id, script.name])
   )
 
   return (

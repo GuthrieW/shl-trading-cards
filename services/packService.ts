@@ -8,6 +8,19 @@ export type PackInfo = {
 }
 
 class PackService {
+  readonly memePack = {
+    base: {
+      id: 'base',
+      label: 'Base',
+      description:
+        'The base trading card pack. Contains 6 cards ranging from Bronze to Hall of Fame rarity.',
+      imageUrl: '/images/base-pack-meme.png',
+      price: 50000,
+      priceLabel: '50k',
+      covers: [{ name: 'meme', url: '/base-pack-meme.png' }],
+    },
+  } as const
+
   readonly packs = {
     base: {
       id: 'base',
@@ -25,7 +38,6 @@ class PackService {
         { name: 'sfp', url: '/base-pack-sfp.png' },
         { name: 'tex', url: '/base-pack-tex.png' },
         { name: 'tor', url: '/base-pack-tor.png' },
-        { name: 'meme', url: '/base-pack-meme.png' },
       ],
     },
   } as const
@@ -37,9 +49,7 @@ class PackService {
       Math.floor(Math.random() * maximum - minimum + 1) + minimum
 
     if (memeCoverChance === 10) {
-      return this.packs.base.covers.find(
-        (packCover) => packCover.name === 'meme'
-      ).url
+      return this.memePack.base.imageUrl
     }
 
     const coverIndex: number = Math.floor(

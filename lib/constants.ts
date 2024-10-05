@@ -43,4 +43,6 @@ export const CAN_SUBMIT_CARDS: RoleGroup = [
   'TRADING_CARD_TEAM',
 ]
 export const CAN_PROCESS_CARDS: RoleGroup = ['TRADING_CARD_ADMIN']
+export const CAN_ADD_CARDS_TO_USERS: RoleGroup = ['TRADING_CARD_ADMIN']
+
 export const LEAGUE_LINK_MAP = ['SHL', 'SMJHL', 'IIHF', 'WJC']

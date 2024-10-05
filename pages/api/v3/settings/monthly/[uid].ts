@@ -39,7 +39,7 @@ export default async function updateMonthlySubscription(
     }
 
     const queryResult = await cardsQuery(SQL`
-      INSERT INTO admin_cards.monthly_subscriptions
+      INSERT INTO monthly_subscriptions
         (uid, subscription)
       VALUES
         (${uid}, ${subscription})
@@ -70,7 +70,7 @@ export default async function updateMonthlySubscription(
     }
 
     const queryResult = await cardsQuery(SQL`
-      DELETE FROM admin_cards.monthly_subscriptions
+      DELETE FROM monthly_subscriptions
       WHERE uid=${uid};  
     `)
 
