@@ -83,7 +83,7 @@ const CardLightBoxModal = ({
   }
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered motionPreset="scale">
+      <Modal isOpen={isOpen} blockScrollOnMount={false} onClose={onClose} isCentered motionPreset="scale">
         <ModalContent>
           <ModalHeader className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl ">
             {cardName}
@@ -180,7 +180,7 @@ const CardLightBoxModal = ({
         size="md"
       >
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent overflow="hidden" overflowY="scroll">
           <DrawerCloseButton className="bg-primary" />
           <DrawerHeader className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
             Card Information

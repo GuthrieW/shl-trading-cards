@@ -5,8 +5,7 @@ import { query } from '@pages/api/database/query'
 import { UserCollection } from '@pages/api/v3'
 import axios from 'axios'
 import { Box, Stack, Skeleton, SkeletonText, Img } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
-import TradingCard from '@components/images/trading-card'
+import TradingCard from '@components/images/TradingCard'
 
 interface BackOfCardProps {
   cardID: string

@@ -46,6 +46,7 @@ import axios from 'axios'
 import config from 'lib/config'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
+import React from 'react'
 import { Fragment, useContext, useEffect, useState } from 'react'
 import { useQueryClient } from 'react-query'
 
@@ -126,6 +127,7 @@ export default function NewTrade({
   const [partnerUserCardsToTrade, setPartnerUserCardsToTrade] = useState<
     TradeCard[]
   >([])
+  const [cardAdded, setCardAdded] = useState(false);
 
   const [uid] = useCookie(config.userIDCookieName)
 
@@ -189,19 +191,20 @@ export default function NewTrade({
       enabled: !!tradePartnerUid && !!cardID,
     });
     useEffect(() => {
-      if (!showSelectedCardLoading && showSelectedCard) {
+      if (!showSelectedCardLoading && showSelectedCard && !cardAdded) {
         if (showSelectedCard.rows.length > 0) {
           const cardToAdd = showSelectedCard.rows[0];
           addCardToTrade(cardToAdd, false);
+          setCardAdded(true);
         } else {
-          addToast({
+          toast({
             title: 'Card Not Found',
             description: "The specified card could not be found in the collection.",
             status: 'warning',
           });
         }
       }
-    }, [showSelectedCard, showSelectedCardLoading, loggedInUser.uid, tradePartnerUid]);
+    }, [showSelectedCard, showSelectedCardLoading, loggedInUser.uid, tradePartnerUid, cardAdded]);
 
   const { mutateAsync: submitTrade, isLoading: isSubmittingTrade } = mutation<
     void,
@@ -291,11 +294,10 @@ export default function NewTrade({
       queryClient.invalidateQueries(['trades'])
       toast({
         title: 'Trade Created',
-        description: 'Please include at least one card in your request',
+        description: 'congrats!',
         ...successToastOptions,
       })
-      router.push("/trade")
-      router.reload()
+      router.push('/trade', undefined, { shallow: false });
     } catch (error) {
       toast({
         title: 'Error Creating Trade',
@@ -416,7 +418,7 @@ export default function NewTrade({
       </div>
       <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent overflow='scroll'>
           <DrawerCloseButton />
           <DrawerHeader className="flex flex-row justify-between items-center bg-primary">
             <span>{pluralizeName(selectedUser?.username)}&nbsp;Cards</span>

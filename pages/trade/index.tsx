@@ -34,9 +34,13 @@ export default () => {
     const { partnerId, cardID } = router.query
     if (partnerId && typeof partnerId === 'string') {
       setTradePartnerUid(parseInt(partnerId))
+    } else {
+      setTradePartnerUid(null)
     }
     if (cardID && typeof cardID === 'string') {
       setCardID(parseInt(cardID))
+    } else {
+      setCardID(null)
     }
   }, [router.query])
   return (
