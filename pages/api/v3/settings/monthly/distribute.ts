@@ -28,7 +28,7 @@ export default async function distributeMonthlySubscriptionsEndpoint(
   if (req.method === POST) {
     const subscribedUsersResult = await cardsQuery<SubscriptionUser>(SQL`
       SELECT uid, subscription 
-      FROM admin_cards.monthly_subscriptions
+      FROM monthly_subscriptions
       WHERE subscription > 0
     `)
 
