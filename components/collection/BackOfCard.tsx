@@ -4,23 +4,26 @@ import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import { UserCollection } from '@pages/api/v3'
 import axios from 'axios'
-import { Box, Spinner, Stack, Text, Skeleton, SkeletonText } from '@chakra-ui/react'
+import { Box, Stack, Skeleton, SkeletonText, Img } from '@chakra-ui/react'
+import TradingCard from '@components/images/TradingCard'
 
 interface BackOfCardProps {
   cardID: string
   userID: string
+  isOwned: boolean
 }
 
 export const BackOfCard: React.FC<BackOfCardProps> = ({
   cardID,
   userID,
+  isOwned,
 }) => {
   const { payload: packs, isLoading } = query<UserCollection[]>({
-    queryKey: ['packs-from-cards', cardID, userID],
+    queryKey: ['packs-from-cards', cardID, userID, String(isOwned)],
     queryFn: () =>
       axios({
         method: GET,
-        url: `/api/v3/cards/packs-from-cards?userID=${userID}&cardID=${cardID}`,
+        url: `/api/v3/cards/packs-from-cards?userID=${userID}&cardID=${cardID}&isOwned=${isOwned}`,
       }),
     enabled: !!cardID && !!userID,
   })
@@ -29,7 +32,13 @@ export const BackOfCard: React.FC<BackOfCardProps> = ({
     return (
       <Stack spacing={4} mt={5}>
         {Array.from({ length: 3 }).map((_, index) => (
-          <Box key={index} p={5} shadow="md" borderWidth="1px" borderRadius="md">
+          <Box
+            key={index}
+            p={5}
+            shadow="md"
+            borderWidth="1px"
+            borderRadius="md"
+          >
             <Skeleton height="20px" mb="4" />
             <SkeletonText mt="4" noOfLines={2} spacing="4" />
           </Box>
@@ -37,28 +46,38 @@ export const BackOfCard: React.FC<BackOfCardProps> = ({
       </Stack>
     )
   }
+
   return (
     <Stack spacing={4} mt={5}>
-      {packs?.map((pack) => (
-        <Box
-          key={pack.packID}
-          p={5}
-          shadow="md"
-          borderWidth="1px"
-          borderRadius="md"
-          textAlign="center"
-        >
-          <div className="text-lg">Pack #{pack.packID}</div>
-          <Link 
-            href={`/packs/${pack.packID}`} 
-            className="text-blue600"
-            as="a"
-            target="_blank"
+      {isOwned ? (
+        packs?.map((pack) => (
+          <Box
+            key={pack.packID}
+            p={5}
+            shadow="md"
+            borderWidth="1px"
+            borderRadius="md"
+            textAlign="center"
           >
-            View Pack #{pack.packID}
-          </Link>
-        </Box>
-      ))}
+            <div className="text-lg">Pack #{pack.packID}</div>
+            <Link
+              href={`/packs/${pack.packID}`}
+              className="text-blue600"
+              as="a"
+              target="_blank"
+            >
+              View Pack #{pack.packID}
+            </Link>
+          </Box>
+        ))
+      ) : (
+        <TradingCard
+          className={`${!isOwned ? 'grayscale' : ''}`}
+          source={`/cardback.png`}
+          playerName={'backOfCard'}
+          rarity={''}
+        />
+      )}
     </Stack>
   )
 }

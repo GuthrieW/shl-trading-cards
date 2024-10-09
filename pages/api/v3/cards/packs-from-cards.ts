@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ApiResponse, ListResponse, ListTotal, SortDirection, UserCollection } from '..'
+import { ApiResponse, UserCollection } from '..'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
-import { GET, PATCH } from '@constants/http-methods'
+import { GET } from '@constants/http-methods'
 import { cardsQuery } from '@pages/api/database/database'
-import SQL, { SQLStatement } from 'sql-template-strings'
+import SQL from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 import methodNotAllowed from '../lib/methodNotAllowed'
 
@@ -22,32 +22,37 @@ export default async function userUniqueCardsEndpoint(
     if (req.method === GET) {
         const userID = req.query.userID as string;
         const cardID = req.query.cardID as string;
-
-        if (!userID) {
+        const isOwned = req.query.isOwned as string;
+        if (!userID || !cardID) {
             res
                 .status(StatusCodes.BAD_REQUEST)
                 .json({ status: 'error', message: 'Missing userID or cardID' });
             return;
         }
+        let query
+        if (isOwned === "true"){
+            query = SQL`
+            SELECT ownedCardID, userID, cardID, packID
+            FROM collection
+            WHERE userID = ${userID} AND cardID = ${cardID}
+        `
+        } else {
+            query = SQL`
+            SELECT ownedCardID, userID, cardID, packID
+            FROM collection
+            WHERE cardID = ${cardID}
+            ORDER BY packID DESC
+            LIMIT 20
+        `
+        }
 
-        const queryResult = await cardsQuery<UserCollection>(SQL`
-      SELECT ownedCardID, userID, cardID, packID
-      FROM collection
-      WHERE userID = ${userID} and cardID = ${cardID}
-    `);
+        const queryResult = await cardsQuery<UserCollection>(query);
 
         if ('error' in queryResult) {
             console.error(queryResult.error);
             res
                 .status(StatusCodes.INTERNAL_SERVER_ERROR)
                 .end('Database connection failed');
-            return;
-        }
-
-        if (queryResult.length === 0) {
-            res
-                .status(StatusCodes.NOT_FOUND)
-                .json({ status: 'error', message: 'Something went wrong here' });
             return;
         }
 
@@ -60,4 +65,3 @@ export default async function userUniqueCardsEndpoint(
 
     methodNotAllowed(req, res, allowedMethods);
 }
-

@@ -46,7 +46,8 @@ import axios from 'axios'
 import config from 'lib/config'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
-import { Fragment, useState } from 'react'
+import React from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 import { useQueryClient } from 'react-query'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
@@ -101,9 +102,11 @@ const LOADING_GRID_DATA: { rows: TradeCard[] } = {
 export default function NewTrade({
   loggedInUser,
   tradePartnerUid,
+  cardID,
 }: {
   loggedInUser: UserData
   tradePartnerUid: string
+  cardID?: number
 }) {
   const toast = useToast()
   const queryClient = useQueryClient()
@@ -124,6 +127,7 @@ export default function NewTrade({
   const [partnerUserCardsToTrade, setPartnerUserCardsToTrade] = useState<
     TradeCard[]
   >([])
+  const [cardAdded, setCardAdded] = useState(false);
 
   const [uid] = useCookie(config.userIDCookieName)
 
@@ -174,6 +178,33 @@ export default function NewTrade({
         }),
       enabled: !!selectedUserId,
     })
+    const {
+      payload: showSelectedCard,
+      isLoading: showSelectedCardLoading
+    } = query<ListResponse<TradeCard>>({
+      queryKey: ['check-card', tradePartnerUid, String(cardID)],
+      queryFn: () =>
+        axios({
+          method: 'GET',
+          url: `/api/v3/trades/collection/check-card?uid=${tradePartnerUid}&cardID=${cardID}`,
+        }),
+      enabled: !!tradePartnerUid && !!cardID,
+    });
+    useEffect(() => {
+      if (!showSelectedCardLoading && showSelectedCard && !cardAdded) {
+        if (showSelectedCard.rows.length > 0) {
+          const cardToAdd = showSelectedCard.rows[0];
+          addCardToTrade(cardToAdd, false);
+          setCardAdded(true);
+        } else {
+          toast({
+            title: 'Card Not Found',
+            description: "The specified card could not be found in the collection.",
+            status: 'warning',
+          });
+        }
+      }
+    }, [showSelectedCard, showSelectedCardLoading, loggedInUser.uid, tradePartnerUid, cardAdded]);
 
   const { mutateAsync: submitTrade, isLoading: isSubmittingTrade } = mutation<
     void,
@@ -242,12 +273,12 @@ export default function NewTrade({
     try {
       await submitTrade({
         initiatorId: uid,
-        recipientId: selectedUserId,
+        recipientId: tradePartnerUid,
         tradeAssets: [
           ...loggedInUserCardsToTrade.map(
             (card): TradeAsset => ({
               ownedCardId: String(card.ownedCardID),
-              toId: selectedUserId,
+              toId: tradePartnerUid,
               fromId: uid,
             })
           ),
@@ -255,7 +286,7 @@ export default function NewTrade({
             (card): TradeAsset => ({
               ownedCardId: String(card.ownedCardID),
               toId: uid,
-              fromId: selectedUserId,
+              fromId: tradePartnerUid,
             })
           ),
         ],
@@ -263,10 +294,10 @@ export default function NewTrade({
       queryClient.invalidateQueries(['trades'])
       toast({
         title: 'Trade Created',
-        description: 'Please include at least one card in your request',
+        description: 'congrats!',
         ...successToastOptions,
       })
-      router.reload()
+      router.push('/trade', undefined, { shallow: false });
     } catch (error) {
       toast({
         title: 'Error Creating Trade',
@@ -277,6 +308,17 @@ export default function NewTrade({
   }
   const selectedUser: UserData =
     selectedUserId === uid ? loggedInUser : tradePartnerUser
+
+  const waitForSelectedUserCards = () => {
+    return new Promise<void>((resolve) => {
+      const checkInterval = setInterval(() => {
+        if (selectedUserCards && !selectedUserCardsIsLoading) {
+          clearInterval(checkInterval)
+          resolve()
+        }
+      }, 100)
+    })
+  }
 
   return (
     <>
@@ -376,7 +418,7 @@ export default function NewTrade({
       </div>
       <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent overflow='scroll'>
           <DrawerCloseButton />
           <DrawerHeader className="flex flex-row justify-between items-center bg-primary">
             <span>{pluralizeName(selectedUser?.username)}&nbsp;Cards</span>

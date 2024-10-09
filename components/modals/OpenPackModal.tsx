@@ -23,7 +23,7 @@ const OpenPackModal = ({
   const packTypeData = getPackTypeData(pack)
 
   return (
-    <Modal isOpen={true} onClose={() => setShowModal(false)}>
+    <Modal isOpen={true} blockScrollOnMount={false} onClose={() => setShowModal(false)}>
       <ModalOverlay />
       <ModalContent className='bg-primary text-secondary'>
         <ModalHeader className='bg-primary text-secondary'>

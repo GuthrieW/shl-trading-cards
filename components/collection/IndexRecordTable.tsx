@@ -20,13 +20,22 @@ import { Link } from 'components/common/Link'
 import { LEAGUE_LINK_MAP } from 'lib/constants'
 import { generateIndexLink } from 'lib/constants'
 import axios from 'axios'
+import { GET } from '@constants/http-methods'
+import { query } from '@pages/api/database/query'
+import { UserCollection } from '@pages/api/v3'
+import GetUsername from '@components/common/GetUsername'
+import Router from 'next/router'
 
 export const IndexRecordTable = ({
   owned,
   playerID,
+  cardID,
+  userID,
 }: {
-  owned: number
+  owned: boolean
   playerID: number
+  cardID: number
+  userID: string
 }) => {
   const [indexSrc, setIndexSrc] = useState<string | undefined>(undefined)
   const iFrameRef = useRef<HTMLIFrameElement>(null)
@@ -62,6 +71,16 @@ export const IndexRecordTable = ({
     fetchPlayerHistory()
   }, [playerID])
 
+  const { payload: packs, isLoading } = query<UserCollection[]>({
+    queryKey: ['packs-from-cards', String(cardID), String(userID), "false"],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/cards/packs-from-cards?userID=${userID}&cardID=${cardID}&isOwned=false`,
+      }),
+    enabled: !!cardID && !!userID,
+  })
+
   if (!playerID) return null
 
   return (
@@ -76,50 +95,55 @@ export const IndexRecordTable = ({
           </AccordionButton>
         </h2>
         <AccordionPanel pb={4}>
-          <TableContainer className="bg-secondary text-secondary">
-            <Table size="sm">
-              <Thead>
-                <Tr>
-                  <Th>{LEAGUE_LINK_MAP.at(0)}</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                <Tr>
-                  <Td>
-                    <Button
-                      className="!hover:no-underline mr-2 bg-primary font-mont hover:text-blue600 focus:text-blue600 "
-                      onClick={() =>
-                        setIndexSrc(generateIndexLink(playerID, colorMode))
-                      }
-                    >
-                      View Stats
-                    </Button>
-                  </Td>
-                </Tr>
-              </Tbody>
-            </Table>
-          </TableContainer>
-
-          {indexSrc && (
+          {playerID === -1 || playerID > 100000 ? (
+            <div>Player stats not available at this time</div>
+          ) : (
             <>
-              <iframe
-                ref={iFrameRef}
-                src={indexSrc}
-                className="w-full"
-                height={height}
-              />
-              <Link
-                className="!hover:no-underline ml-2 block pb-2 text-left text-blue600 "
-                href={indexSrc.split('?')[0]}
-                target="_blank"
-              >
-                View in a new window
-              </Link>
+              <TableContainer className="bg-secondary text-secondary">
+                <Table size="sm">
+                  <Thead>
+                    <Tr>
+                      <Th>{LEAGUE_LINK_MAP.at(0)}</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    <Tr>
+                      <Td>
+                        <Button
+                          className="!hover:no-underline mr-2 bg-primary font-mont hover:text-blue600 focus:text-blue600 "
+                          onClick={() =>
+                            setIndexSrc(generateIndexLink(playerID, colorMode))
+                          }
+                        >
+                          View Stats
+                        </Button>
+                      </Td>
+                    </Tr>
+                  </Tbody>
+                </Table>
+              </TableContainer>
+
+              {indexSrc && (
+                <>
+                  <iframe
+                    ref={iFrameRef}
+                    src={indexSrc}
+                    className="w-full"
+                    height={height}
+                  />
+                  <Link
+                    className="!hover:no-underline ml-2 block pb-2 text-left text-blue600 "
+                    href={indexSrc.split('?')[0]}
+                    target="_blank"
+                  >
+                    View in a new window
+                  </Link>
+                </>
+              )}
             </>
           )}
         </AccordionPanel>
       </AccordionItem>
-
       <AccordionItem>
         <h2>
           <AccordionButton>
@@ -142,20 +166,60 @@ export const IndexRecordTable = ({
                   mb={2}
                 >
                   <div
-                    className={` ${
+                    className={`${
                       record.isAward && record.won ? 'font-bold' : 'font-normal'
                     }`}
                   >
                     S{record.seasonID} - {record.achievementName}{' '}
                     {record.isAward && (record.won ? '(won)' : '(nom)')}
                   </div>
-                  <div className="text-sm">{record.achievementDescription}</div>
+                  <div className="text-sm">
+                    {record.achievementDescription}
+                  </div>
                 </Box>
               ))
           ) : (
             <div>No awards found for this player.</div>
           )}
         </AccordionPanel>
+      </AccordionItem>
+      <AccordionItem>
+  <h2>
+    <AccordionButton>
+      <Box flex="1" textAlign="left">
+        Users who own the card
+      </Box>
+      <AccordionIcon />
+    </AccordionButton>
+  </h2>
+  <AccordionPanel pb={4}>
+    {packs && packs.length > 0 ? (
+      packs.map((pack) => (
+        <Box
+          key={pack.packID}
+          p={2}
+          borderWidth="1px"
+          rounded="md"
+          mb={2}
+        >
+          <div>
+            User: { <GetUsername userID={pack.userID} /> }
+          </div>
+          {userID !== String(pack.userID) && (
+            <Button
+              className="mt-2"
+              colorScheme="blue"
+              onClick={() => Router.push(`/trade?partnerId=${pack.userID}&cardID=${pack.cardID}`)}
+            >
+              Trade for this card
+            </Button>
+          )}
+        </Box>
+      ))
+    ) : (
+      <div>No users own this card yet.</div>
+    )}
+  </AccordionPanel>
       </AccordionItem>
     </Accordion>
   )

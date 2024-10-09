@@ -17,6 +17,7 @@ export default () => {
   const router = useRouter()
 
   const [tradePartnerUid, setTradePartnerUid] = useState<number>(null)
+  const [cardID, setCardID] = useState<number | null>(null)
 
   const { payload: loggedInUser } = query<UserData>({
     queryKey: ['baseUser', session?.token],
@@ -30,12 +31,18 @@ export default () => {
   })
 
   useEffect(() => {
-    const { partnerId } = router.query
+    const { partnerId, cardID } = router.query
     if (partnerId && typeof partnerId === 'string') {
       setTradePartnerUid(parseInt(partnerId))
+    } else {
+      setTradePartnerUid(null)
+    }
+    if (cardID && typeof cardID === 'string') {
+      setCardID(parseInt(cardID))
+    } else {
+      setCardID(null)
     }
   }, [router.query])
-
   return (
     <PageWrapper>
       <p>Trade Home</p>
@@ -50,6 +57,7 @@ export default () => {
         <NewTrade
           loggedInUser={loggedInUser}
           tradePartnerUid={String(tradePartnerUid)}
+          cardID={cardID}
         />
       )}
       <TradesDrawer
