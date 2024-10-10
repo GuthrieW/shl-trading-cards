@@ -1,9 +1,6 @@
 import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
-import { UseGetUserPacksKey } from '@pages/api/queries/use-get-user-packs'
-import { UseGetUserCardsKey } from '@pages/api/queries/use-get-user-cards'
-import { errorToast, successToast } from '@utils/toasts'
 import { invalidateQueries } from './invalidate-queries'
 
 type UseOpenPackRequest = {
@@ -24,18 +21,15 @@ const useOpenPack = (): UseOpenPack => {
     async ({ packID }: UseOpenPackRequest) => {
       return await axios({
         method: POST,
-        url: `/api/v2/packs/open/${packID}`,
+        url: `/api/v3/packs/open/${packID}`,
         data: {},
       })
     },
     {
-      onSuccess: () => {
-        invalidateQueries(queryClient, [UseGetUserPacksKey, UseGetUserCardsKey])
-        successToast({ successText: 'Pack Opened' })
+      onSuccess: (data) => {
+        invalidateQueries(queryClient, [`daily-subscription`])
       },
-      onError: () => {
-        errorToast({ errorText: 'Error Opening Pack' })
-      },
+      onError: () => {},
     }
   )
 

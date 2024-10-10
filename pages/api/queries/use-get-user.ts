@@ -19,7 +19,7 @@ const useGetUser = ({ uid }: UseGetUserRequest): UseGetUser => {
   const { data, error, isFetching, isSuccess } = useQuery(
     `${UseGetUserKey}/${uid}`,
     async () => {
-      return await axios({ method: GET, url: `/api/v2/users/${uid}` })
+      return await axios({ method: GET, url: `/api/v3/users/${uid}` })
     }
   )
 
