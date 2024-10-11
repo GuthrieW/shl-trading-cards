@@ -113,6 +113,7 @@ const CardLightBoxModal = ({
                 transform={isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'}
                 style={{
                   transformStyle: 'preserve-3d',
+                  backfaceVisibility: 'hidden',
                 }}
               >
                 <Box
