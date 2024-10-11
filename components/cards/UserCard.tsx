@@ -1,5 +1,5 @@
 import { IconButton } from '@chakra-ui/react'
-import { ChatBubbleLeftRightIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
+import { Search2Icon, ChatIcon } from '@chakra-ui/icons'
 import fixAvatar from '@utils/fix-avatar-url'
 import Router from 'next/router'
 
@@ -18,7 +18,7 @@ const UserCard = ({ user, quantity }: UserCardProps) => {
 
   return (
     <div className="flex flex-col justify-start items-center hover:scale-105 hover:shadow-xl">
-      <div className="flex flex-col justify-center items-center bg-neutral-800 p-2 m-2 rounded text-gray-200 ">
+      <div className="flex flex-col justify-center items-center bg-neutral-800 p-2 m-2 rounded text-primary ">
         <img
           alt={`${user.username} avatar`}
           className="w-24 h-24 mt-6 mx-6 rounded-full"
@@ -27,25 +27,25 @@ const UserCard = ({ user, quantity }: UserCardProps) => {
         <span>{user.username}</span>
         {quantity && <span>Cards: {quantity}</span>}
         <div className="grid grid-cols-2 mt-4">
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center hover:scale-105 hover:shadow-xl">
             <IconButton
               className="h-8 w-8"
               disabled={false}
               onClick={() => Router.push(`/collect/${user.uid}`)}
               aria-label={''}
             >
-              <Squares2X2Icon />
+              <Search2Icon />
             </IconButton>
             <span className="text-sm mt-1">Collection</span>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center hover:scale-105 hover:shadow-xl">
             <IconButton
               className="h-8 w-8"
               disabled={false}
               onClick={() => Router.push(`/trade?partnerId=${user.uid}`)}
               aria-label={''}
             >
-              <ChatBubbleLeftRightIcon />
+              <ChatIcon />
             </IconButton>
             <span className="text-sm mt-1">Trade</span>
           </div>

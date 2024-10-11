@@ -23,6 +23,7 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import { warningToastOptions } from '@utils/toast'
+import { TimeUntilMidnight } from '@utils/time-until-midnight'
 
 export type PackInfoWithCover = PackInfo & {
   cover: string
@@ -129,6 +130,7 @@ const PackShop = () => {
         <div className="flex flex-col justify-center text-center mb-6">
           <div>Max 3 packs per day</div>
           <div>A new set of packs can be purchased at midnight EST</div>
+          <span className="text-lg font-bold">Time until next reset: {TimeUntilMidnight()}</span>
         </div>
 
         {loggedIn && (
