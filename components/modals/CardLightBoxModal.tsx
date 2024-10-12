@@ -90,6 +90,34 @@ const CardLightBoxModal = ({
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody className="bg-secondary flex-grow overflow-y-auto p-0">
+          <div
+              className="w-full h-full relative motion-reduce:hover:transform-none"
+              style={{ transformStyle: 'preserve-3d' }}
+              onMouseMove={(event) => {
+                const mouseX =
+                  event.nativeEvent.offsetX -
+                  cardFrontRef.current.clientWidth / 2
+                const mouseY =
+                  event.nativeEvent.offsetY -
+                  cardFrontRef.current.clientHeight / 2
+
+                cardFrontRef.current.style.transform = `perspective(${
+                  cardFrontRef.current.clientWidth
+                }px) rotateX(${-mouseY / THRESHOLD}deg) rotateY(${
+                  mouseX / THRESHOLD
+                }deg) scale3d(.87, .87, .87)`
+                shineRef.current.style.transform = `perspective(${
+                  cardFrontRef.current.clientWidth
+                }px) rotateX(${-mouseY / THRESHOLD}deg) rotateY(${
+                  mouseX / THRESHOLD
+                }deg) scale3d(.87, .87, .87)`
+                shineRef.current.style.background = `radial-gradient(circle at ${event.nativeEvent.offsetX}px ${event.nativeEvent.offsetY}px, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 100%)`
+              }}
+              onMouseLeave={(event) => {
+                cardFrontRef.current.style.transform = `perspective(${cardFrontRef.current.clientWidth}px) rotateX(0deg) rotateY(0deg)`
+                shineRef.current.style.transform = `perspective(${cardFrontRef.current.clientWidth}px) rotateX(0deg) rotateY(0deg)`
+              }}
+            >
             <Box
               ref={cardContainerRef}
               position="relative"
@@ -103,6 +131,7 @@ const CardLightBoxModal = ({
               mx="auto"
               style={{
                 perspective: '1200px',
+                backfaceVisibility: 'hidden',
               }}
             >
               <Box
@@ -124,6 +153,7 @@ const CardLightBoxModal = ({
                   className="flex-grow overflow-y-auto p-0"
                   style={{
                     backfaceVisibility: 'hidden',
+                    pointerEvents: isFlipped ? 'none' : 'auto',
                   }}
                 >
                   <TradingCard
@@ -149,7 +179,7 @@ const CardLightBoxModal = ({
                   p={4}
                   rounded="md"
                   boxShadow="lg"
-                  overflowY="auto"
+                  overflow={!isFlipped ? 'hidden' : ''} 
                   style={{
                     backfaceVisibility: 'hidden',
                     transform: 'rotateY(180deg)',
@@ -165,6 +195,7 @@ const CardLightBoxModal = ({
                 </Box>
               </Box>
             </Box>
+            </div>
           </ModalBody>
           <ModalFooter className="bg-secondary">
             <Button onClick={onDrawerOpen} mr={2}>

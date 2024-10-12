@@ -1,11 +1,11 @@
 import useGetLatestPackCards from '@pages/api/queries/use-get-latest-pack-cards'
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import { NextSeo } from 'next-seo'
 import Router from 'next/router'
 import ReactCardFlip from 'react-card-flip'
 import rarityMap from '@constants/rarity-map'
 import pathToCards from '@constants/path-to-cards'
-import { Button, Badge, useToast } from '@chakra-ui/react'
+import { Button, Badge, useToast } from '@chakra-ui/react' // Import Badge from Chakra UI
 import { PageWrapper } from '@components/common/PageWrapper'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
@@ -19,20 +19,6 @@ const HexCodes = {
   Diamond: '#45ACA5',
   Gold: '#FFD700',
 }
-
-const cardRarityShadows = [
-  { id: rarityMap.bronze.label, emoji: '🥉' },
-  { id: rarityMap.silver.label, emoji: '🥈' },
-  { id: rarityMap.gold.label, emoji: '🥇' },
-  { id: rarityMap.logo.label, emoji: '📜' },
-  { id: rarityMap.ruby.label, color: HexCodes.Ruby, emoji: '🔴' },
-  { id: rarityMap.diamond.label, color: HexCodes.Diamond, emoji: '💎' },
-  { id: rarityMap.hallOfFame.label, color: HexCodes.Gold, emoji: '🏅' },
-  { id: rarityMap.twoThousandClub.label, color: HexCodes.Gold, emoji: '🎉' },
-  { id: rarityMap.award.label, color: HexCodes.Gold, emoji: '🏆' },
-  { id: rarityMap.firstOverall.label, color: HexCodes.Gold, emoji: '☝️' },
-  { id: rarityMap.iihfAwards.label, color: HexCodes.Gold, emoji: '🌍' },
-]
 
 const LastOpenedPack = () => {
   const toast = useToast()
@@ -54,6 +40,19 @@ const LastOpenedPack = () => {
       uid: user?.uid,
     })
 
+  const cardRarityShadows = [
+    { id: rarityMap.bronze.label, emoji: '🥉' },
+    { id: rarityMap.silver.label, emoji: '🥈' },
+    { id: rarityMap.gold.label, emoji: '🥇' },
+    { id: rarityMap.logo.label, emoji: '📜' },
+    { id: rarityMap.ruby.label, color: HexCodes.Ruby, emoji: '🔴' },
+    { id: rarityMap.diamond.label, color: HexCodes.Diamond, emoji: '💎' },
+    { id: rarityMap.hallOfFame.label, color: HexCodes.Gold, emoji: '🏅' },
+    { id: rarityMap.twoThousandClub.label, color: HexCodes.Gold, emoji: '🎉' },
+    { id: rarityMap.award.label, color: HexCodes.Gold, emoji: '🏆' },
+    { id: rarityMap.firstOverall.label, color: HexCodes.Gold, emoji: '☝️' },
+    { id: rarityMap.iihfAwards.label, color: HexCodes.Gold, emoji: '🌍' },
+  ]
 
   const updateRevealedCards = (index: number): void => {
     if (revealedCards.includes(index)) return
@@ -66,7 +65,7 @@ const LastOpenedPack = () => {
     )
   }
 
-  const shareMessage = useCallback(() => {
+  const shareMessage = () => {
     const packID = latestPackCards[0]?.packID
     const emojis = latestPackCards
       .map((card) => {
@@ -77,17 +76,14 @@ const LastOpenedPack = () => {
       })
       .join(' ')
 
-    const newCards = latestPackCards.filter(card => card.quantity === 1).length
-    const newCardLine = newCards > 0 ? `\n✨ I got New Card! x${newCards}` : ''
-
-    const message = `I opened pack #${packID} \n${emojis}${newCardLine}\nCheck out the pack:\nhttps://cards.simulationhockey.com/packs/${packID}`
+    const message = `I opened pack #${packID} \n ${emojis}\nCheck out my cards: https://cards.simulationhockey.com/packs/${packID}`
     navigator.clipboard.writeText(message).then(() => {
       toast({
         title: 'Share with friends!',
         ...successToastOptions,
       })
     })
-  }, [latestPackCards, cardRarityShadows, toast])
+  }
 
   if (isLoading || isError || latestPackCards.length === 0) return null
 
@@ -154,14 +150,15 @@ const LastOpenedPack = () => {
                     />
                   </ReactCardFlip>
 
+                  {/* Show badge only when the card is not flipped */}
                   {revealedCards.includes(index) &&
-                    card.quantity === 1 && (
+                    card.quantity === 1 && ( // Check for quantity and show badge
                       <Badge
                         colorScheme="green"
                         variant="outline"
                         border="2px solid"
                         borderColor="green.500"
-                        className="shine-effect mt-2"
+                        className="shine-effect mt-2" // Added margin-top for spacing
                       >
                         New Card
                       </Badge>
