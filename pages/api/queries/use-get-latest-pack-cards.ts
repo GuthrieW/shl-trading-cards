@@ -27,7 +27,7 @@ const useGetLatestPackCards = ({
       })
     },
     {
-      staleTime: 300000,
+      refetchOnWindowFocus: false,
     }
   )
   return {
