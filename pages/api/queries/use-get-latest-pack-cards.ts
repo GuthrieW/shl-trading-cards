@@ -25,6 +25,9 @@ const useGetLatestPackCards = ({
         method: GET,
         url: `/api/v3/collection/uid/last-pack?uid=${uid}`, 
       })
+    },
+    {
+      refetchOnWindowFocus: false,
     }
   )
   return {
