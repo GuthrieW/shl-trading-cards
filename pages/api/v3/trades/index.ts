@@ -26,11 +26,6 @@ export default async function tradesEndpoint(
     const username = (req.query.username ?? '') as string
     const status = (req.query.status ?? '') as string
 
-    if (!(await checkUserAuthorization(req))) {
-      res.status(StatusCodes.UNAUTHORIZED).end('Not authorized')
-      return
-    }
-
     let tradePartners = []
     if (username.length !== 0) {
       const partnerUserQuery: SQLStatement = SQL` SELECT uid, username FROM mybb_users`
@@ -112,6 +107,11 @@ export default async function tradesEndpoint(
     const initiatorId = req.body.initiatorId as string
     const recipientId = req.body.recipientId as string
     const tradeAssets = req.body.tradeAssets as TradeAsset[]
+
+    if (!(await checkUserAuthorization(req))) {
+      res.status(StatusCodes.UNAUTHORIZED).end('Not authorized')
+      return
+    }
 
     if (
       !initiatorId ||
