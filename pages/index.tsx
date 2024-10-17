@@ -68,38 +68,20 @@ export default () => {
     () => (packs?.length ? packs.slice(0, 25) : []),
     [packs]
   )
-  console.log(isLoadingUser)
   return (
     <PageWrapper>
       <div className="space-y-8">
-        {isLoadingPendingTrades ? (
-          <h1 className="text-3xl font-bold text-center mb-4">
-            Welcome to the Ice Level
-          </h1>
-        ) : (
-          <>
-            {user ? (
-              <>
-                <h1 className="text-3xl font-bold text-center mb-4">
-                  Welcome to the Ice Level {user.username}
-                </h1>
-                {pendingTrades?.total > 0 && (
-                  <Alert className="text-black text-xl" status="info">
-                    <AlertIcon />
-                    <Link href={`/trade`}>
-                      {' '}
-                      Welcome back {user.username}, you have{' '}
-                      {pendingTrades.total} pending trades{' '}
-                    </Link>
-                  </Alert>
-                )}
-              </>
-            ) : (
-              <h1 className="text-3xl font-bold text-center mb-4">
-                Welcome to the Ice Level
-              </h1>
-            )}
-          </>
+        <h1 className="text-3xl font-bold text-center mb-4">
+          Welcome to Ice Level {user && `${user.username}`}
+        </h1>
+        {user && pendingTrades?.total > 0 && (
+          <Alert className="text-black text-xl" status="info">
+            <AlertIcon />
+            <Link href={`/trade`}>
+              Welcome back {user.username}, you have {pendingTrades.total}{' '}
+              pending trades{' '}
+            </Link>
+          </Alert>
         )}
 
         <div>
