@@ -43,7 +43,7 @@ export default () => {
         title: 'Trade Accepted',
         ...successToastOptions,
       })
-      router.push('/trades')
+      router.push('/trade')
     },
     onError: () => {
       toast({
@@ -69,7 +69,7 @@ export default () => {
         title: 'Trade Declined',
         ...successToastOptions,
       })
-      router.push('/trades')
+      router.push('/trade')
     },
     onError: () => {
       toast({
