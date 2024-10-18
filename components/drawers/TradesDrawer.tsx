@@ -131,8 +131,8 @@ export default function TradesDrawer({
             </FormControl>
           </div>
           {debouncedUsername?.length > 0 && debouncedUsername?.length < 3 && (
-            <Alert status="info">
-              <AlertIcon />
+            <Alert className="text-black"  status="info">
+              <AlertIcon/>
               At least three charaters required to search for a username
             </Alert>
           )}
