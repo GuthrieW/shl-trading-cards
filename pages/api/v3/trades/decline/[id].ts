@@ -39,7 +39,7 @@ export default async function declineTradeEndpoint(
       recipientID: string
     }>(
       SQL`
-      SELECT initiatorID, recipientID 
+      SELECT initiatorID, recipientID
       FROM trades WHERE tradeID=${parseInt(tradeID)}`
     )
 
@@ -58,8 +58,8 @@ export default async function declineTradeEndpoint(
     }
 
     if (
-      req.cookies.userid !== tradeResult[0].initiatorID &&
-      req.cookies.userid !== tradeResult[0].recipientID
+      req.cookies.userid !== tradeResult[0].initiatorID.toString() &&
+      req.cookies.userid !== tradeResult[0].recipientID.toString()
     ) {
       res
         .status(StatusCodes.BAD_REQUEST)

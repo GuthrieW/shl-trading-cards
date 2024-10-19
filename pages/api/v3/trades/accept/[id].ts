@@ -27,7 +27,6 @@ export default async function acceptTradeEndpoint(
     }
 
     const tradeID = req.query.id as string
-
     if (!tradeID) {
       res
         .status(StatusCodes.BAD_REQUEST)
@@ -37,7 +36,7 @@ export default async function acceptTradeEndpoint(
 
     const tradeResult = await cardsQuery<{ recipientID: string }>(
       SQL`
-      SELECT recipientID 
+      SELECT recipientID
       FROM trades WHERE tradeID=${parseInt(tradeID)}`
     )
 
@@ -55,7 +54,7 @@ export default async function acceptTradeEndpoint(
       return
     }
 
-    if (req.cookies.userid !== tradeResult[0].recipientID) {
+    if (req.cookies.userid !== tradeResult[0].recipientID.toString()) {
       res
         .status(StatusCodes.BAD_REQUEST)
         .end('You are not authorized to accept this trade')
