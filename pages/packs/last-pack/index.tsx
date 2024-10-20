@@ -13,6 +13,7 @@ import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
 import { successToastOptions } from '@utils/toast'
+import CardLightBoxModal from '@components/modals/CardLightBoxModal'
 
 const HexCodes = {
   Ruby: '#E0115F',
@@ -24,6 +25,8 @@ const LastOpenedPack = () => {
   const toast = useToast()
   const { session, loggedIn } = useSession()
   const [revealedCards, setRevealedCards] = useState<number[]>([])
+  const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
+  const [selectedCard, setSelectedCard] = useState<Card | null>(null)
   const { payload: user } = query<UserData>({
     queryKey: ['baseUser', session?.token],
     queryFn: () =>
@@ -39,6 +42,15 @@ const LastOpenedPack = () => {
     useGetLatestPackCards({
       uid: user?.uid,
     })
+
+  const handleCardClick = (index: number, card: Card) => {
+    if (revealedCards.includes(index)) {
+      setSelectedCard(card)
+      setLightBoxIsOpen(true)
+    } else {
+      updateRevealedCards(index)
+    }
+  }
 
   const cardRarityShadows = [
     { id: rarityMap.bronze.label, emoji: '🥉' },
@@ -105,11 +117,12 @@ const LastOpenedPack = () => {
 
         <div className="m-2" style={{ height: 'calc(100vh-64px)' }}>
           <div className="flex justify-center items-start h-full">
-            <div className="flex h-full flex-col sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-2 overflow-x-auto py-6">
+            <div className="flex h-full flex-col sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-2 overflow-x-auto py-6 no-scrollbar">
               {latestPackCards.map((card, index) => (
                 <div
-                  className="relative flex flex-col items-center"
-                  key={index}
+                  className="relative flex flex-col items-center hover:scale-105 hover:shadow-xl"
+                  key={`${card.cardID}-${index}`}
+                  onClick={() => handleCardClick(index, card)}
                 >
                   <ReactCardFlip isFlipped={revealedCards.includes(index)}>
                     <img
@@ -130,7 +143,6 @@ const LastOpenedPack = () => {
                       src={`/cardback.png`}
                       onClick={() => updateRevealedCards(index)}
                     />
-
                     <img
                       width="320"
                       height="440"
@@ -165,6 +177,18 @@ const LastOpenedPack = () => {
                     )}
                 </div>
               ))}
+              {lightBoxIsOpen && (
+                <CardLightBoxModal
+                  cardName={selectedCard.player_name}
+                  cardImage={selectedCard.image_url}
+                  owned={selectedCard.quantity}
+                  rarity={selectedCard.card_rarity}
+                  playerID={selectedCard.playerID}
+                  cardID={selectedCard.cardID}
+                  userID={String(user?.uid)}
+                  setShowModal={() => setLightBoxIsOpen(false)}
+                />
+              )}
             </div>
           </div>
         </div>
