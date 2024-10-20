@@ -1,7 +1,7 @@
 import useGetLatestPackCards from '@pages/api/queries/use-get-latest-pack-cards'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NextSeo } from 'next-seo'
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
 import ReactCardFlip from 'react-card-flip'
 import rarityMap from '@constants/rarity-map'
 import pathToCards from '@constants/path-to-cards'
@@ -24,9 +24,17 @@ const HexCodes = {
 const LastOpenedPack = () => {
   const toast = useToast()
   const { session, loggedIn } = useSession()
+  const router = useRouter()
   const [revealedCards, setRevealedCards] = useState<number[]>([])
   const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
   const [selectedCard, setSelectedCard] = useState<Card | null>(null)
+
+  useEffect(() => {
+    if (!loggedIn) {
+      router.replace('/')
+    }
+  })
+
   const { payload: user } = query<UserData>({
     queryKey: ['baseUser', session?.token],
     queryFn: () =>
