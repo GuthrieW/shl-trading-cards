@@ -65,7 +65,7 @@ export default () => {
   })
 
   const limitedCards = useMemo(
-    () => (packs?.length ? packs.slice(0, 25) : []),
+    () => (packs?.length ? packs.slice(0, 30) : []),
     [packs]
   )
   return (

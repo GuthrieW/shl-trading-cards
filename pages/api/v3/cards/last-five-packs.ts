@@ -34,7 +34,11 @@ JOIN (
     WHERE po.opened = 1
     ORDER BY po.openDate DESC
     LIMIT 5
-) AS latestPacks ON c.packID = latestPacks.packID`
+) AS latestPacks ON c.packID = latestPacks.packID
+ ORDER BY (SELECT po.openDate
+          FROM packs_owned po
+          WHERE po.packID = c.packID
+          AND po.opened = 1) DESC`
 
     const queryResult = await cardsQuery<UserCollection>(query)
 
