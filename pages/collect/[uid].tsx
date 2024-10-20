@@ -20,6 +20,7 @@ import DisplayCollection from '@components/collection/DisplayCollection'
 import { PageWrapper } from '@components/common/PageWrapper'
 import CardLightBoxModal from '@components/modals/CardLightBoxModal'
 import TablePagination from '@components/table/TablePagination'
+import { GetServerSideProps } from 'next';
 import { GET } from '@constants/http-methods'
 import rarityMap from '@constants/rarity-map'
 import { shlTeamsMap } from '@constants/teams-map'
@@ -99,8 +100,8 @@ const LOADING_GRID_DATA: { rows: OwnedCard[] } = {
   })),
 } as const
 
-export default () => {
-  const router = useRouter()
+
+export default ({ uid }: { uid: string }) => {
   const [totalCards, setTotalCards] = useState<number>(0)
   const [totalOwnedCards, setTotalOwnedCards] = useState<number>(0)
   const { session } = useSession()
@@ -110,16 +111,12 @@ export default () => {
   const [rarities, setRarities] = useState<string[]>([])
   const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
   const [selectedCard, setSelectedCard] = useState<CollectionCard | null>(null)
-  const [sortColumn, setSortColumn] = useState<OwnedCardSortValue>(
-    SORT_OPTIONS[0].value
-  )
+  const [sortColumn, setSortColumn] = useState<OwnedCardSortValue>(SORT_OPTIONS[0].value)
   const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
   const [tablePage, setTablePage] = useState<number>(1)
-
-  const uid = router.query.uid as string
-
+  
   const { payload: user, isLoading: userIsLoading } = query<UserData>({
-    queryKey: ['collectionUser', session?.token],
+    queryKey: ['collectionUser', session?.token, uid],
     queryFn: () =>
       axios({
         method: GET,
@@ -162,8 +159,9 @@ export default () => {
     queryFn: () =>
       axios({
         method: GET,
-        url: `/api/v3/collection/uid?uid=${uid}`,
+        url: `/api/v3/collection/uid`,
         params: {
+          uid,
           playerName,
           teams: JSON.stringify(teams),
           rarities: JSON.stringify(rarities),
@@ -439,3 +437,13 @@ export default () => {
     </PageWrapper>
   )
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const { uid } = query;
+
+  return {
+    props: {
+      uid,
+    },
+  };
+};
