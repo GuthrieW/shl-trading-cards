@@ -153,11 +153,11 @@ export default () => {
       <div className="flex flex-row justify-between items-center">
         <p>Trade #{tradeid}</p>
         <AuthGuard>
-          {!loggedInUserIsLoading && (
+          {!loggedInUserIsLoading && !tradeInformationIsLoading && tradeInformation[0].trade_status === 'PENDING' && (
             <div>
               {loggedInUser?.uid && loggedInUser.uid == recipientUser?.uid && (
                 <Button
-                  disabled={isAccepting || isDeclining}
+                  isDisabled={isAccepting || isDeclining}
                   className="mx-1"
                   onClick={() => acceptTrade({ tradeID: tradeid })}
                 >
@@ -168,7 +168,7 @@ export default () => {
                 (loggedInUser.uid == initiatorUser?.uid ||
                   loggedInUser?.uid == recipientUser?.uid) && (
                   <Button
-                    disabled={isAccepting || isDeclining}
+                    isDisabled={isAccepting || isDeclining}
                     className="mx-1"
                     onClick={() => declineTrade({ tradeID: tradeid })}
                   >
