@@ -1,4 +1,4 @@
-import { CheckIcon } from '@chakra-ui/icons'
+import { CheckIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import {
   Badge,
   Button,
@@ -20,7 +20,10 @@ import {
   Select,
   SimpleGrid,
   useDisclosure,
+  useBreakpointValue,
   useToast,
+  Flex,
+  Box,
 } from '@chakra-ui/react'
 import TablePagination from '@components/table/TablePagination'
 import { GET, POST } from '@constants/http-methods'
@@ -71,34 +74,6 @@ const SORT_OPTIONS: TradeCardSortOption[] = [
   },
 ] as const
 
-const ROWS_PER_PAGE: number = 5 as const
-
-const LOADING_GRID_DATA: { rows: TradeCard[] } = {
-  rows: Array.from({ length: ROWS_PER_PAGE }, (_, index) => ({
-    cardID: index,
-    ownedCardID: 1,
-    teamName: 'name',
-    teamNickName: 'nickName',
-    teamID: 1,
-    player_name: 'player_name',
-    position: 'F',
-    season: 1,
-    card_rarity: 'Bronze',
-    image_url: 'image_url',
-    overall: 1,
-    skating: 1,
-    shooting: 1,
-    hands: 1,
-    checking: 1,
-    defense: 1,
-    high_shots: 1,
-    low_shots: 1,
-    quickness: 1,
-    control: 1,
-    conditioning: 1,
-  })),
-} as const
-
 export default function NewTrade({
   loggedInUser,
   tradePartnerUid,
@@ -119,6 +94,7 @@ export default function NewTrade({
   const [sortColumn, setSortColumn] = useState<TradeCardSortValue>(
     SORT_OPTIONS[0].value
   )
+  const drawerSize = useBreakpointValue({ base: 'full', md: 'lg' })
   const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
   const [tablePage, setTablePage] = useState<number>(1)
   const [loggedInUserCardsToTrade, setloggedInUserCardsToTrade] = useState<
@@ -127,9 +103,41 @@ export default function NewTrade({
   const [partnerUserCardsToTrade, setPartnerUserCardsToTrade] = useState<
     TradeCard[]
   >([])
-  const [cardAdded, setCardAdded] = useState(false);
+  const [cardAdded, setCardAdded] = useState(false)
 
   const [uid] = useCookie(config.userIDCookieName)
+
+  const ROWS_PER_PAGE =
+    useBreakpointValue({
+      base: 4,
+      md: 5,
+    }) || 5
+
+  const LOADING_GRID_DATA: { rows: TradeCard[] } = {
+    rows: Array.from({ length: ROWS_PER_PAGE }, (_, index) => ({
+      cardID: index,
+      ownedCardID: 1,
+      teamName: 'name',
+      teamNickName: 'nickName',
+      teamID: 1,
+      player_name: 'player_name',
+      position: 'F',
+      season: 1,
+      card_rarity: 'Bronze',
+      image_url: 'image_url',
+      overall: 1,
+      skating: 1,
+      shooting: 1,
+      hands: 1,
+      checking: 1,
+      defense: 1,
+      high_shots: 1,
+      low_shots: 1,
+      quickness: 1,
+      control: 1,
+      conditioning: 1,
+    })),
+  } as const
 
   if (tradePartnerUid === uid) {
     toast({
@@ -178,10 +186,8 @@ export default function NewTrade({
         }),
       enabled: !!selectedUserId,
     })
-    const {
-      payload: showSelectedCard,
-      isLoading: showSelectedCardLoading
-    } = query<ListResponse<TradeCard>>({
+  const { payload: showSelectedCard, isLoading: showSelectedCardLoading } =
+    query<ListResponse<TradeCard>>({
       queryKey: ['check-card', tradePartnerUid, String(cardID)],
       queryFn: () =>
         axios({
@@ -189,22 +195,29 @@ export default function NewTrade({
           url: `/api/v3/trades/collection/check-card?uid=${tradePartnerUid}&cardID=${cardID}`,
         }),
       enabled: !!tradePartnerUid && !!cardID,
-    });
-    useEffect(() => {
-      if (!showSelectedCardLoading && showSelectedCard && !cardAdded) {
-        if (showSelectedCard.rows.length > 0) {
-          const cardToAdd = showSelectedCard.rows[0];
-          addCardToTrade(cardToAdd, false);
-          setCardAdded(true);
-        } else {
-          toast({
-            title: 'Card Not Found',
-            description: "The specified card could not be found in the collection.",
-            status: 'warning',
-          });
-        }
+    })
+  useEffect(() => {
+    if (!showSelectedCardLoading && showSelectedCard && !cardAdded) {
+      if (showSelectedCard.rows.length > 0) {
+        const cardToAdd = showSelectedCard.rows[0]
+        addCardToTrade(cardToAdd, false)
+        setCardAdded(true)
+      } else {
+        toast({
+          title: 'Card Not Found',
+          description:
+            'The specified card could not be found in the collection.',
+          status: 'warning',
+        })
       }
-    }, [showSelectedCard, showSelectedCardLoading, loggedInUser.uid, tradePartnerUid, cardAdded]);
+    }
+  }, [
+    showSelectedCard,
+    showSelectedCardLoading,
+    loggedInUser.uid,
+    tradePartnerUid,
+    cardAdded,
+  ])
 
   const { mutateAsync: submitTrade, isLoading: isSubmittingTrade } = mutation<
     void,
@@ -297,7 +310,7 @@ export default function NewTrade({
         description: 'congrats!',
         ...successToastOptions,
       })
-      router.push('/trade', undefined, { shallow: false });
+      router.push('/trade', undefined, { shallow: false })
     } catch (error) {
       toast({
         title: 'Error Creating Trade',
@@ -416,27 +429,36 @@ export default function NewTrade({
           </div>
         </div>
       </div>
-      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
+      <Drawer
+        placement="bottom"
+        onClose={onClose}
+        isOpen={isOpen}
+        size={drawerSize}
+      >
         <DrawerOverlay />
-        <DrawerContent overflow='scroll'>
+        <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader className="flex flex-row justify-between items-center bg-primary">
-            <span>{pluralizeName(selectedUser?.username)}&nbsp;Cards</span>
+          <DrawerHeader className="flex justify-between items-center bg-primary p-4">
+            <span>{pluralizeName(selectedUser?.username)} Cards</span>
           </DrawerHeader>
-          <DrawerBody className="bg-primary">
-            <div className="flex flex-row justify-between bg-primary">
-              <div className="flex flex-row justify-start items-end">
-                <FormControl className="mx-2 w-auto">
-                  <FormLabel className="!text-secondary">Player Name</FormLabel>
-                  <Input
-                    className="min-w-80"
-                    onChange={(event) => setPlayerName(event.target.value)}
-                  />
-                </FormControl>
-                <FormControl className="mx-2 w-auto cursor-pointer">
+          <DrawerBody className="bg-primary p-4">
+            <Flex direction="column" mb={4}>
+              <FormControl mb={2}>
+                <Input
+                  placeholder="Player Name Search"
+                  onChange={(event) => setPlayerName(event.target.value)}
+                  className="w-full !bg-secondary"
+                />
+              </FormControl>
+              <Flex justifyContent="space-between" alignItems="center">
+                <Box flex={1} mr={2}>
                   <Menu closeOnSelect={false}>
-                    <MenuButton className="border border-1 rounded p-1.5 cursor-pointer !bg-secondary">
-                      Teams&nbsp;{`(${teams.length})`}
+                    <MenuButton
+                      as={Button}
+                      rightIcon={<ChevronDownIcon />}
+                      className="w-full !bg-secondary !text-secondary text-center hover:!bg-blue600"
+                    >
+                      Teams ({teams.length})
                     </MenuButton>
                     <MenuList>
                       <MenuOptionGroup type="checkbox">
@@ -445,7 +467,7 @@ export default function NewTrade({
                           isChecked={false}
                           aria-checked={false}
                           closeOnSelect
-                          className="!bg-secondary"
+                          className="!bg-secondary hover:!bg-blue600"
                           onClick={() => setTeams([])}
                         >
                           Deselect All
@@ -461,7 +483,7 @@ export default function NewTrade({
                               aria-checked={isChecked}
                               key={value.teamID}
                               value={String(value.teamID)}
-                              className="!bg-secondary"
+                              className="!bg-secondary hover:!bg-blue600"
                               onClick={() => toggleTeam(String(value.teamID))}
                             >
                               {value.label}
@@ -472,11 +494,15 @@ export default function NewTrade({
                       </MenuOptionGroup>
                     </MenuList>
                   </Menu>
-                </FormControl>
-                <FormControl className="border border-1 rounded mx-2 w-auto flex flex-row items-center !bg-secondary">
+                </Box>
+                <Box flex={1} mr={2}>
                   <Menu closeOnSelect={false}>
-                    <MenuButton className="p-1.5 !bg-secondary">
-                      Rarities&nbsp;{`(${rarities.length})`}
+                    <MenuButton
+                      as={Button}
+                      rightIcon={<ChevronDownIcon />}
+                      className="w-full !bg-secondary !text-secondary text-center hover:!bg-blue600"
+                    >
+                      Rarity ({rarities.length})
                     </MenuButton>
                     <MenuList>
                       <MenuOptionGroup type="checkbox">
@@ -485,8 +511,8 @@ export default function NewTrade({
                           isChecked={false}
                           aria-checked={false}
                           closeOnSelect
-                          className="!bg-secondary"
-                          onClick={() => setRarities([])}
+                          className="!bg-secondary hover:!bg-blue600"
+                          onClick={() => setTeams([])}
                         >
                           Deselect All
                         </MenuItemOption>
@@ -501,7 +527,7 @@ export default function NewTrade({
                               aria-checked={isChecked}
                               key={value.value}
                               value={value.value}
-                              className="!bg-secondary"
+                              className="!bg-secondary hover:!bg-blue600"
                               onClick={() => toggleRarity(value.value)}
                             >
                               {value.label}
@@ -512,44 +538,44 @@ export default function NewTrade({
                       </MenuOptionGroup>
                     </MenuList>
                   </Menu>
-                </FormControl>
-              </div>
-              <div>
-                <FormControl className="mx-2">
-                  <FormLabel>Sort</FormLabel>
-                  <Select
-                    className="cursor-pointer w-full sm:w-auto border-grey800 border-1 rounded px-2 !bg-secondary"
-                    onChange={(event) => {
-                      const [sortColumn, sortDirection] =
-                        event.target.value.split(':') as [
-                          TradeCardSortValue,
-                          SortDirection,
-                        ]
-                      setSortColumn(sortColumn)
-                      setSortDirection(sortDirection)
-                    }}
-                  >
-                    {SORT_OPTIONS.map((option, index) => (
-                      <Fragment key={`${option.value}-${index}`}>
-                        <option
-                          className="!bg-secondary"
-                          value={`${option.value}:DESC`}
-                        >
-                          {option.label}&nbsp;{option.sortLabel('DESC')}
-                        </option>
-                        <option
-                          className="!bg-secondary"
-                          value={`${option.value}:ASC`}
-                        >
-                          {option.label}&nbsp;{option.sortLabel('ASC')}
-                        </option>
-                      </Fragment>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
-            </div>
-            <SimpleGrid className="m-2 bg-primary" columns={ROWS_PER_PAGE}>
+                </Box>
+              </Flex>
+              <Box flex={1} mr={2} className="p-2">
+                <Select
+                  className="w-full !bg-secondary hover:!bg-blue600"
+                  onChange={(event) => {
+                    const [sortColumn, sortDirection] =
+                      event.target.value.split(':') as [
+                        TradeCardSortValue,
+                        SortDirection,
+                      ]
+                    setSortColumn(sortColumn)
+                    setSortDirection(sortDirection)
+                  }}
+                >
+                  {SORT_OPTIONS.map((option, index) => (
+                    <Fragment key={`${option.value}-${index}`}>
+                      <option
+                        className="!bg-secondary"
+                        value={`${option.value}:DESC`}
+                      >
+                        {option.label}&nbsp;{option.sortLabel('DESC')}
+                      </option>
+                      <option
+                        className="!bg-secondary"
+                        value={`${option.value}:ASC`}
+                      >
+                        {option.label}&nbsp;{option.sortLabel('ASC')}
+                      </option>
+                    </Fragment>
+                  ))}
+                </Select>
+              </Box>
+            </Flex>
+            <SimpleGrid
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 bg-primary"
+              columns={{ base: 2, lg: 5 }}
+            >
               {(selectedUserCardsIsLoading
                 ? LOADING_GRID_DATA
                 : selectedUserCards
