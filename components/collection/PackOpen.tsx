@@ -43,7 +43,7 @@ const PackOpen: React.FC<PackOpenProps> = ({ packID }) => {
           width={300}
           height={475}
           alt={`Card ${card.cardID}`}
-          className={`rounded-sm`}
+          className={`rounded-sm hover:scale-105 hover:shadow-xl`}
           loading="lazy"
           unoptimized={true}
         />

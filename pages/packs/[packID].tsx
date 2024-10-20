@@ -1,40 +1,17 @@
 import React from 'react'
-import { useRouter } from 'next/router'
-import {
-  Box,
-  SimpleGrid,
-  Spinner,
-  Text,
-  Card,
-  CardBody,
-  Image,
-  VStack,
-  HStack,
-} from '@chakra-ui/react'
+import { Box, Spinner, VStack, HStack } from '@chakra-ui/react'
 import { query } from '@pages/api/database/query'
 import { GET } from '@constants/http-methods'
 import axios from 'axios'
 import { LatestCards, UserPacks } from '@pages/api/v3'
 import { PageWrapper } from '@components/common/PageWrapper'
-import { UserData } from '@pages/api/v3/user'
 import { formatDateTime } from '@utils/formatDateTime'
 import PackOpen from '@components/collection/PackOpen'
 import GetUsername from '@components/common/GetUsername'
+import { GetServerSideProps } from 'next'
 
-interface PackPageProps {
-  customImageLoader?: (src: string) => string
-  imageWidth?: number
-  imageHeight?: number
-}
 
-const PackPage: React.FC<PackPageProps> = ({
-  customImageLoader = (src: string) =>
-    `https://simulationhockey.com/tradingcards/${src}.png`,
-  imageWidth = 200,
-  imageHeight = 300,
-}) => {
-  const router = useRouter()
-  const packID = router.query.packID as string | undefined
+export default ({ packID }: { packID: string }) => {
 
   const { payload: cards, isLoading } = query<LatestCards[]>({
     queryKey: ['latest-cards', packID],
@@ -55,11 +32,8 @@ const PackPage: React.FC<PackPageProps> = ({
       }),
     enabled: !!packID,
   })
-  if (!packID) {
-    return <div>Invalid Pack ID</div>
-  }
 
-  if (isLoading || packsLoading ) {
+  if (isLoading || packsLoading) {
     return (
       <Box
         display="flex"
@@ -101,4 +75,12 @@ const PackPage: React.FC<PackPageProps> = ({
   )
 }
 
-export default PackPage
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+    const { packID } = query;
+  
+    return {
+      props: {
+        packID,
+      },
+    };
+  };
