@@ -13,12 +13,12 @@ import { useSession } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useQueryClient } from 'react-query'
+import { GetServerSideProps } from 'next'
 
-export default () => {
+export default ({ tradeid }: { tradeid: string })  => {
   const toast = useToast()
   const { session, loggedIn } = useSession()
   const router = useRouter()
-  const tradeid = router.query.tradeid as string
   const queryClient = useQueryClient()
   const tradeResolutionEffectedQueries: string[] = [
     'trade',
@@ -223,3 +223,13 @@ export default () => {
     </PageWrapper>
   )
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const { tradeid } = query;
+
+  return {
+    props: {
+      tradeid,
+    },
+  };
+};
