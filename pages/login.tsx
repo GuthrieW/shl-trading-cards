@@ -85,7 +85,7 @@ export default function () {
     <>
       <NextSeo title="Login" openGraph={{ title: 'Login' }} />
       <Header showAuthButtons={false} />
-      <div className="mx-auto w-full space-y-4 bg-secondary px-12 py-20 2xl:w-3/5 2xl:px-28">
+      <div className="mx-auto w-full bg-primary space-y-4 px-12 py-20 2xl:w-3/5 2xl:px-28">
         <div className="mx-auto flex min-h-[calc(100vh-16rem)] flex-col text-center md:w-3/5">
           <form onSubmit={handleSubmit}>
             <FormControl isInvalid={!!errors.username && touched.username}>
@@ -144,7 +144,7 @@ export default function () {
             </FormControl>
 
             <Button
-              disabled={!isValid}
+              isDisabled={!isValid}
               type="submit"
               className="mt-6 w-full"
               isLoading={isSubmitting}
@@ -157,7 +157,7 @@ export default function () {
             <Link
               isExternal
               href="https://simulationhockey.com/member.php?action=lostpw"
-              className="font-mont !text-hyperlink"
+              className="font-mont !text-blue600"
             >
               Forgot your password?
             </Link>
@@ -167,13 +167,13 @@ export default function () {
             <Link
               isExternal
               href="https://simulationhockey.com/member.php?action=register"
-              className=" !text-hyperlink"
+              className=" !text-blue600"
             >
               Sign up
             </Link>
           </div>
           {loginError && (
-            <div className="text-red500 ">{loginError}</div>
+            <div className="text-red200">{loginError}</div>
           )}
         </div>
       </div>
