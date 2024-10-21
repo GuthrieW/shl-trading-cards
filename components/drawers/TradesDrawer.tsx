@@ -22,6 +22,7 @@ import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
 import { UserData } from '@pages/api/v3/user'
+import { formatDateTime } from '@utils/formatDateTime'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
@@ -95,9 +96,11 @@ export default function TradesDrawer({
     enabled: loggedIn,
   })
 
+  console.log(loggedInTrades)
+
   return (
     <Drawer placement="left" isOpen={isOpen} onClose={onClose}>
-      <DrawerContent overflow='scroll'>
+      <DrawerContent overflow="scroll">
         <DrawerCloseButton />
         <DrawerHeader className="bg-secondary">My Trades</DrawerHeader>
         <DrawerBody className="bg-secondary">
@@ -131,13 +134,13 @@ export default function TradesDrawer({
             </FormControl>
           </div>
           {debouncedUsername?.length > 0 && debouncedUsername?.length < 3 && (
-            <Alert className="text-black"  status="info">
-              <AlertIcon/>
+            <Alert className="text-black" status="info">
+              <AlertIcon />
               At least three charaters required to search for a username
             </Alert>
           )}
           <Stack className="mt-2" divider={<StackDivider />}>
-             {/* {loggedInTrades?.rows.map((trade) => (
+            {/* {loggedInTrades?.rows.map((trade) => (
                <TradeCard key={trade.tradeID} trade={trade} />
              ))} */}
             {loggedInTrades?.rows.map((trade, index) => {
@@ -149,16 +152,35 @@ export default function TradesDrawer({
                 <Card
                   key={trade?.tradeID}
                   onClick={() => router.push(`/trade/${trade.tradeID}`)}
-                  className="cursor-pointer !border !border-primary hover:scale-105 hover:shadow-xl transition-colors"
+                  className="cursor-pointer !border !border-primary hover:scale-105 hover:shadow-xl transition-transform transform duration-300 ease-in-out rounded-lg overflow-hidden"
                 >
-                  <CardHeader className="bg-secondary text-primary">
-                    #{trade?.tradeID} - {otherUserId}
+                  <CardHeader className="bg-secondary text-primary p-4 flex justify-between items-center">
+                    <div className="text-lg font-semibold">
+                      {trade.initiatorID === parseInt(session.userId)
+                        ? 'Sent'
+                        : 'Received'}
+                    </div>
+                    <div className="text-sm text-primary">
+                      {formatDateTime(trade?.create_date)}
+                    </div>
                   </CardHeader>
-                  <CardBody className="bg-secondary text-primary">
-                    User: <GetUsername userID={otherUserId} />
+                  <CardBody className="bg-secondary text-primary p-4">
+                    <div className="text-base font-medium">
+                      User:{' '}
+                      <span className="font-semibold text-highlight">
+                        <GetUsername userID={otherUserId} />
+                      </span>
+                    </div>
                   </CardBody>
-                  <CardBody className="bg-secondary text-primary">
-                    Status: {trade?.trade_status}
+                  <CardBody className="bg-secondary text-primary p-4 border-t border-gray-700">
+                    <div className="flex justify-between items-center">
+                      <span className="text-base font-medium">Status:</span>
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-bold`}
+                      >
+                        {trade?.trade_status}
+                      </span>
+                    </div>
                   </CardBody>
                 </Card>
               )

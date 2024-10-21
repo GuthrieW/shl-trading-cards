@@ -100,7 +100,7 @@ type Trade = {
   declineUserID: number
   trade_status: TradeStatus
   update_date: Date
-  create_date: Date
+  create_date: string
 }
 
 type TradeDetails = {
@@ -113,7 +113,7 @@ type TradeDetails = {
   image_url: string
   toID: number
   fromID: numer
-  create_date: Date
+  create_date: string
   update_date: Date
 }
 

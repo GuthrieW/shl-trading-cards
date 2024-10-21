@@ -108,11 +108,6 @@ export default async function tradesEndpoint(
     const recipientId = req.body.recipientId as string
     const tradeAssets = req.body.tradeAssets as TradeAsset[]
 
-    if (!(await checkUserAuthorization(req))) {
-      res.status(StatusCodes.UNAUTHORIZED).end('Not authorized')
-      return
-    }
-
     if (
       !initiatorId ||
       !recipientId ||
