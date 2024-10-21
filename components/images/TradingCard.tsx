@@ -42,7 +42,12 @@ const TradingCard = ({
           src={`${pathToCards}${source}`}
           alt={`${rarity} ${playerName}`}
           loading="lazy"
-          fallbackSrc="/cardback.png"
+          fallback={
+            <div className="relative z-10">
+              <Image src="/cardback.png" />
+              <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+            </div>
+          }
           objectFit="contain"
           width="100%"
           height="100%"

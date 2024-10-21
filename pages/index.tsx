@@ -65,7 +65,7 @@ export default () => {
   })
 
   const limitedCards = useMemo(
-    () => (packs?.length ? packs.slice(0, 25) : []),
+    () => (packs?.length ? packs.slice(0, 30) : []),
     [packs]
   )
   return (
@@ -74,7 +74,7 @@ export default () => {
         <h1 className="text-3xl font-bold text-center mb-4">
           Welcome to Ice Level {user && `${user.username}`}
         </h1>
-        {user && pendingTrades?.total > 0 && (
+        {!isLoadingPendingTrades && !isLoadingUser && (
           <Alert className="text-black text-xl" status="info">
             <AlertIcon />
             <Link href={`/trade`}>

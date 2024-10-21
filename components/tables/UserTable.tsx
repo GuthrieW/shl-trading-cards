@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useQuery } from 'react-query'
-import { Input, Skeleton, SkeletonText, Box } from '@chakra-ui/react'
+import { Input, Skeleton, SkeletonText, Box, Spinner } from '@chakra-ui/react'
 import { PropagateLoader } from 'react-spinners'
 import UserCard from '@components/cards/UserCard'
 import TablePagination from '@components/table/TablePagination'
@@ -14,19 +14,25 @@ const ROWS_PER_PAGE = 10
 const UserTables: React.FC = () => {
   const [tablePage, setTablePage] = useState<number>(1)
   const [searchString, setSearchString] = useState<string>('')
+  const [isSearching, setIsSearching] = useState<boolean>(false)
 
   const fetchUsers = async ({ queryKey }: any) => {
     const [_, search, page] = queryKey
-    const { data } = await axios({
-      method: GET,
-      url: '/api/v3/user/with-cards',
-      params: {
-        username: search,
-        limit: ROWS_PER_PAGE,
-        offset: (page - 1) * ROWS_PER_PAGE,
-      },
-    })
-    return data.payload
+    setIsSearching(true)
+    try {
+      const { data } = await axios({
+        method: GET,
+        url: '/api/v3/user/with-cards',
+        params: {
+          username: search,
+          limit: ROWS_PER_PAGE,
+          offset: (page - 1) * ROWS_PER_PAGE,
+        },
+      })
+      return data.payload
+    } finally {
+      setIsSearching(false)
+    }
   }
 
   const { data: users, isLoading } = useQuery<ListResponse<UserData>>(
@@ -52,13 +58,17 @@ const UserTables: React.FC = () => {
 
   return (
     <div className="w-full h-full mx-2">
-      <Input
-        className="w-full bg-secondary border-grey100 mb-4"
-        placeholder="Search Username"
-        size="lg"
-        value={searchString}
-        onChange={handleSearchChange}
-      />
+      <div className="flex items-center mb-4">
+      {isSearching && <Spinner size="sm" color="blue.500" className="ml-2" />}
+        <Input
+          className="w-full bg-secondary border-grey100"
+          placeholder="Search Username"
+          size="lg"
+          value={searchString}
+          onChange={handleSearchChange}
+        />
+        
+      </div>
       {isLoading ? (
         <div className="w-full">
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">

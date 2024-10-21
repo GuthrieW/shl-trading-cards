@@ -339,7 +339,7 @@ ${issueData.desiredFunctionality}`
           <Button
             disabled={!isValid || isSubmitting}
             type="submit"
-            className="mt-6 mx-1"
+            className="mt-6 mx-1 bg-primary text-secondary"
             isLoading={isSubmitting}
             loadingText="Submitting..."
           >
@@ -348,7 +348,7 @@ ${issueData.desiredFunctionality}`
           <Button
             type="button"
             onClick={onClose}
-            className="mt-6 mx-1"
+            className="mt-6 mx-1 bg-primary text-secondary"
             disabled={isSubmitting}
           >
             Cancel
@@ -387,11 +387,11 @@ ${issueData.desiredFunctionality}`
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>
+          <DrawerHeader className="bg-primary text-secondary">
             {drawerId === 'bug' && bugDrawerData.header}
             {drawerId === 'feature' && featureDrawerData.header}
           </DrawerHeader>
-          <DrawerBody>
+          <DrawerBody className="bg-primary text-secondary">
             {drawerId === 'bug' && bugDrawerData.form}
             {drawerId === 'feature' && featureDrawerData.form}
           </DrawerBody>
