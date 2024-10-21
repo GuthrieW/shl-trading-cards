@@ -21,12 +21,12 @@ export default async function userPacksEndpoint(
 
   if (req.method === GET) {
     //const query = SQL`
-      //      SELECT * 
-//FROM collection
-//WHERE packID >= (SELECT MAX(packID)-10 FROM collection)
-  //      `
-  const query = SQL `
-  SELECT c.*
+    //      SELECT *
+    //FROM collection
+    //WHERE packID >= (SELECT MAX(packID)-10 FROM collection)
+    //      `
+    const query = SQL`
+  SELECT c.*, cr.image_url as imageURL
 FROM collection c
 JOIN (
     SELECT po.packID
@@ -35,10 +35,13 @@ JOIN (
     ORDER BY po.openDate DESC
     LIMIT 5
 ) AS latestPacks ON c.packID = latestPacks.packID
- ORDER BY (SELECT po.openDate
-          FROM packs_owned po
-          WHERE po.packID = c.packID
-          AND po.opened = 1) DESC`
+JOIN cards cr ON c.cardID = cr.cardID
+ORDER BY (
+    SELECT po.openDate
+    FROM packs_owned po
+    WHERE po.packID = c.packID
+    AND po.opened = 1
+) DESC`
 
     const queryResult = await cardsQuery<UserCollection>(query)
 
@@ -51,12 +54,10 @@ JOIN (
     }
 
     if (queryResult.length === 0) {
-      res
-        .status(StatusCodes.NOT_FOUND)
-        .json({
-          status: 'error',
-          message: 'No opened packs found for this user',
-        })
+      res.status(StatusCodes.NOT_FOUND).json({
+        status: 'error',
+        message: 'No opened packs found for this user',
+      })
       return
     }
 

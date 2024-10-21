@@ -39,7 +39,7 @@ const PackOpen: React.FC<PackOpenProps> = ({ packID }) => {
         <Image
           loader={() => customLoader(card.cardID)}
           key={card.cardID}
-          src={`${pathToCards}${card.cardID}.png`}
+          src={`${pathToCards}${card.imageURL}`}
           width={300}
           height={475}
           alt={`Card ${card.cardID}`}

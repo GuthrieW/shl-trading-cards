@@ -13,16 +13,6 @@ import { GetServerSideProps } from 'next'
 
 export default ({ packID }: { packID: string }) => {
 
-  const { payload: cards, isLoading } = query<LatestCards[]>({
-    queryKey: ['latest-cards', packID],
-    queryFn: () =>
-      axios({
-        method: GET,
-        url: `/api/v3/collection/uid/latest-cards?packID=${packID}`,
-      }),
-    enabled: !!packID,
-  })
-
   const { payload: packs, isLoading: packsLoading } = query<UserPacks[]>({
     queryKey: ['latest-packs', packID],
     queryFn: () =>
@@ -33,7 +23,7 @@ export default ({ packID }: { packID: string }) => {
     enabled: !!packID,
   })
 
-  if (isLoading || packsLoading) {
+  if (packsLoading) {
     return (
       <Box
         display="flex"
@@ -47,7 +37,7 @@ export default ({ packID }: { packID: string }) => {
   }
 
   const pack = packs?.[0]
-
+  console.log(packs)
   return (
     <PageWrapper>
       <Box p={6}>
@@ -65,7 +55,7 @@ export default ({ packID }: { packID: string }) => {
             </HStack>
           </VStack>
         </div>
-        {cards && cards.length > 0 ? (
+        {packs && packs[0].opened === 1 ? (
           <PackOpen packID={packID} />
         ) : (
           <div className="text-base sm:text-lg">No cards available for this pack.</div>

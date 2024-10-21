@@ -46,6 +46,7 @@ export type UserCollection ={
   userID: number;
   cardID: number;
   packID: number;
+  imageURL: number;
 }
 
 
@@ -64,6 +65,10 @@ export type LatestCards = {
   userID: number;
   cardID: string;
   packID: number;
+  playerName: string;
+  playerID: number;
+  card_rarity: string;
+  imageURL: number;
 }
 
 export type UserMostCards = {
