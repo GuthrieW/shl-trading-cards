@@ -37,7 +37,6 @@ export default ({ packID }: { packID: string }) => {
   }
 
   const pack = packs?.[0]
-  console.log(packs)
   return (
     <PageWrapper>
       <Box p={6}>
