@@ -13,12 +13,12 @@ import { useSession } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useQueryClient } from 'react-query'
+import { GetServerSideProps } from 'next'
 
-export default () => {
+export default ({ tradeid }: { tradeid: string })  => {
   const toast = useToast()
   const { session, loggedIn } = useSession()
   const router = useRouter()
-  const tradeid = router.query.tradeid as string
   const queryClient = useQueryClient()
   const tradeResolutionEffectedQueries: string[] = [
     'trade',
@@ -153,11 +153,11 @@ export default () => {
       <div className="flex flex-row justify-between items-center">
         <p>Trade #{tradeid}</p>
         <AuthGuard>
-          {!loggedInUserIsLoading && (
+          {!loggedInUserIsLoading && !tradeInformationIsLoading && tradeInformation[0].trade_status === 'PENDING' && (
             <div>
               {loggedInUser?.uid && loggedInUser.uid == recipientUser?.uid && (
                 <Button
-                  disabled={isAccepting || isDeclining}
+                  isDisabled={isAccepting || isDeclining}
                   className="mx-1"
                   onClick={() => acceptTrade({ tradeID: tradeid })}
                 >
@@ -168,7 +168,7 @@ export default () => {
                 (loggedInUser.uid == initiatorUser?.uid ||
                   loggedInUser?.uid == recipientUser?.uid) && (
                   <Button
-                    disabled={isAccepting || isDeclining}
+                    isDisabled={isAccepting || isDeclining}
                     className="mx-1"
                     onClick={() => declineTrade({ tradeID: tradeid })}
                   >
@@ -223,3 +223,13 @@ export default () => {
     </PageWrapper>
   )
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const { tradeid } = query;
+
+  return {
+    props: {
+      tradeid,
+    },
+  };
+};

@@ -40,10 +40,6 @@ export const Carousel = React.memo(
       ],
     }
 
-    const customLoader = ({ src }: { src: string }) => {
-      return `https://simulationhockey.com/tradingcards/${src}.png`
-    }
-
     return (
       <div className="w-full carousel-container">
         <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
@@ -70,8 +66,7 @@ export const Carousel = React.memo(
                 <div key={card.cardID} className="px-2 card-slide">
                   <div className="card-wrapper">
                     <Image
-                      loader={customLoader}
-                      src={`${pathToCards}${card.cardID}.png`}
+                      src={`${pathToCards}${card.imageURL}`}
                       width={300}
                       height={475}
                       alt={`Card ${card.cardID}`}

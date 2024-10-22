@@ -39,11 +39,11 @@ const PackOpen: React.FC<PackOpenProps> = ({ packID }) => {
         <Image
           loader={() => customLoader(card.cardID)}
           key={card.cardID}
-          src={`${pathToCards}${card.cardID}.png`}
+          src={`${pathToCards}${card.imageURL}`}
           width={300}
           height={475}
           alt={`Card ${card.cardID}`}
-          className={`rounded-sm`}
+          className={`rounded-sm hover:scale-105 hover:shadow-xl`}
           loading="lazy"
           unoptimized={true}
         />

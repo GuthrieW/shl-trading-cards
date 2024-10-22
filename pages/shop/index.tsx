@@ -22,8 +22,9 @@ import {
   Image as ChakraImage,
   useToast,
 } from '@chakra-ui/react'
-import { warningToastOptions } from '@utils/toast'
+import { successToastOptions, warningToastOptions } from '@utils/toast'
 import { TimeUntilMidnight } from '@utils/time-until-midnight'
+import router from 'next/router'
 
 export type PackInfoWithCover = PackInfo & {
   cover: string
@@ -118,6 +119,10 @@ const PackShop = () => {
         uid: user.uid,
         subscriptionAmount: newSubscription,
       })
+      toast({
+        title: `Updated subscription to ${newSubscription}`,
+        ...successToastOptions,
+      })
       setSubscriptionValue(newSubscription)
     }
   }
@@ -130,7 +135,9 @@ const PackShop = () => {
         <div className="flex flex-col justify-center text-center mb-6">
           <div>Max 3 packs per day</div>
           <div>A new set of packs can be purchased at midnight EST</div>
-          <span className="text-lg font-bold">Time until next reset: {TimeUntilMidnight()}</span>
+          <span className="text-lg font-bold">
+            Time until next reset: {TimeUntilMidnight()}
+          </span>
         </div>
 
         {loggedIn && (
@@ -138,10 +145,12 @@ const PackShop = () => {
             {userIDLoading || dailySubscriptionLoading ? (
               <Skeleton h="100px" w="75%" m="auto" />
             ) : (
-              <div className="lg:w-3/4 lg:m-auto flex flex-row justify-start items-center bg-primary text-secondary">
-                <h1>Base Pack Subscription</h1>
+              <div className="lg:w-3/4 lg:m-auto flex flex-col items-center bg-primary text-secondary p-4 rounded-lg shadow-md">
+                <h1 className="text-xl font-semibold mb-2">
+                  Base Pack Subscription
+                </h1>
                 <Select
-                  className="cursor-pointer w-full sm:w-auto border-grey800 border-1 rounded px-2 !bg-secondary"
+                  className="cursor-pointer w-full sm:w-auto border-grey800 border rounded px-3 py-2 !bg-secondary"
                   value={subscriptionValue}
                   onChange={handleUpdateSubscription}
                   w="200px"
@@ -174,8 +183,8 @@ const PackShop = () => {
                 className="cursor-pointer transition-transform  duration-300 ease-in-out hover:scale-105"
                 onClick={() => handleSelectedPack(pack)}
                 objectFit="cover"
-                height="450px"
-                width="300px"
+                height="75%"
+                width="75%"
               />
               <Heading as="h2" size="lg">
                 {pack.label} Pack
@@ -191,7 +200,10 @@ const PackShop = () => {
                   Buy Pack
                 </Button>
               ) : (
-                <Button colorScheme="blue" isDisabled>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => router.push('/login')}
+                >
                   Sign in to purchase packs
                 </Button>
               )}

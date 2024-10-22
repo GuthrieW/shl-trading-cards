@@ -1,50 +1,17 @@
 import React from 'react'
-import { useRouter } from 'next/router'
-import {
-  Box,
-  SimpleGrid,
-  Spinner,
-  Text,
-  Card,
-  CardBody,
-  Image,
-  VStack,
-  HStack,
-} from '@chakra-ui/react'
+import { Box, Spinner, VStack, HStack } from '@chakra-ui/react'
 import { query } from '@pages/api/database/query'
 import { GET } from '@constants/http-methods'
 import axios from 'axios'
 import { LatestCards, UserPacks } from '@pages/api/v3'
 import { PageWrapper } from '@components/common/PageWrapper'
-import { UserData } from '@pages/api/v3/user'
 import { formatDateTime } from '@utils/formatDateTime'
 import PackOpen from '@components/collection/PackOpen'
 import GetUsername from '@components/common/GetUsername'
+import { GetServerSideProps } from 'next'
 
-interface PackPageProps {
-  customImageLoader?: (src: string) => string
-  imageWidth?: number
-  imageHeight?: number
-}
 
-const PackPage: React.FC<PackPageProps> = ({
-  customImageLoader = (src: string) =>
-    `https://simulationhockey.com/tradingcards/${src}.png`,
-  imageWidth = 200,
-  imageHeight = 300,
-}) => {
-  const router = useRouter()
-  const packID = router.query.packID as string | undefined
-
-  const { payload: cards, isLoading } = query<LatestCards[]>({
-    queryKey: ['latest-cards', packID],
-    queryFn: () =>
-      axios({
-        method: GET,
-        url: `/api/v3/collection/uid/latest-cards?packID=${packID}`,
-      }),
-    enabled: !!packID,
-  })
+export default ({ packID }: { packID: string }) => {
 
   const { payload: packs, isLoading: packsLoading } = query<UserPacks[]>({
     queryKey: ['latest-packs', packID],
@@ -55,11 +22,8 @@ const PackPage: React.FC<PackPageProps> = ({
       }),
     enabled: !!packID,
   })
-  if (!packID) {
-    return <div>Invalid Pack ID</div>
-  }
 
-  if (isLoading || packsLoading ) {
+  if (packsLoading) {
     return (
       <Box
         display="flex"
@@ -73,7 +37,6 @@ const PackPage: React.FC<PackPageProps> = ({
   }
 
   const pack = packs?.[0]
-
   return (
     <PageWrapper>
       <Box p={6}>
@@ -91,7 +54,7 @@ const PackPage: React.FC<PackPageProps> = ({
             </HStack>
           </VStack>
         </div>
-        {cards && cards.length > 0 ? (
+        {packs && packs[0].opened === 1 ? (
           <PackOpen packID={packID} />
         ) : (
           <div className="text-base sm:text-lg">No cards available for this pack.</div>
@@ -101,4 +64,12 @@ const PackPage: React.FC<PackPageProps> = ({
   )
 }
 
-export default PackPage
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+    const { packID } = query;
+  
+    return {
+      props: {
+        packID,
+      },
+    };
+  };

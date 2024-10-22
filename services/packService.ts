@@ -35,7 +35,6 @@ class PackService {
     const maximum: number = 100000
     const memeCoverChance: number =
       Math.floor(Math.random() * maximum - minimum + 1) + minimum
-
     if (memeCoverChance === 10) {
       return this.packs.base.covers.find(
         (packCover) => packCover.name === 'meme'
@@ -43,9 +42,8 @@ class PackService {
     }
 
     const coverIndex: number = Math.floor(
-      Math.random() * Object.values(this.packs.base.covers).length
+      Math.random() * (Object.values(this.packs.base.covers).length -1)
     )
-
     return this.packs.base.covers.at(coverIndex).url
   }
 }

@@ -1,7 +1,7 @@
 export const pluralizeName = (username: string): string => {
   if (username?.endsWith('s')) {
-    return `${username}'`
+    return `${username}`
   } else {
-    return `${username}'s'`
+    return `${username}'s`
   }
 }
