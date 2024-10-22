@@ -72,13 +72,13 @@ export default () => {
     <PageWrapper>
       <div className="space-y-8">
         <h1 className="text-3xl font-bold text-center mb-4">
-          Welcome to Ice Level {user && `${user.username}`}
+          Welcome to Ice Level {user?.username}
         </h1>
         {!isLoadingPendingTrades && !isLoadingUser && (
           <Alert className="text-black text-xl" status="info">
             <AlertIcon />
             <Link href={`/trade`}>
-              Welcome back {user.username}, you have {pendingTrades.total}{' '}
+              Welcome back {user?.username}, you have {pendingTrades.total}{' '}
               pending trades{' '}
             </Link>
           </Alert>
