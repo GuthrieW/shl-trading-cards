@@ -1,10 +1,11 @@
 import { POST } from '@constants/http-methods'
 import { UseGetUserTradesKey } from '@pages/api/queries/use-get-user-trades'
-import { errorToast, successToast } from '@utils/toasts'
 import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { invalidateQueries } from './invalidate-queries'
 import { UseGetNumberOfPendingTradesKey } from '../queries/use-get-number-of-pending-trades'
+import { useToast } from '@chakra-ui/react'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
 
 type UseDeclineTradeRequest = {
   id: number
@@ -20,6 +21,7 @@ type UseDeclineTrade = {
 }
 
 const useDeclineTrade = (): UseDeclineTrade => {
+  const toast = useToast()
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     async ({ id, decliningUid }: UseDeclineTradeRequest) => {
@@ -34,10 +36,10 @@ const useDeclineTrade = (): UseDeclineTrade => {
           UseGetUserTradesKey,
           UseGetNumberOfPendingTradesKey,
         ])
-        successToast({ successText: 'Trade Declined' })
+        toast({ title: 'Trade Declined', ...successToastOptions })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Declining Trade' })
+        toast({ title: 'Error Declining Trade', ...errorToastOptions })
       },
     }
   )

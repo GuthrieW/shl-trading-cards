@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://cards.simulationhockey.com">
-    <img src="https://cards.simulationhockey.com/images/ice-level.svg" alt="easybase logo black" width="50%">
+    <img src="https://cards.simulationhockey.com/ice-level.svg" alt="easybase logo black" width="50%">
   </a>
 </p>
 <br />

@@ -3,8 +3,9 @@ import axios, { AxiosResponse } from 'axios'
 import { PATCH } from '@constants/http-methods'
 import { UseGetApprovedCardsKey } from '@pages/api/queries/use-get-approved-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
-import { errorToast, successToast } from '@utils/toasts'
 import { invalidateQueries } from './invalidate-queries'
+import { useToast } from '@chakra-ui/react'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
 
 type UseEditCardRequest = {
   card: Card
@@ -19,6 +20,7 @@ type UseEditCard = {
 }
 
 const useEditCard = (): UseEditCard => {
+  const toast = useToast()
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     async ({ card }: UseEditCardRequest) => {
@@ -34,10 +36,10 @@ const useEditCard = (): UseEditCard => {
           UseGetAllCardsKey,
           UseGetApprovedCardsKey,
         ])
-        successToast({ successText: 'Edited Card' })
+        toast({ title: 'Edited Card', ...successToastOptions })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Editing Card' })
+        toast({ title: 'Error Editing Card', ...errorToastOptions })
       },
     }
   )
