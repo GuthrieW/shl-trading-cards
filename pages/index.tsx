@@ -68,18 +68,19 @@ export default () => {
     () => (packs?.length ? packs.slice(0, 30) : []),
     [packs]
   )
+
   return (
     <PageWrapper>
       <div className="space-y-8">
         <h1 className="text-3xl font-bold text-center mb-4">
           Welcome to Ice Level {user?.username}
         </h1>
-        {!isLoadingPendingTrades && !isLoadingUser && (
+        {!isLoadingPendingTrades && !isLoadingUser && user && (
           <Alert className="text-black text-xl" status="info">
             <AlertIcon />
             <Link href={`/trade`}>
-              Welcome back {user?.username}, you have {pendingTrades.total}{' '}
-              pending trades{' '}
+              Welcome back {user.username}, you have {pendingTrades?.total}{' '}
+              pending trades
             </Link>
           </Alert>
         )}
