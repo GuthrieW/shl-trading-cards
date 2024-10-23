@@ -55,9 +55,9 @@ export const shlTeamsMap = {
   },
   '6': {
     teamID: 6,
-    label: 'Tampa Bay Barracudua',
+    label: 'Tampa Bay Barracuda',
     city: 'Tampa Bay',
-    team: 'Barracudua',
+    team: 'Barracuda',
     abbreviation: 'TBB',
     league: 'SHL',
     conference: 'East',
