@@ -96,7 +96,6 @@ export default function NewTrade({
   const [sortColumn, setSortColumn] = useState<TradeCardSortValue>(
     SORT_OPTIONS[0].value
   )
-  const drawerSize = useBreakpointValue({ base: 'full', md: 'lg' })
   const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
   const [tablePage, setTablePage] = useState<number>(1)
   const [loggedInUserCardsToTrade, setloggedInUserCardsToTrade] = useState<
@@ -282,6 +281,10 @@ export default function NewTrade({
         (card: TradeCard) => card.ownedCardID !== tradeCardData.ownedCardID
       )
     )
+    toast({
+      title: 'Removed Card From Trade',
+      ...successToastOptions,
+    })
   }
 
   const handleSubmitTrade = async () => {
@@ -483,7 +486,7 @@ export default function NewTrade({
         placement="bottom"
         onClose={onClose}
         isOpen={isOpen}
-        size={drawerSize}
+        size="xs"
       >
         <DrawerOverlay />
         <DrawerContent>
@@ -654,6 +657,11 @@ export default function NewTrade({
                           return
                         }
                         addCardToTrade(card, isLoggedInUser)
+                        toast({
+                          title: 'Added card to trade',
+                          description: 'Exit out of the drawer to remove the card from the trade',
+                          ...successToastOptions,
+                        })
                       }}
                       src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
                       fallback={
