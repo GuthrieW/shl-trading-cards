@@ -392,8 +392,10 @@ export default ({ uid }: { uid: string }) => {
           <div
             key={`${card.cardID}-${index}`}
             onClick={() => {
-              setSelectedCard(card)
-              setLightBoxIsOpen(true)
+              if (!isLoading) {
+                setSelectedCard(card);
+                setLightBoxIsOpen(true);
+              }
             }}
             className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
           >
