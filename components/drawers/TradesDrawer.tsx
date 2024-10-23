@@ -96,8 +96,6 @@ export default function TradesDrawer({
     enabled: loggedIn,
   })
 
-  console.log(loggedInTrades)
-
   return (
     <Drawer placement="left" isOpen={isOpen} onClose={onClose}>
       <DrawerContent overflow="scroll">
