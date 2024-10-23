@@ -56,12 +56,14 @@ export default ({
         onClick={goToFirstPage}
         className="mx-2 cursor-pointer"
         aria-label="go-to-first-page"
+        isDisabled={currentPage === 1}
         icon={<ArrowLeftIcon />}
       />
       <IconButton
         onClick={goToPreviousPage}
         className="mx-2 cursor-pointer"
         aria-label="go-to-previous-page"
+        isDisabled={currentPage === 1}
         icon={<ChevronLeftIcon fontSize="2xl" />}
       />
       <span className="flex justify-center items-center mx-2">
@@ -71,12 +73,14 @@ export default ({
         onClick={goToNextPage}
         className="mx-2 cursor-pointer"
         aria-label="go-to-next-page"
+        isDisabled={currentPage === totalPages}
         icon={<ChevronRightIcon fontSize="2xl" />}
       />
       <IconButton
         onClick={goToLastPage}
         className="mx-2 cursor-pointer"
         aria-label="go-to-final-page"
+        isDisabled={currentPage === totalPages}
         icon={<ArrowRightIcon />}
       />
     </Box>
