@@ -1,7 +1,8 @@
 export const pluralizeName = (username: string): string => {
-  if (username?.endsWith('s')) {
-    return `${username}`
-  } else {
-    return `${username}'s`
+  username = username?.trim();
+  if (username?.toLowerCase().endsWith('s') && 
+      (username?.toLowerCase().endsWith('s') !== username?.endsWith('s'))) {
+    return `${username}'`;
   }
+  return `${username}'s`;
 }
