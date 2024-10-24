@@ -56,6 +56,7 @@ export default async function collectionEndpoint(
     const playerName = req.query.playerName as string
     const teams = JSON.parse(req.query.teams as string) as string[]
     const rarities = JSON.parse(req.query.rarities as string) as string[]
+    const leagues = JSON.parse(req.query.leagues as string) as string[]
     const limit = (req.query.limit ?? 10) as string
     const offset = (req.query.offset ?? 0) as string
     const sortColumn = (req.query.sortColumn ??
@@ -178,7 +179,7 @@ export default async function collectionEndpoint(
           : countQuery.append(SQL` OR card.teamID=${parseInt(team)}`)
       )
       countQuery.append(SQL`)`)
-
+    
       query.append(SQL` AND (`)
       teams.forEach((team, index) =>
         index === 0
@@ -186,6 +187,16 @@ export default async function collectionEndpoint(
           : query.append(SQL` OR card.teamID=${parseInt(team)}`)
       )
       query.append(SQL`)`)
+    
+      if (leagues.includes('IIHF')) {
+        if (!leagues.includes('SHL')) {
+          countQuery.append(SQL` AND card.card_rarity = 'IIHF Awards'`)
+          query.append(SQL` AND card.card_rarity = 'IIHF Awards'`)
+        }
+      } else {
+        countQuery.append(SQL` AND card.card_rarity != 'IIHF Awards'`)
+        query.append(SQL` AND card.card_rarity != 'IIHF Awards'`)
+      }
     }
 
     if (rarities.length !== 0) {

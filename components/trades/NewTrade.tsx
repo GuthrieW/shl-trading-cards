@@ -30,7 +30,7 @@ import {
 import TablePagination from '@components/table/TablePagination'
 import { GET, POST } from '@constants/http-methods'
 import rarityMap from '@constants/rarity-map'
-import { shlTeamsMap } from '@constants/teams-map'
+import { allTeamsMaps } from '@constants/teams-map'
 import { useCookie } from '@hooks/useCookie'
 import { mutation } from '@pages/api/database/mutation'
 import { query } from '@pages/api/database/query'
@@ -42,6 +42,7 @@ import {
   TradeCardSortValue,
 } from '@pages/api/v3/trades/collection/[uid]'
 import { UserData } from '@pages/api/v3/user'
+import filterTeamsByLeague from '@utils/filterTeamsByLeague'
 import {
   errorToastOptions,
   successToastOptions,
@@ -93,6 +94,7 @@ export default function NewTrade({
   const [playerName, setPlayerName] = useState<string>('')
   const [teams, setTeams] = useState<string[]>([])
   const [rarities, setRarities] = useState<string[]>([])
+  const [leagues, setLeague] = useState<string[]>([])
   const [sortColumn, setSortColumn] = useState<TradeCardSortValue>(
     SORT_OPTIONS[0].value
   )
@@ -167,6 +169,7 @@ export default function NewTrade({
         playerName,
         JSON.stringify(teams),
         JSON.stringify(rarities),
+        JSON.stringify(leagues),
         String(tablePage),
         sortColumn,
         sortDirection,
@@ -179,6 +182,7 @@ export default function NewTrade({
             playerName,
             teams: JSON.stringify(teams),
             rarities: JSON.stringify(rarities),
+            leagues: JSON.stringify(leagues),
             limit: ROWS_PER_PAGE,
             offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
             sortColumn,
@@ -240,6 +244,10 @@ export default function NewTrade({
         : currentValue.splice(teamIndex)
       return [...currentValue]
     })
+  }
+
+  const toggleLeague = (league: string) => {
+    setLeague([league])
   }
 
   const toggleRarity = (rarity: string) => {
@@ -482,12 +490,7 @@ export default function NewTrade({
           </Box>
         </VStack>
       </Box>
-      <Drawer
-        placement="bottom"
-        onClose={onClose}
-        isOpen={isOpen}
-        size="xs"
-      >
+      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen} size="xs">
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
@@ -525,25 +528,26 @@ export default function NewTrade({
                         >
                           Deselect All
                         </MenuItemOption>
-                        {Object.entries(shlTeamsMap).map(([key, value]) => {
-                          const isChecked: boolean = teams.includes(
-                            String(value.teamID)
-                          )
-                          return (
-                            <MenuItemOption
-                              icon={null}
-                              isChecked={isChecked}
-                              aria-checked={isChecked}
-                              key={value.teamID}
-                              value={String(value.teamID)}
-                              className="!bg-secondary hover:!bg-blue600"
-                              onClick={() => toggleTeam(String(value.teamID))}
-                            >
-                              {value.label}
-                              {isChecked && <CheckIcon className="mx-2" />}
-                            </MenuItemOption>
-                          )
-                        })}
+                        {filterTeamsByLeague(allTeamsMaps, rarities).map(
+                          ([key, value]) => {
+                            const isChecked: boolean = teams.includes(
+                              String(value.teamID)
+                            )
+                            return (
+                              <MenuItemOption
+                                icon={null}
+                                isChecked={isChecked}
+                                aria-checked={isChecked}
+                                key={value.teamID}
+                                value={String(value.teamID)}
+                                onClick={() => toggleTeam(String(value.teamID))}
+                              >
+                                {value.label}
+                                {isChecked && <CheckIcon className="mx-2" />}
+                              </MenuItemOption>
+                            )
+                          }
+                        )}
                       </MenuOptionGroup>
                     </MenuList>
                   </Menu>
@@ -573,6 +577,15 @@ export default function NewTrade({
                           const isChecked: boolean = rarities.includes(
                             value.value
                           )
+
+                          // Disable selection of any IIHF Awards and another rarity because trying to select different leagues teams at the same time with the same ID is hell
+                          const isDisabled =
+                            (value.value === 'IIHF Awards' &&
+                              rarities.length > 0 &&
+                              !rarities.includes('IIHF Awards')) ||
+                            (rarities.includes('IIHF Awards') &&
+                              value.value !== 'IIHF Awards')
+
                           return (
                             <MenuItemOption
                               icon={null}
@@ -580,8 +593,10 @@ export default function NewTrade({
                               aria-checked={isChecked}
                               key={value.value}
                               value={value.value}
-                              className="!bg-secondary hover:!bg-blue600"
-                              onClick={() => toggleRarity(value.value)}
+                              onClick={() =>
+                                !isDisabled && toggleRarity(value.value)
+                              }
+                              isDisabled={isDisabled}
                             >
                               {value.label}
                               {isChecked && <CheckIcon className="mx-2" />}
@@ -659,7 +674,8 @@ export default function NewTrade({
                         addCardToTrade(card, isLoggedInUser)
                         toast({
                           title: 'Added card to trade',
-                          description: 'Exit out of the drawer to remove the card from the trade',
+                          description:
+                            'Exit out of the drawer to remove the card from the trade',
                           ...successToastOptions,
                         })
                       }}

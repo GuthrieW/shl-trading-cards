@@ -20,10 +20,10 @@ import DisplayCollection from '@components/collection/DisplayCollection'
 import { PageWrapper } from '@components/common/PageWrapper'
 import CardLightBoxModal from '@components/modals/CardLightBoxModal'
 import TablePagination from '@components/table/TablePagination'
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps } from 'next'
 import { GET } from '@constants/http-methods'
 import rarityMap from '@constants/rarity-map'
-import { shlTeamsMap } from '@constants/teams-map'
+import { allTeamsMaps } from '@constants/teams-map'
 import { query } from '@pages/api/database/query'
 import {
   ListResponse,
@@ -40,7 +40,7 @@ import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
 import { pluralizeName } from 'lib/pluralize-name'
-import { useRouter } from 'next/router'
+import filterTeamsByLeague from 'utils/filterTeamsByLeague'
 import { Fragment, useEffect, useState } from 'react'
 import DisplayPacks from '@components/collection/DisplayPacks'
 
@@ -100,7 +100,6 @@ const LOADING_GRID_DATA: { rows: OwnedCard[] } = {
   })),
 } as const
 
-
 export default ({ uid }: { uid: string }) => {
   const [totalCards, setTotalCards] = useState<number>(0)
   const [totalOwnedCards, setTotalOwnedCards] = useState<number>(0)
@@ -108,13 +107,16 @@ export default ({ uid }: { uid: string }) => {
   const [showNotOwnedCards, setShowNotOwnedCards] = useState<boolean>(false)
   const [playerName, setPlayerName] = useState<string>('')
   const [teams, setTeams] = useState<string[]>([])
+  const [leagues, setLeague] = useState<string[]>([])
   const [rarities, setRarities] = useState<string[]>([])
   const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
   const [selectedCard, setSelectedCard] = useState<CollectionCard | null>(null)
-  const [sortColumn, setSortColumn] = useState<OwnedCardSortValue>(SORT_OPTIONS[0].value)
+  const [sortColumn, setSortColumn] = useState<OwnedCardSortValue>(
+    SORT_OPTIONS[0].value
+  )
   const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
   const [tablePage, setTablePage] = useState<number>(1)
-  
+
   const { payload: user, isLoading: userIsLoading } = query<UserData>({
     queryKey: ['collectionUser', session?.token, uid],
     queryFn: () =>
@@ -151,6 +153,7 @@ export default ({ uid }: { uid: string }) => {
       playerName,
       JSON.stringify(teams),
       JSON.stringify(rarities),
+      JSON.stringify(leagues),
       String(tablePage),
       sortColumn,
       sortDirection,
@@ -165,6 +168,7 @@ export default ({ uid }: { uid: string }) => {
           playerName,
           teams: JSON.stringify(teams),
           rarities: JSON.stringify(rarities),
+          leagues: JSON.stringify(leagues),
           limit: ROWS_PER_PAGE,
           offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
           sortColumn,
@@ -203,6 +207,10 @@ export default ({ uid }: { uid: string }) => {
     })
   }
 
+  const toggleLeague = (league: string) => {
+    setLeague([league])
+  }
+
   const toggleRarity = (rarity: string) => {
     setRarities((currentValue) => {
       const rarityIndex: number = currentValue.indexOf(rarity)
@@ -216,7 +224,7 @@ export default ({ uid }: { uid: string }) => {
     const activeFilters = []
     if (teams.length > 0) {
       activeFilters.push(
-        `Teams: ${teams.map((id) => shlTeamsMap[id].label).join(', ')}`
+        `Teams: ${teams.map((id) => allTeamsMaps[id].label).join(', ')}`
       )
     }
     if (rarities.length > 0) {
@@ -262,7 +270,7 @@ export default ({ uid }: { uid: string }) => {
         <div className="flex flex-col sm:flex-row justify-start items-stretch gap-4">
           <FormControl className="w-full sm:w-auto">
             <Menu closeOnSelect={false}>
-              <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary ">
+              <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary">
                 Teams&nbsp;{`(${teams.length})`}
               </MenuButton>
               <MenuList>
@@ -276,24 +284,29 @@ export default ({ uid }: { uid: string }) => {
                   >
                     Deselect All
                   </MenuItemOption>
-                  {Object.entries(shlTeamsMap).map(([key, value]) => {
-                    const isChecked: boolean = teams.includes(
-                      String(value.teamID)
-                    )
-                    return (
-                      <MenuItemOption
-                        icon={null}
-                        isChecked={isChecked}
-                        aria-checked={isChecked}
-                        key={value.teamID}
-                        value={String(value.teamID)}
-                        onClick={() => toggleTeam(String(value.teamID))}
-                      >
-                        {value.label}
-                        {isChecked && <CheckIcon className="mx-2" />}
-                      </MenuItemOption>
-                    )
-                  })}
+                  {filterTeamsByLeague(allTeamsMaps, rarities).map(
+                    ([key, value]) => {
+                      const isChecked: boolean = teams.includes(
+                        String(value.teamID)
+                      )
+                      return (
+                        <MenuItemOption
+                          icon={null}
+                          isChecked={isChecked}
+                          aria-checked={isChecked}
+                          key={value.teamID}
+                          value={String(value.teamID)}
+                          onClick={() => {
+                            toggleTeam(String(value.teamID))
+                            toggleLeague(value.league)
+                          }}
+                        >
+                          {value.label}
+                          {isChecked && <CheckIcon className="mx-2" />}
+                        </MenuItemOption>
+                      )
+                    }
+                  )}
                 </MenuOptionGroup>
               </MenuList>
             </Menu>
@@ -316,6 +329,15 @@ export default ({ uid }: { uid: string }) => {
                   </MenuItemOption>
                   {Object.entries(rarityMap).map(([key, value]) => {
                     const isChecked: boolean = rarities.includes(value.value)
+
+                    // Disable selection of any IIHF Awards and another rarity because trying to select different leagues teams at the same time with the same ID is hell
+                    const isDisabled =
+                      (value.value === 'IIHF Awards' &&
+                        rarities.length > 0 &&
+                        !rarities.includes('IIHF Awards')) ||
+                      (rarities.includes('IIHF Awards') &&
+                        value.value !== 'IIHF Awards')
+
                     return (
                       <MenuItemOption
                         icon={null}
@@ -323,7 +345,8 @@ export default ({ uid }: { uid: string }) => {
                         aria-checked={isChecked}
                         key={value.value}
                         value={value.value}
-                        onClick={() => toggleRarity(value.value)}
+                        onClick={() => !isDisabled && toggleRarity(value.value)}
+                        isDisabled={isDisabled}
                       >
                         {value.label}
                         {isChecked && <CheckIcon className="mx-2" />}
@@ -393,8 +416,8 @@ export default ({ uid }: { uid: string }) => {
             key={`${card.cardID}-${index}`}
             onClick={() => {
               if (!isLoading) {
-                setSelectedCard(card);
-                setLightBoxIsOpen(true);
+                setSelectedCard(card)
+                setLightBoxIsOpen(true)
               }
             }}
             className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
@@ -441,11 +464,11 @@ export default ({ uid }: { uid: string }) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { uid } = query;
+  const { uid } = query
 
   return {
     props: {
       uid,
     },
-  };
-};
+  }
+}
