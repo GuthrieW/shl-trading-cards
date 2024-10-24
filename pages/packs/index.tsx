@@ -1,7 +1,7 @@
 import OpenPackModal from '@components/modals/OpenPackModal'
 import { packService } from 'services/packService'
 import useOpenPack from '@pages/api/mutations/use-open-pack'
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, KeyboardEvent } from 'react'
 import Router from 'next/router'
 import { NextSeo } from 'next-seo'
 import { UserPacks } from '@pages/api/v3'
@@ -78,6 +78,16 @@ const OpenPacks = () => {
     openPack({ packID: packID })
   }
 
+  const handleKeyPress = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    pack: UserPackWithCover
+  ) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      handleSelectedPack(pack)
+    }
+  }
+
   if (useOpenPackIsSuccess) {
     Router.push('/packs/last-pack')
   }
@@ -103,12 +113,12 @@ const OpenPacks = () => {
         <div className="m-2">
           <h1 className="text-4xl text-center my-6">Open Packs</h1>
           {packsWithCovers.length === 0 ? (
-            <div className="text-center">
+            <div className="text-center" role="alert">
               <p className="text-xl">You don't have any packs to open.</p>
               <p className="text-xl">
                 Go to the{' '}
                 <a
-                  className="text-blue-500 hover:text-blue-600 transition-colors duration-200 my-4"
+                  className="text-blue-500 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 my-4"
                   href="/pack-shop"
                 >
                   pack shop
@@ -118,15 +128,27 @@ const OpenPacks = () => {
             </div>
           ) : (
             <>
-              <p>Number of packs: {packsWithCovers.length}</p>
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
+              <p id="pack-count">Number of packs: {packsWithCovers.length}</p>
+              <div 
+                className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4"
+                role="grid"
+                aria-labelledby="pack-count"
+              >
                 {packsWithCovers.map((pack, index) => (
-                  <img
+                  <button
                     key={index}
                     onClick={() => handleSelectedPack(pack)}
-                    className="select-none my-2 cursor-pointer h-96 mx-4 transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
-                    src={pack.cover}
-                  />
+                    onKeyDown={(e) => handleKeyPress(e, pack)}
+                    className="my-2 mx-4 p-0 border-0 bg-transparent cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 group"
+                    aria-label={`Open pack ${index + 1} of ${packsWithCovers.length}`}
+                  >
+                    <img
+                      className="select-none h-96 w-full object-contain transition ease-linear group-hover:scale-105 group-hover:shadow-xl group-focus:scale-105 group-focus:shadow-xl"
+                      src={pack.cover}
+                      alt={`Trading card pack ${index + 1}`}
+                      role="presentation"
+                    />
+                  </button>
                 ))}
               </div>
             </>
