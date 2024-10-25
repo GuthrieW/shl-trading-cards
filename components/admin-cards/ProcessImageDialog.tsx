@@ -107,11 +107,11 @@ export default function ProcessImageDialog({
     >
       <AlertDialogOverlay>
         <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+          <AlertDialogHeader fontSize="lg" fontWeight="bold" className="!bg-primary !text-secondary">
             Process Image #{card.cardID}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
-          <AlertDialogBody>
+          <AlertDialogBody className="!bg-primary !text-secondary">
             <Image
               className="cursor-pointer"
               src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
@@ -123,10 +123,7 @@ export default function ProcessImageDialog({
               }
             />
           </AlertDialogBody>
-          <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose}>
-              Cancel
-            </Button>
+          <AlertDialogFooter className="!bg-primary !text-secondary">
             {formError && (
               <Alert status="error">
                 <AlertIcon /> {formError}
@@ -134,13 +131,15 @@ export default function ProcessImageDialog({
             )}
             <Button
               disabled={false}
-              className="text-red-500 background-transparent font-bold uppercase px-6 py-3 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 hover:bg-red-100 rounded hover:shadow-lg"
+              colorScheme="red"
+              className=" background-transparent font-bold uppercase px-6 py-3 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 hover:bg-red-100 rounded hover:shadow-lg"
               onClick={handleDeny}
             >
               Deny Card
             </Button>
             <Button
               disabled={false}
+              colorScheme="green"
               className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
               onClick={handleApprove}
             >

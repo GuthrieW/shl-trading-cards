@@ -38,7 +38,7 @@ export default function Select({
         onBlur={onBlur}
       >
         {options.map(({ id, name }) => (
-          <option key={id} value={id}>
+          <option className="!bg-primary !text-secondary" key={id} value={id}>
             {name}
           </option>
         ))}
