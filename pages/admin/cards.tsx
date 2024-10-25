@@ -200,7 +200,7 @@ export default () => {
               onChange={(event) => setPlayerName(event.target.value)}
             />
           </FormControl>
-          <div className="m-2 flex flex-row justify-between">
+          <div className="m-2 flex flex-col gap-4 md:flex-row md:justify-between">
             <div className="flex flex-row space-x-2">
               <FormControl>
                 <Menu closeOnSelect={false}>
