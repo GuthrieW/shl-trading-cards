@@ -27,7 +27,7 @@ import GetUsername from '@components/common/GetUsername'
 import Router from 'next/router'
 import { useSession } from 'contexts/AuthContext'
 
-export const IndexRecordTable = ({
+export const CardInformation = ({
   owned,
   playerID,
   cardID,
@@ -43,7 +43,7 @@ export const IndexRecordTable = ({
   const [height, setHeight] = useState('0px')
   const { colorMode } = useColorMode()
   const [playerHistory, setPlayerHistory] = useState<any[]>([])
-  const { session } = useSession()
+  const { session, loggedIn } = useSession()
   const setIFrameHeight = useCallback((event: MessageEvent<any>) => {
     if (event.origin.includes('index.simulationhockey.com')) {
       if (event.data !== 0 && typeof event.data === 'number')
@@ -192,33 +192,37 @@ export const IndexRecordTable = ({
           </AccordionButton>
         </h2>
         <AccordionPanel pb={4}>
-          {packs && packs.length > 0 ? (
-            packs.map((pack) => (
-              <Box
-                key={pack.packID}
-                p={2}
-                borderWidth="1px"
-                rounded="md"
-                mb={2}
-              >
-                <div>User: {<GetUsername userID={pack.userID} />}</div>
-                <Button
-                  className="mt-2"
-                  colorScheme="blue"
-                  isDisabled={session.userId == String(pack.userID)}
-                  onClick={() =>
-                    Router.push(
-                      `/trade?partnerId=${pack.userID}&cardID=${pack.cardID}`
-                    )
-                  }
-                >
-                  Trade for this card
-                </Button>
-              </Box>
-            ))
-          ) : (
-            <div>No users own this card yet.</div>
-          )}
+          <div className="w-full text-center">
+            {packs && packs.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {packs.map((pack) => (
+                  <Box
+                    key={pack.packID}
+                    p={2}
+                    borderWidth="1px"
+                    rounded="md"
+                    mb={2}
+                  >
+                    <div>{pack.username} : {pack.total}</div>
+                    <Button
+                      className="mt-2"
+                      colorScheme="blue"
+                      isDisabled={session?.userId == String(pack.userID) || !loggedIn}
+                      onClick={() =>
+                        Router.push(
+                          `/trade?partnerId=${pack.userID}&cardID=${pack.cardID}`
+                        )
+                      }
+                    >
+                      Trade
+                    </Button>
+                  </Box>
+                ))}
+              </div>
+            ) : (
+              <div>No users own this card yet.</div>
+            )}
+          </div>
         </AccordionPanel>
       </AccordionItem>
     </Accordion>

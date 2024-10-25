@@ -44,9 +44,11 @@ export type SiteUniqueCards = {
 export type UserCollection ={
   ownedCardID: number;
   userID: number;
+  username?: string;
   cardID: number;
   packID: number;
-  imageURL: number;
+  imageURL?: number;
+  total?: number;
 }
 
 
