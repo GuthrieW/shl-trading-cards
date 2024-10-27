@@ -81,4 +81,27 @@ export type UserMostCards = {
   avatar: string;
 }
 
+export type binders ={
+  binderID: number;
+  userID: number;
+  username: string;
+  binder_name: string;
+  binder_desc: string;
+}
+
+export type binderCards = {
+  binderID: number;
+  ownedCardID: number;
+  position: number;
+  cardID: number;
+  userID?: number;
+  player_name: string;
+  teamID: number;
+  playerID: number;
+  card_rarity: string;
+  image_url: string;
+  overall: number;
+  season: number;
+}
+
 export type SortDirection = 'ASC' | 'DESC'
