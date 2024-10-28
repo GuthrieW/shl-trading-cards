@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import {
   SimpleGrid,
   Box,
@@ -61,30 +61,45 @@ const SORT_OPTIONS: TradeCardSortOption[] = [
   },
 ] as const
 
-const CardSelectionGrid: React.FC<CardSelectionGridProps> = ({
-  handleCardSelect,
-  displayCards,
-  selectedPosition,
-  bid,
-}) => {
-  const { session } = useSession()
-  const [playerName, setPlayerName] = useState<string>('')
-  const [teams, setTeams] = useState<string[]>([])
-  const [rarities, setRarities] = useState<string[]>([])
-  const [leagues, setLeague] = useState<string[]>([])
-  const [sortColumn, setSortColumn] = useState<TradeCardSortValue>(
-    SORT_OPTIONS[0].value
-  )
-  const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
-  const [tablePage, setTablePage] = useState<number>(1)
-  const ROWS_PER_PAGE =
-    useBreakpointValue({
-      base: 4,
-      md: 5,
-    }) || 5
+const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
+  ({ handleCardSelect, displayCards, selectedPosition, bid }) => {
+    const { session } = useSession()
+    const [playerName, setPlayerName] = useState<string>('')
+    const [teams, setTeams] = useState<string[]>([])
+    const [rarities, setRarities] = useState<string[]>([])
+    const [leagues, setLeague] = useState<string[]>([])
+    const [sortColumn, setSortColumn] = useState<TradeCardSortValue>(
+      SORT_OPTIONS[0].value
+    )
+    const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
+    const [tablePage, setTablePage] = useState<number>(1)
 
-  const { payload: selectedUserCards, isLoading: selectedUserCardsIsLoading } =
-    query<ListResponse<TradeCard>>({
+    const ROWS_PER_PAGE =
+      useBreakpointValue({
+        base: 4,
+        md: 5,
+      }) || 5
+    useEffect(() => {
+      if (!selectedPosition) {
+        setTablePage(1)
+      }
+    }, [selectedPosition])
+
+    useEffect(() => {
+      setTablePage(1)
+    }, [
+      playerName,
+      teams.length,
+      rarities.length,
+      leagues.length,
+      sortColumn,
+      sortDirection,
+    ])
+
+    const {
+      payload: selectedUserCards,
+      isLoading: selectedUserCardsIsLoading,
+    } = query<ListResponse<TradeCard>>({
       queryKey: [
         'collection',
         session?.userId,
@@ -114,269 +129,265 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = ({
       enabled: !!session?.userId,
     })
 
-  const filteredUserCards =
-    selectedUserCards?.rows?.filter((tradeCard) => {
-      return !displayCards.some(
-        (binderCard) => binderCard?.ownedCardID === tradeCard.ownedCardID
+    const handlePageChange = (newPage: number) => {
+      setTablePage(newPage)
+    }
+    const toggleTeam = (team: string) => {
+      setTeams((currentValue) => {
+        const teamIndex: number = currentValue.indexOf(team)
+        teamIndex === -1
+          ? currentValue.push(team)
+          : currentValue.splice(teamIndex)
+        return [...currentValue]
+      })
+    }
+
+    const toggleLeague = (league: string) => {
+      setLeague([league])
+    }
+
+    const toggleRarity = (rarity: string) => {
+      setRarities((currentValue) => {
+        const rarityIndex: number = currentValue.indexOf(rarity)
+        rarityIndex === -1
+          ? currentValue.push(rarity)
+          : currentValue.splice(rarityIndex)
+        return [...currentValue]
+      })
+    }
+
+    if (selectedUserCardsIsLoading) {
+      return (
+        <SimpleGrid columns={{ base: 2, md: 3 }} spacing={4}>
+          {Array(9)
+            .fill(0)
+            .map((_, index) => (
+              <Box key={index}>
+                <Skeleton height="200px" />
+                <Skeleton height="20px" mt="2" />
+              </Box>
+            ))}
+        </SimpleGrid>
       )
-    }) || []
+    }
 
-  const transformedCards: binderCards[] = filteredUserCards.map(
-    (tradeCard) => ({
-      binderID: Number(bid),
-      ownedCardID: tradeCard.ownedCardID,
-      position: selectedPosition,
-      cardID: tradeCard.cardID,
-      player_name: tradeCard.player_name,
-      playerID: tradeCard.playerID,
-      teamID: tradeCard.teamID,
-      card_rarity: tradeCard.card_rarity,
-      image_url: tradeCard.image_url,
-      overall: tradeCard.overall,
-      season: tradeCard.season,
-    })
-  )
-
-  const toggleTeam = (team: string) => {
-    setTeams((currentValue) => {
-      const teamIndex: number = currentValue.indexOf(team)
-      teamIndex === -1
-        ? currentValue.push(team)
-        : currentValue.splice(teamIndex)
-      return [...currentValue]
-    })
-  }
-
-  const toggleLeague = (league: string) => {
-    setLeague([league])
-  }
-
-  const toggleRarity = (rarity: string) => {
-    setRarities((currentValue) => {
-      const rarityIndex: number = currentValue.indexOf(rarity)
-      rarityIndex === -1
-        ? currentValue.push(rarity)
-        : currentValue.splice(rarityIndex)
-      return [...currentValue]
-    })
-  }
-
-  if (selectedUserCardsIsLoading) {
     return (
-      <SimpleGrid columns={{ base: 2, md: 3 }} spacing={4}>
-        {Array(9)
-          .fill(0)
-          .map((_, index) => (
-            <Box key={index}>
-              <Skeleton height="200px" />
-              <Skeleton height="20px" mt="2" />
+      <>
+        <Flex direction="column" mb={4}>
+          <FormControl mb={2}>
+            <Input
+              placeholder="Player Name Search"
+              onChange={(e) => {
+                // Reset page when searching
+                setTablePage(1)
+                setPlayerName(e.target.value)
+              }}
+              className="w-full !bg-secondary"
+            />
+          </FormControl>
+          <Flex justifyContent="space-between" alignItems="center">
+            <Box flex={1} mr={2}>
+              <Menu closeOnSelect={false}>
+                <MenuButton
+                  as={Button}
+                  rightIcon={<ChevronDownIcon />}
+                  className="w-full !bg-secondary !text-secondary text-center hover:!bg-blue600"
+                >
+                  Teams ({teams.length})
+                </MenuButton>
+                <MenuList>
+                  <MenuOptionGroup type="checkbox">
+                    <MenuItemOption
+                      icon={null}
+                      isChecked={false}
+                      aria-checked={false}
+                      closeOnSelect
+                      className="!bg-secondary hover:!bg-blue600"
+                      onClick={() => {
+                        setTablePage(1)
+                        setTeams([])
+                      }}
+                    >
+                      Deselect All
+                    </MenuItemOption>
+                    {filterTeamsByLeague(allTeamsMaps, rarities).map(
+                      ([key, value]) => {
+                        const isChecked: boolean = teams.includes(
+                          String(value.teamID)
+                        )
+                        return (
+                          <MenuItemOption
+                            icon={null}
+                            isChecked={isChecked}
+                            aria-checked={isChecked}
+                            key={value.teamID}
+                            value={String(value.teamID)}
+                            onClick={() => {
+                              setTablePage(1)
+                              toggleTeam(String(value.teamID))
+                            }}
+                          >
+                            {value.label}
+                            {isChecked && <CheckIcon className="mx-2" />}
+                          </MenuItemOption>
+                        )
+                      }
+                    )}
+                  </MenuOptionGroup>
+                </MenuList>
+              </Menu>
             </Box>
-          ))}
-      </SimpleGrid>
-    )
-  }
+            <Box flex={1} mr={2}>
+              <Menu closeOnSelect={false}>
+                <MenuButton
+                  as={Button}
+                  rightIcon={<ChevronDownIcon />}
+                  className="w-full !bg-secondary !text-secondary text-center hover:!bg-blue600"
+                >
+                  Rarity ({rarities.length})
+                </MenuButton>
+                <MenuList>
+                  <MenuOptionGroup type="checkbox">
+                    <MenuItemOption
+                      icon={null}
+                      isChecked={false}
+                      aria-checked={false}
+                      closeOnSelect
+                      className="!bg-secondary hover:!bg-blue600"
+                      onClick={() => {
+                        setTablePage(1)
+                        setRarities([])
+                      }}
+                    >
+                      Deselect All
+                    </MenuItemOption>
+                    {Object.entries(rarityMap).map(([key, value]) => {
+                      const isChecked: boolean = rarities.includes(value.value)
 
-  return (
-    <>
-      <Flex direction="column" mb={4}>
-        <FormControl mb={2}>
-          <Input
-            placeholder="Player Name Search"
-            onChange={(e) => {
-              // Reset page when searching
-              setTablePage(1)
-              setPlayerName(e.target.value)
-            }}
-            className="w-full !bg-secondary"
-          />
-        </FormControl>
-        <Flex justifyContent="space-between" alignItems="center">
-          <Box flex={1} mr={2}>
-            <Menu closeOnSelect={false}>
-              <MenuButton
-                as={Button}
-                rightIcon={<ChevronDownIcon />}
-                className="w-full !bg-secondary !text-secondary text-center hover:!bg-blue600"
-              >
-                Teams ({teams.length})
-              </MenuButton>
-              <MenuList>
-                <MenuOptionGroup type="checkbox">
-                  <MenuItemOption
-                    icon={null}
-                    isChecked={false}
-                    aria-checked={false}
-                    closeOnSelect
-                    className="!bg-secondary hover:!bg-blue600"
-                    onClick={() => {
-                      setTablePage(1)
-                      setTeams([])
-                    }}
-                  >
-                    Deselect All
-                  </MenuItemOption>
-                  {filterTeamsByLeague(allTeamsMaps, rarities).map(
-                    ([key, value]) => {
-                      const isChecked: boolean = teams.includes(
-                        String(value.teamID)
-                      )
+                      const isDisabled =
+                        (value.value === 'IIHF Awards' &&
+                          rarities.length > 0 &&
+                          !rarities.includes('IIHF Awards')) ||
+                        (rarities.includes('IIHF Awards') &&
+                          value.value !== 'IIHF Awards')
+
                       return (
                         <MenuItemOption
                           icon={null}
                           isChecked={isChecked}
                           aria-checked={isChecked}
-                          key={value.teamID}
-                          value={String(value.teamID)}
+                          key={value.value}
+                          value={value.value}
                           onClick={() => {
-                            setTablePage(1)
-                            toggleTeam(String(value.teamID))
+                            if (!isDisabled) {
+                              setTablePage(1)
+                              toggleRarity(value.value)
+                            }
                           }}
+                          isDisabled={isDisabled}
                         >
                           {value.label}
                           {isChecked && <CheckIcon className="mx-2" />}
                         </MenuItemOption>
                       )
-                    }
-                  )}
-                </MenuOptionGroup>
-              </MenuList>
-            </Menu>
-          </Box>
-          <Box flex={1} mr={2}>
-            <Menu closeOnSelect={false}>
-              <MenuButton
-                as={Button}
-                rightIcon={<ChevronDownIcon />}
-                className="w-full !bg-secondary !text-secondary text-center hover:!bg-blue600"
-              >
-                Rarity ({rarities.length})
-              </MenuButton>
-              <MenuList>
-                <MenuOptionGroup type="checkbox">
-                  <MenuItemOption
-                    icon={null}
-                    isChecked={false}
-                    aria-checked={false}
-                    closeOnSelect
-                    className="!bg-secondary hover:!bg-blue600"
-                    onClick={() => {
-                      setTablePage(1)
-                      setRarities([])
-                    }}
+                    })}
+                  </MenuOptionGroup>
+                </MenuList>
+              </Menu>
+            </Box>
+          </Flex>
+          <Box flex={1} mr={2} className="p-2">
+            <Select
+              className="w-full !bg-secondary hover:!bg-blue600"
+              onChange={(event) => {
+                setTablePage(1)
+                const [sortColumn, sortDirection] = event.target.value.split(
+                  ':'
+                ) as [TradeCardSortValue, SortDirection]
+                setSortColumn(sortColumn)
+                setSortDirection(sortDirection)
+              }}
+            >
+              {SORT_OPTIONS.map((option, index) => (
+                <Fragment key={`${option.value}-${index}`}>
+                  <option
+                    className="!bg-secondary"
+                    value={`${option.value}:DESC`}
                   >
-                    Deselect All
-                  </MenuItemOption>
-                  {Object.entries(rarityMap).map(([key, value]) => {
-                    const isChecked: boolean = rarities.includes(value.value)
-
-                    const isDisabled =
-                      (value.value === 'IIHF Awards' &&
-                        rarities.length > 0 &&
-                        !rarities.includes('IIHF Awards')) ||
-                      (rarities.includes('IIHF Awards') &&
-                        value.value !== 'IIHF Awards')
-
-                    return (
-                      <MenuItemOption
-                        icon={null}
-                        isChecked={isChecked}
-                        aria-checked={isChecked}
-                        key={value.value}
-                        value={value.value}
-                        onClick={() => {
-                          if (!isDisabled) {
-                            setTablePage(1)
-                            toggleRarity(value.value)
-                          }
-                        }}
-                        isDisabled={isDisabled}
-                      >
-                        {value.label}
-                        {isChecked && <CheckIcon className="mx-2" />}
-                      </MenuItemOption>
-                    )
-                  })}
-                </MenuOptionGroup>
-              </MenuList>
-            </Menu>
+                    {option.label}&nbsp;{option.sortLabel('DESC')}
+                  </option>
+                  <option
+                    className="!bg-secondary"
+                    value={`${option.value}:ASC`}
+                  >
+                    {option.label}&nbsp;{option.sortLabel('ASC')}
+                  </option>
+                </Fragment>
+              ))}
+            </Select>
           </Box>
         </Flex>
-        <Box flex={1} mr={2} className="p-2">
-          <Select
-            className="w-full !bg-secondary hover:!bg-blue600"
-            onChange={(event) => {
-              setTablePage(1)
-              const [sortColumn, sortDirection] = event.target.value.split(
-                ':'
-              ) as [TradeCardSortValue, SortDirection]
-              setSortColumn(sortColumn)
-              setSortDirection(sortDirection)
-            }}
-          >
-            {SORT_OPTIONS.map((option, index) => (
-              <Fragment key={`${option.value}-${index}`}>
-                <option
-                  className="!bg-secondary"
-                  value={`${option.value}:DESC`}
-                >
-                  {option.label}&nbsp;{option.sortLabel('DESC')}
-                </option>
-                <option className="!bg-secondary" value={`${option.value}:ASC`}>
-                  {option.label}&nbsp;{option.sortLabel('ASC')}
-                </option>
-              </Fragment>
-            ))}
-          </Select>
-        </Box>
-      </Flex>
-      <SimpleGrid
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 bg-primary"
-        columns={{ base: 2, lg: 5 }}
-      >
-        {selectedUserCardsIsLoading
-          ? Array(ROWS_PER_PAGE)
-              .fill(null)
-              .map((_, index) => (
-                <Box key={index} className="m-4 relative">
-                  <Skeleton height="200px" />
-                  <Skeleton height="20px" mt="2" />
-                </Box>
-              ))
-          : transformedCards?.map((card, index) => (
-              <div
-                key={`${card.cardID}-${index}`}
-                className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl cursor-pointer"
-                onClick={() => handleCardSelect(card)}
-              >
-                <Image
-                  className="cursor-pointer"
-                  onClick={() => {
-                    return card
-                  }}
-                  src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
-                  fallback={
-                    <div className="relative z-10">
-                      <Image src="/cardback.png" />
-                      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
-                    </div>
-                  }
-                  alt={`${card.player_name} Card`}
-                />
-                <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-primary transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
-                  {card.card_rarity}
-                </Badge>
-              </div>
-            ))}
-      </SimpleGrid>
-      {selectedUserCards?.total ? (
-        <TablePagination
-          totalRows={selectedUserCards.total}
-          rowsPerPage={ROWS_PER_PAGE}
-          onPageChange={(newPage) => setTablePage(newPage)}
-        />
-      ) : null}
-    </>
-  )
-}
+        <SimpleGrid
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 bg-primary"
+          columns={{ base: 2, lg: 5 }}
+        >
+          {selectedUserCardsIsLoading
+            ? Array(ROWS_PER_PAGE)
+                .fill(null)
+                .map((_, index) => (
+                  <Box key={index} className="m-4 relative">
+                    <Skeleton height="200px" />
+                    <Skeleton height="20px" mt="2" />
+                  </Box>
+                ))
+            : selectedUserCards?.rows.map((card, index) => {
+                const isInDisplayCards = displayCards.some(
+                  (displayCard) =>
+                    displayCard?.ownedCardID === card?.ownedCardID
+                )
+
+                return (
+                  <div
+                    key={`${card.cardID}-${index}`}
+                    className={`m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl ${
+                      isInDisplayCards
+                        ? 'grayscale cursor-default'
+                        : 'cursor-pointer'
+                    }`}
+                    onClick={() => {
+                      if (!isInDisplayCards) {
+                        handleCardSelect(card)
+                      }
+                    }}
+                  >
+                    <Image
+                      className={`cursor-pointer`}
+                      src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+                      fallback={
+                        <div className="relative z-10">
+                          <Image src="/cardback.png" />
+                          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+                        </div>
+                      }
+                      alt={`${card.player_name} Card`}
+                    />
+                    <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-primary transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
+                      {card.card_rarity}
+                    </Badge>
+                  </div>
+                )
+              })}
+        </SimpleGrid>
+        {selectedUserCards?.total ? (
+          <TablePagination
+            totalRows={selectedUserCards?.total || 0}
+            rowsPerPage={ROWS_PER_PAGE}
+            onPageChange={handlePageChange}
+          />
+        ) : null}
+      </>
+    )
+  }
+)
 
 export default CardSelectionGrid
