@@ -193,8 +193,6 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
             <CardSelectionGrid
               handleCardSelect={handleCardSelect}
               displayCards={displayCards}
-              selectedPosition={selectedPosition}
-              bid={bid}
             />
           </DrawerBody>
         </DrawerContent>

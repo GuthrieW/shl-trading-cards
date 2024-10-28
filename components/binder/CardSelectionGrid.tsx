@@ -27,17 +27,17 @@ import {
   TradeCardSortOption,
   TradeCardSortValue,
 } from '@pages/api/v3/trades/collection/[uid]'
+import config from 'lib/config'
 import { ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
 import TablePagination from '@components/table/TablePagination'
 import rarityMap from '@constants/rarity-map'
 import { allTeamsMaps } from '@constants/teams-map'
 import filterTeamsByLeague from '@utils/filterTeamsByLeague'
+import { useCookie } from '@hooks/useCookie'
 
 interface CardSelectionGridProps {
   handleCardSelect: (card: binderCards) => void
   displayCards: binderCards[]
-  selectedPosition: number
-  bid: string
 }
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
@@ -62,8 +62,7 @@ const SORT_OPTIONS: TradeCardSortOption[] = [
 ] as const
 
 const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
-  ({ handleCardSelect, displayCards, selectedPosition, bid }) => {
-    const { session } = useSession()
+  ({ handleCardSelect, displayCards }) => {
     const [playerName, setPlayerName] = useState<string>('')
     const [teams, setTeams] = useState<string[]>([])
     const [rarities, setRarities] = useState<string[]>([])
@@ -73,36 +72,20 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
     )
     const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
     const [tablePage, setTablePage] = useState<number>(1)
+    const [uid] = useCookie(config.userIDCookieName)
+
 
     const ROWS_PER_PAGE =
       useBreakpointValue({
         base: 4,
         md: 5,
       }) || 5
-    useEffect(() => {
-      if (!selectedPosition) {
-        setTablePage(1)
-      }
-    }, [selectedPosition])
 
-    useEffect(() => {
-      setTablePage(1)
-    }, [
-      playerName,
-      teams.length,
-      rarities.length,
-      leagues.length,
-      sortColumn,
-      sortDirection,
-    ])
-
-    const {
-      payload: selectedUserCards,
-      isLoading: selectedUserCardsIsLoading,
-    } = query<ListResponse<TradeCard>>({
+    const { payload: selectedUserCards, isLoading: selectedUserCardsIsLoading } =
+    query<ListResponse<TradeCard>>({
       queryKey: [
         'collection',
-        session?.userId,
+        uid,
         playerName,
         JSON.stringify(teams),
         JSON.stringify(rarities),
@@ -113,7 +96,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
       ],
       queryFn: () =>
         axios({
-          url: `/api/v3/trades/collection/${session?.userId}`,
+          url: `/api/v3/trades/collection/${uid}`,
           method: GET,
           params: {
             playerName,
@@ -126,12 +109,10 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
             sortDirection,
           },
         }),
-      enabled: !!session?.userId,
+      enabled: !!uid,
     })
+    console.log(selectedUserCards)
 
-    const handlePageChange = (newPage: number) => {
-      setTablePage(newPage)
-    }
     const toggleTeam = (team: string) => {
       setTeams((currentValue) => {
         const teamIndex: number = currentValue.indexOf(team)
@@ -378,13 +359,11 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                 )
               })}
         </SimpleGrid>
-        {selectedUserCards?.total ? (
           <TablePagination
-            totalRows={selectedUserCards?.total || 0}
+            totalRows={selectedUserCards?.total}
             rowsPerPage={ROWS_PER_PAGE}
-            onPageChange={handlePageChange}
+            onPageChange={(newPage) => setTablePage(newPage)}
           />
-        ) : null}
       </>
     )
   }
