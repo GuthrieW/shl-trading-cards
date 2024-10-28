@@ -78,6 +78,7 @@ const BinderDetailPage = ({ bid, userID }: { bid: string, userID: number | null 
     }
   }
 
+
   const fullBinderData: (binderCards | null)[] = Array.from(
     { length: BINDER_CONSTANTS.TOTAL_POSITIONS },
     () => null
@@ -94,7 +95,6 @@ const BinderDetailPage = ({ bid, userID }: { bid: string, userID: number | null 
     (currentPage - 1) * BINDER_CONSTANTS.ROWS_PER_PAGE,
     currentPage * BINDER_CONSTANTS.ROWS_PER_PAGE
   )
-  console.log(userID)
   const totalRows = fullBinderData.length
   return (
     <Box>

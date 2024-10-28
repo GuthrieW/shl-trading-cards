@@ -111,7 +111,6 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
         }),
       enabled: !!uid,
     })
-    console.log(selectedUserCards)
 
     const toggleTeam = (team: string) => {
       setTeams((currentValue) => {

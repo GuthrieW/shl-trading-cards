@@ -18,6 +18,7 @@ const index = async (
 ): Promise<void> => {
   await middleware(req, res, cors)
   const bid = req.query.bid as string
+  const userID = req.query.userID as string
 
   if (req.method === GET) {
     if (req.method !== 'GET') {
@@ -37,6 +38,9 @@ JOIN
     user_info u ON b.uid = u.uid`
     if (bid) {
       binderQuery.append(SQL` WHERE b.binderID=${bid} `)
+    }
+    if (userID){
+      binderQuery.append(SQL` AND u.uid=${userID} `)
     }
 
     const result = await cardsQuery<binders>(binderQuery)

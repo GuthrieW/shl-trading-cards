@@ -119,7 +119,6 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
       removedPositions: removedPositions 
     })
   }
-  console.log(displayCards)
   const handleCancel = () => {
     setDisplayCards([...currentCards])
     setHasChanges(false)
