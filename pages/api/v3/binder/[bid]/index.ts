@@ -55,13 +55,6 @@ WHERE binder_cards.binderID =${binderID}`
         .end('Database connection failed')
       return
     }
-    if (result.length === 0) {
-      res.status(StatusCodes.NOT_FOUND).json({
-        status: 'error',
-        message: 'No binder found',
-      })
-      return
-    }
     res.status(StatusCodes.OK).json({
       status: 'success',
       payload: result,

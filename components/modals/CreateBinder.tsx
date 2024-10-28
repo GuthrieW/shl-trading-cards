@@ -22,6 +22,7 @@ import axios from 'axios'
 import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
 import { useSession } from 'contexts/AuthContext'
+import { useQueryClient } from 'react-query'
 
 interface CreateBinder {
   isOpen: boolean
@@ -34,6 +35,7 @@ const CreateBinder: React.FC<CreateBinder> = ({ isOpen, onClose }) => {
   const [userid] = useCookie(config.userIDCookieName)
   const { session } = useSession()
   const toast = useToast()
+  const queryClient = useQueryClient()
 
   const { mutateAsync: createBinder, isLoading: isLoadingCreateBinder } =
     mutation<void, Record<string, string>>({
@@ -56,6 +58,7 @@ const CreateBinder: React.FC<CreateBinder> = ({ isOpen, onClose }) => {
           title: 'Created Binder, switch tabs to upload cards',
           ...successToastOptions,
         })
+        queryClient.invalidateQueries(['users-binders'])
         onClose()
         setBinderName('')
         setBinderDescription('')

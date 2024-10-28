@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useQuery, useQueryClient } from 'react-query'
 import {
   Box,
@@ -29,7 +29,12 @@ import { useSession } from 'contexts/AuthContext'
 import { mutation } from '@pages/api/database/mutation'
 import { successToastOptions } from '@utils/toast'
 
-const BinderHeader = ({ bid }: { bid: string }) => {
+interface UpdateBinderHeaderProps {
+  bid: string
+  binderData: binders,
+}
+
+const BinderHeader = ({ bid, binderData  }: UpdateBinderHeaderProps ) => {
   const { session } = useSession();
   const { isOpen, onOpen: openModal, onClose } = useDisclosure();
   const [editedName, setEditedName] = useState('');
@@ -37,23 +42,13 @@ const BinderHeader = ({ bid }: { bid: string }) => {
   const queryClient = useQueryClient()
   const toast = useToast();
 
-  const { data, isLoading } = useQuery<{ status: string; payload: binders[] }>({
-    queryKey: ['users-binders', bid],
-    queryFn: () =>
-      axios({
-        method: GET,
-        url: `/api/v3/binder?bid=${bid}`,
-      }).then((response) => response.data),
-    enabled: !!bid,
-  });
-
   const onOpen = () => {
-    setEditedName(data?.payload[0]?.binder_name || '');
-    setEditedDesc(data?.payload[0]?.binder_desc || '');
+    setEditedName(binderData.binder_name || '');
+    setEditedDesc(binderData.binder_desc || '');
     openModal();
   };
 
-  const isOwner = Number(session?.userId) === data?.payload[0]?.userID;
+  const isOwner = Number(session?.userId) === binderData.userID;
 
   const { mutateAsync: editBinderHeader, isLoading: isLoadingCreateBinder } =
     mutation<void, Record<string, string>>({
@@ -102,24 +97,12 @@ const BinderHeader = ({ bid }: { bid: string }) => {
         console.error('Error updating binder:', error)
       }
     }
-
-  if (isLoading) {
-    return (
-      <Box className="border-b-8 border-b-blue700 bg-secondary p-4">
-        <VStack spacing={4} align="stretch">
-          <Skeleton height="24px" width="60%" />
-          <Skeleton height="20px" width="80%" />
-        </VStack>
-      </Box>
-    );
-  }
-
   return (
     <>
       <Box className="border-b-8 border-b-blue700 bg-secondary p-4">
         <Flex justifyContent="space-between" alignItems="center" mb={2}>
           <Flex alignItems="center" gap={2}>
-            <Text className="text-lg font-bold">{data.payload[0]?.binder_name}</Text>
+            <Text className="text-lg font-bold">{binderData.binder_name}</Text>
             {isOwner && (
               <Button
                 size="sm"
@@ -131,9 +114,9 @@ const BinderHeader = ({ bid }: { bid: string }) => {
               />
             )}
           </Flex>
-          <Text className="text-lg font-bold">By: {data.payload[0]?.username}</Text>
+          <Text className="text-lg font-bold">By: {binderData.username}</Text>
         </Flex>
-        <Text className="mt-2 text-secondary">{data.payload[0]?.binder_desc}</Text>
+        <Text className="mt-2 text-secondary">{binderData.binder_desc}</Text>
       </Box>
 
       <Modal isOpen={isOpen} onClose={onClose} size="md">

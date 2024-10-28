@@ -26,7 +26,7 @@ import UpdateBinder from './UpdateBinder'
 import { BINDER_CONSTANTS } from 'lib/constants'
 
 
-const BinderDetailPage = ({ bid }: { bid: string }) => {
+const BinderDetailPage = ({ bid, userID }: { bid: string, userID: number | null }) => {
   const router = useRouter()
   const { session } = useSession()
   const [currentPage, setCurrentPage] = useState(1)
@@ -94,11 +94,11 @@ const BinderDetailPage = ({ bid }: { bid: string }) => {
     (currentPage - 1) * BINDER_CONSTANTS.ROWS_PER_PAGE,
     currentPage * BINDER_CONSTANTS.ROWS_PER_PAGE
   )
-
+  console.log(userID)
   const totalRows = fullBinderData.length
   return (
     <Box>
-      {currentCards[0]?.userID === Number(session?.userId) && (
+      {userID === Number(session?.userId) && (
         <Box display="flex" justifyContent="space-between" mb={4}>
           <Button colorScheme="blue" onClick={onUpdateOpen}>
             Update Binder

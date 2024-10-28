@@ -46,15 +46,19 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
   const updateBinder = useMutation(
     async (updates: {
       cards: { binderID: string; ownedCardID: string; position: number }[]
+      removedPositions: number[]  // Add this to track removed positions
     }) => {
       const response = await axios.put(
         `/api/v3/binder/${bid}/update`,
-        { cards: updates.cards },
+        { 
+          cards: updates.cards,
+          removedPositions: updates.removedPositions 
+        },
         {
           headers: { Authorization: `Bearer ${session?.token}` },
         }
       )
-
+  
       return response.data
     },
     {
@@ -70,6 +74,13 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
       },
     }
   )
+
+  const handleRemoveCard = (position: number) => {
+    const updatedCards = [...displayCards]
+    updatedCards[position - 1] = null
+    setDisplayCards(updatedCards)
+    setHasChanges(true)
+  }
 
   const handleCardSelect = (card: binderCards) => {
     if (selectedPosition === null) return
@@ -90,6 +101,11 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
   }
 
   const handleSave = () => {
+    // Track which positions had cards removed
+    const removedPositions = displayCards.map((card, index) => 
+      card === null ? index + 1 : null
+    ).filter((pos): pos is number => pos !== null)
+  
     const cardsToUpdate = displayCards
       .filter((card): card is binderCards => card !== null)
       .map((card) => ({
@@ -97,10 +113,13 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
         ownedCardID: String(card.ownedCardID),
         position: card.position,
       }))
-
-    updateBinder.mutate({ cards: cardsToUpdate })
+  
+    updateBinder.mutate({ 
+      cards: cardsToUpdate,
+      removedPositions: removedPositions 
+    })
   }
-
+  console.log(displayCards)
   const handleCancel = () => {
     setDisplayCards([...currentCards])
     setHasChanges(false)
@@ -150,6 +169,13 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
                   >
                     Replace
                   </Button>
+                  <Button
+                      size="sm"
+                      colorScheme="red"
+                      onClick={() => handleRemoveCard(index + 1)}
+                    >
+                      Remove
+                    </Button>
                 </Box>
               </>
             ) : (
