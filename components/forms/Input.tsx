@@ -30,7 +30,7 @@ export default function Input({
         value={value}
         type={type}
         name={name}
-        className="font-mont"
+        className="font-mont !bg-primary !text-secondary"
         disabled={disabled}
         onChange={onChange}
         onBlur={onBlur}

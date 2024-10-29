@@ -99,7 +99,8 @@ const LastOpenedPack = () => {
     const message = `I opened pack #${packID} \n ${emojis}\nCheck out my cards: https://cards.simulationhockey.com/packs/${packID}`
     navigator.clipboard.writeText(message).then(() => {
       toast({
-        title: 'Share with friends!',
+        title: 'Copied to clipboard',
+        description: 'Share with friends on discord or chirper!',
         ...successToastOptions,
       })
     })

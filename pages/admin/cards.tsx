@@ -37,9 +37,10 @@ import { ListResponse, SortDirection } from '@pages/api/v3'
 import axios from 'axios'
 import { useState } from 'react'
 import { cardService } from 'services/cardService'
-import { shlTeamsMap } from '@constants/teams-map'
+import { allTeamsMaps } from '@constants/teams-map'
 import rarityMap from '@constants/rarity-map'
 import { useCookie } from '@hooks/useCookie'
+import filterTeamsByLeague from 'utils/filterTeamsByLeague'
 import config from 'lib/config'
 import SubmitImageModal from '@components/admin-cards/SubmitImageModal'
 import ClaimCardDialog from '@components/admin-cards/ClaimCardDialog'
@@ -89,6 +90,7 @@ export default () => {
   const [playerName, setPlayerName] = useState<string>(null)
   const [teams, setTeams] = useState<string[]>([])
   const [rarities, setRarities] = useState<string[]>([])
+  const [leagues, setLeague] = useState<string[]>([])
   const [sortColumn, setSortColumn] = useState<ColumnName>('player_name')
   const [sortDirection, setSortDirection] = useState<SortDirection>('ASC')
   const [tablePage, setTablePage] = useState<number>(1)
@@ -115,6 +117,7 @@ export default () => {
       playerName,
       JSON.stringify(teams),
       JSON.stringify(rarities),
+      JSON.stringify(leagues),
       String(viewSkaters),
       String(viewNeedsAuthor),
       String(viewNeedsImage),
@@ -135,6 +138,7 @@ export default () => {
           playerName,
           teams: JSON.stringify(teams),
           rarities: JSON.stringify(rarities),
+          leagues: JSON.stringify(leagues),
           viewSkaters,
           viewNeedsAuthor,
           viewNeedsImage,
@@ -166,6 +170,10 @@ export default () => {
     })
   }
 
+  const toggleLeague = (league: string) => {
+    setLeague([league])
+  }
+
   const toggleRarity = (rarity: string) => {
     setRarities((currentValue) => {
       const rarityIndex: number = currentValue.indexOf(rarity)
@@ -192,7 +200,7 @@ export default () => {
               onChange={(event) => setPlayerName(event.target.value)}
             />
           </FormControl>
-          <div className="m-2 flex flex-row justify-between">
+          <div className="m-2 flex flex-col gap-4 md:flex-row md:justify-between">
             <div className="flex flex-row space-x-2">
               <FormControl>
                 <Menu closeOnSelect={false}>
@@ -210,24 +218,26 @@ export default () => {
                       >
                         Deselect All
                       </MenuItemOption>
-                      {Object.entries(shlTeamsMap).map(([key, value]) => {
-                        const isChecked: boolean = teams.includes(
-                          String(value.teamID)
-                        )
-                        return (
-                          <MenuItemOption
-                            icon={null}
-                            isChecked={isChecked}
-                            aria-checked={isChecked}
-                            key={value.teamID}
-                            value={String(value.teamID)}
-                            onClick={() => toggleTeam(String(value.teamID))}
-                          >
-                            {value.label}
-                            {isChecked && <CheckIcon className="mx-2" />}
-                          </MenuItemOption>
-                        )
-                      })}
+                      {filterTeamsByLeague(allTeamsMaps, rarities).map(
+                        ([key, value]) => {
+                          const isChecked: boolean = teams.includes(
+                            String(value.teamID)
+                          )
+                          return (
+                            <MenuItemOption
+                              icon={null}
+                              isChecked={isChecked}
+                              aria-checked={isChecked}
+                              key={value.teamID}
+                              value={String(value.teamID)}
+                              onClick={() => toggleTeam(String(value.teamID))}
+                            >
+                              {value.label}
+                              {isChecked && <CheckIcon className="mx-2" />}
+                            </MenuItemOption>
+                          )
+                        }
+                      )}
                     </MenuOptionGroup>
                   </MenuList>
                 </Menu>
@@ -252,6 +262,15 @@ export default () => {
                         const isChecked: boolean = rarities.includes(
                           value.value
                         )
+
+                        // Disable selection of any IIHF Awards and another rarity because trying to select different leagues teams at the same time with the same ID is hell
+                        const isDisabled =
+                          (value.value === 'IIHF Awards' &&
+                            rarities.length > 0 &&
+                            !rarities.includes('IIHF Awards')) ||
+                          (rarities.includes('IIHF Awards') &&
+                            value.value !== 'IIHF Awards')
+
                         return (
                           <MenuItemOption
                             icon={null}
@@ -259,7 +278,10 @@ export default () => {
                             aria-checked={isChecked}
                             key={value.value}
                             value={value.value}
-                            onClick={() => toggleRarity(value.value)}
+                            onClick={() =>
+                              !isDisabled && toggleRarity(value.value)
+                            }
+                            isDisabled={isDisabled}
                           >
                             {value.label}
                             {isChecked && <CheckIcon className="mx-2" />}

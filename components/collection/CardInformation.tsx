@@ -25,8 +25,9 @@ import { query } from '@pages/api/database/query'
 import { UserCollection } from '@pages/api/v3'
 import GetUsername from '@components/common/GetUsername'
 import Router from 'next/router'
+import { useSession } from 'contexts/AuthContext'
 
-export const IndexRecordTable = ({
+export const CardInformation = ({
   owned,
   playerID,
   cardID,
@@ -42,7 +43,7 @@ export const IndexRecordTable = ({
   const [height, setHeight] = useState('0px')
   const { colorMode } = useColorMode()
   const [playerHistory, setPlayerHistory] = useState<any[]>([])
-
+  const { session, loggedIn } = useSession()
   const setIFrameHeight = useCallback((event: MessageEvent<any>) => {
     if (event.origin.includes('index.simulationhockey.com')) {
       if (event.data !== 0 && typeof event.data === 'number')
@@ -72,7 +73,7 @@ export const IndexRecordTable = ({
   }, [playerID])
 
   const { payload: packs, isLoading } = query<UserCollection[]>({
-    queryKey: ['packs-from-cards', String(cardID), String(userID), "false"],
+    queryKey: ['packs-from-cards', String(cardID), String(userID), 'false'],
     queryFn: () =>
       axios({
         method: GET,
@@ -173,9 +174,7 @@ export const IndexRecordTable = ({
                     S{record.seasonID} - {record.achievementName}{' '}
                     {record.isAward && (record.won ? '(won)' : '(nom)')}
                   </div>
-                  <div className="text-sm">
-                    {record.achievementDescription}
-                  </div>
+                  <div className="text-sm">{record.achievementDescription}</div>
                 </Box>
               ))
           ) : (
@@ -184,42 +183,47 @@ export const IndexRecordTable = ({
         </AccordionPanel>
       </AccordionItem>
       <AccordionItem>
-  <h2>
-    <AccordionButton>
-      <Box flex="1" textAlign="left">
-        Users who own the card
-      </Box>
-      <AccordionIcon />
-    </AccordionButton>
-  </h2>
-  <AccordionPanel pb={4}>
-    {packs && packs.length > 0 ? (
-      packs.map((pack) => (
-        <Box
-          key={pack.packID}
-          p={2}
-          borderWidth="1px"
-          rounded="md"
-          mb={2}
-        >
-          <div>
-            User: { <GetUsername userID={pack.userID} /> }
+        <h2>
+          <AccordionButton>
+            <Box flex="1" textAlign="left">
+              Users who own the card
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+        </h2>
+        <AccordionPanel pb={4}>
+          <div className="w-full text-center">
+            {packs && packs.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {packs.map((pack) => (
+                  <Box
+                    key={pack.packID}
+                    p={2}
+                    borderWidth="1px"
+                    rounded="md"
+                    mb={2}
+                  >
+                    <div>{pack.username} : {pack.total}</div>
+                    <Button
+                      className="mt-2"
+                      colorScheme="blue"
+                      isDisabled={session?.userId == String(pack.userID) || !loggedIn}
+                      onClick={() =>
+                        Router.push(
+                          `/trade?partnerId=${pack.userID}&cardID=${pack.cardID}`
+                        )
+                      }
+                    >
+                      Trade
+                    </Button>
+                  </Box>
+                ))}
+              </div>
+            ) : (
+              <div>No users own this card yet.</div>
+            )}
           </div>
-          {userID !== String(pack.userID) && (
-            <Button
-              className="mt-2"
-              colorScheme="blue"
-              onClick={() => Router.push(`/trade?partnerId=${pack.userID}&cardID=${pack.cardID}`)}
-            >
-              Trade for this card
-            </Button>
-          )}
-        </Box>
-      ))
-    ) : (
-      <div>No users own this card yet.</div>
-    )}
-  </AccordionPanel>
+        </AccordionPanel>
       </AccordionItem>
     </Accordion>
   )

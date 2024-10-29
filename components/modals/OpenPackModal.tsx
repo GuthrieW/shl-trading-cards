@@ -1,5 +1,16 @@
 import React, { useState } from 'react'
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Image, Text, Spinner } from '@chakra-ui/react'
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Image,
+  Text,
+  Spinner,
+} from '@chakra-ui/react'
 import { packService, PackInfo } from 'services/packService'
 import { UserPackWithCover } from '@pages/packs'
 
@@ -29,15 +40,26 @@ const OpenPackModal = ({
   }
 
   return (
-    <Modal isOpen={true} blockScrollOnMount={false} onClose={() => setShowModal(false)}>
+    <Modal
+      isOpen={true}
+      blockScrollOnMount={false}
+      onClose={() => setShowModal(false)}
+      size={{ base: 'xs', sm: 'md', md: 'lg', lg: 'lg' }}
+    >
       <ModalOverlay />
-      <ModalContent className="bg-primary text-secondary">
+      <ModalContent>
         <ModalHeader className="bg-primary text-secondary">
           <div className='select-none'>{packTypeData.label}</div>
         </ModalHeader>
         <ModalBody className="flex flex-col justify-center items-center bg-primary text-secondary">
-          <Image src={pack.cover} alt={packTypeData.label} className="select-none" />
-          <Text mt={2}>{packTypeData.description}</Text>
+          <Image
+            src={pack.cover}
+            alt={packTypeData.label}
+            className="select-none w-full max-w-xs sm:max-w-sm"
+          />
+          <Text mt={2} className="text-sm md:text-base">
+            {packTypeData.description}
+          </Text>
           {isOpening && (
             <div className="mt-4 flex items-center">
               <Spinner size="lg" color="green.500" />

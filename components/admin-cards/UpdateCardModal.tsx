@@ -11,6 +11,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Stack,
+  useToast,
 } from '@chakra-ui/react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -22,6 +23,7 @@ import Select from '@components/forms/Select'
 import rarityMap from '@constants/rarity-map'
 import positionMap from '@constants/position-map'
 import { useQueryClient } from 'react-query'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
 
 const updateValidationSchema = Yup.object({}).shape({
   cardID: Yup.number().integer().required('Card ID is required'),
@@ -81,6 +83,7 @@ export default function UpdateCardModal({
 }) {
   const [formError, setFormError] = useState<string>('')
   const queryClient = useQueryClient()
+  const toast = useToast()
 
   const { mutateAsync: updateCard } = mutation<
     void,
@@ -151,8 +154,16 @@ export default function UpdateCardModal({
         setFormError(null)
 
         await updateCard({ cardID: card.cardID, card: cardUpdates })
+        toast({
+          title: 'Sucessfully Updated Card',
+          ...successToastOptions,
+        })
       } catch (error) {
         console.error(error)
+        toast({
+          title: 'Error Updating Card',
+          ...errorToastOptions,
+        })
         const errorMessage: string =
           'message' in error
             ? error.message
@@ -167,7 +178,7 @@ export default function UpdateCardModal({
   return (
     <Modal size="xl" isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent className="!bg-primary !text-secondary">
         <ModalHeader>Update Card #{card.cardID}</ModalHeader>
         <ModalCloseButton />
         {formError && (
@@ -423,7 +434,7 @@ export default function UpdateCardModal({
               Close
             </Button>
             <Button
-              colorScheme="red"
+              colorScheme="green"
               type="submit"
               disabled={!isValid || isSubmitting}
               isLoading={isSubmitting}

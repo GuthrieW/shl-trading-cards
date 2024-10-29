@@ -53,7 +53,7 @@ export default () => {
   })
 
   const { payload: pendingTrades, isLoading: isLoadingPendingTrades } = query<
-    ListResponse<TradeCard>
+    ListResponse<Trade>
   >({
     queryKey: ['pending-trades', String(user?.uid)],
     queryFn: () =>
@@ -63,6 +63,10 @@ export default () => {
       }),
     enabled: !!user?.uid,
   })
+
+  const userPendingTrades = useMemo(() => {
+    return pendingTrades?.rows.filter((trade: Trade) => trade.recipientID === user?.uid) || [];
+  }, [pendingTrades, user?.uid]);
 
   const limitedCards = useMemo(
     () => (packs?.length ? packs.slice(0, 30) : []),
@@ -75,14 +79,13 @@ export default () => {
         <h1 className="text-3xl font-bold text-center mb-4">
           Welcome to Ice Level {user?.username}
         </h1>
-        {!isLoadingPendingTrades && !isLoadingUser && user && (
-          <Alert className="text-black text-xl" status="info">
-            <AlertIcon />
-            <Link href={`/trade`}>
-              Welcome back {user.username}, you have {pendingTrades?.total}{' '}
-              pending trades
-            </Link>
-          </Alert>
+        {!isLoadingPendingTrades && !isLoadingUser && userPendingTrades.length > 0 && (
+        <Alert className="text-black text-xl" status="info">
+          <AlertIcon />
+          <Link href={`/trade`}>
+            Welcome back {user?.username}, you have {userPendingTrades.length} pending trades
+          </Link>
+        </Alert>
         )}
 
         <div>

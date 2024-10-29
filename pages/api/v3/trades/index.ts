@@ -79,7 +79,7 @@ export default async function tradesEndpoint(
     }
 
     if (status.length !== 0) {
-      tradesQuery.append(SQL` AND trade_status=${status}`)
+      tradesQuery.append(SQL` AND trade_status=${status} ORDER BY create_date DESC`)
     }
 
     const queryResult = await cardsQuery<Trade>(tradesQuery)
@@ -91,7 +91,6 @@ export default async function tradesEndpoint(
         .end('Datebase connection failed')
       return
     }
-
     res.status(StatusCodes.OK).json({
       status: 'success',
       payload: {

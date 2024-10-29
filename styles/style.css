@@ -80,12 +80,12 @@
 
 @keyframes shine {
   0% {
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0);
+    box-shadow: 0 0 5px rgba(26, 214, 1, 0);
   }
   50% {
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(1, 133, 45, 0.8);
   }
   100% {
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0);
+    box-shadow: 0 0 15px rgba(1, 133, 45, 0.8);
   }
 }

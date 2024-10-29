@@ -81,7 +81,7 @@ export default function SubmitImageModal({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>
+        <ModalHeader className="!bg-primary !text-secondary">
           Submit Image for #{card.cardID} - {card.player_name}
         </ModalHeader>
         <ModalCloseButton />
@@ -91,7 +91,7 @@ export default function SubmitImageModal({
             {formError}
           </Alert>
         )}
-        <div className="flex flex-col items-center justify-end">
+        <div className="flex flex-col items-center justify-end !bg-primary !text-secondary">
           <div className="flex justify-center items-center m-6">
             {selectedImage && <img src={selectedImage} />}
           </div>

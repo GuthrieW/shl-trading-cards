@@ -1,10 +1,10 @@
 import { Box, IconButton } from '@chakra-ui/react'
 import {
-  ChevronDoubleLeftIcon,
-  ChevronDoubleRightIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from '@heroicons/react/20/solid'
+ArrowLeftIcon,
+ArrowRightIcon,
+ChevronLeftIcon,
+ChevronRightIcon
+} from '@chakra-ui/icons'
 import { useEffect, useState } from 'react'
 
 export default ({
@@ -56,13 +56,15 @@ export default ({
         onClick={goToFirstPage}
         className="mx-2 cursor-pointer"
         aria-label="go-to-first-page"
-        icon={<ChevronDoubleLeftIcon />}
+        isDisabled={currentPage === 1}
+        icon={<ArrowLeftIcon />}
       />
       <IconButton
         onClick={goToPreviousPage}
         className="mx-2 cursor-pointer"
         aria-label="go-to-previous-page"
-        icon={<ChevronLeftIcon />}
+        isDisabled={currentPage === 1}
+        icon={<ChevronLeftIcon fontSize="2xl" />}
       />
       <span className="flex justify-center items-center mx-2">
         {currentPage ?? 0} of {totalPages ?? 0}
@@ -71,13 +73,15 @@ export default ({
         onClick={goToNextPage}
         className="mx-2 cursor-pointer"
         aria-label="go-to-next-page"
-        icon={<ChevronRightIcon />}
+        isDisabled={currentPage === totalPages}
+        icon={<ChevronRightIcon fontSize="2xl" />}
       />
       <IconButton
         onClick={goToLastPage}
         className="mx-2 cursor-pointer"
         aria-label="go-to-final-page"
-        icon={<ChevronDoubleRightIcon />}
+        isDisabled={currentPage === totalPages}
+        icon={<ArrowRightIcon />}
       />
     </Box>
   )

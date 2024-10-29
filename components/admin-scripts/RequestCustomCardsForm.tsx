@@ -1,7 +1,7 @@
 import { Button, useToast } from '@chakra-ui/react'
 import { POST } from '@constants/http-methods'
 import rarityMap from '@constants/rarity-map'
-import { shlTeamsMap } from '@constants/teams-map'
+import { allTeamsMaps } from '@constants/teams-map'
 import { mutation } from '@pages/api/database/mutation'
 import { successToastOptions } from '@utils/toast'
 import axios from 'axios'
@@ -123,7 +123,7 @@ const validateCard = (
 ): { status: true } | { status: false; error: string } => {
   if (
     !card.teamID ||
-    !Object.keys(shlTeamsMap).some((teamId) => teamId === String(card.teamID))
+    !Object.keys(allTeamsMaps).some((teamId) => teamId === String(card.teamID))
   ) {
     return { status: false, error: `teamID missing on row ${index}` }
   }

@@ -18,7 +18,7 @@ import {
   Spinner,
   useBreakpointValue,
 } from '@chakra-ui/react'
-import { IndexRecordTable } from 'components/collection/IndexRecordTable'
+import { CardInformation } from '@components/collection/CardInformation'
 import axios from 'axios'
 import { BackOfCard } from '@components/collection/BackOfCard'
 import TradingCard from '@components/images/TradingCard'
@@ -142,7 +142,6 @@ const CardLightBoxModal = ({
                 transform={isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'}
                 style={{
                   transformStyle: 'preserve-3d',
-                  backfaceVisibility: 'hidden',
                 }}
               >
                 <Box
@@ -183,6 +182,7 @@ const CardLightBoxModal = ({
                   style={{
                     backfaceVisibility: 'hidden',
                     transform: 'rotateY(180deg)',
+                    pointerEvents: isFlipped ? 'auto' : 'none',
                   }}
                 >
                   {isLoading ? (
@@ -218,7 +218,7 @@ const CardLightBoxModal = ({
             Card Information
           </DrawerHeader>
           <DrawerBody className="bg-secondary">
-            <IndexRecordTable owned={isOwned} playerID={playerID} cardID={cardID} userID={userID} />
+            <CardInformation owned={isOwned} playerID={playerID} cardID={cardID} userID={userID} />
           </DrawerBody>
         </DrawerContent>
       </Drawer>
