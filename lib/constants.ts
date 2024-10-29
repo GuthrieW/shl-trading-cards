@@ -49,4 +49,4 @@ export const BINDER_CONSTANTS ={
   ROWS_PER_PAGE: 10,
   TOTAL_POSITIONS: 75,
   MAX_BINDERS: 3
-}
+} as const
