@@ -14,14 +14,7 @@ const BinderPage = () => {
         <h1 className="text-lg font-bold text-secondaryText sm:text-xl">
           Welcome to the SHL Binders
         </h1>
-        {loggedIn && (
-          <Button colorScheme="blue" onClick={onOpen} size="md">
-            Create Binder
-          </Button>
-        )}
       </div>
-
-      <CreateBinder isOpen={isOpen} onClose={onClose} />
       <BinderTables />
     </PageWrapper>
   )

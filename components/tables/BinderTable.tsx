@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import axios from 'axios'
 import {
   Skeleton,
@@ -15,6 +15,10 @@ import {
   FormControl,
   FormLabel,
   Switch,
+  Button,
+  useDisclosure,
+  Alert,
+  AlertIcon,
 } from '@chakra-ui/react'
 import { GET } from '@constants/http-methods'
 import { binders } from '@pages/api/v3'
@@ -22,11 +26,15 @@ import { query } from '@pages/api/database/query'
 import { useRouter } from 'next/router'
 import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
+import CreateBinder from '@components/modals/CreateBinder'
+import { useSession } from 'contexts/AuthContext'
 
 const BinderTables = () => {
+  const { loggedIn } = useSession()
   const router = useRouter()
   const [userIDQuery, setUserID] = useState<string>(null)
   const [uid] = useCookie(config.userIDCookieName)
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const { payload: binders, isLoading } = query<binders[]>({
     queryKey: ['users-binders', userIDQuery],
@@ -40,6 +48,17 @@ const BinderTables = () => {
       }),
   })
 
+  const userBinders =
+    binders?.filter((binder) => binder.userID === Number(uid)) || []
+  const reachedLimit = useMemo(
+    () => userBinders.length >= 5,
+    [userBinders.length]
+  )
+
+  const bindersLeft = useMemo(
+    () => (reachedLimit ? 0 : 5 - userBinders.length),
+    [userBinders.length, reachedLimit]
+  )
   const toggleUserID = () => {
     setUserID((prevUserID) => (prevUserID ? null : uid))
   }
@@ -65,15 +84,39 @@ const BinderTables = () => {
             <div className="flex justify-center pt-4"></div>
           </div>
         </>
-      ) : binders ? (
+      ) : (
         <>
-          <div className="flex justify-end">
-            <FormControl className="flex items-center m-2">
-              <FormLabel className="mb-0">Toggle Your Binders:</FormLabel>
-              <Switch isChecked={!!userIDQuery} onChange={toggleUserID} />
-            </FormControl>
-          </div>
-          <Box className="rounded-lg overflow-hidden border">
+          {loggedIn && (
+            <>
+              <div className="flex justify-end">
+                <FormControl className="flex items-center m-2">
+                  <FormLabel className="mb-0">Toggle Your Binders:</FormLabel>
+                  <Switch isChecked={!!userIDQuery} onChange={toggleUserID} />
+                </FormControl>
+                <Button
+                  colorScheme="blue"
+                  onClick={onOpen}
+                  size="md"
+                  isDisabled={reachedLimit}
+                >
+                  Create Binder
+                </Button>
+              </div>
+              {reachedLimit ? (
+                <Alert status="warning" className="text-black"  mb={4}>
+                  <AlertIcon />
+                  You have reached the maximum limit of 5 binders.
+                </Alert>
+              ) : (
+                <Alert status="info" className="text-black" mb={4}>
+                  <AlertIcon />
+                  You can create {bindersLeft} more binder
+                  {bindersLeft !== 1 ? 's' : ''}.
+                </Alert>
+              )}
+            </>
+          )}
+          <Box className="rounded-lg overflow-hidden border mt-4">
             <TableContainer>
               <Table variant="simple">
                 <Thead className="bg-table-header">
@@ -125,8 +168,9 @@ const BinderTables = () => {
               </Table>
             </TableContainer>
           </Box>
+          <CreateBinder isOpen={isOpen} onClose={onClose} />
         </>
-      ) : null}
+      )}
     </div>
   )
 }
