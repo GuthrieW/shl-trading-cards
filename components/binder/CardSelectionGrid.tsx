@@ -74,15 +74,43 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
     const [tablePage, setTablePage] = useState<number>(1)
     const [uid] = useCookie(config.userIDCookieName)
 
-
     const ROWS_PER_PAGE =
       useBreakpointValue({
         base: 4,
         md: 5,
       }) || 5
 
-    const { payload: selectedUserCards, isLoading: selectedUserCardsIsLoading } =
-    query<ListResponse<TradeCard>>({
+    const LOADING_GRID_DATA: { rows: TradeCard[] } = {
+      rows: Array.from({ length: ROWS_PER_PAGE }, (_, index) => ({
+        cardID: index,
+        ownedCardID: 1,
+        teamName: 'name',
+        teamNickName: 'nickName',
+        teamID: 1,
+        player_name: 'player_name',
+        position: 'F',
+        season: 1,
+        card_rarity: 'Bronze',
+        image_url: 'image_url',
+        overall: 1,
+        skating: 1,
+        shooting: 1,
+        hands: 1,
+        checking: 1,
+        defense: 1,
+        high_shots: 1,
+        low_shots: 1,
+        quickness: 1,
+        control: 1,
+        conditioning: 1,
+        playerID: 0,
+      })),
+    } as const
+
+    const {
+      payload: selectedUserCards,
+      isLoading: selectedUserCardsIsLoading,
+    } = query<ListResponse<TradeCard>>({
       queryKey: [
         'collection',
         uid,
@@ -134,21 +162,6 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
           : currentValue.splice(rarityIndex)
         return [...currentValue]
       })
-    }
-
-    if (selectedUserCardsIsLoading) {
-      return (
-        <SimpleGrid columns={{ base: 2, md: 3 }} spacing={4}>
-          {Array(9)
-            .fill(0)
-            .map((_, index) => (
-              <Box key={index}>
-                <Skeleton height="200px" />
-                <Skeleton height="20px" mt="2" />
-              </Box>
-            ))}
-        </SimpleGrid>
-      )
     }
 
     return (
@@ -311,16 +324,10 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 bg-primary"
           columns={{ base: 2, lg: 5 }}
         >
-          {selectedUserCardsIsLoading
-            ? Array(ROWS_PER_PAGE)
-                .fill(null)
-                .map((_, index) => (
-                  <Box key={index} className="m-4 relative">
-                    <Skeleton height="200px" />
-                    <Skeleton height="20px" mt="2" />
-                  </Box>
-                ))
-            : selectedUserCards?.rows.map((card, index) => {
+          {(selectedUserCardsIsLoading
+                ? LOADING_GRID_DATA
+                : selectedUserCards
+              )?.rows.map((card, index) => {
                 const isInDisplayCards = displayCards.some(
                   (displayCard) =>
                     displayCard?.ownedCardID === card?.ownedCardID
@@ -358,11 +365,11 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                 )
               })}
         </SimpleGrid>
-          <TablePagination
-            totalRows={selectedUserCards?.total}
-            rowsPerPage={ROWS_PER_PAGE}
-            onPageChange={(newPage) => setTablePage(newPage)}
-          />
+        <TablePagination
+          totalRows={selectedUserCards?.total}
+          rowsPerPage={ROWS_PER_PAGE}
+          onPageChange={(newPage) => setTablePage(newPage)}
+        />
       </>
     )
   }
