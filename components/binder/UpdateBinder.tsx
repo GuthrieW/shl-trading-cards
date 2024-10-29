@@ -2,7 +2,6 @@ import { ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
 import {
   SimpleGrid,
   Box,
-  Badge,
   useDisclosure,
   useToast,
   Drawer,
@@ -40,25 +39,34 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
   const { session } = useSession()
 
   useEffect(() => {
-    setDisplayCards([...currentCards])
-  }, [currentCards])
+    const savedCards = localStorage.getItem(`binder-${bid}`)
+    if (savedCards) {
+      setDisplayCards(JSON.parse(savedCards))
+    } else {
+      setDisplayCards([...currentCards])
+    }
+  }, [currentCards, bid])
+
+  useEffect(() => {
+    localStorage.setItem(`binder-${bid}`, JSON.stringify(displayCards))
+  }, [displayCards, bid])
 
   const updateBinder = useMutation(
     async (updates: {
       cards: { binderID: string; ownedCardID: string; position: number }[]
-      removedPositions: number[]  // Add this to track removed positions
+      removedPositions: number[]
     }) => {
       const response = await axios.put(
         `/api/v3/binder/${bid}/update`,
-        { 
+        {
           cards: updates.cards,
-          removedPositions: updates.removedPositions 
+          removedPositions: updates.removedPositions,
         },
         {
           headers: { Authorization: `Bearer ${session?.token}` },
         }
       )
-  
+
       return response.data
     },
     {
@@ -101,11 +109,10 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
   }
 
   const handleSave = () => {
-    // Track which positions had cards removed
-    const removedPositions = displayCards.map((card, index) => 
-      card === null ? index + 1 : null
-    ).filter((pos): pos is number => pos !== null)
-  
+    const removedPositions = displayCards
+      .map((card, index) => (card === null ? index + 1 : null))
+      .filter((pos): pos is number => pos !== null)
+
     const cardsToUpdate = displayCards
       .filter((card): card is binderCards => card !== null)
       .map((card) => ({
@@ -113,25 +120,36 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
         ownedCardID: String(card.ownedCardID),
         position: card.position,
       }))
-  
-    updateBinder.mutate({ 
+
+    updateBinder.mutate({
       cards: cardsToUpdate,
-      removedPositions: removedPositions 
+      removedPositions: removedPositions,
     })
   }
+
   const handleCancel = () => {
     setDisplayCards([...currentCards])
     setHasChanges(false)
     onClose()
   }
+
+  const hasSelectedCards = () => {
+    return displayCards.some((card) => card !== null)
+  }
+
   return (
     <Box>
-      <Flex justifyContent="flex-end" mb={4}>
+      <Flex justifyContent="flex-end" mb={4} alignItems="center">
+        {!hasSelectedCards() && (
+          <Text color="red.500" mr={4}>
+            Must have at least 1 card in your binder
+          </Text>
+        )}
         <ButtonGroup>
           <Button
             colorScheme="green"
             onClick={handleSave}
-            isDisabled={!hasChanges}
+            isDisabled={!hasChanges || !hasSelectedCards()}
           >
             Save Changes
           </Button>
@@ -169,12 +187,12 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
                     Replace
                   </Button>
                   <Button
-                      size="sm"
-                      colorScheme="red"
-                      onClick={() => handleRemoveCard(index + 1)}
-                    >
-                      Remove
-                    </Button>
+                    size="sm"
+                    colorScheme="red"
+                    onClick={() => handleRemoveCard(index + 1)}
+                  >
+                    Remove
+                  </Button>
                 </Box>
               </>
             ) : (
