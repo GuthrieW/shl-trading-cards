@@ -28,12 +28,15 @@ import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
 import CreateBinder from '@components/modals/CreateBinder'
 import { useSession } from 'contexts/AuthContext'
+import TablePagination from '@components/table/TablePagination'
+import { BINDER_CONSTANTS } from 'lib/constants'
 
 const BinderTables = () => {
   const { loggedIn } = useSession()
   const router = useRouter()
   const [userIDQuery, setUserID] = useState<string>(null)
   const [uid] = useCookie(config.userIDCookieName)
+  const [currentPage, setCurrentPage] = useState(1)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const { payload: binders, isLoading } = query<binders[]>({
@@ -59,10 +62,17 @@ const BinderTables = () => {
     () => (reachedLimit ? 0 : 5 - userBinders.length),
     [userBinders.length, reachedLimit]
   )
+  
   const toggleUserID = () => {
     setUserID((prevUserID) => (prevUserID ? null : uid))
   }
 
+  const currentBinders = useMemo(() => {
+    const indexOfLastItem = currentPage * BINDER_CONSTANTS.ROWS_PER_PAGE;
+    const indexOfFirstItem = indexOfLastItem - BINDER_CONSTANTS.ROWS_PER_PAGE;
+    return binders?.slice(indexOfFirstItem, indexOfLastItem) || [];
+  }, [binders, currentPage, BINDER_CONSTANTS.ROWS_PER_PAGE]);
+  
   return (
     <div className="w-full p-4 min-h-[400px]">
       {isLoading ? (
@@ -103,7 +113,7 @@ const BinderTables = () => {
                 </Button>
               </div>
               {reachedLimit ? (
-                <Alert status="warning" className="text-black"  mb={4}>
+                <Alert status="warning" className="text-black" mb={4}>
                   <AlertIcon />
                   You have reached the maximum limit of 5 binders.
                 </Alert>
@@ -142,7 +152,7 @@ const BinderTables = () => {
                   </Tr>
                 </Thead>
                 <Tbody className="bg-[var(--color-background-table-row)]">
-                  {binders.map((binder) => (
+                  {currentBinders.map((binder) => (
                     <Tr
                       key={binder.binderID}
                       className="transition-colors duration-150"
@@ -167,6 +177,13 @@ const BinderTables = () => {
                 </Tbody>
               </Table>
             </TableContainer>
+            {!isLoading && (
+              <TablePagination
+                totalRows={binders?.length}
+                rowsPerPage={BINDER_CONSTANTS.ROWS_PER_PAGE}
+                onPageChange={setCurrentPage}
+              />
+            )}
           </Box>
           <CreateBinder isOpen={isOpen} onClose={onClose} />
         </>
