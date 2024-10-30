@@ -11,7 +11,7 @@ const BinderPage = () => {
             Welcome to the SHL Binders
           </h1>
           <span className="text-sm text-secondary">
-            You can create up to 5 binders with a maximum of 75 cards per pack.
+            You can create up to 5 binders with a maximum of 75 cards per binder.
           </span>
         </div>
       </div>
