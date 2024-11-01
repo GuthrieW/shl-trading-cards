@@ -587,7 +587,7 @@ export default function NewTrade({
                           aria-checked={false}
                           closeOnSelect
                           className="!bg-secondary hover:!bg-blue600"
-                          onClick={() => setTeams([])}
+                          onClick={() => setRarities([])}
                         >
                           Deselect All
                         </MenuItemOption>
