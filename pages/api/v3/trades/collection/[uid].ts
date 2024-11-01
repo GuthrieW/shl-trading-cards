@@ -30,6 +30,7 @@ export type TradeCard = {
   quickness: number
   control: number
   conditioning: number
+  playerID: number
 }
 
 export type TradeCardSortValue = keyof TradeCard
@@ -100,7 +101,8 @@ export default async function tradeCollectionEndpoint(
         card.low_shots,
         card.quickness,
         card.control,
-        card.conditioning
+        card.conditioning,
+        card.playerID
       FROM collection collectionCard
       LEFT JOIN cards card
         ON card.cardID=collectionCard.cardID

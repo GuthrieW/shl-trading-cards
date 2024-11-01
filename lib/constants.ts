@@ -44,3 +44,9 @@ export const CAN_SUBMIT_CARDS: RoleGroup = [
 ]
 export const CAN_PROCESS_CARDS: RoleGroup = ['TRADING_CARD_ADMIN']
 export const LEAGUE_LINK_MAP = ['SHL', 'SMJHL', 'IIHF', 'WJC']
+
+export const BINDER_CONSTANTS ={
+  ROWS_PER_PAGE: 10,
+  TOTAL_POSITIONS: 75,
+  MAX_BINDERS: 3
+} as const

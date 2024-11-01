@@ -244,10 +244,10 @@ export const allTeamsMaps = {
   },
   '29': {
     teamID: 8,
-    label: 'Russia',
-    city: 'Russia',
+    label: 'Quebec',
+    city: 'Quebec',
     team: null,
-    abbreviation: 'RUS',
+    abbreviation: 'QCC',
     league: 'IIHF',
     conference: null,
   },

@@ -139,6 +139,7 @@ export default function NewTrade({
       quickness: 1,
       control: 1,
       conditioning: 1,
+      playerID: 0,
     })),
   } as const
 
