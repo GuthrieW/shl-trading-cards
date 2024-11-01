@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Spinner, VStack, HStack } from '@chakra-ui/react'
+import { Box, Spinner, VStack, HStack, Link } from '@chakra-ui/react'
 import { query } from '@pages/api/database/query'
 import { GET } from '@constants/http-methods'
 import axios from 'axios'
@@ -10,9 +10,7 @@ import PackOpen from '@components/collection/PackOpen'
 import GetUsername from '@components/common/GetUsername'
 import { GetServerSideProps } from 'next'
 
-
 export default ({ packID }: { packID: string }) => {
-
   const { payload: packs, isLoading: packsLoading } = query<UserPacks[]>({
     queryKey: ['latest-packs', packID],
     queryFn: () =>
@@ -44,12 +42,25 @@ export default ({ packID }: { packID: string }) => {
           <VStack spacing={4} align="start">
             <HStack justify="space-between" width="100%">
               <div className="font-bold">
-                <div className="text-xs sm:text-lg">Opened By: <GetUsername userID={packs?.[0]?.userID} /> </div>
+                <div className="text-xs sm:text-lg">
+                  Opened by:{' '}
+                  <Link
+                    className="!text-blue600"
+                    href={`/collect/${packs?.[0]?.userID}`}
+                    target="_blank"
+                  >
+                    <GetUsername userID={packs?.[0]?.userID} />
+                  </Link>{' '}
+                </div>
                 <div className="text-xs sm:text-lg">Pack #: {packID}</div>
               </div>
               <div className="font-bold">
-                <div className="text-xs sm:text-lg">Bought On: {formatDateTime(pack.purchaseDate)}</div>
-                <div className="text-xs sm:text-lg">Opened On: {formatDateTime(pack.openDate)}</div>
+                <div className="text-xs sm:text-lg">
+                  Bought On: {formatDateTime(pack.purchaseDate)}
+                </div>
+                <div className="text-xs sm:text-lg">
+                  Opened On: {formatDateTime(pack.openDate)}
+                </div>
               </div>
             </HStack>
           </VStack>
@@ -57,7 +68,9 @@ export default ({ packID }: { packID: string }) => {
         {packs && packs[0].opened === 1 ? (
           <PackOpen packID={packID} />
         ) : (
-          <div className="text-base sm:text-lg">No cards available for this pack.</div>
+          <div className="text-base sm:text-lg">
+            No cards available for this pack.
+          </div>
         )}
       </Box>
     </PageWrapper>
@@ -65,11 +78,11 @@ export default ({ packID }: { packID: string }) => {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-    const { packID } = query;
-  
-    return {
-      props: {
-        packID,
-      },
-    };
-  };
+  const { packID } = query
+
+  return {
+    props: {
+      packID,
+    },
+  }
+}
