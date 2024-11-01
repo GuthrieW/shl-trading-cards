@@ -22,6 +22,7 @@ import { useState, useEffect } from 'react'
 import { useQueryClient, useMutation } from 'react-query'
 import CardSelectionGrid from './CardSelectionGrid'
 import { useSession } from 'contexts/AuthContext'
+import { TradeCard } from '@pages/api/v3/trades/collection/[uid]'
 
 interface UpdateBinderProps {
   bid: string
@@ -90,7 +91,7 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
     setHasChanges(true)
   }
 
-  const handleCardSelect = (card: binderCards) => {
+  const handleCardSelect = (card: TradeCard) => {
     if (selectedPosition === null) return
 
     const updatedCards = [...displayCards]
@@ -227,7 +228,11 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader className="bg-primary text-secondary">
+          <DrawerHeader 
+              position="sticky"
+              top="0"
+              zIndex="1"
+              className="bg-primary text-secondary">
             {selectedPosition !== null
               ? `Select Card for Position ${selectedPosition}`
               : 'Select Card'}

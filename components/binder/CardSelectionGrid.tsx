@@ -18,7 +18,6 @@ import {
   MenuOptionGroup,
 } from '@chakra-ui/react'
 import { binderCards, ListResponse, SortDirection } from '@pages/api/v3'
-import { useSession } from 'contexts/AuthContext'
 import axios from 'axios'
 import { query } from '@pages/api/database/query'
 import { GET } from '@constants/http-methods'
@@ -36,7 +35,7 @@ import filterTeamsByLeague from '@utils/filterTeamsByLeague'
 import { useCookie } from '@hooks/useCookie'
 
 interface CardSelectionGridProps {
-  handleCardSelect: (card: TradeCard | binderCards) => void;
+  handleCardSelect: (card: TradeCard) => void;
   displayCards: binderCards[]
 }
 

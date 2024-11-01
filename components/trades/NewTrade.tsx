@@ -495,7 +495,12 @@ export default function NewTrade({
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader className="flex justify-between items-center bg-primary p-4">
+          <DrawerHeader
+            position="sticky"
+            top="0"
+            zIndex="1"
+            className="flex justify-between items-center bg-primary p-4"
+          >
             <span>{pluralizeName(selectedUser?.username)} Cards</span>
           </DrawerHeader>
           <DrawerBody className="bg-primary p-4">
