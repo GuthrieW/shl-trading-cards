@@ -36,7 +36,7 @@ import filterTeamsByLeague from '@utils/filterTeamsByLeague'
 import { useCookie } from '@hooks/useCookie'
 
 interface CardSelectionGridProps {
-  handleCardSelect: (card: binderCards) => void
+  handleCardSelect: (card: TradeCard | binderCards) => void;
   displayCards: binderCards[]
 }
 
