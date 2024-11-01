@@ -81,10 +81,14 @@ export default function NewTrade({
   loggedInUser,
   tradePartnerUid,
   cardID,
+  resetTradeCards,
+  setResetTradeCards,
 }: {
   loggedInUser: UserData
   tradePartnerUid: string
   cardID?: number
+  resetTradeCards: boolean
+  setResetTradeCards: (value: boolean) => void
 }) {
   const toast = useToast()
   const queryClient = useQueryClient()
@@ -109,6 +113,14 @@ export default function NewTrade({
   const [cardAdded, setCardAdded] = useState(false)
 
   const [uid] = useCookie(config.userIDCookieName)
+
+  useEffect(() => {
+    if (resetTradeCards) {
+      setloggedInUserCardsToTrade([])
+      setPartnerUserCardsToTrade([])
+      setResetTradeCards(false)
+    }
+  }, [resetTradeCards, setResetTradeCards])
 
   const ROWS_PER_PAGE =
     useBreakpointValue({
