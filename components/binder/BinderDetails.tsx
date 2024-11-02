@@ -24,6 +24,7 @@ import { binderCards } from '@pages/api/v3'
 import axios from 'axios'
 import UpdateBinder from './UpdateBinder'
 import { BINDER_CONSTANTS } from 'lib/constants'
+import CardLightBoxModal from '@components/modals/CardLightBoxModal'
 
 const BinderDetailPage = ({
   bid,
@@ -48,6 +49,8 @@ const BinderDetailPage = ({
     onClose: onUpdateClose,
   } = useDisclosure()
   const toast = useToast()
+  const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
+  const [selectedCard, setSelectedCard] = useState<binderCards | null>(null)
 
   useEffect(() => {
     if (updateBinder) {
@@ -135,12 +138,24 @@ const BinderDetailPage = ({
               )
             )
           : currentCards.map((card, index) => (
-              <Box key={index} 
-              tabIndex={0} 
-              role="button"
-              aria-label={card ? `Card of ${card.player_name}, rarity ${card.card_rarity}` : "Card Placeholder"}
-
-              textAlign="center">
+              <Box
+                key={index}
+                tabIndex={0}
+                role="button"
+                aria-label={
+                  card
+                    ? `Card of ${card.player_name}, rarity ${card.card_rarity}`
+                    : 'Card Placeholder'
+                }
+                onClick={() => {
+                  if (!binderLoading && card) {
+                    setSelectedCard(card)
+                    setLightBoxIsOpen(true)
+                  }
+                }}
+                className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
+                textAlign="center"
+              >
                 {card ? (
                   <>
                     <Image
@@ -192,6 +207,19 @@ const BinderDetailPage = ({
             </ModalFooter>
           </ModalContent>
         </Modal>
+      )}
+
+      {lightBoxIsOpen && (
+        <CardLightBoxModal
+          cardName={selectedCard.player_name}
+          cardImage={selectedCard.image_url}
+          owned={1}
+          rarity={selectedCard.card_rarity}
+          playerID={selectedCard.playerID}
+          cardID={selectedCard.cardID}
+          userID={String(selectedCard.userID)}
+          setShowModal={() => setLightBoxIsOpen(false)}
+        />
       )}
 
       {/* Delete Confirmation Modal */}
