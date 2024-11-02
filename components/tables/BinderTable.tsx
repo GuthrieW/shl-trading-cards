@@ -138,10 +138,11 @@ const BinderTables = () => {
             <>
               <div className="flex justify-end">
                 <FormControl className="flex items-center m-2">
-                  <FormLabel className="mb-0">Toggle Your Binders:</FormLabel>
+                  <FormLabel className="mb-0 !text-sm !md:text-base">Toggle Your Binders:</FormLabel>
                   <Switch isChecked={!!userIDQuery} onChange={toggleUserID} />
                 </FormControl>
                 <Button
+                  className="!text-sm !md:text-base"
                   colorScheme="blue"
                   onClick={onOpen}
                   size="md"
