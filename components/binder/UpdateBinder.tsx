@@ -220,7 +220,6 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
       >
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
           <DrawerHeader
             position="sticky"
             top="0"
@@ -230,6 +229,7 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
             {selectedPosition !== null
               ? `Select Card for Position ${selectedPosition}`
               : 'Select Card'}
+              <DrawerCloseButton />
           </DrawerHeader>
           <DrawerBody className="bg-primary text-secondary">
             <CardSelectionGrid

@@ -135,7 +135,12 @@ const BinderDetailPage = ({
               )
             )
           : currentCards.map((card, index) => (
-              <Box key={index} textAlign="center">
+              <Box key={index} 
+              tabIndex={0} 
+              role="button"
+              aria-label={card ? `Card of ${card.player_name}, rarity ${card.card_rarity}` : "Card Placeholder"}
+
+              textAlign="center">
                 {card ? (
                   <>
                     <Image

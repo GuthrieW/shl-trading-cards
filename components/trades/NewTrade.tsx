@@ -506,13 +506,13 @@ export default function NewTrade({
       <Drawer placement="bottom" onClose={onClose} isOpen={isOpen} size="xs">
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
           <DrawerHeader
             position="sticky"
             top="0"
             zIndex="1"
             className="flex justify-between items-center bg-primary p-4"
           >
+            <DrawerCloseButton />
             <span>{pluralizeName(selectedUser?.username)} Cards</span>
           </DrawerHeader>
           <DrawerBody className="bg-primary p-4">
@@ -678,13 +678,29 @@ export default function NewTrade({
 
                 return (
                   <div
+                    tabIndex={0} 
+                    role="button"
                     key={`${card.cardID}-${index}`}
                     className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        if (!isInTrade) {
+                          e.preventDefault();
+                          addCardToTrade(card, isLoggedInUser);
+                          toast({
+                            title: 'Added card to trade',
+                            description: '',
+                            ...successToastOptions,
+                          })
+                        }
+                      }
+                    }}
                   >
                     <Image
                       className={`cursor-pointer ${
                         isInTrade ? 'grayscale' : ''
                       }`}
+                      
                       onClick={() => {
                         if (!isInTrade) {
                           addCardToTrade(card, isLoggedInUser)
