@@ -325,7 +325,12 @@ export default ({ uid }: { uid: string }) => {
                     isChecked={false}
                     aria-checked={false}
                     closeOnSelect
-                    onClick={() => setRarities([])}
+                    onClick={() => {
+                      if (rarities.includes("IIHF Awards")) {
+                        setTeams([]);
+                      }
+                      setRarities([]);
+                    }}
                   >
                     Deselect All
                   </MenuItemOption>
