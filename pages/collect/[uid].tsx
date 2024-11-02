@@ -23,7 +23,7 @@ import TablePagination from '@components/table/TablePagination'
 import { GetServerSideProps } from 'next'
 import { GET } from '@constants/http-methods'
 import rarityMap from '@constants/rarity-map'
-import { allTeamsMaps } from '@constants/teams-map'
+import { allTeamsMaps, shlTeamMap, iihfTeamsMap } from '@constants/teams-map'
 import { query } from '@pages/api/database/query'
 import {
   ListResponse,
@@ -222,10 +222,12 @@ export default ({ uid }: { uid: string }) => {
   }
   const getActiveFilters = () => {
     const activeFilters = []
+    const selectedTeamMap = rarities.includes("IIHF Awards") ? iihfTeamsMap : shlTeamMap;
+
     if (teams.length > 0) {
       activeFilters.push(
-        `Teams: ${teams.map((id) => allTeamsMaps[id].label).join(', ')}`
-      )
+        `Teams: ${teams.map(id => selectedTeamMap[id]?.label).join(', ')}`
+      );
     }
     if (rarities.length > 0) {
       activeFilters.push(
