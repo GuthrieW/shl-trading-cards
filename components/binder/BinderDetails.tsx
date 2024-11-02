@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
 import {
@@ -25,10 +25,16 @@ import axios from 'axios'
 import UpdateBinder from './UpdateBinder'
 import { BINDER_CONSTANTS } from 'lib/constants'
 
-
-const BinderDetailPage = ({ bid, userID }: { bid: string, userID: number | null }) => {
+const BinderDetailPage = ({
+  bid,
+  userID,
+}: {
+  bid: string
+  userID: number | null
+}) => {
   const router = useRouter()
   const { session } = useSession()
+  const { updateBinder } = router.query as { updateBinder?: boolean }
   const [currentPage, setCurrentPage] = useState(1)
   const [isDeleteConfirmed, setIsDeleteConfirmed] = useState(false)
   const {
@@ -42,6 +48,12 @@ const BinderDetailPage = ({ bid, userID }: { bid: string, userID: number | null 
     onClose: onUpdateClose,
   } = useDisclosure()
   const toast = useToast()
+
+  useEffect(() => {
+    if (updateBinder) {
+      onUpdateOpen()
+    }
+  }, [updateBinder, onUpdateOpen])
 
   const { data: binderData, isLoading: binderLoading } = useQuery<
     binderCards[]
@@ -78,14 +90,16 @@ const BinderDetailPage = ({ bid, userID }: { bid: string, userID: number | null 
     }
   }
 
-
   const fullBinderData: (binderCards | null)[] = Array.from(
     { length: BINDER_CONSTANTS.TOTAL_POSITIONS },
     () => null
   )
   if (binderData && Array.isArray(binderData)) {
     binderData.forEach((card: binderCards) => {
-      if (card.position >= 1 && card.position <= BINDER_CONSTANTS.TOTAL_POSITIONS) {
+      if (
+        card.position >= 1 &&
+        card.position <= BINDER_CONSTANTS.TOTAL_POSITIONS
+      ) {
         fullBinderData[card.position - 1] = card
       }
     })
@@ -111,13 +125,15 @@ const BinderDetailPage = ({ bid, userID }: { bid: string, userID: number | null 
 
       <SimpleGrid columns={{ base: 2, md: 3, lg: 5 }} spacing={4}>
         {binderLoading
-          ? Array.from({ length: BINDER_CONSTANTS.ROWS_PER_PAGE }).map((_, index) => (
-              <Box key={index} textAlign="center">
-                <Skeleton height="200px" width="full" />
-                <Skeleton height="20px" mt="2" />
-                <Skeleton height="20px" mt="1" />
-              </Box>
-            ))
+          ? Array.from({ length: BINDER_CONSTANTS.ROWS_PER_PAGE }).map(
+              (_, index) => (
+                <Box key={index} textAlign="center">
+                  <Skeleton height="200px" width="full" />
+                  <Skeleton height="20px" mt="2" />
+                  <Skeleton height="20px" mt="1" />
+                </Box>
+              )
+            )
           : currentCards.map((card, index) => (
               <Box key={index} textAlign="center">
                 {card ? (
@@ -150,26 +166,28 @@ const BinderDetailPage = ({ bid, userID }: { bid: string, userID: number | null 
       )}
 
       {/* Update Binder Modal */}
-      <Modal isOpen={isUpdateOpen} onClose={onUpdateClose} size="full">
-        <ModalOverlay />
-        <ModalContent maxW="90vw" maxH="90vh">
-          <ModalHeader className="bg-primary text-secondary">
-            Update Binder
-          </ModalHeader>
-          <ModalBody className="bg-primary text-secondary" overflow="auto">
-            <UpdateBinder
-              bid={bid}
-              currentCards={fullBinderData}
-              onClose={onUpdateClose}
-            />
-          </ModalBody>
-          <ModalFooter className="bg-primary text-secondary">
-            <Button colorScheme="blue" onClick={onUpdateClose}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      {!binderLoading && userID === Number(session?.userId) && (
+        <Modal isOpen={isUpdateOpen} onClose={onUpdateClose} size="full">
+          <ModalOverlay />
+          <ModalContent maxW="90vw" maxH="90vh">
+            <ModalHeader className="bg-primary text-secondary">
+              Update Binder
+            </ModalHeader>
+            <ModalBody className="bg-primary text-secondary" overflow="auto">
+              <UpdateBinder
+                bid={bid}
+                currentCards={fullBinderData}
+                onClose={onUpdateClose}
+              />
+            </ModalBody>
+            <ModalFooter className="bg-primary text-secondary">
+              <Button colorScheme="blue" onClick={onUpdateClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
 
       {/* Delete Confirmation Modal */}
       <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>

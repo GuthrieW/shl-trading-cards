@@ -19,6 +19,14 @@ import {
   useDisclosure,
   Alert,
   AlertIcon,
+  useToast,
+  Checkbox,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
 } from '@chakra-ui/react'
 import { GET } from '@constants/http-methods'
 import { binders } from '@pages/api/v3'
@@ -30,14 +38,25 @@ import CreateBinder from '@components/modals/CreateBinder'
 import { useSession } from 'contexts/AuthContext'
 import TablePagination from '@components/table/TablePagination'
 import { BINDER_CONSTANTS } from 'lib/constants'
+import { useQueryClient } from 'react-query'
+import UpdateBinder from '@components/binder/UpdateBinder'
 
 const BinderTables = () => {
-  const { loggedIn } = useSession()
+  const { loggedIn, session } = useSession()
   const router = useRouter()
   const [userIDQuery, setUserID] = useState<string>(null)
   const [uid] = useCookie(config.userIDCookieName)
   const [currentPage, setCurrentPage] = useState(1)
+  const [selectedBinderID, setSelectedBinderID] = useState<number>(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const queryClient = useQueryClient()
+  const toast = useToast()
+  const [isDeleteConfirmed, setIsDeleteConfirmed] = useState(false)
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure()
 
   const { payload: binders, isLoading } = query<binders[]>({
     queryKey: ['users-binders', userIDQuery],
@@ -51,6 +70,25 @@ const BinderTables = () => {
       }),
   })
 
+  const handleDeleteBinder = async () => {
+    if (isDeleteConfirmed && selectedBinderID) {
+      await axios.delete(`/api/v3/binder/${selectedBinderID}/delete`, {
+        headers: { Authorization: `Bearer ${session?.token}` },
+        data: {
+          bid: selectedBinderID,
+        },
+      })
+      toast({
+        title: 'Successfully Deleted Binder',
+        status: 'success',
+      })
+      queryClient.invalidateQueries(['users-binders'])
+      onDeleteClose()
+      setSelectedBinderID(null)
+      setIsDeleteConfirmed(false)
+    }
+  }
+
   const userBinders =
     binders?.filter((binder) => binder.userID === Number(uid)) || []
   const reachedLimit = useMemo(
@@ -62,17 +100,17 @@ const BinderTables = () => {
     () => (reachedLimit ? 0 : 5 - userBinders.length),
     [userBinders.length, reachedLimit]
   )
-  
+
   const toggleUserID = () => {
     setUserID((prevUserID) => (prevUserID ? null : uid))
   }
 
   const currentBinders = useMemo(() => {
-    const indexOfLastItem = currentPage * BINDER_CONSTANTS.ROWS_PER_PAGE;
-    const indexOfFirstItem = indexOfLastItem - BINDER_CONSTANTS.ROWS_PER_PAGE;
-    return binders?.slice(indexOfFirstItem, indexOfLastItem) || [];
-  }, [binders, currentPage, BINDER_CONSTANTS.ROWS_PER_PAGE]);
-  
+    const indexOfLastItem = currentPage * BINDER_CONSTANTS.ROWS_PER_PAGE
+    const indexOfFirstItem = indexOfLastItem - BINDER_CONSTANTS.ROWS_PER_PAGE
+    return binders?.slice(indexOfFirstItem, indexOfLastItem) || []
+  }, [binders, currentPage, BINDER_CONSTANTS.ROWS_PER_PAGE])
+
   return (
     <div className="w-full p-4 min-h-[400px]">
       {isLoading ? (
@@ -149,6 +187,12 @@ const BinderTables = () => {
                     >
                       Description
                     </Th>
+                    <Th
+                      className="text-table-header font-semibold py-4"
+                      borderBottom="1px solid"
+                    >
+                      Update/Delete
+                    </Th>
                   </Tr>
                 </Thead>
                 <Tbody className="bg-[var(--color-background-table-row)]">
@@ -172,6 +216,33 @@ const BinderTables = () => {
                       <Td className="text-table-row py-4 max-w-md truncate">
                         {binder.binder_desc}
                       </Td>
+                      <Td className="text-right">
+                        {' '}
+                        {binder.userID === Number(session?.userId) && (
+                          <>
+                            <Button
+                              colorScheme="blue"
+                              onClick={() =>
+                                router.push(`/binder/${binder.binderID}?updateBinder=true`)
+                              }
+                              size="sm"
+                              mr={2}
+                            >
+                              Edit Binder
+                            </Button>
+                            <Button
+                              colorScheme="red"
+                              onClick={() => {
+                                setSelectedBinderID(binder.binderID)
+                                onDeleteOpen()
+                              }}
+                              size="sm"
+                            >
+                              Delete Binder
+                            </Button>
+                          </>
+                        )}
+                      </Td>
                     </Tr>
                   ))}
                 </Tbody>
@@ -186,6 +257,31 @@ const BinderTables = () => {
             )}
           </Box>
           <CreateBinder isOpen={isOpen} onClose={onClose} />
+
+          <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader className="bg-primary text-secondary">
+                Confirm Delete
+              </ModalHeader>
+              <ModalBody className="bg-primary text-secondary">
+                <div>Are you sure you want to delete this binder?</div>
+                <Checkbox
+                  mt={4}
+                  isChecked={isDeleteConfirmed}
+                  onChange={(e) => setIsDeleteConfirmed(e.target.checked)}
+                >
+                  I confirm I want to delete this binder
+                </Checkbox>
+              </ModalBody>
+              <ModalFooter className="bg-primary text-secondary">
+                <Button colorScheme="red" onClick={handleDeleteBinder}>
+                  Confirm Delete
+                </Button>
+                <Button onClick={onDeleteClose}>Cancel</Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
         </>
       )}
     </div>

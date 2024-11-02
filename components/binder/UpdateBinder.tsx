@@ -128,12 +128,6 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
     })
   }
 
-  const handleCancel = () => {
-    setDisplayCards([...currentCards])
-    setHasChanges(false)
-    onClose()
-  }
-
   const hasSelectedCards = () => {
     return displayCards.some((card) => card !== null)
   }
@@ -154,7 +148,6 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
           >
             Save Changes
           </Button>
-          <Button onClick={handleCancel}>Cancel</Button>
         </ButtonGroup>
       </Flex>
 
@@ -228,11 +221,12 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader 
-              position="sticky"
-              top="0"
-              zIndex="1"
-              className="bg-primary text-secondary">
+          <DrawerHeader
+            position="sticky"
+            top="0"
+            zIndex="1"
+            className="bg-primary text-secondary"
+          >
             {selectedPosition !== null
               ? `Select Card for Position ${selectedPosition}`
               : 'Select Card'}

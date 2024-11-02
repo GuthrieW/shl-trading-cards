@@ -16,7 +16,7 @@ const cors = Cors({
 
 export default async function create_binder(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<ListResponse<''>>>
+  res: NextApiResponse<ApiResponse<ListResponse<null>>>
 ): Promise<void> {
   await middleware(req, res, cors)
 
