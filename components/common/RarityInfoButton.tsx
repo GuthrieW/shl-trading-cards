@@ -11,8 +11,9 @@ import {
 } from '@chakra-ui/react';
 import { InfoIcon } from '@chakra-ui/icons';
 import rarityMap from '@constants/rarity-map';
+import rarityMapRubyPlus from `@constants/rarity-map-rubyPlus`;
 
-const RarityInfoButton = () => {
+const RarityInfoButton = ( { packID }: { packID: string }) => {
   const rarityPercentages = Object.entries(rarityMap)
     .map(([key, value]) => ({
       label: value.label,

@@ -79,6 +79,8 @@ const PackShop = () => {
     return Object.values(packService.packs).map((pack) => {
       if (pack.id === 'base')
         return { ...pack, cover: packService.basePackCover() }
+      if (pack.id === 'rubyPlus')
+        return { ...pack, cover: packService.basePackCover() }
       return { ...pack, cover: pack.imageUrl }
     })
   }, [])
@@ -189,7 +191,7 @@ const PackShop = () => {
               />
               <Heading as="h2" size="lg">
                 {pack.label} Pack
-                <RarityInfoButton />
+                <RarityInfoButton packID={pack.id} />
               </Heading>
               <div className='fontSize="xl'>
                 Price: ${new Intl.NumberFormat().format(pack.price)}
