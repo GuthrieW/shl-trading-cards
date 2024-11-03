@@ -132,8 +132,8 @@ type TradeUser = {
   userID: number
 }
 
-type PackKey = 'base'
-type PackLabel = 'Base'
+type PackKey = 'base' | 'rubyPlus'
+type PackLabel = 'Base' | 'Ruby Plus'
 
 type PackType = {
   key: PackKey

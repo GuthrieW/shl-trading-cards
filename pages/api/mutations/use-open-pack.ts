@@ -5,6 +5,7 @@ import { invalidateQueries } from './invalidate-queries'
 
 type UseOpenPackRequest = {
   packID: number
+  packType: string
 }
 
 type UseOpenPack = {
@@ -18,11 +19,11 @@ type UseOpenPack = {
 const useOpenPack = (): UseOpenPack => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
-    async ({ packID }: UseOpenPackRequest) => {
+    async ({ packID,packType }: UseOpenPackRequest) => {
       return await axios({
         method: POST,
         url: `/api/v3/packs/open/${packID}`,
-        data: {},
+        data: {packType},
       })
     },
     {

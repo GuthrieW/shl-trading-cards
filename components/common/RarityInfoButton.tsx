@@ -7,17 +7,18 @@ import {
   PopoverBody,
   PopoverArrow,
   Icon,
-  useBreakpointValue,
 } from '@chakra-ui/react';
 import { InfoIcon } from '@chakra-ui/icons';
-import rarityMap from '@constants/rarity-map';
-import rarityMapRubyPlus from `@constants/rarity-map-rubyPlus`;
+import { rarityMap, rarityMapRubyPlus} from '@constants/rarity-map';
 
-const RarityInfoButton = ( { packID }: { packID: string }) => {
-  const rarityPercentages = Object.entries(rarityMap)
+const RarityInfoButton = ({ packID }: { packID: string }) => {
+  // Check if packID is "base" and use rarityMap accordingly
+  const rarityData = packID === "base" ? rarityMap : rarityMapRubyPlus;
+
+  const rarityPercentages = Object.entries(rarityData)
     .map(([key, value]) => ({
       label: value.label,
-      percentage: ((value.rarity / 10000) * 100).toFixed(2)
+      percentage: ((value.rarity / 10000) * 100).toFixed(2),
     }))
     .sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
 

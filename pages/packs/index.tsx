@@ -148,6 +148,7 @@ const OpenPacks = () => {
                       alt={`Trading card pack ${index + 1}`}
                       role="presentation"
                     />
+                    <div>{pack.packType}</div>
                   </button>
                 ))}
               </div>

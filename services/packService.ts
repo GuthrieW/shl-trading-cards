@@ -15,8 +15,8 @@ class PackService {
       description:
         'The base trading card pack. Contains 6 cards ranging from Bronze to Hall of Fame rarity.',
       imageUrl: '/images/base-pack-cover.png',
-      price: 100000,
-      priceLabel: '100k',
+      price: 50000,
+      priceLabel: '500k',
       covers: [
         { name: 'old', url: '/base-pack-cover.png' },
         { name: 'cgy', url: '/base-pack-cgy.png' },
@@ -34,11 +34,10 @@ class PackService {
       description:
         'This is the Ruby Plus pack. Containing 1 Garunteed Ruby and 5 cards of any rarity except for bronze, silver, and gold',
       imageUrl: '/images/base-pack-cover.png',
-      price: 50000,
-      priceLabel: '50k',
+      price: 100000,
+      priceLabel: '100k',
       covers: [
         { name: 'old', url: '/base-pack-cover.png' },
-        { name: 'cgy', url: '/base-pack-cgy.png' },
       ],
     },
   } as const

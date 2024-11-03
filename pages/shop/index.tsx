@@ -77,13 +77,13 @@ const PackShop = () => {
 
   const packsWithCovers: PackInfoWithCover[] = useMemo(() => {
     return Object.values(packService.packs).map((pack) => {
-      if (pack.id === 'base')
-        return { ...pack, cover: packService.basePackCover() }
-      if (pack.id === 'rubyPlus')
-        return { ...pack, cover: packService.basePackCover() }
-      return { ...pack, cover: pack.imageUrl }
-    })
-  }, [])
+      const typedPack = pack as PackInfo;
+      if (typedPack.id === 'base' || typedPack.id === 'rubyPlus') {
+        return { ...typedPack, cover: packService.basePackCover() };
+      }
+      return { ...typedPack, cover: typedPack.imageUrl || "" };
+    });
+  }, []);
 
   const handleSelectedPack = (pack: PackInfoWithCover): void => {
     if (!loggedIn) {
@@ -191,7 +191,7 @@ const PackShop = () => {
               />
               <Heading as="h2" size="lg">
                 {pack.label} Pack
-                <RarityInfoButton packID={pack.id} />
+                <RarityInfoButton packID={pack?.id} />
               </Heading>
               <div className='fontSize="xl'>
                 Price: ${new Intl.NumberFormat().format(pack.price)}

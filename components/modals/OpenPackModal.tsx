@@ -23,7 +23,11 @@ type OpenPackModalProps = {
 const getPackTypeData = (pack: UserPackWithCover) => {
   if (pack.packType === packService.packs.base.id) {
     return packService.packs.base
-  }
+  } 
+  if (pack.packType === packService.packs.rubyPlus.id) {
+    return packService.packs.rubyPlus
+  } 
+  
 }
 
 const OpenPackModal = ({

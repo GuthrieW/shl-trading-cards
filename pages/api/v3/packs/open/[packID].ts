@@ -3,7 +3,7 @@ import {
     cardsQuery,
 } from '@pages/api/database/database'
 import { POST } from '@constants/http-methods'
-import rarityMap, { Rarity } from '@constants/rarity-map'
+import {rarityMapRubyPlus ,rarityMap , Rarity } from '@constants/rarity-map'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
@@ -65,6 +65,48 @@ const pullBaseCards = async (): Promise<{ cardID: string }[]> => {
   return pulledCards
 }
 
+const getRubyPlusPackRarity = (): string => {
+  const num: number = randomIntFromInterval(10000)
+  const rarities: Rarity[] = Object.values(rarityMapRubyPlus)
+
+  let counter = 0
+  const foundRarityRecord = rarities.find((rarity, index) => {
+    if (num > counter && num <= counter + rarity.rarity) {
+      return true
+    }
+
+    counter += rarity.rarity
+    return false
+  })
+
+  return foundRarityRecord.label
+}
+
+const pullRubyPlusCards = async (): Promise<{ cardID: string }[]> => {
+  let pulledCards: { cardID: string }[] = []
+  for (let i = 0; i < 6; i++) {
+    const rarity: string = getRubyPlusPackRarity()
+
+    const cardResult = await cardsQuery(
+      SQL`
+      SELECT cardID 
+      FROM cards
+      WHERE card_rarity=${rarity}
+        AND approved=1
+      ORDER BY RAND()
+      LIMIT 1;`
+    )
+
+    if (cardResult) {
+      pulledCards.push(cardResult[0])
+    } else {
+      throw new Error('No card found or query failed.')
+    }
+  }
+
+  return pulledCards
+}
+
 const index = async (
   request: NextApiRequest,
   response: NextApiResponse
@@ -72,9 +114,6 @@ const index = async (
   await middleware(request, response, cors)
   const { method, query } = request
 
-  // Open a pack that a user already owns
-  // Need to pull 6 cards, then add those cards to a user's collection, then
-  // update the pack to be opened
   if (method === POST) {
     const { packID } = query
 
@@ -109,8 +148,11 @@ const index = async (
     if (packAlreadyOpened) return
 
     let pulledCards: { cardID: string }[] = []
+    
     if (pack.packType === packService.packs.base.id) {
       pulledCards = await pullBaseCards()
+    } else if (pack.packType === packService.packs.rubyPlus.id) {
+      pulledCards = await pullRubyPlusCards()
     } else {
       response.status(StatusCodes.BAD_REQUEST).json({
         error: `Invalid pack type ${pack.packType}`,
