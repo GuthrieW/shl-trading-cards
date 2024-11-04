@@ -102,7 +102,7 @@ const BinderDetailPage = ({
   
   // Create an array with length up to the last occupied position
   const fullBinderData: (binderCards | null)[] = Array.from(
-    { length: lastPosition },
+    { length: BINDER_CONSTANTS.TOTAL_POSITIONS },
     () => null
   )
   
@@ -118,8 +118,8 @@ const BinderDetailPage = ({
     (currentPage - 1) * BINDER_CONSTANTS.ROWS_PER_PAGE,
     currentPage * BINDER_CONSTANTS.ROWS_PER_PAGE
   )
-  const totalRows = fullBinderData.length
-
+  const totalRows = lastPosition
+  console.log(fullBinderData)
   return (
     <Box>
       {userID === Number(session?.userId) && (
