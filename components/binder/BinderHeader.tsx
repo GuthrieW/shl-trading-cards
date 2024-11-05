@@ -20,6 +20,7 @@ import {
   useToast,
   VStack,
   FormHelperText,
+  Link,
 } from '@chakra-ui/react'
 import { binders } from '@pages/api/v3'
 import { GET, PUT } from '@constants/http-methods'
@@ -31,24 +32,24 @@ import { successToastOptions } from '@utils/toast'
 
 interface UpdateBinderHeaderProps {
   bid: string
-  binderData: binders,
+  binderData: binders
 }
 
-const BinderHeader = ({ bid, binderData  }: UpdateBinderHeaderProps ) => {
-  const { session } = useSession();
-  const { isOpen, onOpen: openModal, onClose } = useDisclosure();
-  const [editedName, setEditedName] = useState('');
-  const [editedDesc, setEditedDesc] = useState('');
+const BinderHeader = ({ bid, binderData }: UpdateBinderHeaderProps) => {
+  const { session } = useSession()
+  const { isOpen, onOpen: openModal, onClose } = useDisclosure()
+  const [editedName, setEditedName] = useState('')
+  const [editedDesc, setEditedDesc] = useState('')
   const queryClient = useQueryClient()
-  const toast = useToast();
+  const toast = useToast()
 
   const onOpen = () => {
-    setEditedName(binderData.binder_name || '');
-    setEditedDesc(binderData.binder_desc || '');
-    openModal();
-  };
+    setEditedName(binderData.binder_name || '')
+    setEditedDesc(binderData.binder_desc || '')
+    openModal()
+  }
 
-  const isOwner = Number(session?.userId) === binderData.userID;
+  const isOwner = Number(session?.userId) === binderData.userID
 
   const { mutateAsync: editBinderHeader, isLoading: isLoadingCreateBinder } =
     mutation<void, Record<string, string>>({
@@ -71,7 +72,7 @@ const BinderHeader = ({ bid, binderData  }: UpdateBinderHeaderProps ) => {
           title: 'Edited Binder Name or Description',
           ...successToastOptions,
         })
-        queryClient.invalidateQueries(['users-binders', bid]);
+        queryClient.invalidateQueries(['users-binders', bid])
         onClose()
       },
       onError: (error) => {
@@ -85,18 +86,18 @@ const BinderHeader = ({ bid, binderData  }: UpdateBinderHeaderProps ) => {
       },
     })
 
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault()
-      try {
-        await editBinderHeader({
-          bid: bid,
-          binderName: editedName,
-          binderDesc: editedDesc,
-        })
-      } catch (error) {
-        console.error('Error updating binder:', error)
-      }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      await editBinderHeader({
+        bid: bid,
+        binderName: editedName,
+        binderDesc: editedDesc,
+      })
+    } catch (error) {
+      console.error('Error updating binder:', error)
     }
+  }
   return (
     <>
       <Box className="border-b-8 border-b-blue700 bg-secondary p-4">
@@ -114,7 +115,16 @@ const BinderHeader = ({ bid, binderData  }: UpdateBinderHeaderProps ) => {
               />
             )}
           </Flex>
-          <Text className="text-lg font-bold">By: {binderData.username}</Text>
+          <Text className="text-lg font-bold">
+          By:{' '}
+            <Link
+              className="!text-blue600"
+              href={`/collect/${binderData.userID}`}
+              target="_blank"
+            >
+              {binderData.username}
+            </Link>
+          </Text>
         </Flex>
         <Text className="mt-2 text-secondary">{binderData.binder_desc}</Text>
       </Box>
@@ -125,53 +135,53 @@ const BinderHeader = ({ bid, binderData  }: UpdateBinderHeaderProps ) => {
           <ModalHeader>Edit Binder Details</ModalHeader>
           <ModalCloseButton />
           <ModalBody className="bg-primary text-secondary" pb={6}>
-          <form onSubmit={handleSubmit}>
-            <VStack spacing={4}>
-              <FormControl isRequired>
-                <FormLabel>Binder Name</FormLabel>
-                <Input
-                  value={editedName}
-                  onChange={(e) => setEditedName(e.target.value)}
-                  maxLength={100}
-                  placeholder="Enter binder name"
-                  disabled={isLoadingCreateBinder}
-                />
-                <FormHelperText className="text-secondary">
-                  {editedName.length}/100 characters
-                </FormHelperText>
-              </FormControl>
+            <form onSubmit={handleSubmit}>
+              <VStack spacing={4}>
+                <FormControl isRequired>
+                  <FormLabel>Binder Name</FormLabel>
+                  <Input
+                    value={editedName}
+                    onChange={(e) => setEditedName(e.target.value)}
+                    maxLength={100}
+                    placeholder="Enter binder name"
+                    disabled={isLoadingCreateBinder}
+                  />
+                  <FormHelperText className="text-secondary">
+                    {editedName.length}/100 characters
+                  </FormHelperText>
+                </FormControl>
 
-              <FormControl isRequired>
-                <FormLabel>Binder Description</FormLabel>
-                <Textarea
-                  value={editedDesc}
-                  onChange={(e) => setEditedDesc(e.target.value)}
-                  maxLength={400}
-                  placeholder="Enter binder description"
-                  rows={4}
-                  disabled={isLoadingCreateBinder}
-                />
-                <FormHelperText className="text-secondary">
-                  {editedDesc.length}/400 characters
-                </FormHelperText>
-              </FormControl>
+                <FormControl isRequired>
+                  <FormLabel>Binder Description</FormLabel>
+                  <Textarea
+                    value={editedDesc}
+                    onChange={(e) => setEditedDesc(e.target.value)}
+                    maxLength={400}
+                    placeholder="Enter binder description"
+                    rows={4}
+                    disabled={isLoadingCreateBinder}
+                  />
+                  <FormHelperText className="text-secondary">
+                    {editedDesc.length}/400 characters
+                  </FormHelperText>
+                </FormControl>
 
-              <Button
-                colorScheme="blue"
-                type="submit"
-                width="full"
-                isLoading={isLoadingCreateBinder}
-                loadingText="Updating..."
-              >
-                Update
-              </Button>
-            </VStack>
-          </form>
-        </ModalBody>
+                <Button
+                  colorScheme="blue"
+                  type="submit"
+                  width="full"
+                  isLoading={isLoadingCreateBinder}
+                  loadingText="Updating..."
+                >
+                  Update
+                </Button>
+              </VStack>
+            </form>
+          </ModalBody>
         </ModalContent>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default BinderHeader;
+export default BinderHeader

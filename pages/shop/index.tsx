@@ -25,6 +25,7 @@ import {
 import { successToastOptions, warningToastOptions } from '@utils/toast'
 import { TimeUntilMidnight } from '@utils/time-until-midnight'
 import router from 'next/router'
+import RarityInfoButton from '@components/common/RarityInfoButton'
 
 export type PackInfoWithCover = PackInfo & {
   cover: string
@@ -188,6 +189,7 @@ const PackShop = () => {
               />
               <Heading as="h2" size="lg">
                 {pack.label} Pack
+                <RarityInfoButton />
               </Heading>
               <div className='fontSize="xl'>
                 Price: ${new Intl.NumberFormat().format(pack.price)}

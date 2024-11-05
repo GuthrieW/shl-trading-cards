@@ -128,12 +128,6 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
     })
   }
 
-  const handleCancel = () => {
-    setDisplayCards([...currentCards])
-    setHasChanges(false)
-    onClose()
-  }
-
   const hasSelectedCards = () => {
     return displayCards.some((card) => card !== null)
   }
@@ -154,7 +148,6 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
           >
             Save Changes
           </Button>
-          <Button onClick={handleCancel}>Cancel</Button>
         </ButtonGroup>
       </Flex>
 
@@ -177,23 +170,29 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
                 <Text>{card.player_name}</Text>
                 <Text>{card.card_rarity}</Text>
                 <Box position="absolute" top={2} right={2}>
-                  <Button
-                    size="sm"
-                    colorScheme="blue"
-                    onClick={() => {
-                      setSelectedPosition(index + 1)
-                      onOpen()
-                    }}
+                  <Flex
+                    justifyContent="space-between"
+                    alignItems="center"
+                    gap={2}
                   >
-                    Replace
-                  </Button>
-                  <Button
-                    size="sm"
-                    colorScheme="red"
-                    onClick={() => handleRemoveCard(index + 1)}
-                  >
-                    Remove
-                  </Button>
+                    <Button
+                      size="sm"
+                      colorScheme="blue"
+                      onClick={() => {
+                        setSelectedPosition(index + 1)
+                        onOpen()
+                      }}
+                    >
+                      Replace
+                    </Button>
+                    <Button
+                      size="sm"
+                      colorScheme="red"
+                      onClick={() => handleRemoveCard(index + 1)}
+                    >
+                      Remove
+                    </Button>
+                  </Flex>
                 </Box>
               </>
             ) : (
@@ -227,15 +226,16 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
       >
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader 
-              position="sticky"
-              top="0"
-              zIndex="1"
-              className="bg-primary text-secondary">
+          <DrawerHeader
+            position="sticky"
+            top="0"
+            zIndex="1"
+            className="bg-primary text-secondary"
+          >
             {selectedPosition !== null
               ? `Select Card for Position ${selectedPosition}`
               : 'Select Card'}
+            <DrawerCloseButton />
           </DrawerHeader>
           <DrawerBody className="bg-primary text-secondary">
             <CardSelectionGrid

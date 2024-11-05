@@ -333,7 +333,9 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                 )
 
                 return (
-                  <div
+                  <div 
+                    tabIndex={0} 
+                    role="button"
                     key={`${card.cardID}-${index}`}
                     className={`m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl ${
                       isInDisplayCards
@@ -343,6 +345,12 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                     onClick={() => {
                       if (!isInDisplayCards) {
                         handleCardSelect(card)
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleCardSelect(card);
                       }
                     }}
                   >

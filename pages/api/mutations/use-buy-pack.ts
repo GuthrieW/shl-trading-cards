@@ -34,7 +34,7 @@ const useBuyPack = (): UseBuyPack => {
         invalidateQueries(queryClient, [`daily-subscription`])
         toast({
           title: 'Purchasing Pack',
-          description: `Good job!`,
+          description: `Navigate to Open Packs to open the pack`,
           ...successToastOptions,
         })
       },

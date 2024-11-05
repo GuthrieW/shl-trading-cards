@@ -81,10 +81,14 @@ export default function NewTrade({
   loggedInUser,
   tradePartnerUid,
   cardID,
+  resetTradeCards,
+  setResetTradeCards,
 }: {
   loggedInUser: UserData
   tradePartnerUid: string
   cardID?: number
+  resetTradeCards: boolean
+  setResetTradeCards: (value: boolean) => void
 }) {
   const toast = useToast()
   const queryClient = useQueryClient()
@@ -109,6 +113,14 @@ export default function NewTrade({
   const [cardAdded, setCardAdded] = useState(false)
 
   const [uid] = useCookie(config.userIDCookieName)
+
+  useEffect(() => {
+    if (resetTradeCards) {
+      setloggedInUserCardsToTrade([])
+      setPartnerUserCardsToTrade([])
+      setResetTradeCards(false)
+    }
+  }, [resetTradeCards, setResetTradeCards])
 
   const ROWS_PER_PAGE =
     useBreakpointValue({
@@ -494,13 +506,13 @@ export default function NewTrade({
       <Drawer placement="bottom" onClose={onClose} isOpen={isOpen} size="xs">
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
           <DrawerHeader
             position="sticky"
             top="0"
             zIndex="1"
             className="flex justify-between items-center bg-primary p-4"
           >
+            <DrawerCloseButton />
             <span>{pluralizeName(selectedUser?.username)} Cards</span>
           </DrawerHeader>
           <DrawerBody className="bg-primary p-4">
@@ -575,7 +587,7 @@ export default function NewTrade({
                           aria-checked={false}
                           closeOnSelect
                           className="!bg-secondary hover:!bg-blue600"
-                          onClick={() => setTeams([])}
+                          onClick={() => setRarities([])}
                         >
                           Deselect All
                         </MenuItemOption>
@@ -666,24 +678,38 @@ export default function NewTrade({
 
                 return (
                   <div
+                    tabIndex={0} 
+                    role="button"
                     key={`${card.cardID}-${index}`}
                     className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        if (!isInTrade) {
+                          e.preventDefault();
+                          addCardToTrade(card, isLoggedInUser);
+                          toast({
+                            title: 'Added card to trade',
+                            description: '',
+                            ...successToastOptions,
+                          })
+                        }
+                      }
+                    }}
                   >
                     <Image
                       className={`cursor-pointer ${
                         isInTrade ? 'grayscale' : ''
                       }`}
+                      
                       onClick={() => {
-                        if (isInTrade) {
-                          return
+                        if (!isInTrade) {
+                          addCardToTrade(card, isLoggedInUser)
+                          toast({
+                            title: 'Added card to trade',
+                            description: '',
+                            ...successToastOptions,
+                          })
                         }
-                        addCardToTrade(card, isLoggedInUser)
-                        toast({
-                          title: 'Added card to trade',
-                          description:
-                            'Exit out of the drawer to remove the card from the trade',
-                          ...successToastOptions,
-                        })
                       }}
                       src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
                       fallback={
@@ -693,6 +719,18 @@ export default function NewTrade({
                         </div>
                       }
                     />
+                    {isInTrade && (
+                      <button
+                        onClick={() => {
+                          removeCardFromTrade(card, isLoggedInUser)
+                        }}
+                        className="absolute top-2 right-2 bg-red200 text-secondary hover:bg-secondary rounded-full p-2 md:p-1 md:top-2 md:right-2 hover:bg-red-600 text-xs md:text-sm"
+                        style={{ minWidth: '80px' }}
+                        aria-label="Remove from trade"
+                      >
+                        Remove
+                      </button>
+                    )}
                     {!selectedUserCardsIsLoading && (
                       <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-primary transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
                         {card.card_rarity}

@@ -56,14 +56,14 @@ export default ({
         onClick={goToFirstPage}
         className="mx-2 cursor-pointer"
         aria-label="go-to-first-page"
-        isDisabled={currentPage === 1}
+        isDisabled={currentPage === 1 || currentPage === 0}
         icon={<ArrowLeftIcon />}
       />
       <IconButton
         onClick={goToPreviousPage}
         className="mx-2 cursor-pointer"
         aria-label="go-to-previous-page"
-        isDisabled={currentPage === 1}
+        isDisabled={currentPage === 1 || currentPage === 0}
         icon={<ChevronLeftIcon fontSize="2xl" />}
       />
       <span className="flex justify-center items-center mx-2">

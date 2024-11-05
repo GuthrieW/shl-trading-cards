@@ -18,6 +18,7 @@ export default () => {
 
   const [tradePartnerUid, setTradePartnerUid] = useState<number>(null)
   const [cardID, setCardID] = useState<number | null>(null)
+  const [resetTradeCards, setResetTradeCards] = useState<boolean>(false)
 
   const { payload: loggedInUser } = query<UserData>({
     queryKey: ['baseUser', session?.token],
@@ -43,6 +44,11 @@ export default () => {
       setCardID(null)
     }
   }, [router.query])
+
+  const handleResetTradeCards = () => {
+    setResetTradeCards(true)
+  }
+
   return (
     <PageWrapper>
       <p>Trade Home</p>
@@ -51,6 +57,7 @@ export default () => {
         label="Trade Partner"
         onSelect={(newValue) => {
           setTradePartnerUid(parseInt(newValue))
+          handleResetTradeCards() 
         }}
       />
       {loggedInUser && tradePartnerUid && (
@@ -58,6 +65,8 @@ export default () => {
           loggedInUser={loggedInUser}
           tradePartnerUid={String(tradePartnerUid)}
           cardID={cardID}
+          resetTradeCards={resetTradeCards}
+          setResetTradeCards={setResetTradeCards}
         />
       )}
       <TradesDrawer

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
 import {
@@ -24,11 +24,18 @@ import { binderCards } from '@pages/api/v3'
 import axios from 'axios'
 import UpdateBinder from './UpdateBinder'
 import { BINDER_CONSTANTS } from 'lib/constants'
+import CardLightBoxModal from '@components/modals/CardLightBoxModal'
 
-
-const BinderDetailPage = ({ bid, userID }: { bid: string, userID: number | null }) => {
+const BinderDetailPage = ({
+  bid,
+  userID,
+}: {
+  bid: string
+  userID: number | null
+}) => {
   const router = useRouter()
   const { session } = useSession()
+  const { updateBinder } = router.query as { updateBinder?: boolean }
   const [currentPage, setCurrentPage] = useState(1)
   const [isDeleteConfirmed, setIsDeleteConfirmed] = useState(false)
   const {
@@ -42,6 +49,14 @@ const BinderDetailPage = ({ bid, userID }: { bid: string, userID: number | null 
     onClose: onUpdateClose,
   } = useDisclosure()
   const toast = useToast()
+  const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
+  const [selectedCard, setSelectedCard] = useState<binderCards | null>(null)
+
+  useEffect(() => {
+    if (updateBinder) {
+      onUpdateOpen()
+    }
+  }, [updateBinder, onUpdateOpen])
 
   const { data: binderData, isLoading: binderLoading } = useQuery<
     binderCards[]
@@ -77,15 +92,23 @@ const BinderDetailPage = ({ bid, userID }: { bid: string, userID: number | null 
       })
     }
   }
-
-
+  const getLastOccupiedPosition = (cards: binderCards[]): number => {
+    if (!cards || cards.length === 0) return BINDER_CONSTANTS.ROWS_PER_PAGE;
+    return Math.max(...cards.map(card => card.position));
+  }
+  const lastPosition = useMemo(() => {
+    return binderData ? getLastOccupiedPosition(binderData) : BINDER_CONSTANTS.ROWS_PER_PAGE;
+  }, [binderData]) 
+  
+  // Create an array with length up to the last occupied position
   const fullBinderData: (binderCards | null)[] = Array.from(
     { length: BINDER_CONSTANTS.TOTAL_POSITIONS },
     () => null
   )
+  
   if (binderData && Array.isArray(binderData)) {
     binderData.forEach((card: binderCards) => {
-      if (card.position >= 1 && card.position <= BINDER_CONSTANTS.TOTAL_POSITIONS) {
+      if (card.position >= 1 && card.position <= lastPosition) {
         fullBinderData[card.position - 1] = card
       }
     })
@@ -95,7 +118,8 @@ const BinderDetailPage = ({ bid, userID }: { bid: string, userID: number | null 
     (currentPage - 1) * BINDER_CONSTANTS.ROWS_PER_PAGE,
     currentPage * BINDER_CONSTANTS.ROWS_PER_PAGE
   )
-  const totalRows = fullBinderData.length
+  const totalRows = lastPosition
+  console.log(fullBinderData)
   return (
     <Box>
       {userID === Number(session?.userId) && (
@@ -111,15 +135,34 @@ const BinderDetailPage = ({ bid, userID }: { bid: string, userID: number | null 
 
       <SimpleGrid columns={{ base: 2, md: 3, lg: 5 }} spacing={4}>
         {binderLoading
-          ? Array.from({ length: BINDER_CONSTANTS.ROWS_PER_PAGE }).map((_, index) => (
-              <Box key={index} textAlign="center">
-                <Skeleton height="200px" width="full" />
-                <Skeleton height="20px" mt="2" />
-                <Skeleton height="20px" mt="1" />
-              </Box>
-            ))
+          ? Array.from({ length: BINDER_CONSTANTS.ROWS_PER_PAGE }).map(
+              (_, index) => (
+                <Box key={index} textAlign="center">
+                  <Skeleton height="200px" width="full" />
+                  <Skeleton height="20px" mt="2" />
+                  <Skeleton height="20px" mt="1" />
+                </Box>
+              )
+            )
           : currentCards.map((card, index) => (
-              <Box key={index} textAlign="center">
+              <Box
+                key={index}
+                tabIndex={0}
+                role="button"
+                aria-label={
+                  card
+                    ? `Card of ${card.player_name}, rarity ${card.card_rarity}`
+                    : 'Card Placeholder'
+                }
+                onClick={() => {
+                  if (!binderLoading && card) {
+                    setSelectedCard(card)
+                    setLightBoxIsOpen(true)
+                  }
+                }}
+                className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
+                textAlign="center"
+              >
                 {card ? (
                   <>
                     <Image
@@ -150,26 +193,41 @@ const BinderDetailPage = ({ bid, userID }: { bid: string, userID: number | null 
       )}
 
       {/* Update Binder Modal */}
-      <Modal isOpen={isUpdateOpen} onClose={onUpdateClose} size="full">
-        <ModalOverlay />
-        <ModalContent maxW="90vw" maxH="90vh">
-          <ModalHeader className="bg-primary text-secondary">
-            Update Binder
-          </ModalHeader>
-          <ModalBody className="bg-primary text-secondary" overflow="auto">
-            <UpdateBinder
-              bid={bid}
-              currentCards={fullBinderData}
-              onClose={onUpdateClose}
-            />
-          </ModalBody>
-          <ModalFooter className="bg-primary text-secondary">
-            <Button colorScheme="blue" onClick={onUpdateClose}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      {!binderLoading && userID === Number(session?.userId) && (
+        <Modal isOpen={isUpdateOpen} onClose={onUpdateClose} size="full">
+          <ModalOverlay />
+          <ModalContent maxW="90vw" maxH="90vh">
+            <ModalHeader className="bg-primary text-secondary">
+              Update Binder
+            </ModalHeader>
+            <ModalBody className="bg-primary text-secondary" overflow="auto">
+              <UpdateBinder
+                bid={bid}
+                currentCards={fullBinderData}
+                onClose={onUpdateClose}
+              />
+            </ModalBody>
+            <ModalFooter className="bg-primary text-secondary">
+              <Button colorScheme="blue" onClick={onUpdateClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
+
+      {lightBoxIsOpen && selectedCard && (
+        <CardLightBoxModal
+          cardName={selectedCard.player_name}
+          cardImage={selectedCard.image_url}
+          owned={1}
+          rarity={selectedCard.card_rarity}
+          playerID={selectedCard.playerID}
+          cardID={selectedCard.cardID}
+          userID={String(selectedCard.userID)}
+          setShowModal={() => setLightBoxIsOpen(false)}
+        />
+      )}
 
       {/* Delete Confirmation Modal */}
       <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
