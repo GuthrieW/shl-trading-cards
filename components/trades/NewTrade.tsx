@@ -529,18 +529,18 @@ export default function NewTrade({
                     <MenuButton
                       as={Button}
                       rightIcon={<ChevronDownIcon />}
-                      className="w-full !bg-secondary !text-secondary text-center hover:!bg-blue600"
+                      className="w-full !bg-secondary !text-secondary text-center hover:!bg-highlighted/40"
                     >
                       Teams ({teams.length})
                     </MenuButton>
                     <MenuList>
                       <MenuOptionGroup type="checkbox">
                         <MenuItemOption
+                          className="hover:!bg-highlighted/40"
                           icon={null}
                           isChecked={false}
                           aria-checked={false}
                           closeOnSelect
-                          className="!bg-secondary hover:!bg-blue600"
                           onClick={() => setTeams([])}
                         >
                           Deselect All
@@ -552,6 +552,7 @@ export default function NewTrade({
                             )
                             return (
                               <MenuItemOption
+                                className="hover:!bg-highlighted/40"
                                 icon={null}
                                 isChecked={isChecked}
                                 aria-checked={isChecked}
@@ -574,18 +575,18 @@ export default function NewTrade({
                     <MenuButton
                       as={Button}
                       rightIcon={<ChevronDownIcon />}
-                      className="w-full !bg-secondary !text-secondary text-center hover:!bg-blue600"
+                      className="w-full !bg-secondary !text-secondary text-center hover:!bg-highlighted/40"
                     >
                       Rarity ({rarities.length})
                     </MenuButton>
                     <MenuList>
                       <MenuOptionGroup type="checkbox">
                         <MenuItemOption
+                          className="hover:!bg-highlighted/40"
                           icon={null}
                           isChecked={false}
                           aria-checked={false}
                           closeOnSelect
-                          className="!bg-secondary hover:!bg-blue600"
                           onClick={() => setRarities([])}
                         >
                           Deselect All
@@ -605,6 +606,7 @@ export default function NewTrade({
 
                           return (
                             <MenuItemOption
+                              className="hover:!bg-highlighted/40"
                               icon={null}
                               isChecked={isChecked}
                               aria-checked={isChecked}
@@ -627,7 +629,7 @@ export default function NewTrade({
               </Flex>
               <Box flex={1} mr={2} className="p-2">
                 <Select
-                  className="w-full !bg-secondary hover:!bg-blue600"
+                  className="w-full !bg-secondary hover:!bg-highlighted/40"
                   onChange={(event) => {
                     const [sortColumn, sortDirection] =
                       event.target.value.split(':') as [

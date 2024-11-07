@@ -183,7 +183,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                 <MenuButton
                   as={Button}
                   rightIcon={<ChevronDownIcon />}
-                  className="w-full !bg-secondary !text-secondary text-center hover:!bg-blue600"
+                  className="w-full !bg-secondary !text-secondary text-center hover:!bg-highlighted/40"
                 >
                   Teams ({teams.length})
                 </MenuButton>
@@ -194,7 +194,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                       isChecked={false}
                       aria-checked={false}
                       closeOnSelect
-                      className="!bg-secondary hover:!bg-blue600"
+                      className="hover:!bg-highlighted/40"
                       onClick={() => {
                         setTablePage(1)
                         setTeams([])
@@ -209,6 +209,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                         )
                         return (
                           <MenuItemOption
+                            className="hover:!bg-highlighted/40"
                             icon={null}
                             isChecked={isChecked}
                             aria-checked={isChecked}
@@ -234,7 +235,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                 <MenuButton
                   as={Button}
                   rightIcon={<ChevronDownIcon />}
-                  className="w-full !bg-secondary !text-secondary text-center hover:!bg-blue600"
+                  className="w-full !bg-secondary !text-secondary text-center hover:!bg-highlighted/40"
                 >
                   Rarity ({rarities.length})
                 </MenuButton>
@@ -245,7 +246,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                       isChecked={false}
                       aria-checked={false}
                       closeOnSelect
-                      className="!bg-secondary hover:!bg-blue600"
+                      className="hover:!bg-highlighted/40"
                       onClick={() => {
                         setTablePage(1)
                         setRarities([])
@@ -265,6 +266,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
 
                       return (
                         <MenuItemOption
+                          className="hover:bg-highlighted/40"
                           icon={null}
                           isChecked={isChecked}
                           aria-checked={isChecked}
@@ -290,7 +292,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
           </Flex>
           <Box flex={1} mr={2} className="p-2">
             <Select
-              className="w-full !bg-secondary hover:!bg-blue600"
+              className="w-full !bg-secondary hover:!bg-highlighted/40"
               onChange={(event) => {
                 setTablePage(1)
                 const [sortColumn, sortDirection] = event.target.value.split(

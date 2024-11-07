@@ -25,7 +25,7 @@ export const Select = <T extends string | number>({
         as={Button}
         className={classnames(
             dark ? 'border-grey100 !text-grey100' : 'border-primary !text-primary',
-            '!h-auto rounded-md border !bg-[transparent] !px-2 !py-1.5 font-mont !text-sm hover:!bg-blue600 active:!bg-blue700 sm:!px-4',
+            '!h-auto rounded-md border !bg-[transparent] !px-2 !py-1.5 font-mont !text-sm hover:!bg-highlighted/40 active:!bg-blue700 sm:!px-4',
             className
           )}
         rightIcon={<ChevronDownIcon />}
