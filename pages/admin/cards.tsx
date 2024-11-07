@@ -161,29 +161,12 @@ export default () => {
   }
 
   const toggleTeam = (team: string) => {
-    setTeams((currentValue) => {
-      const teamIndex: number = currentValue.indexOf(team)
-      teamIndex === -1
-        ? currentValue.push(team)
-        : currentValue.splice(teamIndex)
-      return [...currentValue]
-    })
-  }
-
-  const toggleLeague = (league: string) => {
-    setLeague([league])
-  }
+    setTeams((currentValue) => toggleOnfilters(currentValue, team));
+  };
 
   const toggleRarity = (rarity: string) => {
-    setRarities((currentValue) => {
-      const rarityIndex: number = currentValue.indexOf(rarity)
-      rarityIndex === -1
-        ? currentValue.push(rarity)
-        : currentValue.splice(rarityIndex)
-      return [...currentValue]
-    })
-  }
-
+    setRarities((currentValue) => toggleOnfilters(currentValue, rarity));
+  };
   return (
     <>
       <PageWrapper

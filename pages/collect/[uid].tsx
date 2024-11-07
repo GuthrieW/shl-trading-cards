@@ -43,6 +43,7 @@ import { pluralizeName } from 'lib/pluralize-name'
 import filterTeamsByLeague from 'utils/filterTeamsByLeague'
 import { Fragment, useEffect, useState } from 'react'
 import DisplayPacks from '@components/collection/DisplayPacks'
+import { toggleOnfilters } from '@utils/toggle-on-filters'
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {
@@ -197,29 +198,18 @@ export default ({ uid }: { uid: string }) => {
     showNotOwnedCards,
   ])
 
-  const toggleTeam = (team: string) => {
-    setTeams((currentValue) => {
-      const teamIndex: number = currentValue.indexOf(team)
-      teamIndex === -1
-        ? currentValue.push(team)
-        : currentValue.splice(teamIndex)
-      return [...currentValue]
-    })
-  }
-
   const toggleLeague = (league: string) => {
     setLeague([league])
   }
 
+  const toggleTeam = (team: string) => {
+    setTeams((currentValue) => toggleOnfilters(currentValue, team));
+  };
+
   const toggleRarity = (rarity: string) => {
-    setRarities((currentValue) => {
-      const rarityIndex: number = currentValue.indexOf(rarity)
-      rarityIndex === -1
-        ? currentValue.push(rarity)
-        : currentValue.splice(rarityIndex)
-      return [...currentValue]
-    })
-  }
+    setRarities((currentValue) => toggleOnfilters(currentValue, rarity));
+  };
+
   const getActiveFilters = () => {
     const activeFilters = []
     const selectedTeamMap = rarities.includes('IIHF Awards')

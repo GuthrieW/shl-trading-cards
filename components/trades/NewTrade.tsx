@@ -252,10 +252,14 @@ export default function NewTrade({
   const toggleTeam = (team: string) => {
     setTeams((currentValue) => {
       const teamIndex: number = currentValue.indexOf(team)
-      teamIndex === -1
-        ? currentValue.push(team)
-        : currentValue.splice(teamIndex)
-      return [...currentValue]
+      if(teamIndex === -1) {
+        return [... currentValue, team]
+      } else {
+        return [
+          ...currentValue.slice(0, teamIndex),
+          ...currentValue.slice(teamIndex + 1),
+        ];
+      }
     })
   }
 
