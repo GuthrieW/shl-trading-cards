@@ -126,7 +126,7 @@ const LastOpenedPack = () => {
 
         <div className="m-2" style={{ height: 'calc(100vh-64px)' }}>
           <div className="flex justify-center items-start h-full">
-            <div className="flex h-full flex-col sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-2 overflow-x-auto py-6 no-scrollbar">
+            <div className="px-8 flex h-full flex-col sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-3 overflow-x-auto py-6 no-scrollbar">
               {latestPackCards.map((card, index) => (
                 <div
                   className="relative flex flex-col items-center hover:scale-105 hover:shadow-xl"
