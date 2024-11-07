@@ -503,11 +503,10 @@ export default function NewTrade({
           </Box>
         </VStack>
       </Box>
-      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen} size="xs">
+      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerHeader
-            position="sticky"
             top="0"
             zIndex="1"
             className="flex justify-between items-center bg-primary p-4"
@@ -515,7 +514,7 @@ export default function NewTrade({
             <DrawerCloseButton />
             <span>{pluralizeName(selectedUser?.username)} Cards</span>
           </DrawerHeader>
-          <DrawerBody className="bg-primary p-4">
+          <DrawerBody className="bg-primary p-4" maxHeight="calc(100vh - 4rem)">
             <Flex direction="column" mb={4}>
               <FormControl mb={2}>
                 <Input

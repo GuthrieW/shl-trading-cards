@@ -227,7 +227,6 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerHeader
-            position="sticky"
             top="0"
             zIndex="1"
             className="bg-primary text-secondary"
@@ -237,7 +236,7 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
               : 'Select Card'}
             <DrawerCloseButton />
           </DrawerHeader>
-          <DrawerBody className="bg-primary text-secondary">
+          <DrawerBody className="bg-primary text-secondary" maxHeight="calc(100vh - 4rem)">
             <CardSelectionGrid
               handleCardSelect={handleCardSelect}
               displayCards={displayCards}
