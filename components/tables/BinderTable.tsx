@@ -183,7 +183,7 @@ const BinderTables = () => {
                       User
                     </Th>
                     <Th
-                      className="!text-table-header font-semibold py-4"
+                      className="!text-table-header font-semibold py-4 hidden md:table-cell"
                       borderBottom="1px solid"
                     >
                       Description
@@ -214,7 +214,7 @@ const BinderTables = () => {
                         </Link>
                       </Td>
                       <Td className="text-table-row py-4">{binder.username}</Td>
-                      <Td className="text-table-row py-4 max-w-md truncate">
+                      <Td className="text-table-row py-4 max-w-md truncate hidden md:table-cell">
                         {binder.binder_desc}
                       </Td>
                       <Td className="text-right">
