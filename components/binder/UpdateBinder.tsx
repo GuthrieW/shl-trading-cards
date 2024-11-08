@@ -52,6 +52,12 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
     localStorage.setItem(`binder-${bid}`, JSON.stringify(displayCards))
   }, [displayCards, bid])
 
+  const resetBinder = () => {
+    localStorage.removeItem(`binder-${bid}`)
+    setDisplayCards([...currentCards])
+    setHasChanges(false)
+  }
+
   const updateBinder = useMutation(
     async (updates: {
       cards: { binderID: string; ownedCardID: string; position: number }[]
@@ -105,8 +111,7 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
 
     setDisplayCards(updatedCards)
     setHasChanges(true)
-    onDrawerClose()
-    setSelectedPosition(null)
+    setSelectedPosition(selectedPosition + 1)
   }
 
   const handleSave = () => {
@@ -141,6 +146,9 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
           </Text>
         )}
         <ButtonGroup>
+          <Button colorScheme="red" onClick={resetBinder}>
+            Reset Binder
+          </Button>
           <Button
             colorScheme="green"
             onClick={handleSave}
@@ -174,9 +182,10 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
                     justifyContent="space-between"
                     alignItems="center"
                     gap={2}
+                    flexDirection={{ base: 'column', md: 'row' }}
                   >
                     <Button
-                      size="sm"
+                      size={{ base: 'xs', md: 'sm' }}
                       colorScheme="blue"
                       onClick={() => {
                         setSelectedPosition(index + 1)
@@ -186,7 +195,7 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
                       Replace
                     </Button>
                     <Button
-                      size="sm"
+                      size={{ base: 'xs', md: 'sm' }}
                       colorScheme="red"
                       onClick={() => handleRemoveCard(index + 1)}
                     >
@@ -229,14 +238,17 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
           <DrawerHeader
             top="0"
             zIndex="1"
-            className="bg-primary text-secondary"
+            className="bg-primary text-secondary text-center md:text-lg sm:text-sm"
           >
             {selectedPosition !== null
               ? `Select Card for Position ${selectedPosition}`
               : 'Select Card'}
             <DrawerCloseButton />
           </DrawerHeader>
-          <DrawerBody className="bg-primary text-secondary" maxHeight="calc(100vh - 4rem)">
+          <DrawerBody
+            className="bg-primary text-secondary"
+            maxHeight="calc(100vh - 4rem)"
+          >
             <CardSelectionGrid
               handleCardSelect={handleCardSelect}
               displayCards={displayCards}
