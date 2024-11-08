@@ -171,25 +171,25 @@ const BinderTables = () => {
                 <Thead className="bg-table-header">
                   <Tr>
                     <Th
-                      className="text-table-header font-semibold py-4"
+                      className="!text-table-header font-semibold py-4"
                       borderBottom="1px solid"
                     >
                       Name
                     </Th>
                     <Th
-                      className="text-table-header font-semibold py-4"
+                      className="!text-table-header font-semibold py-4"
                       borderBottom="1px solid"
                     >
                       User
                     </Th>
                     <Th
-                      className="text-table-header font-semibold py-4"
+                      className="!text-table-header font-semibold py-4"
                       borderBottom="1px solid"
                     >
                       Description
                     </Th>
                     <Th
-                      className="text-table-header font-semibold py-4"
+                      className="!text-table-header font-semibold py-4"
                       borderBottom="1px solid"
                     >
                       Update/Delete
@@ -204,7 +204,7 @@ const BinderTables = () => {
                     >
                       <Td className="text-table-row py-4">
                         <Link
-                          className="!hover:no-underline ml-2 block pb-2 text-left !text-blue600"
+                          className="!hover:no-underline ml-2 block pb-2 text-left !text-link"
                           onClick={() =>
                             router.push(`/binder/${binder.binderID}`)
                           }

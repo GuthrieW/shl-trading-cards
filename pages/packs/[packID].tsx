@@ -45,7 +45,7 @@ export default ({ packID }: { packID: string }) => {
                 <div className="text-xs sm:text-lg">
                   Opened by:{' '}
                   <Link
-                    className="!text-blue600"
+                    className="!text-link"
                     href={`/collect/${packs?.[0]?.userID}`}
                     target="_blank"
                   >

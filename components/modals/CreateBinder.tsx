@@ -107,7 +107,7 @@ const CreateBinder: React.FC<CreateBinder> = ({ isOpen, onClose }) => {
                   placeholder="Enter binder name"
                   disabled={isLoadingCreateBinder}
                 />
-                <FormHelperText className="text-secondary">
+                <FormHelperText className="!text-secondary">
                   {binderName.length}/100 characters
                 </FormHelperText>
               </FormControl>
@@ -122,7 +122,7 @@ const CreateBinder: React.FC<CreateBinder> = ({ isOpen, onClose }) => {
                   rows={4}
                   disabled={isLoadingCreateBinder}
                 />
-                <FormHelperText className="text-secondary">
+                <FormHelperText className="!text-secondary">
                   {binderDescription.length}/400 characters
                 </FormHelperText>
               </FormControl>

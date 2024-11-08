@@ -111,7 +111,7 @@ export const CardInformation = ({
                     <Tr>
                       <Td>
                         <Button
-                          className="!hover:no-underline mr-2 bg-primary font-mont hover:text-blue600 focus:text-blue600 "
+                          className="!hover:no-underline mr-2 bg-primary font-mont hover:text-link focus:text-blue700 "
                           onClick={() =>
                             setIndexSrc(generateIndexLink(playerID, colorMode))
                           }
@@ -133,7 +133,7 @@ export const CardInformation = ({
                     height={height}
                   />
                   <Link
-                    className="!hover:no-underline ml-2 block pb-2 text-left text-blue600 "
+                    className="!hover:no-underline ml-2 block pb-2 text-left text-link"
                     href={indexSrc.split('?')[0]}
                     target="_blank"
                   >

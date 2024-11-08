@@ -118,7 +118,7 @@ const OpenPacks = () => {
               <p className="text-xl">
                 Go to the{' '}
                 <a
-                  className="text-blue-500 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 my-4"
+                  className="text-link hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 my-4"
                   href="/shop"
                 >
                   pack shop

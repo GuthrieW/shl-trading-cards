@@ -36,7 +36,7 @@ export const lightTheme: ThemeVariables = {
   '--color-text-secondary': '#343A40',
   '--color-text-tertiary': '#6C757D',
   '--color-text-inverted': '#F8F9FA',
-  '--color-text-link': '#1A73E8',
+  '--color-text-link': '#1A51E9',
   '--color-text-table-row': '#212529',
   '--color-text-table-header': '#F8F9FA',
   '--color-text-boxscore-header': '#6C757D',
