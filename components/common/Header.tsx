@@ -11,6 +11,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  MenuDivider,
 } from '@chakra-ui/react'
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'
 import axios from 'axios'
@@ -103,15 +104,6 @@ export const Header = ({ showAuthButtons = true }) => {
               </Link>
             </AuthGuard>
             <Link
-              href={`/community`}
-              className={classnames(
-                '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600',
-                linkClasses(router, `/community`)
-              )}
-            >
-              Community
-            </Link>
-            <Link
               href="/shop"
               className={classnames(
                 '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600',
@@ -142,20 +134,24 @@ export const Header = ({ showAuthButtons = true }) => {
                 Open Packs
               </Link>
             </AuthGuard>
-            <Link
-              href={`/binder`}
-              className={classnames(
-                '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600',
-                linkClasses(router, `/binder`)
-              )}
-            >
-              Binders
-            </Link>
             <Menu>
               <MenuButton className="!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-grey100 hover:bg-blue600 sm:h-full sm:w-max">
                 More
               </MenuButton>
               <MenuList>
+                <MenuItem
+                  className="hover:!bg-highlighted/40 hover:!text-primary"
+                  onClick={() => router.push('/community')}
+                >
+                  Community
+                </MenuItem>
+                <MenuItem
+                  className="hover:!bg-highlighted/40 hover:!text-primary"
+                  onClick={() => router.push('/binder')}
+                >
+                  Binders
+                </MenuItem>
+                <MenuDivider />
                 {externalLinks.map(({ name, href }) => (
                   <MenuItem
                     className="hover:!bg-highlighted/40 hover:!text-primary"
@@ -167,42 +163,6 @@ export const Header = ({ showAuthButtons = true }) => {
                     {name}
                   </MenuItem>
                 ))}
-              </MenuList>
-            </Menu>
-            <Menu>
-              <RoleGuard
-                userRoles={['TRADING_CARD_ADMIN', 'TRADING_CARD_TEAM']}
-              >
-                <MenuButton
-                  className={classnames(
-                    '!hover:no-underline flex h-12 w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:bg-blue600',
-                    linkClasses(router, '/admin')
-                  )}
-                >
-                  Admin
-                </MenuButton>
-              </RoleGuard>
-
-              <MenuList>
-                <RoleGuard
-                  userRoles={['TRADING_CARD_ADMIN', 'TRADING_CARD_TEAM']}
-                >
-                  <MenuItem
-                    className="hover:!bg-highlighted/40 hover:!text-primary"
-                    onClick={() => router.push('/admin/cards')}
-                  >
-                    Cards
-                  </MenuItem>
-                </RoleGuard>
-
-                <RoleGuard userRoles={['TRADING_CARD_ADMIN']}>
-                  <MenuItem
-                    className="hover:!bg-highlighted/40 hover:!text-primary"
-                    onClick={() => router.push('/admin/scripts')}
-                  >
-                    Scripts
-                  </MenuItem>
-                </RoleGuard>
               </MenuList>
             </Menu>
           </div>
@@ -237,6 +197,25 @@ export const Header = ({ showAuthButtons = true }) => {
                       </div>
                     </MenuButton>
                     <MenuList>
+                      <RoleGuard
+                        userRoles={['TRADING_CARD_ADMIN', 'TRADING_CARD_TEAM']}
+                      >
+                        <MenuItem
+                          className="hover:!bg-highlighted/40 hover:!text-primary"
+                          onClick={() => router.push('/admin/cards')}
+                        >
+                          Admin: Cards
+                        </MenuItem>
+                      </RoleGuard>
+                      <RoleGuard userRoles={['TRADING_CARD_ADMIN']}>
+                        <MenuItem
+                          className="hover:!bg-highlighted/40 hover:!text-primary"
+                          onClick={() => router.push('/admin/scripts')}
+                        >
+                          Admin: Scripts
+                        </MenuItem>
+                      </RoleGuard>
+                      <MenuDivider />
                       <MenuItem
                         className="hover:!bg-highlighted/40 hover:!text-primary"
                         onClick={handleLogout}
