@@ -18,7 +18,13 @@ import TradingCard from '@components/images/TradingCard'
 import { formatDateTime } from '@utils/formatDateTime'
 import { useEffect, useState } from 'react'
 import { IconButton } from '@chakra-ui/react'
-import { ChevronUpIcon } from '@chakra-ui/icons'
+import { ChevronRightIcon, ChevronUpIcon } from '@chakra-ui/icons'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from '@chakra-ui/react'
 
 export default ({ tradeid }: { tradeid: string }) => {
   const toast = useToast()
@@ -176,6 +182,18 @@ export default ({ tradeid }: { tradeid: string }) => {
 
   return (
     <PageWrapper>
+      <Breadcrumb
+        spacing="4px"
+        separator={<ChevronRightIcon color="gray.500" />}
+      >
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/trade">Trade</BreadcrumbLink>
+        </BreadcrumbItem>
+
+        <BreadcrumbItem isCurrentPage>
+          <BreadcrumbLink href="#">Current Trade</BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
       {isVisible && (
         <IconButton
           aria-label="Scroll to top"
@@ -190,7 +208,7 @@ export default ({ tradeid }: { tradeid: string }) => {
         />
       )}
       <div className="max-w-7xl mx-auto px-4 py-4 sm:py-8">
-        <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6 border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
           <div className="space-y-2">
             <div className="flex items-center gap-3 flex-wrap">
               <h1 className="text-2xl font-bold text-secondary">
@@ -262,14 +280,14 @@ export default ({ tradeid }: { tradeid: string }) => {
 
         <div className="hidden sm:flex gap-8">
           <TradeSection
-            title={initiatorUser?.username || 'Loading...'}
+            title={initiatorUser?.username}
             cards={initiatorCards}
           />
           <div className="flex items-center">
             <div className="h-full w-px bg-gray-200" />
           </div>
           <TradeSection
-            title={recipientUser?.username || 'Loading...'}
+            title={recipientUser?.username}
             cards={recipientCards}
           />
         </div>
@@ -278,12 +296,12 @@ export default ({ tradeid }: { tradeid: string }) => {
         <div className="flex flex-col gap-6 sm:hidden">
           <TradeSection
             id="initiator-cards"
-            title={initiatorUser?.username || 'Loading...'}
+            title={initiatorUser?.username}
             cards={initiatorCards}
           />
           <TradeSection
             id="recipient-cards"
-            title={recipientUser?.username || 'Loading...'}
+            title={recipientUser?.username}
             cards={recipientCards}
           />
         </div>
@@ -305,8 +323,8 @@ const TradeSection = ({
     id={id}
     className="flex-1 bg-primary rounded-xl shadow-lg overflow-hidden"
   >
-    <div className="bg-gradient-to-r from-grey800 to-blue600 px-6 py-4">
-      <div className="text-xl text-white">{title}</div>
+    <div className="bg-primary shadow-sm">
+      <div className="text-xl text-secondary text-center">{title}</div>
     </div>
 
     <SimpleGrid columns={{ base: 2, sm: 2, md: 3 }} spacing={4} className="p-6">

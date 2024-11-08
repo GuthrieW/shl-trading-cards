@@ -6,7 +6,8 @@ import BinderHeader from '@components/binder/BinderHeader'
 import { GET } from '@constants/http-methods'
 import axios from 'axios'
 import { binders } from '@pages/api/v3'
-import { Skeleton, Box } from '@chakra-ui/react'
+import { Skeleton, Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
+import { ChevronRightIcon } from '@chakra-ui/icons'
 
 export default ({ bid }: { bid: string }) => {
   const { data, isLoading } = useQuery<{ status: string; payload: binders[] }>({
@@ -23,6 +24,18 @@ export default ({ bid }: { bid: string }) => {
 
   return (
     <PageWrapper>
+      <Breadcrumb
+        spacing="4px"
+        separator={<ChevronRightIcon color="gray.500" />}
+      >
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/binder">Binders</BreadcrumbLink>
+        </BreadcrumbItem>
+
+        <BreadcrumbItem isCurrentPage>
+          <BreadcrumbLink href="#">Current Binder</BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
       {isLoading ? (
         <>
           <Skeleton height="40px" mb="4" />
