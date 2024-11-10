@@ -23,11 +23,10 @@ type OpenPackModalProps = {
 const getPackTypeData = (pack: UserPackWithCover) => {
   if (pack.packType === packService.packs.base.id) {
     return packService.packs.base
-  } 
-  if (pack.packType === packService.packs.rubyPlus.id) {
-    return packService.packs.rubyPlus
-  } 
-  
+  }
+  if (pack.packType === packService.packs.ruby.id) {
+    return packService.packs.ruby
+  }
 }
 
 const OpenPackModal = ({
@@ -53,7 +52,7 @@ const OpenPackModal = ({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader className="bg-primary text-secondary">
-          <div className='select-none'>{packTypeData.label}</div>
+          <div className="select-none">{packTypeData.label}</div>
         </ModalHeader>
         <ModalBody className="flex flex-col justify-center items-center bg-primary text-secondary">
           <Image
@@ -86,7 +85,7 @@ const OpenPackModal = ({
             colorScheme="green"
             onClick={handleOpenPack}
             isDisabled={isOpening}
-            className={isOpening ? "opacity-50" : ''}
+            className={isOpening ? 'opacity-50' : ''}
           >
             {isOpening ? 'Opening...' : 'Open Pack'}
           </Button>

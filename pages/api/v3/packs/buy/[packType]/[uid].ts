@@ -12,6 +12,11 @@ const cors = Cors({
   methods: allowedMethods,
 })
 
+const PACK_LIMITS = {
+  base: 3,
+  ruby: 1,
+}
+
 const index = async (
   request: NextApiRequest,
   response: NextApiResponse
@@ -38,9 +43,9 @@ const index = async (
     )
     if (isMissingPackType) return
 
-    const hasReachedLimit = await cardsQuery<{ packsToday: number }>(
+    const hasReachedLimit = await cardsQuery<{ count: number }>(
       SQL`
-          SELECT packsToday
+          SELECT ${packType}
           FROM packToday
           WHERE userID=${uid};`
     )
@@ -53,9 +58,13 @@ const index = async (
     }
 
     const hasReachedPackLimit: boolean = assertBoom(
-      hasReachedLimit.length === 0 || hasReachedLimit[0]?.packsToday < 3,
+      hasReachedLimit.length === 0 ||
+        hasReachedLimit[0]?.count <
+          PACK_LIMITS[packType as keyof typeof PACK_LIMITS],
       response,
-      'Daily Pack Limit Reached',
+      `Daily Pack Limit of ${
+        PACK_LIMITS[packType as keyof typeof PACK_LIMITS]
+      } Reached for ${packType} pack`,
       StatusCodes.BAD_REQUEST
     )
 

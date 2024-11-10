@@ -16,53 +16,53 @@ const cors = Cors({
 export type DailySettingsData = {
   uid: number
   subscription: number
+  rubySubscription: number
 }
 
 export default async function settingsEndpoint(
-    req: NextApiRequest,
-    res: NextApiResponse<ApiResponse<DailySettingsData[]>>
-  ): Promise<void> {
-    await middleware(req, res, cors);
-  
-    if (req.method === GET) {
-      const userIDParam = req.query.userID;
-      let userID: number | null = null;
-  
-      if (typeof userIDParam === 'string') {
-        userID = parseInt(userIDParam, 10);
-      }
-  
-      if (userID && isNaN(userID)) {
-        res.status(StatusCodes.BAD_REQUEST).end('Invalid userID');
-        return;
-      }
-  
-      const query: SQLStatement = SQL`
-        SELECT s.userID as userID, s.subscription as subscription
-        FROM settings s 
-      `;
-  
-      if (userID) {
-        query.append(SQL` WHERE s.userID = ${userID} `);
-      }
-  
-      const queryResult = await cardsQuery<DailySettingsData>(query);
-  
-      if ('error' in queryResult) {
-        console.error(queryResult);
-        res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .end('Server connection failed');
-        return;
-      }
-  
-      res.status(StatusCodes.OK).json({
-        status: 'success',
-        payload: queryResult,
-      });
-      return;
+  req: NextApiRequest,
+  res: NextApiResponse<ApiResponse<DailySettingsData[]>>
+): Promise<void> {
+  await middleware(req, res, cors)
+
+  if (req.method === GET) {
+    const userIDParam = req.query.userID
+    let userID: number | null = null
+
+    if (typeof userIDParam === 'string') {
+      userID = parseInt(userIDParam, 10)
     }
-  
-    methodNotAllowed(req, res, allowedMethods);
+
+    if (userID && isNaN(userID)) {
+      res.status(StatusCodes.BAD_REQUEST).end('Invalid userID')
+      return
+    }
+
+    const query: SQLStatement = SQL`
+        SELECT s.userID as userID, s.subscription as subscription, s.rubySubscription as rubySubscription
+        FROM settings s 
+      `
+
+    if (userID) {
+      query.append(SQL` WHERE s.userID = ${userID} `)
+    }
+
+    const queryResult = await cardsQuery<DailySettingsData>(query)
+
+    if ('error' in queryResult) {
+      console.error(queryResult)
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .end('Server connection failed')
+      return
+    }
+
+    res.status(StatusCodes.OK).json({
+      status: 'success',
+      payload: queryResult,
+    })
+    return
   }
-  
+
+  methodNotAllowed(req, res, allowedMethods)
+}

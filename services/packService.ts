@@ -28,17 +28,15 @@ class PackService {
         { name: 'meme', url: '/base-pack-meme.png' },
       ],
     },
-    rubyPlus: {
-      id: 'rubyPlus',
-      label: 'Ruby Plus',
+    ruby: {
+      id: 'ruby',
+      label: 'Ruby',
       description:
-        'This is the Ruby Plus pack. Containing 1 Garunteed Ruby and 5 cards of any rarity except for bronze, silver, and gold',
+        'This is the Ruby pack. Containing 6 cards of any rarity except for bronze, silver, and gold',
       imageUrl: '/images/base-pack-cover.png',
       price: 100000,
       priceLabel: '100k',
-      covers: [
-        { name: 'old', url: '/base-pack-cover.png' },
-      ],
+      covers: [{ name: 'old', url: '/base-pack-cover.png' }],
     },
   } as const
 
@@ -54,7 +52,7 @@ class PackService {
     }
 
     const coverIndex: number = Math.floor(
-      Math.random() * (Object.values(this.packs.base.covers).length -1)
+      Math.random() * (Object.values(this.packs.base.covers).length - 1)
     )
     return this.packs.base.covers.at(coverIndex).url
   }

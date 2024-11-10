@@ -1,9 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import {
-    cardsQuery,
-} from '@pages/api/database/database'
+import { cardsQuery } from '@pages/api/database/database'
 import { POST } from '@constants/http-methods'
-import {rarityMapRubyPlus ,rarityMap , Rarity } from '@constants/rarity-map'
+import { rarityMapRuby, rarityMap, Rarity } from '@constants/rarity-map'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
@@ -41,33 +39,33 @@ const getBasePackRarity = (): string => {
 }
 
 const pullBaseCards = async (): Promise<{ cardID: string }[]> => {
-    let pulledCards: { cardID: string }[] = []
-    for (let i = 0; i < 6; i++) {
-      const rarity: string = getBasePackRarity()
-  
-      const cardResult = await cardsQuery(
-        SQL`
+  let pulledCards: { cardID: string }[] = []
+  for (let i = 0; i < 6; i++) {
+    const rarity: string = getBasePackRarity()
+
+    const cardResult = await cardsQuery(
+      SQL`
         SELECT cardID
         FROM cards
         WHERE card_rarity=${rarity}
           AND approved=1
         ORDER BY RAND()
         LIMIT 1;`
-      )
-  
-      if (cardResult) {
-        pulledCards.push(cardResult[0]) 
-      } else {
-        throw new Error('No card found or query failed.')
-      }
+    )
+
+    if (cardResult) {
+      pulledCards.push(cardResult[0])
+    } else {
+      throw new Error('No card found or query failed.')
     }
-  
+  }
+
   return pulledCards
 }
 
 const getRubyPlusPackRarity = (): string => {
   const num: number = randomIntFromInterval(10000)
-  const rarities: Rarity[] = Object.values(rarityMapRubyPlus)
+  const rarities: Rarity[] = Object.values(rarityMapRuby)
 
   let counter = 0
   const foundRarityRecord = rarities.find((rarity, index) => {
@@ -148,10 +146,10 @@ const index = async (
     if (packAlreadyOpened) return
 
     let pulledCards: { cardID: string }[] = []
-    
+
     if (pack.packType === packService.packs.base.id) {
       pulledCards = await pullBaseCards()
-    } else if (pack.packType === packService.packs.rubyPlus.id) {
+    } else if (pack.packType === packService.packs.ruby.id) {
       pulledCards = await pullRubyPlusCards()
     } else {
       response.status(StatusCodes.BAD_REQUEST).json({
@@ -166,7 +164,8 @@ const index = async (
         INSERT INTO collection
           (userID, cardID, packID)
         VALUES
-          (${pack.userID}, ${pulledCard.cardID}, ${packID});`)
+          (${pack.userID}, ${pulledCard.cardID}, ${packID});`
+      )
     })
 
     await cardsQuery(

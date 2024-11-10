@@ -52,7 +52,9 @@ export default ({ packID }: { packID: string }) => {
                     <GetUsername userID={packs?.[0]?.userID} />
                   </Link>{' '}
                 </div>
-                <div className="text-xs sm:text-lg">Pack #: {packID}</div>
+                <div className="text-xs sm:text-lg">
+                  Pack Type: {packs?.[0]?.packType}
+                </div>
               </div>
               <div className="font-bold">
                 <div className="text-xs sm:text-lg">
