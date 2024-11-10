@@ -203,11 +203,15 @@ export const CardInformation = ({
                     rounded="md"
                     mb={2}
                   >
-                    <div>{pack.username} : {pack.total}</div>
+                    <div>
+                      {pack.username} : {pack.total}
+                    </div>
                     <Button
                       className="mt-2"
                       colorScheme="blue"
-                      isDisabled={session?.userId == String(pack.userID) || !loggedIn}
+                      isDisabled={
+                        session?.userId == String(pack.userID) || !loggedIn
+                      }
                       onClick={() =>
                         Router.push(
                           `/trade?partnerId=${pack.userID}&cardID=${pack.cardID}`

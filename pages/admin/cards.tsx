@@ -45,6 +45,7 @@ import config from 'lib/config'
 import SubmitImageModal from '@components/admin-cards/SubmitImageModal'
 import ClaimCardDialog from '@components/admin-cards/ClaimCardDialog'
 import ProcessImageDialog from '@components/admin-cards/ProcessImageDialog'
+import { toggleOnfilters } from '@utils/toggle-on-filters'
 
 type ColumnName = keyof Readonly<Card>
 
@@ -161,12 +162,12 @@ export default () => {
   }
 
   const toggleTeam = (team: string) => {
-    setTeams((currentValue) => toggleOnfilters(currentValue, team));
-  };
+    setTeams((currentValue) => toggleOnfilters(currentValue, team))
+  }
 
   const toggleRarity = (rarity: string) => {
-    setRarities((currentValue) => toggleOnfilters(currentValue, rarity));
-  };
+    setRarities((currentValue) => toggleOnfilters(currentValue, rarity))
+  }
   return (
     <>
       <PageWrapper

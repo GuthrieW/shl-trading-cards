@@ -36,7 +36,7 @@ import { useCookie } from '@hooks/useCookie'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
 
 interface CardSelectionGridProps {
-  handleCardSelect: (card: TradeCard) => void;
+  handleCardSelect: (card: TradeCard) => void
   displayCards: binderCards[]
 }
 
@@ -141,13 +141,13 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
     })
 
     const toggleTeam = (team: string) => {
-      setTeams((currentValue) => toggleOnfilters(currentValue, team));
-    };
-  
+      setTeams((currentValue) => toggleOnfilters(currentValue, team))
+    }
+
     const toggleRarity = (rarity: string) => {
-      setRarities((currentValue) => toggleOnfilters(currentValue, rarity));
-    };
-  
+      setRarities((currentValue) => toggleOnfilters(currentValue, rarity))
+    }
+
     return (
       <>
         <Flex direction="column" mb={4}>
@@ -311,53 +311,52 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
           columns={{ base: 2, lg: 5 }}
         >
           {(selectedUserCardsIsLoading
-                ? LOADING_GRID_DATA
-                : selectedUserCards
-              )?.rows.map((card, index) => {
-                const isInDisplayCards = displayCards.some(
-                  (displayCard) =>
-                    displayCard?.ownedCardID === card?.ownedCardID
-                )
+            ? LOADING_GRID_DATA
+            : selectedUserCards
+          )?.rows.map((card, index) => {
+            const isInDisplayCards = displayCards.some(
+              (displayCard) => displayCard?.ownedCardID === card?.ownedCardID
+            )
 
-                return (
-                  <div 
-                    tabIndex={0} 
-                    role="button"
-                    key={`${card.cardID}-${index}`}
-                    className={`m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl ${
-                      isInDisplayCards
-                        ? 'grayscale cursor-default'
-                        : 'cursor-pointer'
-                    }`}
-                    onClick={() => {
-                      if (!isInDisplayCards) {
-                        handleCardSelect(card)
-                      }
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        handleCardSelect(card);
-                      }
-                    }}
-                  >
-                    <Image
-                      className={`cursor-pointer`}
-                      src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
-                      fallback={
-                        <div className="relative z-10">
-                          <Image src="/cardback.png" />
-                          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
-                        </div>
-                      }
-                      alt={`${card.player_name} Card`}
-                    />
-                    <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-primary transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
-                      {card.card_rarity}
-                    </Badge>
-                  </div>
-                )
-              })}
+            return (
+              <div
+                tabIndex={0}
+                role="button"
+                key={`${card.cardID}-${index}`}
+                className={`m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl ${
+                  isInDisplayCards
+                    ? 'grayscale cursor-default'
+                    : 'cursor-pointer'
+                }`}
+                onClick={() => {
+                  if (!isInDisplayCards) {
+                    handleCardSelect(card)
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    handleCardSelect(card)
+                  }
+                }}
+              >
+                <Image
+                  className={`cursor-pointer`}
+                  src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+                  fallback={
+                    <div className="relative z-10">
+                      <Image src="/cardback.png" />
+                      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+                    </div>
+                  }
+                  alt={`${card.player_name} Card`}
+                />
+                <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-primary transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
+                  {card.card_rarity}
+                </Badge>
+              </div>
+            )
+          })}
         </SimpleGrid>
         <TablePagination
           totalRows={selectedUserCards?.total}

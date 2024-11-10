@@ -203,12 +203,12 @@ export default ({ uid }: { uid: string }) => {
   }
 
   const toggleTeam = (team: string) => {
-    setTeams((currentValue) => toggleOnfilters(currentValue, team));
-  };
+    setTeams((currentValue) => toggleOnfilters(currentValue, team))
+  }
 
   const toggleRarity = (rarity: string) => {
-    setRarities((currentValue) => toggleOnfilters(currentValue, rarity));
-  };
+    setRarities((currentValue) => toggleOnfilters(currentValue, rarity))
+  }
 
   const getActiveFilters = () => {
     const activeFilters = []

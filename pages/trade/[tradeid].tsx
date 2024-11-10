@@ -19,12 +19,7 @@ import { formatDateTime } from '@utils/formatDateTime'
 import { useEffect, useState } from 'react'
 import { IconButton } from '@chakra-ui/react'
 import { ChevronRightIcon, ChevronUpIcon } from '@chakra-ui/icons'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-} from '@chakra-ui/react'
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
 
 export default ({ tradeid }: { tradeid: string }) => {
   const toast = useToast()

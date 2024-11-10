@@ -76,12 +76,13 @@ export const Carousel = React.memo(
                     />
                     <div className="card-info !bg-secondary">
                       <div className="text-secondary">
-                        Opened by: <Link 
-                        className="!text-link" 
-                        href={`/collect/${card.userID}`} 
-                        target="_blank"
-                        > 
-                        <GetUsername userID={card.userID} />
+                        Opened by:{' '}
+                        <Link
+                          className="!text-link"
+                          href={`/collect/${card.userID}`}
+                          target="_blank"
+                        >
+                          <GetUsername userID={card.userID} />
                         </Link>
                       </div>
                       <Link

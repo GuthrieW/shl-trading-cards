@@ -116,7 +116,7 @@ const BinderHeader = ({ bid, binderData }: UpdateBinderHeaderProps) => {
             )}
           </Flex>
           <Text className="text-lg font-bold">
-          By:{' '}
+            By:{' '}
             <Link
               className="!text-link"
               href={`/collect/${binderData.userID}`}

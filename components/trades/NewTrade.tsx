@@ -252,13 +252,13 @@ export default function NewTrade({
   const toggleTeam = (team: string) => {
     setTeams((currentValue) => {
       const teamIndex: number = currentValue.indexOf(team)
-      if(teamIndex === -1) {
-        return [... currentValue, team]
+      if (teamIndex === -1) {
+        return [...currentValue, team]
       } else {
         return [
           ...currentValue.slice(0, teamIndex),
           ...currentValue.slice(teamIndex + 1),
-        ];
+        ]
       }
     })
   }
@@ -683,15 +683,15 @@ export default function NewTrade({
 
                 return (
                   <div
-                    tabIndex={0} 
+                    tabIndex={0}
                     role="button"
                     key={`${card.cardID}-${index}`}
                     className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
                     onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
+                      if (e.key === 'Enter' || e.key === ' ') {
                         if (!isInTrade) {
-                          e.preventDefault();
-                          addCardToTrade(card, isLoggedInUser);
+                          e.preventDefault()
+                          addCardToTrade(card, isLoggedInUser)
                           toast({
                             title: 'Added card to trade',
                             description: '',
@@ -705,7 +705,6 @@ export default function NewTrade({
                       className={`cursor-pointer ${
                         isInTrade ? 'grayscale' : ''
                       }`}
-                      
                       onClick={() => {
                         if (!isInTrade) {
                           addCardToTrade(card, isLoggedInUser)
