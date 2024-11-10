@@ -47,11 +47,18 @@ const OpenPacks = () => {
   })
 
   const packsWithCovers: UserPackWithCover[] = useMemo(() => {
-    if (!packs) return []
-    return packs.map((pack) => ({
-      ...pack,
-      cover: packService.basePackCover(),
-    }))
+    return packs.map((pack) => {
+      if (pack.packType === 'base') {
+        return { ...pack, cover: packService.basePackCover() }
+      } else if (pack.packType === 'ruby') {
+        return { ...pack, cover: packService.rubyPackCover() }
+      }
+
+      return {
+        ...pack,
+        cover: packService.basePackCover() || packService.rubyPackCover(),
+      }
+    })
   }, [packs])
 
   const packCounts = useMemo(() => {

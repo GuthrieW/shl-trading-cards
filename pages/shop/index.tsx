@@ -78,10 +78,12 @@ const PackShop = () => {
   const packsWithCovers: PackInfoWithCover[] = useMemo(() => {
     return Object.values(packService.packs).map((pack) => {
       const typedPack = pack as PackInfo
-      if (typedPack.id === 'base' || typedPack.id === 'ruby') {
+      if (typedPack.id === 'base') {
         return { ...typedPack, cover: packService.basePackCover() }
+      } else if (typedPack.id === 'ruby') {
+        return { ...typedPack, cover: packService.rubyPackCover() }
       }
-      return { ...typedPack, cover: typedPack.imageUrl || '' }
+      return { ...typedPack, cover: typedPack.imageUrl }
     })
   }, [])
 

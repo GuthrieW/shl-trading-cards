@@ -33,10 +33,10 @@ class PackService {
       label: 'Ruby',
       description:
         'This is the Ruby pack. Containing 6 cards of any rarity except for bronze, silver, and gold',
-      imageUrl: '/images/base-pack-cover.png',
+      imageUrl: '/images/ruby-pack-cover.png',
       price: 100000,
       priceLabel: '100k',
-      covers: [{ name: 'old', url: '/base-pack-cover.png' }],
+      covers: [{ name: 'old', url: '/ruby-pack-cover.png' }],
     },
   } as const
 
@@ -55,6 +55,9 @@ class PackService {
       Math.random() * (Object.values(this.packs.base.covers).length - 1)
     )
     return this.packs.base.covers.at(coverIndex).url
+  }
+  rubyPackCover(): string {
+    return this.packs.ruby.covers.at(0).url
   }
 }
 export const packService = new PackService()
