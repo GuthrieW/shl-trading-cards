@@ -47,7 +47,7 @@ const OpenPackModal = ({
       isOpen={true}
       blockScrollOnMount={false}
       onClose={() => setShowModal(false)}
-      size={{ base: 'xs', sm: 'md', md: 'lg', lg: 'lg' }}
+      size={{ base: 'xs', sm: 'sm', md: 'sm', lg: 'sm' }}
     >
       <ModalOverlay />
       <ModalContent>
@@ -63,12 +63,6 @@ const OpenPackModal = ({
           <Text mt={2} className="text-sm md:text-base">
             {packTypeData.description}
           </Text>
-          {isOpening && (
-            <div className="mt-4 flex items-center">
-              <Spinner size="lg" color="green.500" />
-              <Text ml={3}>Opening your pack...</Text>
-            </div>
-          )}
         </ModalBody>
         <ModalFooter className="flex justify-end bg-primary text-secondary">
           <Button
@@ -87,7 +81,14 @@ const OpenPackModal = ({
             isDisabled={isOpening}
             className={isOpening ? 'opacity-50' : ''}
           >
-            {isOpening ? 'Opening...' : 'Open Pack'}
+            {isOpening ? (
+              <>
+                {' '}
+                <Spinner size="md" color="black" /> <div> Opening... </div>
+              </>
+            ) : (
+              'Open Pack'
+            )}
           </Button>
         </ModalFooter>
       </ModalContent>

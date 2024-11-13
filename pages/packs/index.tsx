@@ -18,6 +18,15 @@ export type UserPackWithCover = UserPacks & {
   cover: string
 }
 
+const getPackCover = (pack: UserPacks): string => {
+  if (pack.packType === 'base') {
+    return packService.basePackCover()
+  } else if (pack.packType === 'ruby') {
+    return packService.rubyPackCover()
+  }
+  return packService.basePackCover() // fallback to base pack cover
+}
+
 const OpenPacks = () => {
   const toast = useToast()
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -46,35 +55,28 @@ const OpenPacks = () => {
     enabled: !!user?.uid,
   })
 
-  const packsWithCovers: UserPackWithCover[] = useMemo(() => {
-    return packs.map((pack) => {
-      if (pack.packType === 'base') {
-        return { ...pack, cover: packService.basePackCover() }
-      } else if (pack.packType === 'ruby') {
-        return { ...pack, cover: packService.rubyPackCover() }
-      }
-
-      return {
-        ...pack,
-        cover: packService.basePackCover() || packService.rubyPackCover(),
-      }
-    })
+  const packsWithCovers = useMemo(() => {
+    if (!packs) return []
+    return packs.map((pack) => ({
+      ...pack,
+      cover: getPackCover(pack),
+    }))
   }, [packs])
 
   const packCounts = useMemo(() => {
-    const counts = {
-      base: 0,
-      ruby: 0,
-      total: packsWithCovers.length,
-    }
-    packsWithCovers.forEach((pack) => {
-      if (pack.packType === 'base') counts.base++
-      if (pack.packType === 'ruby') counts.ruby++
-    })
-    return counts
+    const counts = { base: 0, ruby: 0, total: 0 }
+    if (!packsWithCovers) return counts
+
+    return packsWithCovers.reduce((acc, pack) => {
+      if (pack.packType === 'base') acc.base++
+      if (pack.packType === 'ruby') acc.ruby++
+      acc.total = acc.base + acc.ruby
+      return acc
+    }, counts)
   }, [packsWithCovers])
 
   const filteredPacks = useMemo(() => {
+    if (!packsWithCovers) return []
     if (selectedPackType === 'all') return packsWithCovers
     return packsWithCovers.filter((pack) => pack.packType === selectedPackType)
   }, [packsWithCovers, selectedPackType])
