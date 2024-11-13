@@ -33,9 +33,10 @@ import rarityMap from '@constants/rarity-map'
 import { allTeamsMaps } from '@constants/teams-map'
 import filterTeamsByLeague from '@utils/filterTeamsByLeague'
 import { useCookie } from '@hooks/useCookie'
+import { toggleOnfilters } from '@utils/toggle-on-filters'
 
 interface CardSelectionGridProps {
-  handleCardSelect: (card: TradeCard) => void;
+  handleCardSelect: (card: TradeCard) => void
   displayCards: binderCards[]
 }
 
@@ -140,27 +141,11 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
     })
 
     const toggleTeam = (team: string) => {
-      setTeams((currentValue) => {
-        const teamIndex: number = currentValue.indexOf(team)
-        teamIndex === -1
-          ? currentValue.push(team)
-          : currentValue.splice(teamIndex)
-        return [...currentValue]
-      })
-    }
-
-    const toggleLeague = (league: string) => {
-      setLeague([league])
+      setTeams((currentValue) => toggleOnfilters(currentValue, team))
     }
 
     const toggleRarity = (rarity: string) => {
-      setRarities((currentValue) => {
-        const rarityIndex: number = currentValue.indexOf(rarity)
-        rarityIndex === -1
-          ? currentValue.push(rarity)
-          : currentValue.splice(rarityIndex)
-        return [...currentValue]
-      })
+      setRarities((currentValue) => toggleOnfilters(currentValue, rarity))
     }
 
     return (
@@ -183,7 +168,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                 <MenuButton
                   as={Button}
                   rightIcon={<ChevronDownIcon />}
-                  className="w-full !bg-secondary !text-secondary text-center hover:!bg-blue600"
+                  className="w-full !bg-secondary !text-secondary text-center hover:!bg-highlighted/40"
                 >
                   Teams ({teams.length})
                 </MenuButton>
@@ -194,7 +179,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                       isChecked={false}
                       aria-checked={false}
                       closeOnSelect
-                      className="!bg-secondary hover:!bg-blue600"
+                      className="hover:!bg-highlighted/40"
                       onClick={() => {
                         setTablePage(1)
                         setTeams([])
@@ -209,6 +194,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                         )
                         return (
                           <MenuItemOption
+                            className="hover:!bg-highlighted/40"
                             icon={null}
                             isChecked={isChecked}
                             aria-checked={isChecked}
@@ -234,7 +220,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                 <MenuButton
                   as={Button}
                   rightIcon={<ChevronDownIcon />}
-                  className="w-full !bg-secondary !text-secondary text-center hover:!bg-blue600"
+                  className="w-full !bg-secondary !text-secondary text-center hover:!bg-highlighted/40"
                 >
                   Rarity ({rarities.length})
                 </MenuButton>
@@ -245,7 +231,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                       isChecked={false}
                       aria-checked={false}
                       closeOnSelect
-                      className="!bg-secondary hover:!bg-blue600"
+                      className="hover:!bg-highlighted/40"
                       onClick={() => {
                         setTablePage(1)
                         setRarities([])
@@ -265,6 +251,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
 
                       return (
                         <MenuItemOption
+                          className="hover:bg-highlighted/40"
                           icon={null}
                           isChecked={isChecked}
                           aria-checked={isChecked}
@@ -290,7 +277,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
           </Flex>
           <Box flex={1} mr={2} className="p-2">
             <Select
-              className="w-full !bg-secondary hover:!bg-blue600"
+              className="w-full !bg-secondary hover:!bg-highlighted/40"
               onChange={(event) => {
                 setTablePage(1)
                 const [sortColumn, sortDirection] = event.target.value.split(
@@ -324,53 +311,52 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
           columns={{ base: 2, lg: 5 }}
         >
           {(selectedUserCardsIsLoading
-                ? LOADING_GRID_DATA
-                : selectedUserCards
-              )?.rows.map((card, index) => {
-                const isInDisplayCards = displayCards.some(
-                  (displayCard) =>
-                    displayCard?.ownedCardID === card?.ownedCardID
-                )
+            ? LOADING_GRID_DATA
+            : selectedUserCards
+          )?.rows.map((card, index) => {
+            const isInDisplayCards = displayCards.some(
+              (displayCard) => displayCard?.ownedCardID === card?.ownedCardID
+            )
 
-                return (
-                  <div 
-                    tabIndex={0} 
-                    role="button"
-                    key={`${card.cardID}-${index}`}
-                    className={`m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl ${
-                      isInDisplayCards
-                        ? 'grayscale cursor-default'
-                        : 'cursor-pointer'
-                    }`}
-                    onClick={() => {
-                      if (!isInDisplayCards) {
-                        handleCardSelect(card)
-                      }
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        handleCardSelect(card);
-                      }
-                    }}
-                  >
-                    <Image
-                      className={`cursor-pointer`}
-                      src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
-                      fallback={
-                        <div className="relative z-10">
-                          <Image src="/cardback.png" />
-                          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
-                        </div>
-                      }
-                      alt={`${card.player_name} Card`}
-                    />
-                    <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-primary transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
-                      {card.card_rarity}
-                    </Badge>
-                  </div>
-                )
-              })}
+            return (
+              <div
+                tabIndex={0}
+                role="button"
+                key={`${card.cardID}-${index}`}
+                className={`m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl ${
+                  isInDisplayCards
+                    ? 'grayscale cursor-default'
+                    : 'cursor-pointer'
+                }`}
+                onClick={() => {
+                  if (!isInDisplayCards) {
+                    handleCardSelect(card)
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    handleCardSelect(card)
+                  }
+                }}
+              >
+                <Image
+                  className={`cursor-pointer`}
+                  src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+                  fallback={
+                    <div className="relative z-10">
+                      <Image src="/cardback.png" />
+                      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+                    </div>
+                  }
+                  alt={`${card.player_name} Card`}
+                />
+                <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-primary transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
+                  {card.card_rarity}
+                </Badge>
+              </div>
+            )
+          })}
         </SimpleGrid>
         <TablePagination
           totalRows={selectedUserCards?.total}

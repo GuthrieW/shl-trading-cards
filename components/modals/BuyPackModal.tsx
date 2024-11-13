@@ -46,7 +46,12 @@ const BuyPackModal = ({
           </div>
         </ModalBody>
         <ModalFooter className="bg-primary text-secondary">
-          <Button colorScheme="red" mr={3} onClick={onClose}>
+          <Button
+            colorScheme="red"
+            className="font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 select-none"
+            mr={3}
+            onClick={onClose}
+          >
             Cancel
           </Button>
           <Button

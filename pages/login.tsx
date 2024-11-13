@@ -157,7 +157,7 @@ export default function () {
             <Link
               isExternal
               href="https://simulationhockey.com/member.php?action=lostpw"
-              className="font-mont !text-blue600"
+              className="font-mont !text-link"
             >
               Forgot your password?
             </Link>
@@ -167,7 +167,7 @@ export default function () {
             <Link
               isExternal
               href="https://simulationhockey.com/member.php?action=register"
-              className=" !text-blue600"
+              className=" !text-link"
             >
               Sign up
             </Link>

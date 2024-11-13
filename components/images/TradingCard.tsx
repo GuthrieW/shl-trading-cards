@@ -15,7 +15,7 @@ const TradingCard = ({
   rarity,
   className,
 }: TradingCardProps) => {
-  const aspectRatio = useBreakpointValue({ base: 4 / 5, md: 3 / 4 })
+  const aspectRatio = useBreakpointValue({ base: 4 / 6, md: 3 / 4 })
   const maxHeight = useBreakpointValue({ base: '70vh', md: '80vh' })
 
   const imageSource = playerName === "backOfCard"

@@ -1,6 +1,6 @@
-import { ChevronDownIcon } from '@chakra-ui/icons';
-import { Button, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
-import classnames from 'classnames';
+import { ChevronDownIcon } from '@chakra-ui/icons'
+import { Button, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react'
+import classnames from 'classnames'
 
 export const Select = <T extends string | number>({
   options,
@@ -11,23 +11,25 @@ export const Select = <T extends string | number>({
   optionClassName,
   dark = false,
 }: {
-  options: Array<T> | Readonly<Array<T>>;
-  selectedOption: T;
-  onSelection: (option: T) => void;
-  className?: string;
-  optionsMap?: Map<T, string>;
-  optionClassName?: string;
-  dark?: boolean;
+  options: Array<T> | Readonly<Array<T>>
+  selectedOption: T
+  onSelection: (option: T) => void
+  className?: string
+  optionsMap?: Map<T, string>
+  optionClassName?: string
+  dark?: boolean
 }) => {
   return (
     <Menu matchWidth>
       <MenuButton
         as={Button}
         className={classnames(
-            dark ? 'border-grey100 !text-grey100' : 'border-primary !text-primary',
-            '!h-auto rounded-md border !bg-[transparent] !px-2 !py-1.5 font-mont !text-sm hover:!bg-blue600 active:!bg-blue700 sm:!px-4',
-            className
-          )}
+          dark
+            ? 'border-grey100 !text-grey100'
+            : 'border-primary !text-primary',
+          '!h-auto rounded-md border !bg-[transparent] !px-2 !py-1.5 font-mont !text-sm hover:!bg-highlighted/40 active:!bg-blue700 sm:!px-4',
+          className
+        )}
         rightIcon={<ChevronDownIcon />}
       >
         {optionsMap ? optionsMap.get(selectedOption) : selectedOption}
@@ -40,7 +42,7 @@ export const Select = <T extends string | number>({
             className={classnames(
               'hover:!bg-highlighted/40 hover:!text-primary',
               selectedOption === option && '!bg-highlighted !text-grey100',
-              optionClassName,
+              optionClassName
             )}
           >
             {optionsMap ? optionsMap.get(option) : option}
@@ -48,5 +50,5 @@ export const Select = <T extends string | number>({
         ))}
       </MenuList>
     </Menu>
-  );
-};
+  )
+}

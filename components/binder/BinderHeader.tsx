@@ -100,7 +100,7 @@ const BinderHeader = ({ bid, binderData }: UpdateBinderHeaderProps) => {
   }
   return (
     <>
-      <Box className="border-b-8 border-b-blue700 bg-secondary p-4">
+      <Box className="border-b-8 border-b-blue700 !bg-secondary p-4">
         <Flex justifyContent="space-between" alignItems="center" mb={2}>
           <Flex alignItems="center" gap={2}>
             <Text className="text-lg font-bold">{binderData.binder_name}</Text>
@@ -108,7 +108,7 @@ const BinderHeader = ({ bid, binderData }: UpdateBinderHeaderProps) => {
               <Button
                 size="sm"
                 variant="ghost"
-                className="!text-secondary !hover:bg-primary"
+                className="!text-secondary hover:text-lg hover:!bg-primary"
                 onClick={onOpen}
                 leftIcon={<EditIcon />}
                 aria-label="Edit binder"
@@ -116,9 +116,9 @@ const BinderHeader = ({ bid, binderData }: UpdateBinderHeaderProps) => {
             )}
           </Flex>
           <Text className="text-lg font-bold">
-          By:{' '}
+            By:{' '}
             <Link
-              className="!text-blue600"
+              className="!text-link"
               href={`/collect/${binderData.userID}`}
               target="_blank"
             >
@@ -146,7 +146,7 @@ const BinderHeader = ({ bid, binderData }: UpdateBinderHeaderProps) => {
                     placeholder="Enter binder name"
                     disabled={isLoadingCreateBinder}
                   />
-                  <FormHelperText className="text-secondary">
+                  <FormHelperText className="!text-white">
                     {editedName.length}/100 characters
                   </FormHelperText>
                 </FormControl>
@@ -161,7 +161,7 @@ const BinderHeader = ({ bid, binderData }: UpdateBinderHeaderProps) => {
                     rows={4}
                     disabled={isLoadingCreateBinder}
                   />
-                  <FormHelperText className="text-secondary">
+                  <FormHelperText className="!text-white">
                     {editedDesc.length}/400 characters
                   </FormHelperText>
                 </FormControl>

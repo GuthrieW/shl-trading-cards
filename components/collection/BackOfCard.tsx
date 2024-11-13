@@ -62,7 +62,7 @@ export const BackOfCard: React.FC<BackOfCardProps> = ({
             <div className="text-lg">Pack #{pack.packID}</div>
             <Link
               href={`/packs/${pack.packID}`}
-              className="text-blue600"
+              className="text-link"
               as="a"
               target="_blank"
             >

@@ -252,10 +252,14 @@ export default function NewTrade({
   const toggleTeam = (team: string) => {
     setTeams((currentValue) => {
       const teamIndex: number = currentValue.indexOf(team)
-      teamIndex === -1
-        ? currentValue.push(team)
-        : currentValue.splice(teamIndex)
-      return [...currentValue]
+      if (teamIndex === -1) {
+        return [...currentValue, team]
+      } else {
+        return [
+          ...currentValue.slice(0, teamIndex),
+          ...currentValue.slice(teamIndex + 1),
+        ]
+      }
     })
   }
 
@@ -503,11 +507,10 @@ export default function NewTrade({
           </Box>
         </VStack>
       </Box>
-      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen} size="xs">
+      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerHeader
-            position="sticky"
             top="0"
             zIndex="1"
             className="flex justify-between items-center bg-primary p-4"
@@ -515,7 +518,7 @@ export default function NewTrade({
             <DrawerCloseButton />
             <span>{pluralizeName(selectedUser?.username)} Cards</span>
           </DrawerHeader>
-          <DrawerBody className="bg-primary p-4">
+          <DrawerBody className="bg-primary p-4" maxHeight="calc(100vh - 4rem)">
             <Flex direction="column" mb={4}>
               <FormControl mb={2}>
                 <Input
@@ -530,18 +533,18 @@ export default function NewTrade({
                     <MenuButton
                       as={Button}
                       rightIcon={<ChevronDownIcon />}
-                      className="w-full !bg-secondary !text-secondary text-center hover:!bg-blue600"
+                      className="w-full !bg-secondary !text-secondary text-center hover:!bg-highlighted/40"
                     >
                       Teams ({teams.length})
                     </MenuButton>
                     <MenuList>
                       <MenuOptionGroup type="checkbox">
                         <MenuItemOption
+                          className="hover:!bg-highlighted/40"
                           icon={null}
                           isChecked={false}
                           aria-checked={false}
                           closeOnSelect
-                          className="!bg-secondary hover:!bg-blue600"
                           onClick={() => setTeams([])}
                         >
                           Deselect All
@@ -553,6 +556,7 @@ export default function NewTrade({
                             )
                             return (
                               <MenuItemOption
+                                className="hover:!bg-highlighted/40"
                                 icon={null}
                                 isChecked={isChecked}
                                 aria-checked={isChecked}
@@ -575,18 +579,18 @@ export default function NewTrade({
                     <MenuButton
                       as={Button}
                       rightIcon={<ChevronDownIcon />}
-                      className="w-full !bg-secondary !text-secondary text-center hover:!bg-blue600"
+                      className="w-full !bg-secondary !text-secondary text-center hover:!bg-highlighted/40"
                     >
                       Rarity ({rarities.length})
                     </MenuButton>
                     <MenuList>
                       <MenuOptionGroup type="checkbox">
                         <MenuItemOption
+                          className="hover:!bg-highlighted/40"
                           icon={null}
                           isChecked={false}
                           aria-checked={false}
                           closeOnSelect
-                          className="!bg-secondary hover:!bg-blue600"
                           onClick={() => setRarities([])}
                         >
                           Deselect All
@@ -606,6 +610,7 @@ export default function NewTrade({
 
                           return (
                             <MenuItemOption
+                              className="hover:!bg-highlighted/40"
                               icon={null}
                               isChecked={isChecked}
                               aria-checked={isChecked}
@@ -628,7 +633,7 @@ export default function NewTrade({
               </Flex>
               <Box flex={1} mr={2} className="p-2">
                 <Select
-                  className="w-full !bg-secondary hover:!bg-blue600"
+                  className="w-full !bg-secondary hover:!bg-highlighted/40"
                   onChange={(event) => {
                     const [sortColumn, sortDirection] =
                       event.target.value.split(':') as [
@@ -678,15 +683,15 @@ export default function NewTrade({
 
                 return (
                   <div
-                    tabIndex={0} 
+                    tabIndex={0}
                     role="button"
                     key={`${card.cardID}-${index}`}
                     className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
                     onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
+                      if (e.key === 'Enter' || e.key === ' ') {
                         if (!isInTrade) {
-                          e.preventDefault();
-                          addCardToTrade(card, isLoggedInUser);
+                          e.preventDefault()
+                          addCardToTrade(card, isLoggedInUser)
                           toast({
                             title: 'Added card to trade',
                             description: '',
@@ -700,7 +705,6 @@ export default function NewTrade({
                       className={`cursor-pointer ${
                         isInTrade ? 'grayscale' : ''
                       }`}
-                      
                       onClick={() => {
                         if (!isInTrade) {
                           addCardToTrade(card, isLoggedInUser)

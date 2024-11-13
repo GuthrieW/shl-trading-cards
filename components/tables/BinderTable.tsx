@@ -138,7 +138,9 @@ const BinderTables = () => {
             <>
               <div className="flex justify-end">
                 <FormControl className="flex items-center m-2">
-                  <FormLabel className="mb-0 !text-sm !md:text-base">Toggle Your Binders:</FormLabel>
+                  <FormLabel className="mb-0 !text-sm !md:text-base">
+                    Toggle Your Binders:
+                  </FormLabel>
                   <Switch isChecked={!!userIDQuery} onChange={toggleUserID} />
                 </FormControl>
                 <Button
@@ -171,25 +173,25 @@ const BinderTables = () => {
                 <Thead className="bg-table-header">
                   <Tr>
                     <Th
-                      className="text-table-header font-semibold py-4"
+                      className="!text-table-header font-semibold py-4"
                       borderBottom="1px solid"
                     >
                       Name
                     </Th>
                     <Th
-                      className="text-table-header font-semibold py-4"
+                      className="!text-table-header font-semibold py-4"
                       borderBottom="1px solid"
                     >
                       User
                     </Th>
                     <Th
-                      className="text-table-header font-semibold py-4"
+                      className="!text-table-header font-semibold py-4 hidden md:table-cell"
                       borderBottom="1px solid"
                     >
                       Description
                     </Th>
                     <Th
-                      className="text-table-header font-semibold py-4"
+                      className="!text-table-header font-semibold py-4"
                       borderBottom="1px solid"
                     >
                       Update/Delete
@@ -204,7 +206,7 @@ const BinderTables = () => {
                     >
                       <Td className="text-table-row py-4">
                         <Link
-                          className="!hover:no-underline ml-2 block pb-2 text-left !text-blue600"
+                          className="!hover:no-underline ml-2 block pb-2 text-left !text-link"
                           onClick={() =>
                             router.push(`/binder/${binder.binderID}`)
                           }
@@ -214,7 +216,7 @@ const BinderTables = () => {
                         </Link>
                       </Td>
                       <Td className="text-table-row py-4">{binder.username}</Td>
-                      <Td className="text-table-row py-4 max-w-md truncate">
+                      <Td className="text-table-row py-4 max-w-md truncate hidden md:table-cell">
                         {binder.binder_desc}
                       </Td>
                       <Td className="text-right">
@@ -224,7 +226,9 @@ const BinderTables = () => {
                             <Button
                               colorScheme="blue"
                               onClick={() =>
-                                router.push(`/binder/${binder.binderID}?updateBinder=true`)
+                                router.push(
+                                  `/binder/${binder.binderID}?updateBinder=true`
+                                )
                               }
                               size="sm"
                               mr={2}

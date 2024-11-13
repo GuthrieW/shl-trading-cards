@@ -6,7 +6,14 @@ import BinderHeader from '@components/binder/BinderHeader'
 import { GET } from '@constants/http-methods'
 import axios from 'axios'
 import { binders } from '@pages/api/v3'
-import { Skeleton, Box } from '@chakra-ui/react'
+import {
+  Skeleton,
+  Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+} from '@chakra-ui/react'
+import { ChevronRightIcon } from '@chakra-ui/icons'
 
 export default ({ bid }: { bid: string }) => {
   const { data, isLoading } = useQuery<{ status: string; payload: binders[] }>({
@@ -17,12 +24,24 @@ export default ({ bid }: { bid: string }) => {
         url: `/api/v3/binder?bid=${bid}`,
       }).then((response) => response.data),
     enabled: !!bid,
-  });
+  })
 
-  const userID = data?.payload?.[0]?.userID ?? null;
+  const userID = data?.payload?.[0]?.userID ?? null
 
   return (
     <PageWrapper>
+      <Breadcrumb
+        spacing="4px"
+        separator={<ChevronRightIcon color="gray.500" />}
+      >
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/binder">Binders</BreadcrumbLink>
+        </BreadcrumbItem>
+
+        <BreadcrumbItem isCurrentPage>
+          <BreadcrumbLink href="#">Current Binder</BreadcrumbLink>
+        </BreadcrumbItem>
+      </Breadcrumb>
       {isLoading ? (
         <>
           <Skeleton height="40px" mb="4" />
@@ -34,27 +53,21 @@ export default ({ bid }: { bid: string }) => {
         </>
       ) : (
         <>
-          <BinderHeader 
-            bid={bid} 
-            binderData={data?.payload?.[0]} 
-          />
+          <BinderHeader bid={bid} binderData={data?.payload?.[0]} />
           <div className="p-3"></div>
-          <BinderDetailPage 
-            bid={bid} 
-            userID={userID} 
-          />
+          <BinderDetailPage bid={bid} userID={userID} />
         </>
       )}
     </PageWrapper>
-  );
+  )
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { bid } = query;
+  const { bid } = query
 
   return {
     props: {
       bid,
     },
-  };
+  }
 }

@@ -43,6 +43,7 @@ import { pluralizeName } from 'lib/pluralize-name'
 import filterTeamsByLeague from 'utils/filterTeamsByLeague'
 import { Fragment, useEffect, useState } from 'react'
 import DisplayPacks from '@components/collection/DisplayPacks'
+import { toggleOnfilters } from '@utils/toggle-on-filters'
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {
@@ -197,37 +198,28 @@ export default ({ uid }: { uid: string }) => {
     showNotOwnedCards,
   ])
 
-  const toggleTeam = (team: string) => {
-    setTeams((currentValue) => {
-      const teamIndex: number = currentValue.indexOf(team)
-      teamIndex === -1
-        ? currentValue.push(team)
-        : currentValue.splice(teamIndex)
-      return [...currentValue]
-    })
-  }
-
   const toggleLeague = (league: string) => {
     setLeague([league])
   }
 
-  const toggleRarity = (rarity: string) => {
-    setRarities((currentValue) => {
-      const rarityIndex: number = currentValue.indexOf(rarity)
-      rarityIndex === -1
-        ? currentValue.push(rarity)
-        : currentValue.splice(rarityIndex)
-      return [...currentValue]
-    })
+  const toggleTeam = (team: string) => {
+    setTeams((currentValue) => toggleOnfilters(currentValue, team))
   }
+
+  const toggleRarity = (rarity: string) => {
+    setRarities((currentValue) => toggleOnfilters(currentValue, rarity))
+  }
+
   const getActiveFilters = () => {
     const activeFilters = []
-    const selectedTeamMap = rarities.includes("IIHF Awards") ? iihfTeamsMap : shlTeamMap;
+    const selectedTeamMap = rarities.includes('IIHF Awards')
+      ? iihfTeamsMap
+      : shlTeamMap
 
     if (teams.length > 0) {
       activeFilters.push(
-        `Teams: ${teams.map(id => selectedTeamMap[id]?.label).join(', ')}`
-      );
+        `Teams: ${teams.map((id) => selectedTeamMap[id]?.label).join(', ')}`
+      )
     }
     if (rarities.length > 0) {
       activeFilters.push(
@@ -272,12 +264,13 @@ export default ({ uid }: { uid: string }) => {
         <div className="flex flex-col sm:flex-row justify-start items-stretch gap-4">
           <FormControl className="w-full sm:w-auto">
             <Menu closeOnSelect={false}>
-              <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary">
+              <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary hover:bg-highlighted/40 ">
                 Teams&nbsp;{`(${teams.length})`}
               </MenuButton>
               <MenuList>
                 <MenuOptionGroup type="checkbox">
                   <MenuItemOption
+                    className="hover:bg-highlighted/40"
                     icon={null}
                     isChecked={false}
                     aria-checked={false}
@@ -293,6 +286,7 @@ export default ({ uid }: { uid: string }) => {
                       )
                       return (
                         <MenuItemOption
+                          className="hover:bg-highlighted/40"
                           icon={null}
                           isChecked={isChecked}
                           aria-checked={isChecked}
@@ -315,21 +309,22 @@ export default ({ uid }: { uid: string }) => {
           </FormControl>
           <FormControl className="w-full sm:w-auto">
             <Menu closeOnSelect={false}>
-              <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary">
+              <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary hover:bg-highlighted/40">
                 Rarities&nbsp;{`(${rarities.length})`}
               </MenuButton>
               <MenuList>
                 <MenuOptionGroup type="checkbox">
                   <MenuItemOption
+                    className="hover:bg-highlighted/40"
                     icon={null}
                     isChecked={false}
                     aria-checked={false}
                     closeOnSelect
                     onClick={() => {
-                      if (rarities.includes("IIHF Awards")) {
-                        setTeams([]);
+                      if (rarities.includes('IIHF Awards')) {
+                        setTeams([])
                       }
-                      setRarities([]);
+                      setRarities([])
                     }}
                   >
                     Deselect All
@@ -347,6 +342,7 @@ export default ({ uid }: { uid: string }) => {
 
                     return (
                       <MenuItemOption
+                        className="hover:bg-highlighted/40"
                         icon={null}
                         isChecked={isChecked}
                         aria-checked={isChecked}

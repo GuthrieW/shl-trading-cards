@@ -45,6 +45,7 @@ import config from 'lib/config'
 import SubmitImageModal from '@components/admin-cards/SubmitImageModal'
 import ClaimCardDialog from '@components/admin-cards/ClaimCardDialog'
 import ProcessImageDialog from '@components/admin-cards/ProcessImageDialog'
+import { toggleOnfilters } from '@utils/toggle-on-filters'
 
 type ColumnName = keyof Readonly<Card>
 
@@ -161,29 +162,12 @@ export default () => {
   }
 
   const toggleTeam = (team: string) => {
-    setTeams((currentValue) => {
-      const teamIndex: number = currentValue.indexOf(team)
-      teamIndex === -1
-        ? currentValue.push(team)
-        : currentValue.splice(teamIndex)
-      return [...currentValue]
-    })
-  }
-
-  const toggleLeague = (league: string) => {
-    setLeague([league])
+    setTeams((currentValue) => toggleOnfilters(currentValue, team))
   }
 
   const toggleRarity = (rarity: string) => {
-    setRarities((currentValue) => {
-      const rarityIndex: number = currentValue.indexOf(rarity)
-      rarityIndex === -1
-        ? currentValue.push(rarity)
-        : currentValue.splice(rarityIndex)
-      return [...currentValue]
-    })
+    setRarities((currentValue) => toggleOnfilters(currentValue, rarity))
   }
-
   return (
     <>
       <PageWrapper
@@ -204,12 +188,13 @@ export default () => {
             <div className="flex flex-row space-x-2">
               <FormControl>
                 <Menu closeOnSelect={false}>
-                  <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary ">
+                  <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary hover:!bg-highlighted/40">
                     Teams&nbsp;{`(${teams.length})`}
                   </MenuButton>
                   <MenuList>
                     <MenuOptionGroup type="checkbox">
                       <MenuItemOption
+                        className="hover:!bg-highlighted/40"
                         icon={null}
                         isChecked={false}
                         aria-checked={false}
@@ -225,6 +210,7 @@ export default () => {
                           )
                           return (
                             <MenuItemOption
+                              className="hover:!bg-highlighted/40"
                               icon={null}
                               isChecked={isChecked}
                               aria-checked={isChecked}
@@ -244,12 +230,13 @@ export default () => {
               </FormControl>
               <FormControl>
                 <Menu closeOnSelect={false}>
-                  <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary">
+                  <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary hover:!bg-highlighted/40">
                     Rarities&nbsp;{`(${rarities.length})`}
                   </MenuButton>
                   <MenuList>
                     <MenuOptionGroup type="checkbox">
                       <MenuItemOption
+                        className="hover:!bg-highlighted/40"
                         icon={null}
                         isChecked={false}
                         aria-checked={false}
@@ -273,6 +260,7 @@ export default () => {
 
                         return (
                           <MenuItemOption
+                            className="hover:!bg-highlighted/40"
                             icon={null}
                             isChecked={isChecked}
                             aria-checked={isChecked}
@@ -301,28 +289,28 @@ export default () => {
                     <MenuOptionGroup type="checkbox">
                       <MenuItemOption
                         value="NeedsAuthor"
-                        className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
+                        className="!bg-[transparent] hover:!bg-highlighted/40"
                         onClick={() => setViewNeedsAuthor(!viewNeedsAuthor)}
                       >
                         Author Needed
                       </MenuItemOption>
                       <MenuItemOption
                         value="NeedsImage"
-                        className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
+                        className="!bg-[transparent] hover:!bg-highlighted/40 active:!bg-blue700"
                         onClick={() => setviewNeedsImage(!viewNeedsImage)}
                       >
                         Needs Image
                       </MenuItemOption>
                       <MenuItemOption
                         value="NeedsApproval"
-                        className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
+                        className="!bg-[transparent] hover:!bg-highlighted/40 active:!bg-blue700"
                         onClick={() => setviewNeedsApproval(!viewNeedsApproval)}
                       >
                         Needs Approval
                       </MenuItemOption>
                       <MenuItemOption
                         value="NeedsAuthorPaid"
-                        className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
+                        className="!bg-[transparent] hover:!bg-highlighted/40 active:!bg-blue700"
                         onClick={() =>
                           setviewNeedsAuthorPaid(!viewNeedsAuthorPaid)
                         }
@@ -331,7 +319,7 @@ export default () => {
                       </MenuItemOption>
                       <MenuItemOption
                         value="Done"
-                        className="!bg-[transparent] hover:!bg-blue600 active:!bg-blue700"
+                        className="!bg-[transparent] hover:!bg-highlighted/40 active:!bg-blue700"
                         onClick={() => setViewDone(!viewDone)}
                       >
                         Completed
@@ -564,6 +552,7 @@ export default () => {
                       >
                         <Menu>
                           <MenuButton
+                            className="hover:!bg-highlighted/40"
                             as={Button}
                             rightIcon={<ChevronDownIcon />}
                           >
@@ -578,6 +567,7 @@ export default () => {
                                 ]}
                               >
                                 <MenuItem
+                                  className="hover:!bg-highlighted/40"
                                   onClick={() => {
                                     setSelectedCard(card)
                                     claimCardDialog.onOpen()
@@ -596,6 +586,7 @@ export default () => {
                                   ]}
                                 >
                                   <MenuItem
+                                    className="hover:!bg-highlighted/40"
                                     onClick={() => {
                                       setSelectedCard(card)
                                       submitImageModal.onOpen()
@@ -610,6 +601,7 @@ export default () => {
                                 userPermissions={['canEditCards']}
                               >
                                 <MenuItem
+                                  className="hover:!bg-highlighted/40"
                                   onClick={() => {
                                     setSelectedCard(card)
                                     processImageDialog.onOpen()
@@ -621,6 +613,7 @@ export default () => {
                             )}
                             <PermissionGuard userPermissions={['canEditCards']}>
                               <MenuItem
+                                className="hover:!bg-highlighted/40"
                                 onClick={() => {
                                   setSelectedCard(card)
                                   updateModal.onOpen()
@@ -634,6 +627,7 @@ export default () => {
                                 userPermissions={['canEditCards']}
                               >
                                 <MenuItem
+                                  className="hover:!bg-highlighted/40"
                                   onClick={() => {
                                     setSelectedCard(card)
                                     removeAuthorDialog.onOpen()
@@ -648,6 +642,7 @@ export default () => {
                                 userPermissions={['canEditCards']}
                               >
                                 <MenuItem
+                                  className="hover:!bg-highlighted/40"
                                   onClick={() => {
                                     setSelectedCard(card)
                                     removeImageDialog.onOpen()
@@ -659,6 +654,7 @@ export default () => {
                             )}
                             <RoleGuard userRoles={['TRADING_CARD_ADMIN']}>
                               <MenuItem
+                                className="hover:!bg-red200"
                                 onClick={() => {
                                   setSelectedCard(card)
                                   deleteDialog.onOpen()
