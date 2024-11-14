@@ -16,7 +16,7 @@ class PackService {
         'The base trading card pack. Contains 6 cards ranging from Bronze to Hall of Fame rarity.',
       imageUrl: '/images/base-pack-cover.png',
       price: 50000,
-      priceLabel: '500k',
+      priceLabel: '50k',
       covers: [
         { name: 'old', url: '/base-pack-cover.png' },
         { name: 'cgy', url: '/base-pack-cgy.png' },
