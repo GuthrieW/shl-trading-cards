@@ -82,7 +82,21 @@ const getRubyPlusPackRarity = (): string => {
 
 const pullRubyPlusCards = async (): Promise<{ cardID: string }[]> => {
   let pulledCards: { cardID: string }[] = []
-  for (let i = 0; i < 6; i++) {
+
+  const rubyCardResult = await cardsQuery(
+    SQL`
+    SELECT cardID 
+    FROM cards
+    WHERE card_rarity='Ruby'
+      AND approved=1
+    ORDER BY RAND()
+    LIMIT 1;`
+  )
+
+  if (!rubyCardResult) {
+    throw new Error('No Ruby card found or query failed.')
+  }
+  for (let i = 0; i < 5; i++) {
     const rarity: string = getRubyPlusPackRarity()
 
     const cardResult = await cardsQuery(
@@ -101,6 +115,8 @@ const pullRubyPlusCards = async (): Promise<{ cardID: string }[]> => {
       throw new Error('No card found or query failed.')
     }
   }
+  const randomPosition = Math.floor(Math.random() * 6)
+  pulledCards.splice(randomPosition, 0, rubyCardResult[0])
 
   return pulledCards
 }

@@ -25,12 +25,12 @@ const rarityMap = {
 } as const satisfies Record<string, Rarity>
 
 const rarityMapRuby = {
-  bronze: { label: 'Bronze', value: 'Bronze', rarity: 0 },
-  silver: { label: 'Silver', value: 'Silver', rarity: 0 },
-  gold: { label: 'Gold', value: 'Gold', rarity: 0 },
-  ruby: { label: 'Ruby', value: 'Ruby', rarity: 4000 },
+  bronze: { label: 'Bronze', value: 'Bronze', rarity: 1000 },
+  silver: { label: 'Silver', value: 'Silver', rarity: 1000 },
+  gold: { label: 'Gold', value: 'Gold', rarity: 1000 },
+  ruby: { label: 'Ruby', value: 'Ruby', rarity: 2000 },
   logo: { label: 'Logo', value: 'Logo', rarity: 1800 },
-  diamond: { label: 'Diamond', value: 'Diamond', rarity: 2000 },
+  diamond: { label: 'Diamond', value: 'Diamond', rarity: 1000 },
   award: { label: 'Awards', value: 'Awards', rarity: 700 },
   twoThousandClub: {
     label: '2000 TPE Club',
