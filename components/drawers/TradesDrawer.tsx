@@ -98,7 +98,7 @@ export default function TradesDrawer({
 
   return (
     <Drawer placement="left" isOpen={isOpen} onClose={onClose}>
-      <DrawerContent overflow="scroll">
+      <DrawerContent overflowY="scroll">
         <DrawerCloseButton />
         <DrawerHeader className="bg-secondary">My Trades</DrawerHeader>
         <DrawerBody className="bg-secondary">
