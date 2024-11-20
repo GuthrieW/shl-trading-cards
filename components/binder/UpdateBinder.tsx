@@ -234,7 +234,7 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
         size="md"
       >
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent overflowY="scroll">
           <DrawerHeader
             top="0"
             zIndex="1"

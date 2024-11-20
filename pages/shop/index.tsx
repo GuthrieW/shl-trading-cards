@@ -77,9 +77,13 @@ const PackShop = () => {
 
   const packsWithCovers: PackInfoWithCover[] = useMemo(() => {
     return Object.values(packService.packs).map((pack) => {
-      if (pack.id === 'base')
-        return { ...pack, cover: packService.basePackCover() }
-      return { ...pack, cover: pack.imageUrl }
+      const typedPack = pack as PackInfo
+      if (typedPack.id === 'base') {
+        return { ...typedPack, cover: packService.basePackCover() }
+      } else if (typedPack.id === 'ruby') {
+        return { ...typedPack, cover: packService.rubyPackCover() }
+      }
+      return { ...typedPack, cover: typedPack.imageUrl }
     })
   }, [])
 
@@ -134,7 +138,7 @@ const PackShop = () => {
       <div className="m-2">
         <h1 className="text-4xl text-center mt-6">Pack Shop</h1>
         <div className="flex flex-col justify-center text-center mb-6">
-          <div>Max 3 packs per day</div>
+          <div>Max 3 base packs per day and 1 ruby pack per day</div>
           <div>A new set of packs can be purchased at midnight EST</div>
           <span className="text-lg font-bold">
             Time until next reset: {TimeUntilMidnight()}
@@ -189,7 +193,7 @@ const PackShop = () => {
               />
               <Heading as="h2" size="lg">
                 {pack.label} Pack
-                <RarityInfoButton />
+                <RarityInfoButton packID={pack?.id} />
               </Heading>
               <div className='fontSize="xl'>
                 Price: ${new Intl.NumberFormat().format(pack.price)}

@@ -29,7 +29,7 @@ import {
 import config from 'lib/config'
 import { ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
 import TablePagination from '@components/table/TablePagination'
-import rarityMap from '@constants/rarity-map'
+import { rarityMap } from '@constants/rarity-map'
 import { allTeamsMaps } from '@constants/teams-map'
 import filterTeamsByLeague from '@utils/filterTeamsByLeague'
 import { useCookie } from '@hooks/useCookie'

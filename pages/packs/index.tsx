@@ -9,7 +9,7 @@ import { PageWrapper } from '@components/common/PageWrapper'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import axios from 'axios'
-import { Skeleton, SimpleGrid, useToast } from '@chakra-ui/react'
+import { Skeleton, SimpleGrid, useToast, Select } from '@chakra-ui/react'
 import { UserData } from '@pages/api/v3/user'
 import { useSession } from 'contexts/AuthContext'
 import { warningToastOptions } from '@utils/toast'
@@ -18,10 +18,20 @@ export type UserPackWithCover = UserPacks & {
   cover: string
 }
 
+const getPackCover = (pack: UserPacks): string => {
+  if (pack.packType === 'base') {
+    return packService.basePackCover()
+  } else if (pack.packType === 'ruby') {
+    return packService.rubyPackCover()
+  }
+  return packService.basePackCover() // fallback to base pack cover
+}
+
 const OpenPacks = () => {
   const toast = useToast()
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalPack, setModalPack] = useState<UserPackWithCover>(null)
+  const [selectedPackType, setSelectedPackType] = useState<string>('all')
   const { session, loggedIn } = useSession()
 
   const { payload: user, isLoading: userIDLoading } = query<UserData>({
@@ -45,13 +55,31 @@ const OpenPacks = () => {
     enabled: !!user?.uid,
   })
 
-  const packsWithCovers: UserPackWithCover[] = useMemo(() => {
+  const packsWithCovers = useMemo(() => {
     if (!packs) return []
     return packs.map((pack) => ({
       ...pack,
-      cover: packService.basePackCover(),
+      cover: getPackCover(pack),
     }))
   }, [packs])
+
+  const packCounts = useMemo(() => {
+    const counts = { base: 0, ruby: 0, total: 0 }
+    if (!packsWithCovers) return counts
+
+    return packsWithCovers.reduce((acc, pack) => {
+      if (pack.packType === 'base') acc.base++
+      if (pack.packType === 'ruby') acc.ruby++
+      acc.total = acc.base + acc.ruby
+      return acc
+    }, counts)
+  }, [packsWithCovers])
+
+  const filteredPacks = useMemo(() => {
+    if (!packsWithCovers) return []
+    if (selectedPackType === 'all') return packsWithCovers
+    return packsWithCovers.filter((pack) => pack.packType === selectedPackType)
+  }, [packsWithCovers, selectedPackType])
 
   const {
     openPack,
@@ -128,24 +156,62 @@ const OpenPacks = () => {
             </div>
           ) : (
             <>
-              <p id="pack-count">Number of packs: {packsWithCovers.length}</p>
-              <div 
+              <div className="flex flex-col items-center mb-6">
+                <div className="flex gap-4 mb-4">
+                  <div>Filter by:</div>
+                  <Select
+                    value={selectedPackType}
+                    onChange={(e) => setSelectedPackType(e.target.value)}
+                    className="w-40"
+                  >
+                    <option className="!bg-primary !text-secondary" value="all">
+                      All
+                    </option>
+                    <option
+                      className="!bg-primary !text-secondary"
+                      value="base"
+                    >
+                      Base
+                    </option>
+                    <option
+                      className="!bg-primary !text-secondary"
+                      value="ruby"
+                    >
+                      Ruby
+                    </option>
+                  </Select>
+                </div>
+                <div className="flex flex-col md:flex-row gap-6 text-md">
+                  <div className="font-medium">
+                    Base Packs: {packCounts.base}
+                  </div>
+                  <div className="font-medium">
+                    Ruby Packs: {packCounts.ruby}
+                  </div>
+                  <div className="font-medium">
+                    Total Packs: {packCounts.total}
+                  </div>
+                </div>
+              </div>
+              <div
                 className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4"
                 role="grid"
                 aria-labelledby="pack-count"
               >
-                {packsWithCovers.map((pack, index) => (
+                {filteredPacks.map((pack, index) => (
                   <button
                     key={index}
                     onClick={() => handleSelectedPack(pack)}
                     onKeyDown={(e) => handleKeyPress(e, pack)}
                     className="my-2 mx-4 p-0 border-0 bg-transparent cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 group"
-                    aria-label={`Open pack ${index + 1} of ${packsWithCovers.length}`}
+                    aria-label={`Open ${pack.packType} pack ${index + 1} of ${
+                      filteredPacks.length
+                    }`}
                   >
                     <img
                       className="select-none h-96 w-full object-contain transition ease-linear group-hover:scale-105 group-hover:shadow-xl group-focus:scale-105 group-focus:shadow-xl"
                       src={pack.cover}
-                      alt={`Trading card pack ${index + 1}`}
+                      alt={`${pack.packType} trading card pack ${index + 1}`}
                       role="presentation"
                     />
                   </button>

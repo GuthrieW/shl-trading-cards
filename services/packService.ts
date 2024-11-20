@@ -28,6 +28,16 @@ class PackService {
         { name: 'meme', url: '/base-pack-meme.png' },
       ],
     },
+    ruby: {
+      id: 'ruby',
+      label: 'Ruby',
+      description:
+        'This is the Ruby pack. Containing 1 Garunteed Ruby, then 5 cards with higher rarities for rarer cards',
+      imageUrl: '/images/ruby-pack-cover.png',
+      price: 100000,
+      priceLabel: '100k',
+      covers: [{ name: 'old', url: '/ruby-pack-cover.png' }],
+    },
   } as const
 
   basePackCover(): string {
@@ -42,9 +52,12 @@ class PackService {
     }
 
     const coverIndex: number = Math.floor(
-      Math.random() * (Object.values(this.packs.base.covers).length -1)
+      Math.random() * (Object.values(this.packs.base.covers).length - 1)
     )
     return this.packs.base.covers.at(coverIndex).url
+  }
+  rubyPackCover(): string {
+    return this.packs.ruby.covers.at(0).url
   }
 }
 export const packService = new PackService()

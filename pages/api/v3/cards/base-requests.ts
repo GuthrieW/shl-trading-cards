@@ -11,7 +11,7 @@ import {
   PortalPlayer,
   Position,
 } from './card-requests'
-import rarityMap from '@constants/rarity-map'
+import { rarityMap } from '@constants/rarity-map'
 import { cardsQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import axios, { AxiosResponse } from 'axios'

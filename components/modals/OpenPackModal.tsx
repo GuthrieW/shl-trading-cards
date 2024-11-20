@@ -24,6 +24,9 @@ const getPackTypeData = (pack: UserPackWithCover) => {
   if (pack.packType === packService.packs.base.id) {
     return packService.packs.base
   }
+  if (pack.packType === packService.packs.ruby.id) {
+    return packService.packs.ruby
+  }
 }
 
 const OpenPackModal = ({
@@ -44,12 +47,12 @@ const OpenPackModal = ({
       isOpen={true}
       blockScrollOnMount={false}
       onClose={() => setShowModal(false)}
-      size={{ base: 'xs', sm: 'md', md: 'lg', lg: 'lg' }}
+      size={{ base: 'xs', sm: 'sm', md: 'sm', lg: 'sm' }}
     >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader className="bg-primary text-secondary">
-          <div className='select-none'>{packTypeData.label}</div>
+          <div className="select-none">{packTypeData.label}</div>
         </ModalHeader>
         <ModalBody className="flex flex-col justify-center items-center bg-primary text-secondary">
           <Image
@@ -60,12 +63,6 @@ const OpenPackModal = ({
           <Text mt={2} className="text-sm md:text-base">
             {packTypeData.description}
           </Text>
-          {isOpening && (
-            <div className="mt-4 flex items-center">
-              <Spinner size="lg" color="green.500" />
-              <Text ml={3}>Opening your pack...</Text>
-            </div>
-          )}
         </ModalBody>
         <ModalFooter className="flex justify-end bg-primary text-secondary">
           <Button
@@ -82,9 +79,16 @@ const OpenPackModal = ({
             colorScheme="green"
             onClick={handleOpenPack}
             isDisabled={isOpening}
-            className={isOpening ? "opacity-50" : ''}
+            className={isOpening ? 'opacity-50' : ''}
           >
-            {isOpening ? 'Opening...' : 'Open Pack'}
+            {isOpening ? (
+              <>
+                {' '}
+                <Spinner size="md" color="black" /> <div> Opening... </div>
+              </>
+            ) : (
+              'Open Pack'
+            )}
           </Button>
         </ModalFooter>
       </ModalContent>

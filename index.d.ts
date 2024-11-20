@@ -25,7 +25,7 @@ type Card = {
   season: number
   author_paid: 0 | 1
   packID?: number
-  quantity?: number;
+  quantity?: number
 }
 
 type CardRequest = {
@@ -132,8 +132,8 @@ type TradeUser = {
   userID: number
 }
 
-type PackKey = 'base'
-type PackLabel = 'Base'
+type PackKey = 'base' | 'ruby'
+type PackLabel = 'Base' | 'Ruby'
 
 type PackType = {
   key: PackKey

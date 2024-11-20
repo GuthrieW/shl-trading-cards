@@ -38,16 +38,22 @@ const useBuyPack = (): UseBuyPack => {
           ...successToastOptions,
         })
       },
-      onError: () => {
+      onError: (error: any) => {
+        const errorData = error.response?.data?.error
+        const errorMessage =
+          typeof errorData === 'string'
+            ? errorData
+            : errorData?.errorMessage ||
+              'Could be an error or already purchased 3 packs today'
+
         toast({
           title: 'Error Purchasing Pack',
-          description: 'Could be an error or already purchased 3 packs today',
+          description: errorMessage,
           ...errorToastOptions,
         })
       },
     }
   )
-
   return {
     buyPack: mutate,
     response: data,

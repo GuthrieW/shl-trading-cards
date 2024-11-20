@@ -1,6 +1,6 @@
 import { Button, useToast } from '@chakra-ui/react'
 import { POST } from '@constants/http-methods'
-import rarityMap from '@constants/rarity-map'
+import { rarityMap } from '@constants/rarity-map'
 import { allTeamsMaps } from '@constants/teams-map'
 import { mutation } from '@pages/api/database/mutation'
 import { successToastOptions } from '@utils/toast'

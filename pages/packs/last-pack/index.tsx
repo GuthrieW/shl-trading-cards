@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { NextSeo } from 'next-seo'
 import Router, { useRouter } from 'next/router'
 import ReactCardFlip from 'react-card-flip'
-import rarityMap from '@constants/rarity-map'
+import { rarityMap } from '@constants/rarity-map'
 import pathToCards from '@constants/path-to-cards'
 import { Button, Badge, useToast } from '@chakra-ui/react' // Import Badge from Chakra UI
 import { PageWrapper } from '@components/common/PageWrapper'
