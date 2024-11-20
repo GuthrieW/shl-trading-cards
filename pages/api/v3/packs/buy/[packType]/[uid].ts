@@ -17,6 +17,11 @@ const PACK_LIMITS = {
   ruby: 1,
 }
 
+interface PackCount {
+  base?: number
+  ruby?: number
+}
+
 const index = async (
   request: NextApiRequest,
   response: NextApiResponse
@@ -25,7 +30,8 @@ const index = async (
   const { method, query } = request
 
   if (method === POST) {
-    const { uid, packType } = query
+    const uid = request.query.uid as string
+    const packType = request.query.packType as string
 
     const isMissingUserId: boolean = assertBoom(
       !!uid,
@@ -43,9 +49,9 @@ const index = async (
     )
     if (isMissingPackType) return
 
-    const hasReachedLimit = await cardsQuery<{ count: number }>(
+    const hasReachedLimit = await cardsQuery<{ PackCount }>(
       SQL`
-          SELECT ${packType}
+          SELECT base,ruby
           FROM packToday
           WHERE userID=${uid};`
     )
@@ -57,14 +63,11 @@ const index = async (
       return
     }
 
+    const currentCount = hasReachedLimit[0]?.[packType] || 0
     const hasReachedPackLimit: boolean = assertBoom(
-      hasReachedLimit.length === 0 ||
-        hasReachedLimit[0]?.count <
-          PACK_LIMITS[packType as keyof typeof PACK_LIMITS],
+      hasReachedLimit.length === 0 || currentCount < PACK_LIMITS[packType],
       response,
-      `Daily Pack Limit of ${
-        PACK_LIMITS[packType as keyof typeof PACK_LIMITS]
-      } Reached for ${packType} pack`,
+      `Daily Pack Limit of ${PACK_LIMITS[packType]} Reached for ${packType} pack`,
       StatusCodes.BAD_REQUEST
     )
 
