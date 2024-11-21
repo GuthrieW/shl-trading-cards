@@ -32,7 +32,7 @@ class PackService {
       id: 'ruby',
       label: 'Ruby',
       description:
-        'This is the Ruby pack. Containing 1 Garunteed Ruby, then 5 cards with higher rarities for rarer cards',
+        'This is the Ruby pack. Containing 1 Guaranteed Ruby, then 5 cards with higher rarities for rarer cards',
       imageUrl: '/images/ruby-pack-cover.png',
       price: 100000,
       priceLabel: '100k',

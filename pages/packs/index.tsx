@@ -9,7 +9,7 @@ import { PageWrapper } from '@components/common/PageWrapper'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import axios from 'axios'
-import { Skeleton, SimpleGrid, useToast, Select } from '@chakra-ui/react'
+import { Skeleton, SimpleGrid, useToast, Select, Badge } from '@chakra-ui/react'
 import { UserData } from '@pages/api/v3/user'
 import { useSession } from 'contexts/AuthContext'
 import { warningToastOptions } from '@utils/toast'
@@ -158,7 +158,7 @@ const OpenPacks = () => {
             <>
               <div className="flex flex-col items-center mb-6">
                 <div className="flex gap-4 mb-4">
-                  <div>Filter by:</div>
+                  <div className="text-sm md:text-base">Filter by:</div>
                   <Select
                     value={selectedPackType}
                     onChange={(e) => setSelectedPackType(e.target.value)}
@@ -181,16 +181,11 @@ const OpenPacks = () => {
                     </option>
                   </Select>
                 </div>
-                <div className="flex flex-col md:flex-row gap-6 text-md">
-                  <div className="font-medium">
-                    Base Packs: {packCounts.base}
-                  </div>
-                  <div className="font-medium">
+                <div className="flex flex-col md:flex-row gap-3 md:gap-6 lg:gap-6 text-md">
+                  <Badge>Base Packs: {packCounts.base}</Badge>
+                  <Badge className="!bg-red200">
                     Ruby Packs: {packCounts.ruby}
-                  </div>
-                  <div className="font-medium">
-                    Total Packs: {packCounts.total}
-                  </div>
+                  </Badge>
                 </div>
               </div>
               <div

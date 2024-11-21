@@ -139,12 +139,12 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
 
   return (
     <Box>
-      <Flex justifyContent="flex-end" mb={4} alignItems="center">
-        {!hasSelectedCards() && (
-          <Text color="red.500" mr={4}>
-            Must have at least 1 card in your binder
-          </Text>
-        )}
+      {!hasSelectedCards() && (
+        <Text className="text-red200 text-sm md:text-base lg:text-lg pb-2">
+          Must have at least 1 card in your binder
+        </Text>
+      )}
+      <Flex className="flex flex-wrap flex-row-reverse gap-2 items-center pb-2">
         <ButtonGroup>
           <Button colorScheme="red" onClick={resetBinder}>
             Reset Binder

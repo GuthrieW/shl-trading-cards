@@ -141,10 +141,14 @@ const BinderTables = () => {
                   <FormLabel className="mb-0 !text-sm !md:text-base">
                     Toggle Your Binders:
                   </FormLabel>
-                  <Switch isChecked={!!userIDQuery} onChange={toggleUserID} />
+                  <Switch
+                    className="!text-sm !md:text-base"
+                    isChecked={!!userIDQuery}
+                    onChange={toggleUserID}
+                  />
                 </FormControl>
                 <Button
-                  className="!text-sm !md:text-base"
+                  className="!text-xs !md:text-base"
                   colorScheme="blue"
                   onClick={onOpen}
                   size="md"
