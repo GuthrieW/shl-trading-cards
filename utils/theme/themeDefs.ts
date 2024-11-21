@@ -1,15 +1,15 @@
-import { colorsRaw } from './colors';
-type GetValues<Obj extends Record<string, unknown>> = Obj[keyof Obj];
+import { colorsRaw } from './colors'
+type GetValues<Obj extends Record<string, unknown>> = Obj[keyof Obj]
 export type ThemeVariables = Record<
   GetValues<{
     [Key1 in keyof typeof colorsRaw]: GetValues<{
       [Key2 in keyof (typeof colorsRaw)[Key1]]: (typeof colorsRaw)[Key1][Key2] extends `var(${infer Variable})`
         ? Variable
-        : never;
-    }>;
+        : never
+    }>
   }>,
   `#${string}`
->;
+>
 export const lightTheme: ThemeVariables = {
   // Primitives
   '--blue600': '#1A73E8',
@@ -51,7 +51,7 @@ export const lightTheme: ThemeVariables = {
   '--color-background-site-header': '#212529',
   '--color-background-boxscore-header': '#E9ECEF',
   '--color-background-scorebar-date': '#E9ECEF',
-};
+}
 export const darkTheme: ThemeVariables = {
   // Primitives
   '--blue600': '#1A73E8',
@@ -91,6 +91,6 @@ export const darkTheme: ThemeVariables = {
   '--color-background-table-row': '#212529',
   '--color-background-table-header': '#141419',
   '--color-background-site-header': '#141419',
-  '--color-background-boxscore-header': '#141419',
+  '--color-background-boxscore-header': '#2d3132',
   '--color-background-scorebar-date': '#343A40',
-};
+}
