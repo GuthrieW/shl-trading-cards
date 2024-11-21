@@ -228,27 +228,20 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
       </SimpleGrid>
 
       <Drawer
-        isOpen={isOpen}
         placement="bottom"
-        onClose={onDrawerClose}
-        size="md"
+        isOpen={isOpen}
+        onClose={onClose}
+        size={{ base: 'full', md: 'md', lg: 'md' }}
       >
-        <DrawerOverlay />
-        <DrawerContent overflowY="scroll">
-          <DrawerHeader
-            top="0"
-            zIndex="1"
-            className="bg-primary text-secondary text-center md:text-lg sm:text-sm"
-          >
+        <DrawerOverlay width="full" h="full" />
+        <DrawerContent overflow="scroll">
+          <DrawerHeader className="bg-primary text-secondary text-center md:text-lg sm:text-sm">
             {selectedPosition !== null
               ? `Select Card for Position ${selectedPosition}`
               : 'Select Card'}
             <DrawerCloseButton />
           </DrawerHeader>
-          <DrawerBody
-            className="bg-primary text-secondary"
-            maxHeight="calc(100vh - 4rem)"
-          >
+          <DrawerBody className="bg-primary text-secondary">
             <CardSelectionGrid
               handleCardSelect={handleCardSelect}
               displayCards={displayCards}
