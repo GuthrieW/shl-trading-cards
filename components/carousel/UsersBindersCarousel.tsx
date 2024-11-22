@@ -33,6 +33,7 @@ import { useQueryClient } from 'react-query'
 import CreateBinder from '@components/modals/CreateBinder'
 import { binders } from '@pages/api/v3'
 import { HamburgerIcon } from '@chakra-ui/icons'
+import DeleteBinder from '@components/modals/DeleteBinder'
 
 interface UsersBindersCarouselProps {
   binderData: binders[]
@@ -44,35 +45,17 @@ export const UsersBindersCarousel = ({
   reachedLimit,
 }: UsersBindersCarouselProps) => {
   const router = useRouter()
-  const [selectedBinderID, setSelectedBinderID] = useState<number | null>(null)
-  const [isDeleteConfirmed, setIsDeleteConfirmed] = useState(false)
-  const { session } = useSession()
-  const queryClient = useQueryClient()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const toast = useToast()
-  const {
-    isOpen: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
-  } = useDisclosure()
+  const [selectedBinderID, setSelectedBinderID] = useState(null)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
-  const handleDeleteBinder = async () => {
-    if (isDeleteConfirmed && selectedBinderID) {
-      await axios.delete(`/api/v3/binder/${selectedBinderID}/delete`, {
-        headers: { Authorization: `Bearer ${session?.token}` },
-        data: {
-          bid: selectedBinderID,
-        },
-      })
-      toast({
-        title: 'Successfully Deleted Binder',
-        status: 'success',
-      })
-      queryClient.invalidateQueries(['users-binders'])
-      onDeleteClose()
-      setSelectedBinderID(null)
-      setIsDeleteConfirmed(false)
-    }
+  const handleDeleteClick = (binderID) => {
+    setSelectedBinderID(binderID)
+    setIsDeleteOpen(true)
+  }
+
+  const onDeleteClose = () => {
+    setIsDeleteOpen(false)
   }
 
   const settings: Settings = {
@@ -147,10 +130,10 @@ export const UsersBindersCarousel = ({
                     </MenuItem>
                     <MenuDivider />
                     <MenuItem
-                      className="hover:!bg-highlighted/40 hover:!text-primary text-xs md:text-lg"
-                      onClick={() => {
-                        setSelectedBinderID(binder.binderID)
-                        onDeleteOpen()
+                      className="hover:!bg-red200 !text-red200 hover:!text-primary text-xs md:text-lg"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDeleteClick(binder.binderID)
                       }}
                     >
                       Delete Binder
@@ -168,50 +151,31 @@ export const UsersBindersCarousel = ({
               p={4}
               shadow="lg"
             >
-              <CardHeader className="text-center">
-                <Heading>
-                  <Button
-                    colorScheme="blue"
-                    onClick={onOpen}
-                    size="lg"
-                    isDisabled={reachedLimit}
-                  >
-                    Create Binder
-                  </Button>
-                </Heading>
-              </CardHeader>
-              <CardBody className="text-center"></CardBody>
+              <CardHeader className="text-center"></CardHeader>
+              <CardBody className="text-center">
+                {' '}
+                <Button
+                  colorScheme="blue"
+                  onClick={onOpen}
+                  size="lg"
+                  isDisabled={reachedLimit}
+                >
+                  Create Binder
+                </Button>
+              </CardBody>
               <CardFooter></CardFooter>
             </Card>
           ))}
         </Slider>
       </div>
-      {/* Delete Confirmation Modal */}
-      <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader className="bg-primary text-secondary">
-            Confirm Delete
-          </ModalHeader>
-          <ModalBody className="bg-primary text-secondary">
-            <div>Are you sure you want to delete this binder?</div>
-            <Checkbox
-              mt={4}
-              isChecked={isDeleteConfirmed}
-              onChange={(e) => setIsDeleteConfirmed(e.target.checked)}
-            >
-              I confirm I want to delete this binder
-            </Checkbox>
-          </ModalBody>
-          <ModalFooter className="bg-primary text-secondary">
-            <Button colorScheme="red" onClick={handleDeleteBinder}>
-              Confirm Delete
-            </Button>
-            <Button onClick={onDeleteClose}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
       <CreateBinder isOpen={isOpen} onClose={onClose} />
+      {isDeleteOpen && (
+        <DeleteBinder
+          selectedBinderID={selectedBinderID}
+          isOpen={isDeleteOpen}
+          onClose={onDeleteClose}
+        />
+      )}
     </>
   )
 }

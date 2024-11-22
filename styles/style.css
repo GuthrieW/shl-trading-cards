@@ -11,12 +11,19 @@
   max-width: 1200px;
   margin: 0 auto;
 }
-
 .light .slick-dots li button:before {
   color: var(--blue-color);
 }
 
 .light .slick-dots li.slick-active button:before {
+  color: var(--blue-color);
+}
+
+.dark .slick-dots li button:before {
+  color: var(--blue-color);
+}
+
+.dark .slick-dots li.slick-active button:before {
   color: var(--blue-color);
 }
 

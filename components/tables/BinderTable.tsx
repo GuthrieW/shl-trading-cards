@@ -4,39 +4,37 @@ import {
   Skeleton,
   SkeletonText,
   Box,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
   Link,
-  Button,
-  useDisclosure,
   Heading,
-  Divider,
   useBreakpointValue,
 } from '@chakra-ui/react'
 import { GET } from '@constants/http-methods'
 import { binders } from '@pages/api/v3'
 import { query } from '@pages/api/database/query'
-import { useRouter } from 'next/router'
 import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
-import CreateBinder from '@components/modals/CreateBinder'
 import { useSession } from 'contexts/AuthContext'
-import TablePagination from '@components/table/TablePagination'
-import { BINDER_CONSTANTS } from 'lib/constants'
 import UsersBinder from '@components/binder/UsersBinder'
-import { Header } from '@components/common/Header'
 import UsersBindersCarousel from '@components/carousel/UsersBindersCarousel'
+import {
+  createColumnHelper,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table'
+import { BINDER_TABLE } from './tableBehaviorFlags'
+import { TableHeader } from './TableHeader'
+import { simpleGlobalFilterFn } from './shared'
+import { Table } from './Table'
+import { TextWithTooltip } from '@components/common/TruncateText'
+
+const columnHelper = createColumnHelper<binders>()
 
 const BinderTables = () => {
   const { loggedIn } = useSession()
-  const router = useRouter()
   const [uid] = useCookie(config.userIDCookieName)
-  const [currentPage, setCurrentPage] = useState(1)
 
   const { payload: binders, isLoading } = query<binders[]>({
     queryKey: ['users-binders'],
@@ -68,11 +66,69 @@ const BinderTables = () => {
     [userBinders.length]
   )
 
-  const currentBinders = useMemo(() => {
-    const indexOfLastItem = currentPage * BINDER_CONSTANTS.ROWS_PER_PAGE
-    const indexOfFirstItem = indexOfLastItem - BINDER_CONSTANTS.ROWS_PER_PAGE
-    return binders?.slice(indexOfFirstItem, indexOfLastItem) || []
-  }, [binders, currentPage, BINDER_CONSTANTS.ROWS_PER_PAGE])
+  const columns = useMemo(() => {
+    const currentColumns = [
+      columnHelper.accessor(
+        ({ binder_name, binderID }) => [binder_name, binderID],
+        {
+          header: 'Binder',
+          cell: (props) => {
+            const cellValue = props.getValue()
+            return (
+              <Link
+                className="!hover:no-underline !text-link"
+                href={`/binder/${cellValue[1]}`}
+              >
+                <TextWithTooltip
+                  text={String(cellValue[0])}
+                  maxLength={25}
+                  tooltip={true}
+                />
+              </Link>
+            )
+          },
+          enableSorting: true,
+        }
+      ),
+      columnHelper.accessor('username', {
+        header: () => <TableHeader title="Username">Username</TableHeader>,
+        enableGlobalFilter: true,
+      }),
+      columnHelper.accessor('binder_desc', {
+        header: () => (
+          <TableHeader title="Description">Description</TableHeader>
+        ),
+        cell: (props) => (
+          <TextWithTooltip
+            text={props.getValue() || ''}
+            maxLength={40}
+            tooltip={false}
+          />
+        ),
+        enableGlobalFilter: false,
+      }),
+    ]
+    return currentColumns
+  }, [])
+
+  const table = useReactTable({
+    columns,
+    data: binders,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    enableGlobalFilter: true,
+    globalFilterFn: simpleGlobalFilterFn,
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      sorting: [{ id: 'binderID', desc: true }],
+    },
+    state: {
+      columnVisibility: {
+        name: false,
+      },
+    },
+  })
 
   return (
     <div className="w-full p-4 min-h-[400px]">
@@ -98,8 +154,8 @@ const BinderTables = () => {
       ) : (
         <>
           {loggedIn && (
-            <Box className="rounded-lg">
-              <Heading className="text-secondary text-center">
+            <Box className="rounded-lg pb-4">
+              <Heading className="text-secondary text-center pb-1">
                 Your Binders
               </Heading>
               {!UserBinderisLoading &&
@@ -117,65 +173,14 @@ const BinderTables = () => {
             </Box>
           )}
 
-          <Box className="rounded-lg overflow-hidden border mt-4">
-            <TableContainer>
-              <Table variant="simple">
-                <Thead className="bg-table-header">
-                  <Tr>
-                    <Th
-                      className="!text-table-header font-semibold py-4"
-                      borderBottom="1px solid"
-                    >
-                      Name
-                    </Th>
-                    <Th
-                      className="!text-table-header font-semibold py-4"
-                      borderBottom="1px solid"
-                    >
-                      User
-                    </Th>
-                    <Th
-                      className="!text-table-header font-semibold py-4 hidden md:table-cell"
-                      borderBottom="1px solid"
-                    >
-                      Description
-                    </Th>
-                  </Tr>
-                </Thead>
-                <Tbody className="bg-table-row">
-                  {currentBinders.map((binder) => (
-                    <Tr
-                      key={binder.binderID}
-                      className="transition-colors duration-150"
-                    >
-                      <Td className="text-table-row py-4">
-                        <Link
-                          className="!hover:no-underline ml-2 block pb-2 text-left !text-link"
-                          onClick={() =>
-                            router.push(`/binder/${binder.binderID}`)
-                          }
-                          target="_blank"
-                        >
-                          {binder.binder_name}
-                        </Link>
-                      </Td>
-                      <Td className="text-table-row py-4">{binder.username}</Td>
-                      <Td className="text-table-row py-4 max-w-md truncate hidden md:table-cell">
-                        {binder.binder_desc}
-                      </Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
-            {!isLoading && (
-              <TablePagination
-                totalRows={binders?.length}
-                rowsPerPage={BINDER_CONSTANTS.ROWS_PER_PAGE}
-                onPageChange={setCurrentPage}
-              />
-            )}
-          </Box>
+          <div className="border-b-8 border-b-blue700 bg-secondary p-2">
+            <div className="flex flex-col gap-2">
+              <h1 className="text-lg font-bold text-secondaryText sm:text-xl">
+                Players Binders
+              </h1>
+            </div>
+          </div>
+          <Table<binders> table={table} tableBehavioralFlags={BINDER_TABLE} />
         </>
       )}
     </div>

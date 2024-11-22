@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { useQueryClient } from 'react-query'
 import {
-  Box,
   CardHeader,
   CardBody,
   Card,
@@ -18,21 +17,18 @@ import {
   ModalOverlay,
   useDisclosure,
   useToast,
-  Skeleton,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Divider,
   MenuDivider,
   Link,
 } from '@chakra-ui/react'
 import { binders } from '@pages/api/v3'
 import { useRouter } from 'next/router'
-import axios from 'axios'
-import { useSession } from 'contexts/AuthContext'
 import CreateBinder from '@components/modals/CreateBinder'
 import { HamburgerIcon } from '@chakra-ui/icons'
+import DeleteBinder from '@components/modals/DeleteBinder'
 
 interface UsersBindersProps {
   binderData: binders[]
@@ -41,35 +37,17 @@ interface UsersBindersProps {
 
 const UsersBinders = ({ binderData, reachedLimit }: UsersBindersProps) => {
   const router = useRouter()
-  const [selectedBinderID, setSelectedBinderID] = useState<number | null>(null)
-  const [isDeleteConfirmed, setIsDeleteConfirmed] = useState(false)
-  const { session } = useSession()
-  const queryClient = useQueryClient()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const toast = useToast()
-  const {
-    isOpen: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
-  } = useDisclosure()
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [selectedBinderID, setSelectedBinderID] = useState(null)
 
-  const handleDeleteBinder = async () => {
-    if (isDeleteConfirmed && selectedBinderID) {
-      await axios.delete(`/api/v3/binder/${selectedBinderID}/delete`, {
-        headers: { Authorization: `Bearer ${session?.token}` },
-        data: {
-          bid: selectedBinderID,
-        },
-      })
-      toast({
-        title: 'Successfully Deleted Binder',
-        status: 'success',
-      })
-      queryClient.invalidateQueries(['users-binders'])
-      onDeleteClose()
-      setSelectedBinderID(null)
-      setIsDeleteConfirmed(false)
-    }
+  const handleDeleteClick = (binderID) => {
+    setSelectedBinderID(binderID)
+    setIsDeleteOpen(true)
+  }
+
+  const onDeleteClose = () => {
+    setIsDeleteOpen(false)
   }
 
   const remainingBinders = useMemo(() => {
@@ -78,7 +56,11 @@ const UsersBinders = ({ binderData, reachedLimit }: UsersBindersProps) => {
 
   return (
     <>
-      <SimpleGrid spacing={6} templateColumns="repeat(auto-fill, min(250px))">
+      <SimpleGrid
+        spacing={6}
+        templateColumns="repeat(auto-fill, min(250px))"
+        mb={4}
+      >
         {binderData.map((binder) => (
           <Card
             as="a"
@@ -99,7 +81,7 @@ const UsersBinders = ({ binderData, reachedLimit }: UsersBindersProps) => {
                 </div>
               </CardBody>
             </Link>
-            <CardFooter className="relative w-full h-8 flex items-center justify-start">
+            <CardFooter className="w-full h-8 flex items-center justify-start">
               <Menu>
                 <MenuButton
                   as="div"
@@ -122,11 +104,10 @@ const UsersBinders = ({ binderData, reachedLimit }: UsersBindersProps) => {
                   </MenuItem>
                   <MenuDivider />
                   <MenuItem
-                    className="hover:!bg-highlighted/40 hover:!text-primary"
+                    className="hover:!bg-red200 !text-red200 hover:!text-primary"
                     onClick={(e) => {
                       e.stopPropagation()
-                      setSelectedBinderID(binder.binderID)
-                      onDeleteOpen()
+                      handleDeleteClick(binder.binderID)
                     }}
                   >
                     Delete Binder
@@ -159,32 +140,14 @@ const UsersBinders = ({ binderData, reachedLimit }: UsersBindersProps) => {
         ))}
       </SimpleGrid>
 
-      {/* Delete Confirmation Modal */}
-      <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader className="bg-primary text-secondary">
-            Confirm Delete
-          </ModalHeader>
-          <ModalBody className="bg-primary text-secondary">
-            <div>Are you sure you want to delete this binder?</div>
-            <Checkbox
-              mt={4}
-              isChecked={isDeleteConfirmed}
-              onChange={(e) => setIsDeleteConfirmed(e.target.checked)}
-            >
-              I confirm I want to delete this binder
-            </Checkbox>
-          </ModalBody>
-          <ModalFooter className="bg-primary text-secondary">
-            <Button colorScheme="red" onClick={handleDeleteBinder}>
-              Confirm Delete
-            </Button>
-            <Button onClick={onDeleteClose}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
       <CreateBinder isOpen={isOpen} onClose={onClose} />
+      {isDeleteOpen && (
+        <DeleteBinder
+          selectedBinderID={selectedBinderID}
+          isOpen={isDeleteOpen}
+          onClose={onDeleteClose}
+        />
+      )}
     </>
   )
 }
