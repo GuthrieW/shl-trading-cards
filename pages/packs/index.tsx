@@ -183,7 +183,7 @@ const OpenPacks = () => {
                 </div>
                 <div className="flex flex-col md:flex-row gap-3 md:gap-6 lg:gap-6 text-md">
                   <Badge>Base Packs: {packCounts.base}</Badge>
-                  <Badge className="!bg-red200">
+                  <Badge className="!bg-red200 !text-black">
                     Ruby Packs: {packCounts.ruby}
                   </Badge>
                 </div>
