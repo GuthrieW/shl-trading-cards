@@ -139,12 +139,12 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
 
   return (
     <Box>
-      <Flex justifyContent="flex-end" mb={4} alignItems="center">
-        {!hasSelectedCards() && (
-          <Text color="red.500" mr={4}>
-            Must have at least 1 card in your binder
-          </Text>
-        )}
+      {!hasSelectedCards() && (
+        <Text className="text-red200 text-sm md:text-base lg:text-lg pb-2">
+          Must have at least 1 card in your binder
+        </Text>
+      )}
+      <Flex className="flex flex-wrap flex-row-reverse gap-2 items-center pb-2">
         <ButtonGroup>
           <Button colorScheme="red" onClick={resetBinder}>
             Reset Binder
@@ -228,27 +228,20 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
       </SimpleGrid>
 
       <Drawer
-        isOpen={isOpen}
         placement="bottom"
-        onClose={onDrawerClose}
-        size="md"
+        isOpen={isOpen}
+        onClose={onClose}
+        size={{ base: 'full', md: 'md', lg: 'md' }}
       >
-        <DrawerOverlay />
-        <DrawerContent overflowY="scroll">
-          <DrawerHeader
-            top="0"
-            zIndex="1"
-            className="bg-primary text-secondary text-center md:text-lg sm:text-sm"
-          >
+        <DrawerOverlay width="full" h="full" />
+        <DrawerContent overflow="scroll">
+          <DrawerHeader className="bg-primary text-secondary text-center md:text-lg sm:text-sm">
             {selectedPosition !== null
               ? `Select Card for Position ${selectedPosition}`
               : 'Select Card'}
             <DrawerCloseButton />
           </DrawerHeader>
-          <DrawerBody
-            className="bg-primary text-secondary"
-            maxHeight="calc(100vh - 4rem)"
-          >
+          <DrawerBody className="bg-primary text-secondary">
             <CardSelectionGrid
               handleCardSelect={handleCardSelect}
               displayCards={displayCards}

@@ -4,91 +4,61 @@ import {
   Skeleton,
   SkeletonText,
   Box,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
   Link,
-  FormControl,
-  FormLabel,
-  Switch,
-  Button,
-  useDisclosure,
-  Alert,
-  AlertIcon,
-  useToast,
-  Checkbox,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
+  Heading,
+  useBreakpointValue,
 } from '@chakra-ui/react'
 import { GET } from '@constants/http-methods'
 import { binders } from '@pages/api/v3'
 import { query } from '@pages/api/database/query'
-import { useRouter } from 'next/router'
 import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
-import CreateBinder from '@components/modals/CreateBinder'
 import { useSession } from 'contexts/AuthContext'
-import TablePagination from '@components/table/TablePagination'
-import { BINDER_CONSTANTS } from 'lib/constants'
-import { useQueryClient } from 'react-query'
-import UpdateBinder from '@components/binder/UpdateBinder'
+import UsersBinder from '@components/binder/UsersBinder'
+import UsersBindersCarousel from '@components/carousel/UsersBindersCarousel'
+import {
+  createColumnHelper,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table'
+import { BINDER_TABLE } from './tableBehaviorFlags'
+import { TableHeader } from './TableHeader'
+import { simpleGlobalFilterFn } from './shared'
+import { Table } from './Table'
+import { TextWithTooltip } from '@components/common/TruncateText'
+
+const columnHelper = createColumnHelper<binders>()
 
 const BinderTables = () => {
-  const { loggedIn, session } = useSession()
-  const router = useRouter()
-  const [userIDQuery, setUserID] = useState<string>(null)
+  const { loggedIn } = useSession()
   const [uid] = useCookie(config.userIDCookieName)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [selectedBinderID, setSelectedBinderID] = useState<number>(null)
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const queryClient = useQueryClient()
-  const toast = useToast()
-  const [isDeleteConfirmed, setIsDeleteConfirmed] = useState(false)
-  const {
-    isOpen: isDeleteOpen,
-    onOpen: onDeleteOpen,
-    onClose: onDeleteClose,
-  } = useDisclosure()
 
   const { payload: binders, isLoading } = query<binders[]>({
-    queryKey: ['users-binders', userIDQuery],
+    queryKey: ['users-binders'],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/binder`,
+      }),
+  })
+  const isMobile = useBreakpointValue({ base: true, md: false })
+
+  const { payload: Userbinders, isLoading: UserBinderisLoading } = query<
+    binders[]
+  >({
+    queryKey: ['users-binders', uid],
     queryFn: () =>
       axios({
         method: GET,
         url: `/api/v3/binder`,
         params: {
-          userID: userIDQuery,
+          userID: uid,
         },
       }),
   })
-
-  const handleDeleteBinder = async () => {
-    if (isDeleteConfirmed && selectedBinderID) {
-      await axios.delete(`/api/v3/binder/${selectedBinderID}/delete`, {
-        headers: { Authorization: `Bearer ${session?.token}` },
-        data: {
-          bid: selectedBinderID,
-        },
-      })
-      toast({
-        title: 'Successfully Deleted Binder',
-        status: 'success',
-      })
-      queryClient.invalidateQueries(['users-binders'])
-      onDeleteClose()
-      setSelectedBinderID(null)
-      setIsDeleteConfirmed(false)
-    }
-  }
-
   const userBinders =
     binders?.filter((binder) => binder.userID === Number(uid)) || []
   const reachedLimit = useMemo(
@@ -96,20 +66,69 @@ const BinderTables = () => {
     [userBinders.length]
   )
 
-  const bindersLeft = useMemo(
-    () => (reachedLimit ? 0 : 5 - userBinders.length),
-    [userBinders.length, reachedLimit]
-  )
+  const columns = useMemo(() => {
+    const currentColumns = [
+      columnHelper.accessor(
+        ({ binder_name, binderID }) => [binder_name, binderID],
+        {
+          header: 'Binder',
+          cell: (props) => {
+            const cellValue = props.getValue()
+            return (
+              <Link
+                className="!hover:no-underline !text-link"
+                href={`/binder/${cellValue[1]}`}
+              >
+                <TextWithTooltip
+                  text={String(cellValue[0])}
+                  maxLength={25}
+                  tooltip={true}
+                />
+              </Link>
+            )
+          },
+          enableSorting: true,
+        }
+      ),
+      columnHelper.accessor('username', {
+        header: () => <TableHeader title="Username">Username</TableHeader>,
+        enableGlobalFilter: true,
+      }),
+      columnHelper.accessor('binder_desc', {
+        header: () => (
+          <TableHeader title="Description">Description</TableHeader>
+        ),
+        cell: (props) => (
+          <TextWithTooltip
+            text={props.getValue() || ''}
+            maxLength={40}
+            tooltip={false}
+          />
+        ),
+        enableGlobalFilter: false,
+      }),
+    ]
+    return currentColumns
+  }, [])
 
-  const toggleUserID = () => {
-    setUserID((prevUserID) => (prevUserID ? null : uid))
-  }
-
-  const currentBinders = useMemo(() => {
-    const indexOfLastItem = currentPage * BINDER_CONSTANTS.ROWS_PER_PAGE
-    const indexOfFirstItem = indexOfLastItem - BINDER_CONSTANTS.ROWS_PER_PAGE
-    return binders?.slice(indexOfFirstItem, indexOfLastItem) || []
-  }, [binders, currentPage, BINDER_CONSTANTS.ROWS_PER_PAGE])
+  const table = useReactTable({
+    columns,
+    data: binders,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    enableGlobalFilter: true,
+    globalFilterFn: simpleGlobalFilterFn,
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      sorting: [{ id: 'binderID', desc: true }],
+    },
+    state: {
+      columnVisibility: {
+        name: false,
+      },
+    },
+  })
 
   return (
     <div className="w-full p-4 min-h-[400px]">
@@ -135,158 +154,33 @@ const BinderTables = () => {
       ) : (
         <>
           {loggedIn && (
-            <>
-              <div className="flex justify-end">
-                <FormControl className="flex items-center m-2">
-                  <FormLabel className="mb-0 !text-sm !md:text-base">
-                    Toggle Your Binders:
-                  </FormLabel>
-                  <Switch isChecked={!!userIDQuery} onChange={toggleUserID} />
-                </FormControl>
-                <Button
-                  className="!text-sm !md:text-base"
-                  colorScheme="blue"
-                  onClick={onOpen}
-                  size="md"
-                  isDisabled={reachedLimit}
-                >
-                  Create Binder
-                </Button>
-              </div>
-              {reachedLimit ? (
-                <Alert status="warning" className="text-black" mb={4}>
-                  <AlertIcon />
-                  You have reached the maximum limit of 5 binders.
-                </Alert>
-              ) : (
-                <Alert status="info" className="text-black" mb={4}>
-                  <AlertIcon />
-                  You can create {bindersLeft} more binder
-                  {bindersLeft !== 1 ? 's' : ''}.
-                </Alert>
-              )}
-            </>
+            <Box className="rounded-lg pb-4">
+              <Heading className="text-secondary text-center pb-1">
+                Your Binders
+              </Heading>
+              {!UserBinderisLoading &&
+                (isMobile ? (
+                  <UsersBindersCarousel
+                    binderData={Userbinders}
+                    reachedLimit={reachedLimit}
+                  />
+                ) : (
+                  <UsersBinder
+                    binderData={Userbinders}
+                    reachedLimit={reachedLimit}
+                  />
+                ))}
+            </Box>
           )}
-          <Box className="rounded-lg overflow-hidden border mt-4">
-            <TableContainer>
-              <Table variant="simple">
-                <Thead className="bg-table-header">
-                  <Tr>
-                    <Th
-                      className="!text-table-header font-semibold py-4"
-                      borderBottom="1px solid"
-                    >
-                      Name
-                    </Th>
-                    <Th
-                      className="!text-table-header font-semibold py-4"
-                      borderBottom="1px solid"
-                    >
-                      User
-                    </Th>
-                    <Th
-                      className="!text-table-header font-semibold py-4 hidden md:table-cell"
-                      borderBottom="1px solid"
-                    >
-                      Description
-                    </Th>
-                    <Th
-                      className="!text-table-header font-semibold py-4"
-                      borderBottom="1px solid"
-                    >
-                      Update/Delete
-                    </Th>
-                  </Tr>
-                </Thead>
-                <Tbody className="bg-[var(--color-background-table-row)]">
-                  {currentBinders.map((binder) => (
-                    <Tr
-                      key={binder.binderID}
-                      className="transition-colors duration-150"
-                    >
-                      <Td className="text-table-row py-4">
-                        <Link
-                          className="!hover:no-underline ml-2 block pb-2 text-left !text-link"
-                          onClick={() =>
-                            router.push(`/binder/${binder.binderID}`)
-                          }
-                          target="_blank"
-                        >
-                          {binder.binder_name}
-                        </Link>
-                      </Td>
-                      <Td className="text-table-row py-4">{binder.username}</Td>
-                      <Td className="text-table-row py-4 max-w-md truncate hidden md:table-cell">
-                        {binder.binder_desc}
-                      </Td>
-                      <Td className="text-right">
-                        {' '}
-                        {binder.userID === Number(session?.userId) && (
-                          <>
-                            <Button
-                              colorScheme="blue"
-                              onClick={() =>
-                                router.push(
-                                  `/binder/${binder.binderID}?updateBinder=true`
-                                )
-                              }
-                              size="sm"
-                              mr={2}
-                            >
-                              Edit Binder
-                            </Button>
-                            <Button
-                              colorScheme="red"
-                              onClick={() => {
-                                setSelectedBinderID(binder.binderID)
-                                onDeleteOpen()
-                              }}
-                              size="sm"
-                            >
-                              Delete Binder
-                            </Button>
-                          </>
-                        )}
-                      </Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
-            {!isLoading && (
-              <TablePagination
-                totalRows={binders?.length}
-                rowsPerPage={BINDER_CONSTANTS.ROWS_PER_PAGE}
-                onPageChange={setCurrentPage}
-              />
-            )}
-          </Box>
-          <CreateBinder isOpen={isOpen} onClose={onClose} />
 
-          <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader className="bg-primary text-secondary">
-                Confirm Delete
-              </ModalHeader>
-              <ModalBody className="bg-primary text-secondary">
-                <div>Are you sure you want to delete this binder?</div>
-                <Checkbox
-                  mt={4}
-                  isChecked={isDeleteConfirmed}
-                  onChange={(e) => setIsDeleteConfirmed(e.target.checked)}
-                >
-                  I confirm I want to delete this binder
-                </Checkbox>
-              </ModalBody>
-              <ModalFooter className="bg-primary text-secondary">
-                <Button colorScheme="red" onClick={handleDeleteBinder}>
-                  Confirm Delete
-                </Button>
-                <Button onClick={onDeleteClose}>Cancel</Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
+          <div className="border-b-8 border-b-blue700 bg-secondary p-2">
+            <div className="flex flex-col gap-2">
+              <h1 className="text-lg font-bold text-secondaryText sm:text-xl">
+                Players Binders
+              </h1>
+            </div>
+          </div>
+          <Table<binders> table={table} tableBehavioralFlags={BINDER_TABLE} />
         </>
       )}
     </div>
