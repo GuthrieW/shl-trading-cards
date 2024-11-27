@@ -45,6 +45,9 @@ export const SessionProvider = ({
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const [, setUserID, deleteUserID] = useCookie(config.userIDCookieName)
+  const [, setRefreshToken, deleteRefreshToken, getRefreshToken] = useCookie(
+    config.refreshTokenCookieName
+  )
 
   const handleLogin = useCallback(
     async (username: string, password: string) => {
@@ -63,11 +66,7 @@ export const SessionProvider = ({
         userId: response.data.payload.userid,
       })
 
-      window?.localStorage.setItem(
-        config.localStorage.refreshToken,
-        response.data.payload.refreshToken
-      )
-
+      setRefreshToken(response.data.payload.refreshToken)
       setUserID(response.data.payload.userid)
       setIsLoading(false)
 
@@ -77,11 +76,10 @@ export const SessionProvider = ({
   )
 
   const handleLogout = useCallback(() => {
-    if (!window) return
     setSession(null)
-    window?.localStorage.removeItem(config.localStorage.refreshToken)
+    deleteRefreshToken(config.refreshTokenCookieName)
     deleteUserID()
-  }, [deleteUserID])
+  }, [deleteRefreshToken, deleteUserID])
 
   const isRefreshingRef = useRef(false)
 
@@ -97,9 +95,7 @@ export const SessionProvider = ({
       method: POST,
       url: '/api/v3/auth/token',
       data: {
-        refreshToken: window?.localStorage.getItem(
-          config.localStorage.refreshToken
-        ),
+        refreshToken: getRefreshToken(),
       },
     })
 
@@ -124,16 +120,13 @@ export const SessionProvider = ({
     setIsLoading(false)
     isRefreshingRef.current = false
 
-    window?.localStorage.setItem(
-      config.localStorage.refreshToken,
-      response.data.payload.refreshToken
-    )
+    setRefreshToken(response.data.payload.refreshToken)
     setUserID(response.data.payload.userid)
   }, [handleLogout])
 
   useEffect(() => {
     if (!session) {
-      if (window?.localStorage.getItem(config.localStorage.refreshToken)) {
+      if (getRefreshToken()) {
         handleRefresh()
         return
       }
