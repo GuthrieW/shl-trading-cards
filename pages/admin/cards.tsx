@@ -82,6 +82,7 @@ const LOADING_TABLE_DATA: { rows: Card[] } = {
 
 export default () => {
   const [viewSkaters, setViewSkaters] = useState<boolean>(true)
+  const [viewMyCards, setViewMyCards] = useState<boolean>(false)
   const [viewNeedsAuthor, setViewNeedsAuthor] = useState<boolean>(false)
   const [viewNeedsImage, setviewNeedsImage] = useState<boolean>(false)
   const [viewNeedsApproval, setviewNeedsApproval] = useState<boolean>(false)
@@ -115,11 +116,13 @@ export default () => {
   const { payload, isLoading } = query<ListResponse<Card>>({
     queryKey: [
       'cards',
+      uid,
       playerName,
       JSON.stringify(teams),
       JSON.stringify(rarities),
       JSON.stringify(leagues),
       String(viewSkaters),
+      String(viewMyCards),
       String(viewNeedsAuthor),
       String(viewNeedsImage),
       String(viewNeedsApproval),
@@ -136,11 +139,13 @@ export default () => {
         params: {
           limit: ROWS_PER_PAGE,
           offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
+          userID: uid,
           playerName,
           teams: JSON.stringify(teams),
           rarities: JSON.stringify(rarities),
           leagues: JSON.stringify(leagues),
           viewSkaters,
+          viewMyCards,
           viewNeedsAuthor,
           viewNeedsImage,
           viewNeedsApproval,
@@ -330,6 +335,10 @@ export default () => {
               </FormControl>
             </div>
             <div className="flex justify-end">
+              <FormControl className="flex items-center m-2">
+                <FormLabel className="mb-0">My Cards</FormLabel>
+                <Switch onChange={() => setViewMyCards(!viewMyCards)} />
+              </FormControl>
               <FormControl className="flex items-center m-2">
                 <FormLabel className="mb-0">Toggle Goaltenders:</FormLabel>
                 <Switch onChange={() => setViewSkaters(!viewSkaters)} />
@@ -552,7 +561,11 @@ export default () => {
                       >
                         <Menu>
                           <MenuButton
-                            className="hover:!bg-highlighted/40"
+                            isDisabled={
+                              Boolean(card.author_paid) &&
+                              Boolean(card.approved)
+                            }
+                            className="!disabled:hover:!bg-highlighted/40"
                             as={Button}
                             rightIcon={<ChevronDownIcon />}
                           >
