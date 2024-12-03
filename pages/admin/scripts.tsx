@@ -14,9 +14,9 @@ type ScriptId =
   | 'add-cards-to-users'
   | 'monthly-subscriptions'
   | 'request-base-cards'
-  // | 'request-charity-card'
   | 'request-custom-cards'
-  | 'delete-duplicates'
+// | 'request-charity-card'
+// | 'delete-duplicates'
 
 type ScriptData = {
   id: ScriptId
