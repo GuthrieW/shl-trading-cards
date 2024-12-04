@@ -96,7 +96,7 @@ export const CardInformation = ({
           </AccordionButton>
         </h2>
         <AccordionPanel pb={4}>
-          {playerID === -1 || playerID > 100000 ? (
+          {playerID === -1 ? (
             <div>Player stats not available at this time</div>
           ) : (
             <>
