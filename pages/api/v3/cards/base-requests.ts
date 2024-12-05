@@ -32,6 +32,9 @@ export default async function baseRequestsEndpoint(
   if (req.method === POST) {
     const seasonString = req.body.season as string
     if (!seasonString || isNaN(seasonString as any)) {
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .end('Please provide a valid season number in your request')
       return
     }
 
@@ -233,11 +236,11 @@ export async function requestCards(cardRequests: CardRequest[]): Promise<void> {
       const insertQuery: SQLStatement = SQL`
         INSERT INTO cards
           (player_name, teamID, playerID, card_rarity, sub_type, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season, author_paid)
-        VALUES ("${cardRequest.player_name.trim()}", ${cardRequest.teamID}, ${
+        VALUES (${cardRequest.player_name.trim()}, ${cardRequest.teamID}, ${
           cardRequest.playerID
-        }, "${cardRequest.card_rarity}", ${cardRequest.sub_type}, 0, 0, "${
+        }, ${cardRequest.card_rarity}, ${cardRequest.sub_type}, 0, 0, ${
           cardRequest.position
-        }", ${cardRequest.overall}, ${cardRequest.high_shots}, ${
+        }, ${cardRequest.overall}, ${cardRequest.high_shots}, ${
           cardRequest.low_shots
         }, ${cardRequest.quickness}, ${cardRequest.control}, ${
           cardRequest.conditioning

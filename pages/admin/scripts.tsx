@@ -72,9 +72,9 @@ export default () => {
         {selectedScript === 'add-cards-to-users' && (
           <AddCardsToUsersForm onError={setFormError} />
         )}
-        {selectedScript === 'delete-duplicates' && (
+        {/* {selectedScript === 'delete-duplicates' && (
           <DeleteDuplicateCardsForm onError={setFormError} />
-        )}
+        )} */}
         {selectedScript === 'monthly-subscriptions' && (
           <MonthlySubscriptionsForm onError={setFormError} />
         )}
