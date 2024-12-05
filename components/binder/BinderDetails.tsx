@@ -93,19 +93,21 @@ const BinderDetailPage = ({
     }
   }
   const getLastOccupiedPosition = (cards: binderCards[]): number => {
-    if (!cards || cards.length === 0) return BINDER_CONSTANTS.ROWS_PER_PAGE;
-    return Math.max(...cards.map(card => card.position));
+    if (!cards || cards.length === 0) return BINDER_CONSTANTS.ROWS_PER_PAGE
+    return Math.max(...cards.map((card) => card.position))
   }
   const lastPosition = useMemo(() => {
-    return binderData ? getLastOccupiedPosition(binderData) : BINDER_CONSTANTS.ROWS_PER_PAGE;
-  }, [binderData]) 
-  
+    return binderData
+      ? getLastOccupiedPosition(binderData)
+      : BINDER_CONSTANTS.ROWS_PER_PAGE
+  }, [binderData])
+
   // Create an array with length up to the last occupied position
   const fullBinderData: (binderCards | null)[] = Array.from(
     { length: BINDER_CONSTANTS.TOTAL_POSITIONS },
     () => null
   )
-  
+
   if (binderData && Array.isArray(binderData)) {
     binderData.forEach((card: binderCards) => {
       if (card.position >= 1 && card.position <= lastPosition) {
@@ -119,7 +121,6 @@ const BinderDetailPage = ({
     currentPage * BINDER_CONSTANTS.ROWS_PER_PAGE
   )
   const totalRows = lastPosition
-  console.log(fullBinderData)
   return (
     <Box>
       {userID === Number(session?.userId) && (
