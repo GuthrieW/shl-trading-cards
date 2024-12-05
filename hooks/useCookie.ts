@@ -29,7 +29,14 @@ export const useCookie = <T extends string>(
 
   const updateCookie = useCallback(
     (value: T, expDays: number = 1) => {
-      JsCookie.set(key, value, { expires: expDays, path: '/', sameSite: 'lax' })
+      JsCookie.set(key, value, {
+        expires: expDays,
+        path: '/',
+        sameSite: 'lax',
+        ...(window.location.origin.includes('simulationhockey')
+          ? { domain: '.simulationhockey.com' }
+          : {}),
+      })
 
       setCookie(value)
     },
