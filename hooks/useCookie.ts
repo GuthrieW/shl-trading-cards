@@ -45,7 +45,11 @@ export const useCookie = <T extends string>(
 
   const removeCookie = useCallback(() => {
     if (cookie !== null) {
-      JsCookie.remove(key)
+      JsCookie.remove(key, {
+        ...(window.location.origin.includes('simulationhockey')
+          ? { domain: '.simulationhockey.com' }
+          : {}),
+      })
       setCookie(null)
     }
   }, [cookie, key])
