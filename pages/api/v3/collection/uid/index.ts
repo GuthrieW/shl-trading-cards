@@ -98,7 +98,6 @@ export default async function collectionEndpoint(
         WHERE ownedCard.userID=${parseInt(uid)}
       `
 
-
     const query: SQLStatement =
       showNotOwnedCards === 'true'
         ? SQL`
@@ -179,7 +178,7 @@ export default async function collectionEndpoint(
           : countQuery.append(SQL` OR card.teamID=${parseInt(team)}`)
       )
       countQuery.append(SQL`)`)
-    
+
       query.append(SQL` AND (`)
       teams.forEach((team, index) =>
         index === 0
@@ -187,7 +186,7 @@ export default async function collectionEndpoint(
           : query.append(SQL` OR card.teamID=${parseInt(team)}`)
       )
       query.append(SQL`)`)
-    
+
       if (leagues.includes('IIHF')) {
         if (!leagues.includes('SHL')) {
           countQuery.append(SQL` AND card.card_rarity = 'IIHF Awards'`)
@@ -247,6 +246,13 @@ export default async function collectionEndpoint(
         : query.append(SQL` DESC`)
       query.append(SQL`, card.overall DESC`)
     }
+    if (sortColumn === 'season') {
+      query.append(SQL` card.season`)
+      sortDirection === 'DESC'
+        ? query.append(SQL` ASC`)
+        : query.append(SQL` DESC`)
+      query.append(SQL`, card.overall DESC`)
+    }
 
     if (limit) {
       query.append(SQL` LIMIT ${parseInt(limit)}`)
@@ -281,7 +287,7 @@ export default async function collectionEndpoint(
       payload: {
         rows: queryResult,
         total: countResult[0].total,
-        totalOwned: countResult[0].totalOwned
+        totalOwned: countResult[0].totalOwned,
       },
     })
     return

@@ -22,7 +22,7 @@ import CardLightBoxModal from '@components/modals/CardLightBoxModal'
 import TablePagination from '@components/table/TablePagination'
 import { GetServerSideProps } from 'next'
 import { GET } from '@constants/http-methods'
-import {rarityMap} from '@constants/rarity-map'
+import { rarityMap } from '@constants/rarity-map'
 import { allTeamsMaps, shlTeamMap, iihfTeamsMap } from '@constants/teams-map'
 import { query } from '@pages/api/database/query'
 import {
@@ -69,6 +69,12 @@ const SORT_OPTIONS: OwnedCardSortOption[] = [
     label: 'Cards Owned',
     sortLabel: (direction: SortDirection) =>
       direction === 'DESC' ? '(Most to Least)' : '(Least to Most)',
+  },
+  {
+    value: 'season',
+    label: 'Draft Season',
+    sortLabel: (direction: SortDirection) =>
+      direction === 'DESC' ? '(S1->Present)' : '(Present->S1)',
   },
 ] as const
 
