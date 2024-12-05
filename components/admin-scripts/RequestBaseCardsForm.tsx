@@ -3,6 +3,8 @@ import { POST } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
 import axios from 'axios'
 import { useFormik } from 'formik'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 import * as Yup from 'yup'
 
 const requestCardsValidationSchema = Yup.object({}).shape({
@@ -16,9 +18,23 @@ export default function RequestBaseCardsForm({
 }: {
   onError: (errorMessage) => void
 }) {
+  const router = useRouter()
+  const [skaterErrors, setSkaterErrors] = useState(null)
+  const [goalieErrors, setGoalieErrors] = useState(null)
+
   const { mutateAsync: requestBaseCards } = mutation<void, { season: number }>({
-    mutationFn: ({ season }: { season: number }) =>
-      axios({ method: POST, url: '/api/v3/cards/base-requests', data: season }),
+    mutationFn: async ({ season }: { season: number }) => {
+      const response = await axios({
+        method: POST,
+        url: '/api/v3/cards/base-requests',
+        data: { season },
+      })
+
+      if (response.data.payload) {
+        setSkaterErrors(response.data.payload.skaterErrors)
+        setGoalieErrors(response.data.payload.goalieErrors)
+      }
+    },
   })
 
   const { isSubmitting, handleChange, handleBlur, isValid, handleSubmit } =
@@ -49,19 +65,24 @@ export default function RequestBaseCardsForm({
 
   return (
     <div>
-      <div className="flex justify-end items-center">
-        <Button
-          disabled={!isValid || isSubmitting}
-          type="submit"
-          className="mt-4 mx-1"
-          isLoading={isSubmitting}
-          loadingText="Submitting..."
-        >
-          Request Base Cards
-        </Button>
-      </div>
-
       <form onSubmit={handleSubmit}>
+        <div className="flex justify-end items-center">
+          <Button
+            disabled={
+              !isValid ||
+              isSubmitting || // disable this in dev
+              router.pathname.includes('localhost') ||
+              router.pathname.includes('cardsdev')
+            }
+            type="submit"
+            className="mt-4 mx-1"
+            isLoading={isSubmitting}
+            loadingText="Submitting..."
+          >
+            Request Base Cards
+          </Button>
+        </div>
+
         <FormControl>
           <FormLabel>Season</FormLabel>
           <Input
@@ -74,6 +95,18 @@ export default function RequestBaseCardsForm({
           />
         </FormControl>
       </form>
+      {skaterErrors && (
+        <div>
+          {JSON.stringify(skaterErrors)}
+          <br />
+        </div>
+      )}
+      {goalieErrors && (
+        <div>
+          {JSON.stringify(goalieErrors)}
+          <br />
+        </div>
+      )}
     </div>
   )
 }

@@ -46,6 +46,8 @@ import SubmitImageModal from '@components/admin-cards/SubmitImageModal'
 import ClaimCardDialog from '@components/admin-cards/ClaimCardDialog'
 import ProcessImageDialog from '@components/admin-cards/ProcessImageDialog'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
+import MisprintDialog from '@components/admin-cards/MisprintDialog'
+import { usePermissions } from '@hooks/usePermissions'
 
 type ColumnName = keyof Readonly<Card>
 
@@ -82,6 +84,7 @@ const LOADING_TABLE_DATA: { rows: Card[] } = {
 
 export default () => {
   const [viewSkaters, setViewSkaters] = useState<boolean>(true)
+  const [viewMyCards, setViewMyCards] = useState<boolean>(false)
   const [viewNeedsAuthor, setViewNeedsAuthor] = useState<boolean>(false)
   const [viewNeedsImage, setviewNeedsImage] = useState<boolean>(false)
   const [viewNeedsApproval, setviewNeedsApproval] = useState<boolean>(false)
@@ -104,9 +107,11 @@ export default () => {
   const submitImageModal = useDisclosure()
   const processImageDialog = useDisclosure()
   const deleteDialog = useDisclosure()
+  const misprintDialog = useDisclosure()
 
   const [uid] = useCookie(config.userIDCookieName)
 
+  const { permissions } = usePermissions()
   const { isCheckingAuthentication } = useRedirectIfNotAuthenticated()
   const { isCheckingAuthorization } = useRedirectIfNotAuthorized({
     roles: ['TRADING_CARD_ADMIN', 'TRADING_CARD_TEAM'],
@@ -115,11 +120,13 @@ export default () => {
   const { payload, isLoading } = query<ListResponse<Card>>({
     queryKey: [
       'cards',
+      uid,
       playerName,
       JSON.stringify(teams),
       JSON.stringify(rarities),
       JSON.stringify(leagues),
       String(viewSkaters),
+      String(viewMyCards),
       String(viewNeedsAuthor),
       String(viewNeedsImage),
       String(viewNeedsApproval),
@@ -136,11 +143,13 @@ export default () => {
         params: {
           limit: ROWS_PER_PAGE,
           offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
+          userID: uid,
           playerName,
           teams: JSON.stringify(teams),
           rarities: JSON.stringify(rarities),
           leagues: JSON.stringify(leagues),
           viewSkaters,
+          viewMyCards,
           viewNeedsAuthor,
           viewNeedsImage,
           viewNeedsApproval,
@@ -168,6 +177,7 @@ export default () => {
   const toggleRarity = (rarity: string) => {
     setRarities((currentValue) => toggleOnfilters(currentValue, rarity))
   }
+
   return (
     <>
       <PageWrapper
@@ -330,6 +340,10 @@ export default () => {
               </FormControl>
             </div>
             <div className="flex justify-end">
+              <FormControl className="flex items-center m-2">
+                <FormLabel className="mb-0">My Cards</FormLabel>
+                <Switch onChange={() => setViewMyCards(!viewMyCards)} />
+              </FormControl>
               <FormControl className="flex items-center m-2">
                 <FormLabel className="mb-0">Toggle Goaltenders:</FormLabel>
                 <Switch onChange={() => setViewSkaters(!viewSkaters)} />
@@ -543,42 +557,31 @@ export default () => {
               </Thead>
               <Tbody>
                 {(isLoading ? LOADING_TABLE_DATA : payload)?.rows.map(
-                  (card: Card) => (
-                    <Tr key={card.cardID}>
-                      <Td
-                        isLoading={isLoading}
-                        // position="sticky"
-                        left="0"
-                      >
-                        <Menu>
-                          <MenuButton
-                            className="hover:!bg-highlighted/40"
-                            as={Button}
-                            rightIcon={<ChevronDownIcon />}
-                          >
-                            Actions
-                          </MenuButton>
-                          <MenuList>
-                            {!card.author_userID && (
-                              <RoleGuard
-                                userRoles={[
-                                  'TRADING_CARD_ADMIN',
-                                  'TRADING_CARD_TEAM',
-                                ]}
-                              >
-                                <MenuItem
-                                  className="hover:!bg-highlighted/40"
-                                  onClick={() => {
-                                    setSelectedCard(card)
-                                    claimCardDialog.onOpen()
-                                  }}
-                                >
-                                  Claim Card
-                                </MenuItem>
-                              </RoleGuard>
-                            )}
-                            {!card.image_url &&
-                              String(card.author_userID) == uid && (
+                  (card: Card) => {
+                    const disableActions = shouldDisableActions(
+                      permissions.canEditCards,
+                      card,
+                      uid
+                    )
+
+                    return (
+                      <Tr key={card.cardID}>
+                        <Td
+                          isLoading={isLoading}
+                          // position="sticky"
+                          left="0"
+                        >
+                          <Menu>
+                            <MenuButton
+                              isDisabled={disableActions}
+                              className="!disabled:hover:!bg-highlighted/40"
+                              as={Button}
+                              rightIcon={<ChevronDownIcon />}
+                            >
+                              Actions
+                            </MenuButton>
+                            <MenuList>
+                              {!card.author_userID && (
                                 <RoleGuard
                                   userRoles={[
                                     'TRADING_CARD_ADMIN',
@@ -589,14 +592,47 @@ export default () => {
                                     className="hover:!bg-highlighted/40"
                                     onClick={() => {
                                       setSelectedCard(card)
-                                      submitImageModal.onOpen()
+                                      claimCardDialog.onOpen()
                                     }}
                                   >
-                                    Submit Image
+                                    Claim Card
                                   </MenuItem>
                                 </RoleGuard>
                               )}
-                            {card.image_url && !card.approved && (
+                              {!card.image_url &&
+                                String(card.author_userID) == uid && (
+                                  <RoleGuard
+                                    userRoles={[
+                                      'TRADING_CARD_ADMIN',
+                                      'TRADING_CARD_TEAM',
+                                    ]}
+                                  >
+                                    <MenuItem
+                                      className="hover:!bg-highlighted/40"
+                                      onClick={() => {
+                                        setSelectedCard(card)
+                                        submitImageModal.onOpen()
+                                      }}
+                                    >
+                                      Submit Image
+                                    </MenuItem>
+                                  </RoleGuard>
+                                )}
+                              {card.image_url && !card.approved && (
+                                <PermissionGuard
+                                  userPermissions={['canEditCards']}
+                                >
+                                  <MenuItem
+                                    className="hover:!bg-highlighted/40"
+                                    onClick={() => {
+                                      setSelectedCard(card)
+                                      processImageDialog.onOpen()
+                                    }}
+                                  >
+                                    Process Image
+                                  </MenuItem>
+                                </PermissionGuard>
+                              )}
                               <PermissionGuard
                                 userPermissions={['canEditCards']}
                               >
@@ -604,102 +640,102 @@ export default () => {
                                   className="hover:!bg-highlighted/40"
                                   onClick={() => {
                                     setSelectedCard(card)
-                                    processImageDialog.onOpen()
+                                    updateModal.onOpen()
                                   }}
                                 >
-                                  Process Image
+                                  Update
                                 </MenuItem>
                               </PermissionGuard>
-                            )}
-                            <PermissionGuard userPermissions={['canEditCards']}>
-                              <MenuItem
-                                className="hover:!bg-highlighted/40"
-                                onClick={() => {
-                                  setSelectedCard(card)
-                                  updateModal.onOpen()
-                                }}
-                              >
-                                Update
-                              </MenuItem>
-                            </PermissionGuard>
-                            {card.author_userID && (
-                              <PermissionGuard
-                                userPermissions={['canEditCards']}
-                              >
+                              {card.author_userID && (
+                                <PermissionGuard
+                                  userPermissions={['canEditCards']}
+                                >
+                                  <MenuItem
+                                    className="hover:!bg-highlighted/40"
+                                    onClick={() => {
+                                      setSelectedCard(card)
+                                      removeAuthorDialog.onOpen()
+                                    }}
+                                  >
+                                    Remove Author
+                                  </MenuItem>
+                                </PermissionGuard>
+                              )}
+                              {card.image_url && (
+                                <PermissionGuard
+                                  userPermissions={['canEditCards']}
+                                >
+                                  <MenuItem
+                                    className="hover:!bg-highlighted/40"
+                                    onClick={() => {
+                                      setSelectedCard(card)
+                                      removeImageDialog.onOpen()
+                                    }}
+                                  >
+                                    Remove Image
+                                  </MenuItem>
+                                </PermissionGuard>
+                              )}
+                              <RoleGuard userRoles={['TRADING_CARD_ADMIN']}>
                                 <MenuItem
-                                  className="hover:!bg-highlighted/40"
+                                  className="hover:!bg-red200"
                                   onClick={() => {
                                     setSelectedCard(card)
-                                    removeAuthorDialog.onOpen()
+                                    deleteDialog.onOpen()
                                   }}
                                 >
-                                  Remove Author
+                                  Delete
                                 </MenuItem>
-                              </PermissionGuard>
-                            )}
-                            {card.image_url && (
-                              <PermissionGuard
-                                userPermissions={['canEditCards']}
-                              >
+                              </RoleGuard>
+                              <RoleGuard userRoles={['TRADING_CARD_ADMIN']}>
                                 <MenuItem
-                                  className="hover:!bg-highlighted/40"
+                                  className="hover:!bg-red200"
                                   onClick={() => {
                                     setSelectedCard(card)
-                                    removeImageDialog.onOpen()
+                                    misprintDialog.onOpen()
                                   }}
                                 >
-                                  Remove Image
+                                  Set Misprint
                                 </MenuItem>
-                              </PermissionGuard>
-                            )}
-                            <RoleGuard userRoles={['TRADING_CARD_ADMIN']}>
-                              <MenuItem
-                                className="hover:!bg-red200"
-                                onClick={() => {
-                                  setSelectedCard(card)
-                                  deleteDialog.onOpen()
-                                }}
-                              >
-                                Delete
-                              </MenuItem>
-                            </RoleGuard>
-                          </MenuList>
-                        </Menu>
-                      </Td>
-                      <Td isLoading={isLoading}>
-                        {cardService.calculateStatus(card)}
-                      </Td>
-                      <Td isLoading={isLoading}>{card.player_name}</Td>
-                      <Td isLoading={isLoading}>{card.cardID}</Td>
-                      <Td isLoading={isLoading}>{card.playerID}</Td>
-                      <Td isLoading={isLoading}>{card.teamID}</Td>
-                      <Td isLoading={isLoading}>{card.author_userID}</Td>
-                      <Td isLoading={isLoading}>{card.pullable}</Td>
-                      <Td isLoading={isLoading}>{card.approved}</Td>
-                      <Td isLoading={isLoading}>{card.author_paid}</Td>
-                      <Td isLoading={isLoading}>{card.image_url}</Td>
-                      <Td isLoading={isLoading}>{card.card_rarity}</Td>
-                      <Td isLoading={isLoading}>{card.sub_type}</Td>
-                      <Td isLoading={isLoading}>{card.season}</Td>
-                      <Td isLoading={isLoading}>{card.position}</Td>
-                      <Td isLoading={isLoading}>{card.overall}</Td>
-                      <Td isLoading={isLoading}>
-                        {viewSkaters ? card.skating : card.high_shots}
-                      </Td>
-                      <Td isLoading={isLoading}>
-                        {viewSkaters ? card.shooting : card.low_shots}
-                      </Td>
-                      <Td isLoading={isLoading}>
-                        {viewSkaters ? card.hands : card.quickness}
-                      </Td>
-                      <Td isLoading={isLoading}>
-                        {viewSkaters ? card.checking : card.control}
-                      </Td>
-                      <Td isLoading={isLoading}>
-                        {viewSkaters ? card.defense : card.conditioning}
-                      </Td>
-                    </Tr>
-                  )
+                              </RoleGuard>
+                            </MenuList>
+                          </Menu>
+                        </Td>
+                        <Td isLoading={isLoading}>
+                          {cardService.calculateStatus(card)}
+                        </Td>
+                        <Td isLoading={isLoading}>{card.player_name}</Td>
+                        <Td isLoading={isLoading}>{card.cardID}</Td>
+                        <Td isLoading={isLoading}>{card.playerID}</Td>
+                        <Td isLoading={isLoading}>{card.teamID}</Td>
+                        <Td isLoading={isLoading}>{card.author_userID}</Td>
+                        <Td isLoading={isLoading}>{card.pullable}</Td>
+                        <Td isLoading={isLoading}>{card.approved}</Td>
+                        <Td isLoading={isLoading}>{card.author_paid}</Td>
+                        <Td isLoading={isLoading}>{card.image_url}</Td>
+                        <Td isLoading={isLoading}>{card.card_rarity}</Td>
+                        <Td isLoading={isLoading}>{card.sub_type}</Td>
+                        <Td isLoading={isLoading}>{card.season}</Td>
+                        <Td isLoading={isLoading}>{card.position}</Td>
+                        <Td isLoading={isLoading}>{card.overall}</Td>
+                        <Td isLoading={isLoading}>
+                          {viewSkaters ? card.skating : card.high_shots}
+                        </Td>
+                        <Td isLoading={isLoading}>
+                          {viewSkaters ? card.shooting : card.low_shots}
+                        </Td>
+                        <Td isLoading={isLoading}>
+                          {viewSkaters ? card.hands : card.quickness}
+                        </Td>
+                        <Td isLoading={isLoading}>
+                          {viewSkaters ? card.checking : card.control}
+                        </Td>
+                        <Td isLoading={isLoading}>
+                          {viewSkaters ? card.defense : card.conditioning}
+                        </Td>
+                      </Tr>
+                    )
+                  }
                 )}
               </Tbody>
             </Table>
@@ -769,8 +805,44 @@ export default () => {
             }}
             isOpen={deleteDialog.isOpen}
           />
+          <MisprintDialog
+            card={selectedCard}
+            onClose={() => {
+              misprintDialog.onClose()
+              setSelectedCard(null)
+            }}
+            isOpen={misprintDialog.isOpen}
+          />
         </>
       )}
     </>
   )
+}
+
+const shouldDisableActions = (
+  isAdmin: boolean,
+  card: Card,
+  uid: string
+): boolean => {
+  // admins can always edit cards
+  if (isAdmin) {
+    return false
+  }
+
+  // if the card needs an owner anyone should be able to claim it
+  const cardNeedsOwner = !Boolean(card.author_userID)
+  if (cardNeedsOwner) {
+    return false
+  }
+
+  const isCardOwner = String(card.author_userID) !== uid
+  const isCardComplete = Boolean(card.author_paid) && Boolean(card.approved)
+
+  if (isCardOwner) {
+    // if the card is complete then no actions are necessary
+    return isCardComplete
+  } else {
+    // if you are not the card owner you should not be able to do anything to it
+    return true
+  }
 }

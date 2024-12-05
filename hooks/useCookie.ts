@@ -8,9 +8,9 @@ export const useCookie = <T extends string>(
   T | null,
   (value: T, expDays?: number) => void,
   (path?: string, domain?: string) => void,
-  (key: string) => void,
+  () => string | null,
 ] => {
-  const getCookie = useCallback((key: string) => {
+  const getCookie = useCallback(() => {
     const cookie = JsCookie.get(key)
 
     if (!cookie) {
@@ -21,8 +21,8 @@ export const useCookie = <T extends string>(
   }, [])
 
   const initialCookie = useMemo(
-    () => getCookie(key) || defaultValue,
-    [defaultValue, getCookie, key]
+    () => getCookie() || defaultValue,
+    [defaultValue, getCookie]
   )
 
   const [cookie, setCookie] = useState<T | null>(initialCookie as T)

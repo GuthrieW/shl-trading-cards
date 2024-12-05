@@ -41,7 +41,7 @@ export default async function settingsEndpoint(
     const query: SQLStatement = SQL`
       SELECT u.uid, u.username, COALESCE(s.subscription, 0) as subscription
       FROM admin_mybb.mybb_users u
-      LEFT JOIN admin_cards.monthly_subscriptions s ON s.uid = u.uid
+      LEFT JOIN monthly_subscriptions s ON s.uid = u.uid
       WHERE u.usergroup != 7
     `
 

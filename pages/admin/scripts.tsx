@@ -14,9 +14,9 @@ type ScriptId =
   | 'add-cards-to-users'
   | 'monthly-subscriptions'
   | 'request-base-cards'
-  // | 'request-charity-card'
   | 'request-custom-cards'
-  | 'delete-duplicates'
+// | 'request-charity-card'
+// | 'delete-duplicates'
 
 type ScriptData = {
   id: ScriptId
@@ -72,9 +72,9 @@ export default () => {
         {selectedScript === 'add-cards-to-users' && (
           <AddCardsToUsersForm onError={setFormError} />
         )}
-        {selectedScript === 'delete-duplicates' && (
+        {/* {selectedScript === 'delete-duplicates' && (
           <DeleteDuplicateCardsForm onError={setFormError} />
-        )}
+        )} */}
         {selectedScript === 'monthly-subscriptions' && (
           <MonthlySubscriptionsForm onError={setFormError} />
         )}

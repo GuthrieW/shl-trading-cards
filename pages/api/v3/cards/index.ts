@@ -21,6 +21,7 @@ export default async function cardsEndpoint(
 
   if (req.method === GET) {
     const playerName = (req.query.playerName ?? '') as string
+    const userID = req.query.userID as string
     const teams = JSON.parse(req.query.teams as string) as string[]
     const rarities = JSON.parse(req.query.rarities as string) as string[]
     const limit = (req.query.limit ?? 10) as string
@@ -29,6 +30,7 @@ export default async function cardsEndpoint(
       'cardID') as keyof Readonly<Card>
     const sortDirection = (req.query.sortDirection ?? 'ASC') as SortDirection
     const viewSkaters = (req.query.viewSkaters ?? 'false') as 'true' | 'false'
+    const viewMyCards = (req.query.viewMyCards ?? 'false') as 'true' | 'false'
     const viewNeedsAuthor = (req.query.viewNeedsAuthor ?? 'false') as
       | 'true'
       | 'false'
@@ -90,6 +92,11 @@ export default async function cardsEndpoint(
     } else {
       countQuery.append(SQL` WHERE (position = 'G')`)
       query.append(SQL` WHERE (position = 'G')`)
+    }
+
+    if (viewMyCards === 'true') {
+      countQuery.append(SQL` AND (author_userID = ${userID})`)
+      query.append(SQL` AND (author_userID = ${userID})`)
     }
 
     const statusesToAppend: SQLStatement[] = []
