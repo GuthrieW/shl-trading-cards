@@ -89,7 +89,7 @@ export default function MonthlySubscriptionsForm({
       }),
   })
 
-  const { isSubmitting, isValid } = useFormik<{}>({
+  const { isSubmitting, isValid, handleSubmit } = useFormik<{}>({
     initialValues: {},
     onSubmit: async ({}, { setSubmitting }) => {
       try {
@@ -134,15 +134,17 @@ export default function MonthlySubscriptionsForm({
               onChange={(event) => setUsername(event.target.value)}
             />
           </div>
-          <Button
-            disabled={!isValid || isSubmitting || isLoading}
-            type="submit"
-            className="flex items-center"
-            isLoading={isSubmitting}
-            loadingText="Submitting..."
-          >
-            Distribute Packs
-          </Button>
+          <form onSubmit={handleSubmit}>
+            <Button
+              disabled={!isValid || isSubmitting || isLoading}
+              type="submit"
+              className="flex items-center"
+              isLoading={isSubmitting}
+              loadingText="Submitting..."
+            >
+              Distribute Packs
+            </Button>
+          </form>
         </div>
 
         <div className="rounded border border-1 border-inherit mt-4 border-table">
