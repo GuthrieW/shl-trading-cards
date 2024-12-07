@@ -11,21 +11,24 @@ import {
   Spinner,
   Button,
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import React, { useMemo } from 'react'
 import axios from 'axios'
 import { query } from '@pages/api/database/query'
 import { GET } from '@constants/http-methods'
 import PackOpen from '@components/collection/PackOpen'
 import { UserPacks } from '@pages/api/v3'
 import { useRouter } from 'next/router'
+import { packService } from 'services/packService'
 
 interface DisplayPacksProps {
   userID: string
 }
 
-const DisplayPacks: React.FC<DisplayPacksProps> = ({ userID }) => {
+const DisplayPacks: React.FC<DisplayPacksProps> = React.memo(({ userID }) => {
   const router = useRouter()
-  const [selectedPackID, setSelectedPackID] = useState<string | null>(null)
+  const [selectedPackID, setSelectedPackID] = React.useState<string | null>(
+    null
+  )
 
   const { payload: packs, isLoading: packsLoading } = query<UserPacks[]>({
     queryKey: ['latest-cards', userID],
@@ -37,9 +40,22 @@ const DisplayPacks: React.FC<DisplayPacksProps> = ({ userID }) => {
     enabled: !!userID,
   })
 
-  const handlePackClick = (packID: string) => {
-    setSelectedPackID(packID === selectedPackID ? null : packID)
-  }
+  const handlePackClick = React.useCallback(
+    (packID: string) => {
+      setSelectedPackID(packID === selectedPackID ? null : packID)
+    },
+    [selectedPackID]
+  )
+
+  const packImages = useMemo(
+    () =>
+      packs?.map((pack) =>
+        pack.packType === 'base'
+          ? packService.basePackCover()
+          : '/ruby-pack-cover.png'
+      ) || [],
+    [packs]
+  )
 
   return (
     <Accordion allowToggle>
@@ -57,22 +73,18 @@ const DisplayPacks: React.FC<DisplayPacksProps> = ({ userID }) => {
             <Spinner />
           ) : packs && packs.length > 0 ? (
             <SimpleGrid columns={3} spacing={4}>
-              {packs.map((pack, index) => (
-                <Box key={pack.packID} textAlign="center">
+              {packImages.map((imageSrc, index) => (
+                <Box key={packs[index].packID} textAlign="center">
                   <Image
-                    src={
-                      pack.packType === 'base'
-                        ? '/base-pack-tex.png'
-                        : '/ruby-pack-cover.png'
-                    }
+                    src={imageSrc}
                     alt={`Pack Cover ${index + 1}`}
-                    onClick={() => handlePackClick(pack.packID)}
+                    onClick={() => handlePackClick(packs[index].packID)}
                     className="cursor-pointer"
                     width={100}
                     height={175}
                     style={{
                       border:
-                        selectedPackID === pack.packID
+                        selectedPackID === packs[index].packID
                           ? '2px solid yellow'
                           : 'none',
                     }}
@@ -101,6 +113,6 @@ const DisplayPacks: React.FC<DisplayPacksProps> = ({ userID }) => {
       </AccordionItem>
     </Accordion>
   )
-}
+})
 
 export default DisplayPacks
