@@ -158,18 +158,17 @@ const BinderTables = () => {
               <Heading className="text-secondary text-center pb-1">
                 Your Binders
               </Heading>
-              {!UserBinderisLoading &&
-                (isMobile ? (
-                  <UsersBindersCarousel
-                    binderData={Userbinders}
-                    reachedLimit={reachedLimit}
-                  />
-                ) : (
-                  <UsersBinder
-                    binderData={Userbinders}
-                    reachedLimit={reachedLimit}
-                  />
-                ))}
+              {isMobile ? (
+                <UsersBindersCarousel
+                  binderData={Userbinders}
+                  reachedLimit={reachedLimit}
+                />
+              ) : (
+                <UsersBinder
+                  binderData={Userbinders}
+                  reachedLimit={reachedLimit}
+                />
+              )}
             </Box>
           )}
 
