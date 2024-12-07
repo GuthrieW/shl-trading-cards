@@ -230,7 +230,7 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
       <Drawer
         placement="bottom"
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={onDrawerClose}
         size={{ base: 'full', md: 'md', lg: 'md' }}
       >
         <DrawerOverlay width="full" h="full" />
