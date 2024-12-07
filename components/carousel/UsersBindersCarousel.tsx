@@ -62,7 +62,7 @@ export const UsersBindersCarousel = ({
     dots: true,
     className: 'center',
     centerMode: true,
-    infinite: binderData.length > 3,
+    infinite: (binderData?.length || 0) > 3,
     centerPadding: '0',
     slidesToShow: 3,
     speed: 500,
@@ -73,7 +73,7 @@ export const UsersBindersCarousel = ({
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          infinite: binderData.length > 1,
+          infinite: (binderData?.length || 0) > 1,
           className: 'center',
           centerMode: true,
           adaptiveHeight: true,
@@ -83,66 +83,68 @@ export const UsersBindersCarousel = ({
     ],
   }
 
-  const remainingBinders = 5 - binderData.length
+  const remainingBinders = 5 - (binderData?.length || 0)
 
   return (
     <>
       <div className="carousel-container">
         <Slider {...settings}>
-          {binderData.map((binder) => (
-            <Card
-              key={binder.binderID}
-              className="!bg-boxscore-header border-3 border-table-header !text-secondary h-full"
-              p={4}
-              shadow="lg"
-            >
-              <Link href={`/binder/${binder.binderID}`} key={binder.binderID}>
-                <CardHeader className="text-center">
-                  <Heading size="md">{binder.binder_name}</Heading>
-                </CardHeader>
-                <CardBody className="text-center">
-                  <div>
-                    {binder.binder_desc.length > 25
-                      ? `${binder.binder_desc.slice(0, 25)}...`
-                      : binder.binder_desc}
-                  </div>
-                </CardBody>
-              </Link>
-              <CardFooter className="relative w-full h-8 flex items-center text-center justify-center">
-                <Menu>
-                  <MenuButton
-                    as="div"
-                    className="flex w-8 h-8 border border-secondary rounded-md bg-primary cursor-pointer"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <HamburgerIcon></HamburgerIcon>
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem
-                      className="hover:!bg-highlighted/40 hover:!text-primary text-xs md:text-lg"
-                      onClick={() =>
-                        router.push(
-                          `/binder/${binder.binderID}?updateBinder=true`
-                        )
-                      }
+          {binderData &&
+            binderData.length > 0 &&
+            binderData.map((binder) => (
+              <Card
+                key={binder.binderID}
+                className="!bg-boxscore-header border-3 border-table-header !text-secondary h-full"
+                p={4}
+                shadow="lg"
+              >
+                <Link href={`/binder/${binder.binderID}`} key={binder.binderID}>
+                  <CardHeader className="text-center">
+                    <Heading size="md">{binder.binder_name}</Heading>
+                  </CardHeader>
+                  <CardBody className="text-center">
+                    <div>
+                      {binder.binder_desc.length > 25
+                        ? `${binder.binder_desc.slice(0, 25)}...`
+                        : binder.binder_desc}
+                    </div>
+                  </CardBody>
+                </Link>
+                <CardFooter className="relative w-full h-8 flex items-center text-center justify-center">
+                  <Menu>
+                    <MenuButton
+                      as="div"
+                      className="flex w-8 h-8 border border-secondary rounded-md bg-primary cursor-pointer"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      Edit Binder
-                    </MenuItem>
-                    <MenuDivider />
-                    <MenuItem
-                      className="hover:!bg-red200 !text-red200 hover:!text-primary text-xs md:text-lg"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleDeleteClick(binder.binderID)
-                      }}
-                    >
-                      Delete Binder
-                    </MenuItem>
-                  </MenuList>
-                </Menu>
-              </CardFooter>
-            </Card>
-          ))}
+                      <HamburgerIcon />
+                    </MenuButton>
+                    <MenuList>
+                      <MenuItem
+                        className="hover:!bg-highlighted/40 hover:!text-primary text-xs md:text-lg"
+                        onClick={() =>
+                          router.push(
+                            `/binder/${binder.binderID}?updateBinder=true`
+                          )
+                        }
+                      >
+                        Edit Binder
+                      </MenuItem>
+                      <MenuDivider />
+                      <MenuItem
+                        className="hover:!bg-red200 !text-red200 hover:!text-primary text-xs md:text-lg"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDeleteClick(binder.binderID)
+                        }}
+                      >
+                        Delete Binder
+                      </MenuItem>
+                    </MenuList>
+                  </Menu>
+                </CardFooter>
+              </Card>
+            ))}
 
           {Array.from({ length: remainingBinders }).map((_, idx) => (
             <Card
