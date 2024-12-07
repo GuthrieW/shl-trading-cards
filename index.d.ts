@@ -7,8 +7,8 @@ type Card = {
   card_rarity: string
   sub_type: string
   player_name: string
-  pullable: boolean
-  approved: boolean
+  pullable: 0 | 1
+  approved: 0 | 1
   image_url?: string
   position: string
   overall: number
@@ -23,7 +23,9 @@ type Card = {
   control?: number | null
   conditioning?: number | null
   season: number
-  author_paid: boolean
+  author_paid: 0 | 1
+  packID?: number
+  quantity?: number
 }
 
 type CardRequest = {
@@ -55,16 +57,11 @@ type CollectionCard = {
   player_name: string
   overall: number
   teamID: number
+  playerID: number
 }
 
-type TradeCard = {
-  cardID: number
-  ownedCardID: number
-  image_url: string
-  card_rarity: string
-  player_name: string
-  overall: number
-  teamID: number
+type NewCard = {
+  quantity: number
 }
 
 type SetCard = {
@@ -97,13 +94,13 @@ type StartingLineup = {
 type TradeStatus = 'COMPLETE' | 'PENDING' | 'DECLINED' | 'AUTO_DECLINED'
 
 type Trade = {
-  tradeid: number
-  initiatorid: number
-  recipientid: number
+  tradeID: number
+  initiatorID: number
+  recipientID: number
   declineUserID: number
   trade_status: TradeStatus
   update_date: Date
-  create_date: Date
+  create_date: string
 }
 
 type TradeDetails = {
@@ -116,7 +113,7 @@ type TradeDetails = {
   image_url: string
   toID: number
   fromID: numer
-  create_date: Date
+  create_date: string
   update_date: Date
 }
 
@@ -135,8 +132,8 @@ type TradeUser = {
   userID: number
 }
 
-type PackKey = 'base'
-type PackLabel = 'Base'
+type PackKey = 'base' | 'ruby'
+type PackLabel = 'Base' | 'Ruby'
 
 type PackType = {
   key: PackKey
@@ -199,4 +196,15 @@ type MostCardsOwner = {
 type Donator = {
   uid: number
   subscription: number
+}
+
+type InternalUserUniqueCollection = {
+  userID: number
+  card_rarity: string
+  owned_count: number
+}
+
+type InternalSiteUniqueCards = {
+  card_rarity: string
+  total_count: number
 }

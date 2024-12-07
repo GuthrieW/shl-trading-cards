@@ -1,8 +1,6 @@
 import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
-import { UseGetUserKey } from '@pages/api/queries/use-get-user'
-import { errorToast, successToast } from '@utils/toasts'
 import { invalidateQueries } from './invalidate-queries'
 
 type UseUpdateSubscriptionRequest = {
@@ -24,18 +22,15 @@ const useUpdateSubscription = (): UseUpdateSubscription => {
     async ({ uid, subscriptionAmount }: UseUpdateSubscriptionRequest) => {
       return await axios({
         method: POST,
-        url: `/api/v2/settings/${uid}/subscription/${subscriptionAmount}`,
-        data: {},
+        url: `/api/v3/settings/daily/${uid}`,
+        data: { subscription: subscriptionAmount },
       })
     },
     {
       onSuccess: (data) => {
-        invalidateQueries(queryClient, [`${UseGetUserKey}/${data.data.uid}`])
-        successToast({ successText: 'Subscription Updated' })
+        invalidateQueries(queryClient, [`daily-subscription`])
       },
-      onError: () => {
-        errorToast({ errorText: 'Error Updating Subscription' })
-      },
+      onError: () => {},
     }
   )
 
@@ -49,3 +44,13 @@ const useUpdateSubscription = (): UseUpdateSubscription => {
 }
 
 export default useUpdateSubscription
+
+function toast(arg0: {
+  title: string
+  description: string
+  status: string
+  duration: number
+  isClosable: boolean
+}) {
+  throw new Error('Function not implemented.')
+}

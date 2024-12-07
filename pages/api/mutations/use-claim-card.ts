@@ -4,8 +4,9 @@ import { PATCH } from '@constants/http-methods'
 import { UseGetClaimedCardsKey } from '@pages/api/queries/use-get-claimed-cards'
 import { UseGetRequestedCardsKey } from '@pages/api/queries/use-get-requested-cards'
 import { UseGetAllCardsKey } from '@pages/api/queries/use-get-all-cards'
-import { errorToast, successToast } from '@utils/toasts'
 import { invalidateQueries } from './invalidate-queries'
+import { useToast } from '@chakra-ui/react'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
 
 type UseClaimCardRequest = {
   cardID: number
@@ -21,6 +22,7 @@ type UseClaimCard = {
 }
 
 const useClaimCard = (): UseClaimCard => {
+  const toast = useToast()
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     async ({ cardID, uid }: UseClaimCardRequest) => {
@@ -36,10 +38,10 @@ const useClaimCard = (): UseClaimCard => {
           UseGetClaimedCardsKey,
           UseGetRequestedCardsKey,
         ])
-        successToast({ successText: 'Card Claimed' })
+        toast({ title: 'Card Claimed', ...successToastOptions })
       },
       onError: () => {
-        errorToast({ errorText: 'Error Claiming Card' })
+        toast({ title: 'Error Claiming Card', ...errorToastOptions })
       },
     }
   )

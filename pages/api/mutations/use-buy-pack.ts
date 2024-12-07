@@ -1,10 +1,9 @@
 import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
-import { UseGetUserCardsKey } from '@pages/api/queries/use-get-user-cards'
-import { UseGetUserKey } from '@pages/api/queries/use-get-user'
-import { errorToast, successToast } from '@utils/toasts'
 import { invalidateQueries } from './invalidate-queries'
+import { useToast } from '@chakra-ui/react'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
 
 type UseBuyPackRequest = {
   uid: number
@@ -20,26 +19,41 @@ type UseBuyPack = {
 }
 
 const useBuyPack = (): UseBuyPack => {
+  const toast = useToast()
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     ({ uid, packType }: UseBuyPackRequest) => {
       return axios({
         method: POST,
-        url: `/api/v2/packs/buy/${packType}/${uid}`,
+        url: `/api/v3/packs/buy/${packType}/${uid}`,
         data: {},
       })
     },
     {
-      onSuccess: () => {
-        invalidateQueries(queryClient, [UseGetUserCardsKey, UseGetUserKey])
-        successToast({ successText: 'Pack Bought' })
+      onSuccess: (data) => {
+        invalidateQueries(queryClient, [`daily-subscription`])
+        toast({
+          title: 'Purchasing Pack',
+          description: `Navigate to Open Packs to open the pack`,
+          ...successToastOptions,
+        })
       },
-      onError: () => {
-        errorToast({ errorText: 'Error Purchasing Pack' })
+      onError: (error: any) => {
+        const errorData = error.response?.data?.error
+        const errorMessage =
+          typeof errorData === 'string'
+            ? errorData
+            : errorData?.errorMessage ||
+              'Could be an error or already purchased 3 packs today'
+
+        toast({
+          title: 'Error Purchasing Pack',
+          description: errorMessage,
+          ...errorToastOptions,
+        })
       },
     }
   )
-
   return {
     buyPack: mutate,
     response: data,

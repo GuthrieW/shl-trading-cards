@@ -1,5 +1,4 @@
 import { PATCH } from '@constants/http-methods'
-import { errorToast, successToast } from '@utils/toasts'
 import axios, { AxiosResponse } from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { invalidateQueries } from './invalidate-queries'
@@ -31,11 +30,8 @@ const useSendToAwaitingSubmission = (): UseSendToAwaitingSubmission => {
     {
       onSuccess: () => {
         invalidateQueries(queryClient, [UseGetAllCardsKey])
-        successToast({ successText: 'Card Sent to Awaiting Submission' })
       },
-      onError: () => {
-        errorToast({ errorText: 'Error Sending Card to Awaiting Submission' })
-      },
+      onError: () => {},
     }
   )
 
