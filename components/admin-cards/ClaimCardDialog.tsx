@@ -60,7 +60,7 @@ export default function ClaimCardDialog({
       } catch (error) {
         console.error(error)
         toast({
-          title: 'Sucessfully Claimed Card',
+          title: 'Could Not claim Card',
           ...errorToastOptions,
         })
         const errorMessage: string =
@@ -82,7 +82,11 @@ export default function ClaimCardDialog({
     >
       <AlertDialogOverlay>
         <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold" className="!bg-primary !text-secondary">
+          <AlertDialogHeader
+            fontSize="lg"
+            fontWeight="bold"
+            className="!bg-primary !text-secondary"
+          >
             Claim Card #{card.cardID} - {card.player_name}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
@@ -101,7 +105,7 @@ export default function ClaimCardDialog({
               </Button>
             </form>
             {formError && (
-              <Alert status="error">
+              <Alert className="text-white" status="error">
                 <AlertIcon /> {formError}
               </Alert>
             )}

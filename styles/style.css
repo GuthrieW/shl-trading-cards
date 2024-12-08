@@ -109,6 +109,23 @@
     box-shadow: 0 0 15px rgba(1, 133, 45, 0.8);
   }
 }
+
+.shine-effect-gold {
+  animation: shine 1.5s infinite;
+}
+
+@keyframes shine {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+  }
+}
+
 @media (max-width: 768px) {
   .slick-slide:not(.slick-current) {
     transform: none !important;

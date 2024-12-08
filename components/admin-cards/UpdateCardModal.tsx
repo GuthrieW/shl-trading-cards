@@ -182,7 +182,7 @@ export default function UpdateCardModal({
         <ModalHeader>Update Card #{card.cardID}</ModalHeader>
         <ModalCloseButton />
         {formError && (
-          <Alert status="error">
+          <Alert className="text-white" status="error">
             <AlertIcon />
             {formError}
           </Alert>

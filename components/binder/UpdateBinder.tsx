@@ -231,15 +231,15 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
         placement="bottom"
         isOpen={isOpen}
         onClose={onDrawerClose}
-        size={{ base: 'full', md: 'md', lg: 'md' }}
+        size="md"
       >
-        <DrawerOverlay width="full" h="full" />
-        <DrawerContent overflow="scroll">
-          <DrawerHeader className="bg-primary text-secondary text-center md:text-lg sm:text-sm">
+        <DrawerOverlay />
+        <DrawerContent overflow="hidden" overflowY="scroll">
+          <DrawerCloseButton className="bg-primary" />
+          <DrawerHeader className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
             {selectedPosition !== null
               ? `Select Card for Position ${selectedPosition}`
               : 'Select Card'}
-            <DrawerCloseButton />
           </DrawerHeader>
           <DrawerBody className="bg-primary text-secondary">
             <CardSelectionGrid

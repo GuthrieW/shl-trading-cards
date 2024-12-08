@@ -5,7 +5,7 @@ import Router, { useRouter } from 'next/router'
 import ReactCardFlip from 'react-card-flip'
 import { rarityMap } from '@constants/rarity-map'
 import pathToCards from '@constants/path-to-cards'
-import { Button, Badge, useToast } from '@chakra-ui/react' // Import Badge from Chakra UI
+import { Button, Badge, useToast, Tooltip } from '@chakra-ui/react' // Import Badge from Chakra UI
 import { PageWrapper } from '@components/common/PageWrapper'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
@@ -19,6 +19,8 @@ const HexCodes = {
   Ruby: '#E0115F',
   Diamond: '#45ACA5',
   Gold: '#FFD700',
+  Charity: '#8437f0',
+  Award: '#0c4feb',
 }
 
 const LastOpenedPack = () => {
@@ -50,7 +52,6 @@ const LastOpenedPack = () => {
     useGetLatestPackCards({
       uid: user?.uid,
     })
-
   const handleCardClick = (index: number, card: Card) => {
     if (revealedCards.includes(index)) {
       setSelectedCard(card)
@@ -69,9 +70,10 @@ const LastOpenedPack = () => {
     { id: rarityMap.diamond.label, color: HexCodes.Diamond, emoji: '💎' },
     { id: rarityMap.hallOfFame.label, color: HexCodes.Gold, emoji: '🐐' },
     { id: rarityMap.twoThousandClub.label, color: HexCodes.Gold, emoji: '🎉' },
-    { id: rarityMap.award.label, color: HexCodes.Gold, emoji: '🏆' },
+    { id: rarityMap.award.label, color: HexCodes.Award, emoji: '🏆' },
     { id: rarityMap.firstOverall.label, color: HexCodes.Gold, emoji: '☝️' },
     { id: rarityMap.iihfAwards.label, color: HexCodes.Gold, emoji: '🌍' },
+    { id: rarityMap.charity.label, color: HexCodes.Charity, emoji: '🎗️' },
   ]
 
   const updateRevealedCards = (index: number): void => {
@@ -96,7 +98,26 @@ const LastOpenedPack = () => {
       })
       .join(' ')
 
-    const message = `I opened pack #${packID} \n ${emojis}\nCheck out my cards: https://cards.simulationhockey.com/packs/${packID}`
+    const specialCardMessages = latestPackCards
+      .filter((card) => card.totalCardQuantity === 1 || card.quantity === 1)
+      .map((card) => {
+        if (card.totalCardQuantity === 1) {
+          return `First pull of ${card.card_rarity} ${card.player_name}! 🌟`
+        }
+        if (card.quantity === 1 && card.totalCardQuantity > 1) {
+          return `My first ${card.card_rarity} ${card.player_name}! 🆕`
+        }
+        return null
+      })
+      .filter(Boolean)
+
+    const specialCardText =
+      specialCardMessages.length > 0
+        ? '\n' + specialCardMessages.join('\n')
+        : ''
+
+    const message = `I opened pack #${packID} \n ${emojis}${specialCardText}\nCheck out my cards: https://cards.simulationhockey.com/packs/${packID}`
+
     navigator.clipboard.writeText(message).then(() => {
       toast({
         title: 'Copied to clipboard',
@@ -105,7 +126,6 @@ const LastOpenedPack = () => {
       })
     })
   }
-
   if (isLoading || isError || latestPackCards.length === 0) return null
 
   return (
@@ -183,6 +203,25 @@ const LastOpenedPack = () => {
                       >
                         New Card
                       </Badge>
+                    )}
+                  {revealedCards.includes(index) &&
+                    card.totalCardQuantity === 1 && ( // If first ever card thats been opened
+                      <Tooltip
+                        label="First pull of this card"
+                        aria-label="First pull explanation"
+                        hasArrow
+                        placement="top"
+                      >
+                        <Badge
+                          colorScheme="yellow"
+                          variant="outline"
+                          border="2px solid"
+                          borderColor="yellow.500"
+                          className="shine-effect-gold mt-2"
+                        >
+                          First Pull
+                        </Badge>
+                      </Tooltip>
                     )}
                 </div>
               ))}

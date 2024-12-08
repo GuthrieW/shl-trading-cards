@@ -1,20 +1,24 @@
-import {toZonedTime } from 'date-fns-tz';
+import { toZonedTime, format } from 'date-fns-tz'
 
 export const TimeUntilMidnight = (): string => {
-    const now = new Date();
-    const estTimeZone = 'America/New_York';
-    
-    // Convert to Eastern Standard Time (EST)
-    const estNow = toZonedTime(now, estTimeZone);
-    const nextMidnight = new Date(estNow);
-    nextMidnight.setHours(24, 0, 0, 0);
+  const now = new Date()
+  const estTimeZone = 'America/New_York'
 
-    // Convert next midnight back to UTC for calculation
-    const utcNextMidnight = toZonedTime(nextMidnight, estTimeZone);
-    const msUntilMidnight = utcNextMidnight.getTime() - now.getTime();
+  // Convert current time to EST
+  const estNow = toZonedTime(now, estTimeZone)
 
-    const hours = Math.floor(msUntilMidnight / (1000 * 60 * 60));
-    const minutes = Math.floor((msUntilMidnight % (1000 * 60 * 60)) / (1000 * 60));
+  // Create next midnight in EST
+  const nextMidnight = new Date(estNow)
+  nextMidnight.setHours(24, 0, 0, 0)
 
-    return `${hours}h ${minutes}m`;
-};
+  // Ensure we're working with the correct time in EST
+  const utcNextMidnight = toZonedTime(nextMidnight, estTimeZone)
+
+  // Calculate time difference in milliseconds
+  const msUntilMidnight = utcNextMidnight.getTime() - now.getTime()
+
+  const hours = Math.floor(msUntilMidnight / (1000 * 60 * 60))
+  const minutes = Math.floor((msUntilMidnight % (1000 * 60 * 60)) / (1000 * 60))
+
+  return `${hours}h ${minutes}m`
+}

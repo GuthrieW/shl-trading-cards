@@ -172,7 +172,7 @@ ${issueData.desiredFunctionality}`
 
     return (
       <div>
-        <Alert status="error">
+        <Alert className="text-white" status="error">
           <AlertIcon />
           {formError}
         </Alert>
@@ -308,7 +308,7 @@ ${issueData.desiredFunctionality}`
     return (
       <div>
         {formError && (
-          <Alert status="error">
+          <Alert className="text-white" status="error">
             <AlertIcon />
             {formError}
           </Alert>

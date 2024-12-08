@@ -279,6 +279,10 @@ export default function NewTrade({
 
   const openDrawer = (newSelecedUser: string) => {
     if (selectedUserId !== newSelecedUser) setSelectedUserId(newSelecedUser)
+    setPlayerName('')
+    setTeams([])
+    setRarities([])
+    setLeague([])
     onOpen()
   }
 
@@ -507,16 +511,11 @@ export default function NewTrade({
           </Box>
         </VStack>
       </Box>
-      <Drawer
-        placement="bottom"
-        onClose={onClose}
-        isOpen={isOpen}
-        size={{ base: 'full', md: 'md', lg: 'md' }}
-      >
-        <DrawerOverlay width="full" h="full" />
-        <DrawerContent>
-          <DrawerHeader className="flex justify-between items-center bg-primary p-4">
-            <DrawerCloseButton />
+      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen} size="md">
+        <DrawerOverlay />
+        <DrawerContent overflow="hidden" overflowY="scroll">
+          <DrawerCloseButton className="bg-primary" />
+          <DrawerHeader className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
             <span>{pluralizeName(selectedUser?.username)} Cards</span>
           </DrawerHeader>
           <DrawerBody className="bg-primary p-4">

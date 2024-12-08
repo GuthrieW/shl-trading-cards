@@ -10,12 +10,14 @@ import {
   AlertDialogOverlay,
   AlertIcon,
   Button,
+  useToast,
 } from '@chakra-ui/react'
 import { mutation } from '@pages/api/database/mutation'
 import axios from 'axios'
 import { DELETE } from '@constants/http-methods'
 import { useFormik } from 'formik'
 import { useQueryClient } from 'react-query'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
 
 export default function RemoveCardAuthorDialog({
   card,
@@ -29,6 +31,7 @@ export default function RemoveCardAuthorDialog({
   const [formError, onFormError] = useState<string>(null)
   const queryClient = useQueryClient()
   const cancelRef = useRef(null)
+  const toast = useToast()
   const { mutateAsync: removeCardAuthor } = mutation<void, { cardID: number }>({
     mutationFn: ({ cardID }) =>
       axios({
@@ -37,6 +40,10 @@ export default function RemoveCardAuthorDialog({
       }),
     onSuccess: () => {
       queryClient.invalidateQueries(['cards'])
+      toast({
+        title: 'Succesfully removed card author',
+        ...successToastOptions,
+      })
       onClose()
     },
   })
@@ -49,6 +56,10 @@ export default function RemoveCardAuthorDialog({
         onFormError(null)
         await removeCardAuthor({ cardID: card.cardID })
       } catch (error) {
+        toast({
+          title: 'Issue removing card author',
+          ...errorToastOptions,
+        })
         console.error(error)
         const errorMessage: string =
           'message' in error
@@ -69,14 +80,18 @@ export default function RemoveCardAuthorDialog({
     >
       <AlertDialogOverlay>
         <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+          <AlertDialogHeader
+            className="bg-primary text-secondary"
+            fontSize="lg"
+            fontWeight="bold"
+          >
             Remove Author From Card #{card.cardID}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
-          <AlertDialogBody>
+          <AlertDialogBody className="bg-primary text-secondary">
             Are you sure? You can't undo this action afterwards.
           </AlertDialogBody>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="bg-primary text-secondary">
             <Button ref={cancelRef} onClick={onClose}>
               Cancel
             </Button>
@@ -91,7 +106,7 @@ export default function RemoveCardAuthorDialog({
               </Button>
             </form>
             {formError && (
-              <Alert status="error">
+              <Alert className="text-white" status="error">
                 <AlertIcon /> {formError}
               </Alert>
             )}

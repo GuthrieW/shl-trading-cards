@@ -26,6 +26,7 @@ type Card = {
   author_paid: 0 | 1
   packID?: number
   quantity?: number
+  totalCardQuantity?: number
 }
 
 type CardRequest = {

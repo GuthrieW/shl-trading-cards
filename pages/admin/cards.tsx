@@ -18,6 +18,13 @@ import {
   Thead,
   Tr,
   useDisclosure,
+  Image,
+  ModalOverlay,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
 } from '@chakra-ui/react'
 import DeleteCardDialog from '@components/admin-cards/DeleteCardDialog'
 import RemoveCardAuthorDialog from '@components/admin-cards/RemoveCardAuthorDialog'
@@ -48,6 +55,7 @@ import ProcessImageDialog from '@components/admin-cards/ProcessImageDialog'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
 import MisprintDialog from '@components/admin-cards/MisprintDialog'
 import { usePermissions } from '@hooks/usePermissions'
+import TradingCard from '@components/images/TradingCard'
 
 type ColumnName = keyof Readonly<Card>
 
@@ -99,6 +107,7 @@ export default () => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('ASC')
   const [tablePage, setTablePage] = useState<number>(1)
   const [selectedCard, setSelectedCard] = useState<Card>(null)
+  const [imageUrl, setImageUrl] = useState<string>(null)
 
   const claimCardDialog = useDisclosure()
   const updateModal = useDisclosure()
@@ -117,6 +126,11 @@ export default () => {
     roles: ['TRADING_CARD_ADMIN', 'TRADING_CARD_TEAM'],
   })
 
+  const showImage = (image_url: string) => () => {
+    if (image_url) {
+      setImageUrl(image_url)
+    }
+  }
   const { payload, isLoading } = query<ListResponse<Card>>({
     queryKey: [
       'cards',
@@ -301,6 +315,7 @@ export default () => {
                         value="NeedsAuthor"
                         className="!bg-[transparent] hover:!bg-highlighted/40"
                         onClick={() => setViewNeedsAuthor(!viewNeedsAuthor)}
+                        isDisabled={viewMyCards}
                       >
                         Author Needed
                       </MenuItemOption>
@@ -448,7 +463,18 @@ export default () => {
                     </span>
                   </Th>
                   <Th>Image URL</Th>
-                  <Th>Rarity</Th>
+                  <Th
+                    className="cursor-pointer"
+                    onClick={() => handleSortChange('card_rarity')}
+                  >
+                    <span className="flex items-center">
+                      Rarity&nbsp;
+                      {sortColumn === 'card_rarity' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
+                  </Th>
+
                   <Th>Sub Type</Th>
                   <Th
                     className="cursor-pointer"
@@ -712,7 +738,12 @@ export default () => {
                         <Td isLoading={isLoading}>{card.pullable}</Td>
                         <Td isLoading={isLoading}>{card.approved}</Td>
                         <Td isLoading={isLoading}>{card.author_paid}</Td>
-                        <Td isLoading={isLoading}>{card.image_url}</Td>
+                        <Td
+                          onClick={showImage(card.image_url)}
+                          isLoading={isLoading}
+                        >
+                          {card.image_url}
+                        </Td>
                         <Td isLoading={isLoading}>{card.card_rarity}</Td>
                         <Td isLoading={isLoading}>{card.sub_type}</Td>
                         <Td isLoading={isLoading}>{card.season}</Td>
@@ -815,6 +846,24 @@ export default () => {
           />
         </>
       )}
+      {imageUrl && (
+        <Modal isOpen={true} onClose={() => setImageUrl(null)}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader className="bg-primary text-secondary">
+              Card Image
+            </ModalHeader>
+            <ModalCloseButton />
+            <ModalBody className="bg-primary text-secondary">
+              <TradingCard
+                source={imageUrl}
+                rarity={''}
+                playerName={'Pending'}
+              />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      )}
     </>
   )
 }
@@ -835,10 +884,14 @@ const shouldDisableActions = (
     return false
   }
 
-  const isCardOwner = String(card.author_userID) !== uid
+  const isCardOwner = String(card.author_userID) === uid
   const isCardComplete = Boolean(card.author_paid) && Boolean(card.approved)
 
   if (isCardOwner) {
+    //if the card still needs an image
+    if (!card.image_url) {
+      return false
+    }
     // if the card is complete then no actions are necessary
     return isCardComplete
   } else {

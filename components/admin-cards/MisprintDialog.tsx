@@ -9,6 +9,7 @@ import {
   AlertDialogOverlay,
   AlertIcon,
   Button,
+  useToast,
 } from '@chakra-ui/react'
 import { POST } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
@@ -17,6 +18,7 @@ import { useSession } from 'contexts/AuthContext'
 import { useFormik } from 'formik'
 import { useRef, useState } from 'react'
 import { useQueryClient } from 'react-query'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
 
 export default function MisprintDialog({
   card,
@@ -31,6 +33,7 @@ export default function MisprintDialog({
   const { session } = useSession()
   const cancelRef = useRef(null)
   const queryClient = useQueryClient()
+  const toast = useToast()
 
   const { mutateAsync: misprintCard } = mutation<void, { cardID: number }>({
     mutationFn: ({ cardID }) =>
@@ -41,6 +44,10 @@ export default function MisprintDialog({
       }),
     onSuccess: () => {
       queryClient.invalidateQueries(['cards'])
+      toast({
+        title: 'Succesfully set card as misprint',
+        ...successToastOptions,
+      })
       onClose()
     },
   })
@@ -53,6 +60,10 @@ export default function MisprintDialog({
         onFormError(null)
         await misprintCard({ cardID: card.cardID })
       } catch (error) {
+        toast({
+          title: 'Issue setting card as misprint',
+          ...errorToastOptions,
+        })
         console.error(error)
         const errorMessage: string =
           'message' in error
@@ -95,7 +106,7 @@ export default function MisprintDialog({
               </Button>
             </form>
             {formError && (
-              <Alert status="error">
+              <Alert className="text-white" status="error">
                 <AlertIcon /> {formError}
               </Alert>
             )}
