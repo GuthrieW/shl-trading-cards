@@ -315,6 +315,7 @@ export default () => {
                         value="NeedsAuthor"
                         className="!bg-[transparent] hover:!bg-highlighted/40"
                         onClick={() => setViewNeedsAuthor(!viewNeedsAuthor)}
+                        isDisabled={viewMyCards}
                       >
                         Author Needed
                       </MenuItemOption>
