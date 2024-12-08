@@ -19,7 +19,7 @@ class PackService {
       price: 50000,
       priceLabel: '50k',
       covers: [
-        { name: 'old', url: '/base-pack-cover.png' },
+        //{ name: 'old', url: '/base-pack-cover.png' },
         { name: 'cgy', url: '/base-pack-cgy.png' },
         { name: 'chi', url: '/base-pack-chi.png' },
         { name: 'min', url: '/base-pack-min.png' },
