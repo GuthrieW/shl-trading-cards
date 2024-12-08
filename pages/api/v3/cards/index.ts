@@ -232,6 +232,7 @@ export default async function cardsEndpoint(
     if (sortColumn === 'quickness') query.append(SQL` quickness`)
     if (sortColumn === 'control') query.append(SQL` control`)
     if (sortColumn === 'conditioning') query.append(SQL` conditioning`)
+    if (sortColumn === 'card_rarity') query.append(SQL` card_rarity`)
     sortDirection === 'ASC' ? query.append(SQL` ASC`) : query.append(` DESC`)
 
     if (limit) {

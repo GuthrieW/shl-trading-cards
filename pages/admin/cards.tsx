@@ -463,7 +463,18 @@ export default () => {
                     </span>
                   </Th>
                   <Th>Image URL</Th>
-                  <Th>Rarity</Th>
+                  <Th
+                    className="cursor-pointer"
+                    onClick={() => handleSortChange('card_rarity')}
+                  >
+                    <span className="flex items-center">
+                      Rarity&nbsp;
+                      {sortColumn === 'card_rarity' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
+                  </Th>
+
                   <Th>Sub Type</Th>
                   <Th
                     className="cursor-pointer"
