@@ -14,6 +14,7 @@ class PackService {
       label: 'Base',
       description:
         'The base trading card pack. Contains 6 cards ranging from Bronze to Hall of Fame rarity.',
+      purchaseText: 'Base Pack Purchase',
       imageUrl: '/images/base-pack-cover.png',
       price: 50000,
       priceLabel: '50k',
@@ -33,6 +34,7 @@ class PackService {
       label: 'Ruby',
       description:
         'This is the Ruby pack. Containing 1 Guaranteed Ruby, then 5 cards with higher rarities for rarer cards',
+      purchaseText: 'Ruby Pack Purchase',
       imageUrl: '/images/ruby-pack-cover.png',
       price: 100000,
       priceLabel: '100k',

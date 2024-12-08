@@ -6,6 +6,7 @@ import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import assertBoom from '@pages/api/lib/assertBoom'
 import { cardsQuery, portalQuery } from '@pages/api/database/database'
+import { packService } from 'services/packService'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -72,7 +73,6 @@ const index = async (
     )
 
     if (hasReachedPackLimit) return
-
     const bankData = await portalQuery<{ bankBalance: number }>(
       SQL`
           SELECT bankBalance
@@ -90,9 +90,16 @@ const index = async (
 
     await portalQuery(
       SQL`
-          INSERT INTO bankTransactions (uid, status, type, description, amount, submitByID)
-          VALUES (${uid}, "completed", "cards", "Base Pack Purchase", -50000, 0);
-        `
+        INSERT INTO bankTransactions (uid, status, type, description, amount, submitByID)
+        VALUES (
+          ${uid}, 
+          "completed", 
+          "cards", 
+          ${packService.packs[packType].purchaseText},
+          ${-packService.packs[packType].price}, 
+          0
+        );
+      `
     )
 
     await cardsQuery(
