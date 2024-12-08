@@ -19,6 +19,8 @@ const HexCodes = {
   Ruby: '#E0115F',
   Diamond: '#45ACA5',
   Gold: '#FFD700',
+  Charity: '#8437f0',
+  Award: '#0cdceb',
 }
 
 const LastOpenedPack = () => {
@@ -69,9 +71,10 @@ const LastOpenedPack = () => {
     { id: rarityMap.diamond.label, color: HexCodes.Diamond, emoji: '💎' },
     { id: rarityMap.hallOfFame.label, color: HexCodes.Gold, emoji: '🐐' },
     { id: rarityMap.twoThousandClub.label, color: HexCodes.Gold, emoji: '🎉' },
-    { id: rarityMap.award.label, color: HexCodes.Gold, emoji: '🏆' },
+    { id: rarityMap.award.label, color: HexCodes.Award, emoji: '🏆' },
     { id: rarityMap.firstOverall.label, color: HexCodes.Gold, emoji: '☝️' },
     { id: rarityMap.iihfAwards.label, color: HexCodes.Gold, emoji: '🌍' },
+    { id: rarityMap.charity.label, color: HexCodes.Charity, emoji: '🎗️' },
   ]
 
   const updateRevealedCards = (index: number): void => {
