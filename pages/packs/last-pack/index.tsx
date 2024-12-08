@@ -20,7 +20,7 @@ const HexCodes = {
   Diamond: '#45ACA5',
   Gold: '#FFD700',
   Charity: '#8437f0',
-  Award: '#0cdceb',
+  Award: '#0c4feb',
 }
 
 const LastOpenedPack = () => {
