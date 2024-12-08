@@ -835,10 +835,14 @@ const shouldDisableActions = (
     return false
   }
 
-  const isCardOwner = String(card.author_userID) !== uid
+  const isCardOwner = String(card.author_userID) === uid
   const isCardComplete = Boolean(card.author_paid) && Boolean(card.approved)
 
   if (isCardOwner) {
+    //if the card still needs an image
+    if (!card.image_url) {
+      return false
+    }
     // if the card is complete then no actions are necessary
     return isCardComplete
   } else {
