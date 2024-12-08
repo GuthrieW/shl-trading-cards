@@ -4,7 +4,7 @@ import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import { UserCollection } from '@pages/api/v3'
 import axios from 'axios'
-import { Box, Stack, Skeleton, SkeletonText, Img } from '@chakra-ui/react'
+import { Box, Stack, Skeleton, SkeletonText, Image } from '@chakra-ui/react'
 import TradingCard from '@components/images/TradingCard'
 
 interface BackOfCardProps {
@@ -71,11 +71,9 @@ export const BackOfCard: React.FC<BackOfCardProps> = ({
           </Box>
         ))
       ) : (
-        <TradingCard
+        <Image
           className={`${!isOwned ? 'grayscale' : ''}`}
-          source={`/cardback.png`}
-          playerName={'backOfCard'}
-          rarity={''}
+          src={`/cardback.png`}
         />
       )}
     </Stack>
