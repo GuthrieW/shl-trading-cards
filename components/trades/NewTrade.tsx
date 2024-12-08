@@ -279,6 +279,10 @@ export default function NewTrade({
 
   const openDrawer = (newSelecedUser: string) => {
     if (selectedUserId !== newSelecedUser) setSelectedUserId(newSelecedUser)
+    setPlayerName('')
+    setTeams([])
+    setRarities([])
+    setLeague([])
     onOpen()
   }
 
