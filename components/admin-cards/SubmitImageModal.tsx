@@ -86,7 +86,7 @@ export default function SubmitImageModal({
         </ModalHeader>
         <ModalCloseButton />
         {formError && (
-          <Alert status="error">
+          <Alert className="text-black" status="error">
             <AlertIcon />
             {formError}
           </Alert>

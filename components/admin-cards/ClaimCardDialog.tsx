@@ -82,7 +82,11 @@ export default function ClaimCardDialog({
     >
       <AlertDialogOverlay>
         <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold" className="!bg-primary !text-secondary">
+          <AlertDialogHeader
+            fontSize="lg"
+            fontWeight="bold"
+            className="!bg-primary !text-secondary"
+          >
             Claim Card #{card.cardID} - {card.player_name}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
@@ -101,7 +105,7 @@ export default function ClaimCardDialog({
               </Button>
             </form>
             {formError && (
-              <Alert status="error">
+              <Alert className="text-black" status="error">
                 <AlertIcon /> {formError}
               </Alert>
             )}

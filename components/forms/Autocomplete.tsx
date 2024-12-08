@@ -121,7 +121,7 @@ export default function Autocomplete({
         )}
       </FormControl>
       {debouncedUsername?.length > 0 && debouncedUsername?.length < 3 && (
-        <Alert status="info">
+        <Alert className="text-black" status="info">
           <AlertIcon />
           At least three characters are required to search for a username
         </Alert>

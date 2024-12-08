@@ -204,7 +204,7 @@ export default function ProcessImageDialog({
           </AlertDialogBody>
           <AlertDialogFooter className="!bg-primary !div-secondary">
             {formError && (
-              <Alert status="error">
+              <Alert className="text-black" status="error">
                 <AlertIcon /> {formError}
               </Alert>
             )}

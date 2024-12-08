@@ -92,7 +92,7 @@ export default function DeleteMonthlySubscriptionDialog({
               </Button>
             </form>
             {formError && (
-              <Alert status="error">
+              <Alert className="text-black" status="error">
                 <AlertIcon /> {formError}
               </Alert>
             )}
