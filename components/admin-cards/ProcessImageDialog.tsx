@@ -19,7 +19,13 @@ import {
   Image,
   useToast,
 } from '@chakra-ui/react'
-import { warningToastOptions } from '@utils/toast'
+import {
+  warningToastOptions,
+  errorToastOptions,
+  successToastOptions,
+} from '@utils/toast'
+import { CardInfoTooltip } from '@components/common/CardInfoToolTip'
+import GetUsername from '@components/common/GetUsername'
 
 export default function ProcessImageDialog({
   card,
@@ -45,6 +51,10 @@ export default function ProcessImageDialog({
       }),
     onSuccess: () => {
       onClose()
+      toast({
+        title: 'Approved Card Image',
+        ...successToastOptions,
+      })
       queryClient.invalidateQueries(['cards'])
     },
   })
@@ -60,6 +70,10 @@ export default function ProcessImageDialog({
       }),
     onSuccess: () => {
       onClose()
+      toast({
+        title: 'Denied Card Image, talk with the card author',
+        ...errorToastOptions,
+      })
       queryClient.invalidateQueries(['cards'])
     },
   })
@@ -114,10 +128,15 @@ export default function ProcessImageDialog({
             fontWeight="bold"
             className="!bg-primary !div-secondary"
           >
-            Process Image #{card.cardID}
+            Process Image #{card.cardID} &nbsp;
+            <CardInfoTooltip card={card} />
           </AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody className="!bg-primary !div-secondary">
+            <div className="text-secondary">
+              Author: &nbsp;
+              <GetUsername userID={card.author_userID} />
+            </div>
             <Image
               className="cursor-pointer select-none w-full max-w-xs sm:max-w-sm"
               src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
@@ -128,83 +147,10 @@ export default function ProcessImageDialog({
                 </Box>
               }
             />
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex space-x-2">
-                <span className="font-medium">Player:</span>
-                <span>{card.player_name}</span>
-              </div>
-              <div className="flex space-x-2">
-                <span className="font-medium">Rarity:</span>
-                <span>{card.card_rarity}</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div className="flex space-x-2">
-                <span className="font-medium">Position:</span>
-                <span>{card.position}</span>
-              </div>
-              <div className="flex space-x-2">
-                <span className="font-medium">Overall:</span>
-                <span>{card.overall}</span>
-              </div>
-              <div className="flex space-x-2">
-                <span className="font-medium">Season:</span>
-                <span>{card.season}</span>
-              </div>
-            </div>
-            {card.position === 'Goalie' ? (
-              <div className="grid grid-cols-3 gap-5">
-                <div className="flex space-x-2">
-                  <span className="font-medium">High:</span>
-                  <span>{card.high_shots}</span>
-                </div>
-                <div className="flex space-x-2">
-                  <span className="font-medium">Low:</span>
-                  <span>{card.low_shots}</span>
-                </div>
-                <div className="flex space-x-2">
-                  <span className="font-medium">Quick:</span>
-                  <span>{card.quickness}</span>
-                </div>
-                <div className="flex space-x-2">
-                  <span className="font-medium">Control:</span>
-                  <span>{card.control}</span>
-                </div>
-                <div className="flex space-x-2">
-                  <span className="font-medium">Cond:</span>
-                  <span>{card.conditioning}</span>
-                </div>
-              </div>
-            ) : (
-              <div className="grid grid-cols-3 gap-5">
-                <div className="flex space-x-2">
-                  <span className="font-medium">Skating:</span>
-                  <span>{card.skating}</span>
-                </div>
-                <div className="flex space-x-2">
-                  <span className="font-medium">Shooting:</span>
-                  <span>{card.shooting}</span>
-                </div>
-                <div className="flex space-x-2">
-                  <span className="font-medium">Hands:</span>
-                  <span>{card.hands}</span>
-                </div>
-                <div className="flex space-x-2">
-                  <span className="font-medium">Check:</span>
-                  <span>{card.checking}</span>
-                </div>
-                <div className="flex space-x-2">
-                  <span className="font-medium">Defense:</span>
-                  <span>{card.defense}</span>
-                </div>
-              </div>
-            )}
           </AlertDialogBody>
           <AlertDialogFooter className="!bg-primary !div-secondary">
             {formError && (
-              <Alert className="text-black" status="error">
+              <Alert className="text-white" status="error">
                 <AlertIcon /> {formError}
               </Alert>
             )}

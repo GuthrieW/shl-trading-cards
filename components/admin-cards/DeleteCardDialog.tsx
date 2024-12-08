@@ -91,7 +91,7 @@ export default function DeleteCardDialog({
               </Button>
             </form>
             {formError && (
-              <Alert className="text-black" status="error">
+              <Alert className="text-white" status="error">
                 <AlertIcon /> {formError}
               </Alert>
             )}

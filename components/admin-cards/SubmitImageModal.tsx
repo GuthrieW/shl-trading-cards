@@ -7,6 +7,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Tooltip,
   useToast,
 } from '@chakra-ui/react'
 import { POST } from '@constants/http-methods'
@@ -14,6 +15,8 @@ import { mutation } from '@pages/api/database/mutation'
 import { warningToastOptions } from '@utils/toast'
 import axios from 'axios'
 import { useState } from 'react'
+import { errorToastOptions, successToastOptions } from '@utils/toast'
+import { CardInfoTooltip } from '@components/common/CardInfoToolTip'
 
 export default function SubmitImageModal({
   card,
@@ -36,6 +39,12 @@ export default function SubmitImageModal({
         url: `/api/v3/cards/${card.cardID}/image`,
         data: { image: selectedFile },
       }),
+    onSuccess: () => {
+      toast({
+        title: 'Sucessfully Uploaded Card Image',
+        ...successToastOptions,
+      })
+    },
   })
 
   const convertToBase64 = (file): Promise<string> => {
@@ -73,6 +82,11 @@ export default function SubmitImageModal({
         'message' in error
           ? error.message
           : 'Error updating card, please message caltroit_red_flames on Discord'
+      toast({
+        title:
+          'Error updating card, please message caltroit_red_flames on Discord',
+        ...errorToastOptions,
+      })
       setFormError(errorMessage)
     }
   }
@@ -82,11 +96,12 @@ export default function SubmitImageModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader className="!bg-primary !text-secondary">
-          Submit Image for #{card.cardID} - {card.player_name}
+          Submit Image for #{card.cardID} - {card.player_name} &nbsp;
+          <CardInfoTooltip card={card} />
         </ModalHeader>
         <ModalCloseButton />
         {formError && (
-          <Alert className="text-black" status="error">
+          <Alert className="text-white" status="error">
             <AlertIcon />
             {formError}
           </Alert>

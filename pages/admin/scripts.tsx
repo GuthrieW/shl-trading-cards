@@ -62,7 +62,7 @@ export default () => {
       </div>
 
       {formError && (
-        <Alert className="text-black" status="error">
+        <Alert className="text-white" status="error">
           <AlertIcon />
           {formError}
         </Alert>

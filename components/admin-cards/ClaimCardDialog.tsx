@@ -60,7 +60,7 @@ export default function ClaimCardDialog({
       } catch (error) {
         console.error(error)
         toast({
-          title: 'Sucessfully Claimed Card',
+          title: 'Could Not claim Card',
           ...errorToastOptions,
         })
         const errorMessage: string =
@@ -105,7 +105,7 @@ export default function ClaimCardDialog({
               </Button>
             </form>
             {formError && (
-              <Alert className="text-black" status="error">
+              <Alert className="text-white" status="error">
                 <AlertIcon /> {formError}
               </Alert>
             )}

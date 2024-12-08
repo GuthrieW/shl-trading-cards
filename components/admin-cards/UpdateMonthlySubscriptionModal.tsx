@@ -131,7 +131,7 @@ export default function UpdateMonthlySubscriptionModal({
           Update {pluralizeName(setting?.username)} Subscription
         </ModalHeader>
         {formError && (
-          <Alert className="text-black" status="error">
+          <Alert className="text-white" status="error">
             <AlertIcon />
             {formError}
           </Alert>
