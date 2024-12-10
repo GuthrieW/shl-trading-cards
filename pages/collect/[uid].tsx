@@ -139,7 +139,7 @@ export default ({ uid }: { uid: string }) => {
       queryFn: () =>
         axios({
           method: GET,
-          url: `/api/v3/collection/uid/user-unique-cards?userID=${uid}`,
+          url: `/api/v3/collection/collection-by-rarity?userID=${uid}`,
         }),
     })
 
