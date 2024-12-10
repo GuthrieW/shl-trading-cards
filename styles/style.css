@@ -95,32 +95,20 @@
 }
 
 .shine-effect {
-  animation: shine 1.5s infinite;
+  animation: shine 1s ease-in-out infinite;
 }
 
 @keyframes shine {
-  0% {
-    box-shadow: 0 0 5px rgba(26, 214, 1, 0);
-  }
-  50% {
-    box-shadow: 0 0 10px rgba(1, 133, 45, 0.8);
-  }
   100% {
-    box-shadow: 0 0 15px rgba(1, 133, 45, 0.8);
+    box-shadow: 0 0 15px rgba(1, 87, 30, 0.8);
   }
 }
 
 .shine-effect-gold {
-  animation: shine 1.5s infinite;
+  animation: shine_gold 1s ease-in-out infinite;
 }
 
-@keyframes shine {
-  0% {
-    box-shadow: 0 0 5px rgba(255, 215, 0, 0);
-  }
-  50% {
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
-  }
+@keyframes shine_gold {
   100% {
     box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
   }
