@@ -15,6 +15,7 @@ import {
   Text,
   Button,
   ButtonGroup,
+  useBreakpointValue,
 } from '@chakra-ui/react'
 import { binderCards } from '@pages/api/v3'
 import axios from 'axios'
@@ -38,6 +39,8 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
   const toast = useToast()
   const queryClient = useQueryClient()
   const { session } = useSession()
+
+  const isMobile = useBreakpointValue({ base: true, md: false })
 
   useEffect(() => {
     const savedCards = localStorage.getItem(`binder-${bid}`)
@@ -228,7 +231,7 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
       </SimpleGrid>
 
       <Drawer
-        placement="bottom"
+        placement={isMobile ? 'right' : 'bottom'}
         isOpen={isOpen}
         onClose={onDrawerClose}
         size="md"
