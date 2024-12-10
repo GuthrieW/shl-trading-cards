@@ -202,7 +202,7 @@ type Donator = {
 type InternalUserUniqueCollection = {
   userID: number
   username: string
-  rarity: string
+  card_rarity: string
   owned_count: number
 }
 

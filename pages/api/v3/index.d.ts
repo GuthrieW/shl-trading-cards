@@ -32,7 +32,7 @@ export type UserMostCards = {
 export type UserUniqueCollection = {
   userID: number
   username: string
-  rarity: string
+  card_rarity: string
   owned_count: number
 }
 
