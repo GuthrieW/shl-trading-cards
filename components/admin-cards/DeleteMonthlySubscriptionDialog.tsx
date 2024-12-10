@@ -73,14 +73,14 @@ export default function DeleteMonthlySubscriptionDialog({
     >
       <AlertDialogOverlay>
         <AlertDialogContent>
-          <AlertDialogHeader>
+          <AlertDialogHeader className="bg-primary text-secondary">
             Delete Subscription for {setting?.username}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
-          <AlertDialogBody>
+          <AlertDialogBody className="bg-primary text-secondary">
             Are you sure? You can't undo this action afterwards.
           </AlertDialogBody>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="bg-primary text-secondary">
             <form onSubmit={handleSubmit}>
               <Button
                 disabled={!isValid || isSubmitting}
