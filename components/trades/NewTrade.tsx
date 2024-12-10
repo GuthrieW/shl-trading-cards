@@ -128,6 +128,8 @@ export default function NewTrade({
       md: 5,
     }) || 5
 
+  const isMobile = useBreakpointValue({ base: true, md: false })
+
   const LOADING_GRID_DATA: { rows: TradeCard[] } = {
     rows: Array.from({ length: ROWS_PER_PAGE }, (_, index) => ({
       cardID: index,
@@ -511,7 +513,12 @@ export default function NewTrade({
           </Box>
         </VStack>
       </Box>
-      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen} size="md">
+      <Drawer
+        placement={isMobile ? 'right' : 'bottom'}
+        onClose={onClose}
+        isOpen={isOpen}
+        size="md"
+      >
         <DrawerOverlay />
         <DrawerContent overflow="hidden" overflowY="scroll">
           <DrawerCloseButton className="bg-primary" />

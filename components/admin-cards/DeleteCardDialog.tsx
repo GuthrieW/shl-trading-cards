@@ -69,14 +69,18 @@ export default function DeleteCardDialog({
     >
       <AlertDialogOverlay>
         <AlertDialogContent>
-          <AlertDialogHeader fontSize="lg" fontWeight="bold">
+          <AlertDialogHeader
+            className="bg-primary text-secondary"
+            fontSize="lg"
+            fontWeight="bold"
+          >
             Delete Card #{card.cardID}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
-          <AlertDialogBody>
+          <AlertDialogBody className="bg-primary text-secondary">
             Are you sure? You can't undo this action afterwards.
           </AlertDialogBody>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="bg-primary text-secondary">
             <Button ref={cancelRef} onClick={onClose}>
               Cancel
             </Button>

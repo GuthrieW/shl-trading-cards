@@ -84,14 +84,14 @@ export default function MisprintDialog({
     >
       <AlertDialogOverlay>
         <AlertDialogContent>
-          <AlertDialogHeader>
+          <AlertDialogHeader className="bg-primary text-secondary">
             Set Card as Misprint #{card.cardID}
           </AlertDialogHeader>
           <AlertDialogCloseButton />
-          <AlertDialogBody>
+          <AlertDialogBody className="bg-primary text-secondary">
             Are you sure? You can't undo this action afterwards.
           </AlertDialogBody>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="bg-primary text-secondary">
             <Button ref={cancelRef} onClick={onClose}>
               Cancel
             </Button>

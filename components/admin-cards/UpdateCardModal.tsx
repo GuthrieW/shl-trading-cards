@@ -311,6 +311,16 @@ export default function UpdateCardModal({
                 onBlur={handleBlur}
               />
               <Input
+                label="Season"
+                value={values.season}
+                disabled={isSubmitting}
+                type="number"
+                name="season"
+                isInvalid={!!errors.season && touched.season}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <Input
                 label="Overall"
                 value={values.overall}
                 disabled={isSubmitting}
