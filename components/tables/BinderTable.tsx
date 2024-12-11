@@ -88,8 +88,15 @@ const BinderTables = () => {
             )
           },
           enableSorting: true,
+          enableGlobalFilter: true,
         }
       ),
+      columnHelper.accessor('binder_name', {
+        header: () => (
+          <TableHeader title="binder_name">binder_name</TableHeader>
+        ),
+        enableGlobalFilter: true,
+      }),
       columnHelper.accessor('username', {
         header: () => <TableHeader title="Username">Username</TableHeader>,
         enableGlobalFilter: true,
@@ -125,7 +132,7 @@ const BinderTables = () => {
     },
     state: {
       columnVisibility: {
-        name: false,
+        binder_name: false,
       },
     },
   })
