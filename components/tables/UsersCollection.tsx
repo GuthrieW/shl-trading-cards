@@ -10,12 +10,11 @@ import {
   Button,
   MenuList,
   MenuOptionGroup,
+  Progress,
 } from '@chakra-ui/react'
 import { GET } from '@constants/http-methods'
-import { UserUniqueCollection } from '@pages/api/v3'
+import { SiteUniqueCards, UserUniqueCollection } from '@pages/api/v3'
 import { query } from '@pages/api/database/query'
-import { useCookie } from '@hooks/useCookie'
-import config from 'lib/config'
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -30,20 +29,30 @@ import { simpleGlobalFilterFn } from './shared'
 import { Table } from './Table'
 import { rarityMap } from '@constants/rarity-map'
 import { CheckIcon, ChevronDownIcon } from '@chakra-ui/icons'
+import { round } from 'lodash'
 
 const columnHelper = createColumnHelper<UserUniqueCollection>()
 
 const UsersCollection = () => {
-  const [uid] = useCookie(config.userIDCookieName)
   const [rarity, setRarity] = useState<string>('Bronze')
 
   const { payload: userUniqueCards, isLoading: userUniqueCardsIsLoading } =
     query<UserUniqueCollection[]>({
-      queryKey: ['user-unique-cards', uid, rarity],
+      queryKey: ['user-unique-cards', rarity],
       queryFn: () =>
         axios({
           method: GET,
           url: `/api/v3/collection/collection-by-rarity?card_rarity=${rarity}`,
+        }),
+    })
+
+  const { payload: siteUniqueCards, isLoading: siteUniqueCardsIsLoading } =
+    query<SiteUniqueCards[]>({
+      queryKey: ['unique-cards', rarity],
+      queryFn: () =>
+        axios({
+          method: GET,
+          url: `/api/v3/collection/unique-cards?card_rarity=${rarity}`,
         }),
     })
 
@@ -73,9 +82,43 @@ const UsersCollection = () => {
         enableGlobalFilter: false,
         enableSorting: true,
       }),
+      columnHelper.accessor(
+        (row) => ({
+          ownedCount: row.owned_count,
+          totalCards: siteUniqueCards[0]?.total_count || 0,
+        }),
+        {
+          header: `Total Completed`,
+          cell: (props) => {
+            const cellValue = props.getValue()
+            return (
+              <>
+                <Progress
+                  value={(cellValue.ownedCount / cellValue.totalCards) * 100}
+                  colorScheme={
+                    cellValue.ownedCount === cellValue.totalCards
+                      ? 'green'
+                      : 'blue'
+                  }
+                  borderRadius="md"
+                  hasStripe
+                ></Progress>
+                <div>
+                  {round(
+                    (cellValue.ownedCount / cellValue.totalCards) * 100,
+                    0
+                  )}
+                  %
+                </div>
+              </>
+            )
+          },
+          enableSorting: true,
+        }
+      ),
     ]
     return currentColumns
-  }, [])
+  }, [siteUniqueCards])
 
   const table = useReactTable({
     columns,
@@ -135,7 +178,7 @@ const UsersCollection = () => {
           </MenuList>
         </Menu>
       </div>
-      {userUniqueCardsIsLoading ? (
+      {userUniqueCardsIsLoading || siteUniqueCardsIsLoading ? (
         <>
           <div className="flex justify-end"></div>
           <div className="space-y-4">

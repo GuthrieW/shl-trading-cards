@@ -6,7 +6,7 @@ import UserTables from '@components/tables/UserTable'
 export default () => {
   return (
     <PageWrapper>
-      <Tabs isFitted variant="enclosed-colored">
+      <Tabs isFitted variant="enclosed-colored" isLazy>
         <TabList>
           <Tab
             _selected={{
