@@ -23,13 +23,12 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { BINDER_TABLE } from './tableBehaviorFlags'
+import { CARDS_TABLE } from './tableBehaviorFlags'
 import { TableHeader } from './TableHeader'
 import { simpleGlobalFilterFn } from './shared'
 import { Table } from './Table'
 import { rarityMap } from '@constants/rarity-map'
 import { CheckIcon, ChevronDownIcon } from '@chakra-ui/icons'
-import { round } from 'lodash'
 
 const columnHelper = createColumnHelper<UserUniqueCollection>()
 
@@ -72,50 +71,44 @@ const UsersCollection = () => {
           )
         },
         enableSorting: true,
+        enableGlobalFilter: true,
+      }),
+      columnHelper.accessor('username', {
+        header: () => <TableHeader title="username">UserName</TableHeader>,
+        enableGlobalFilter: true,
       }),
       columnHelper.accessor('card_rarity', {
-        header: () => <TableHeader title="card_rarity">rarity</TableHeader>,
+        header: () => <TableHeader title="card_rarity">Rarity</TableHeader>,
         enableGlobalFilter: true,
       }),
       columnHelper.accessor('owned_count', {
-        header: () => <TableHeader title="owned_count">Owned</TableHeader>,
-        enableGlobalFilter: false,
+        id: 'ownedCount',
+        header: `Total Completed`,
+        cell: (props) => {
+          const ownedCount = props.getValue()
+          const totalCards = siteUniqueCards[0]?.total_count || 0
+          const progressPercent = (ownedCount / totalCards) * 100
+
+          return (
+            <div className="flex items-center space-x-2 w-full">
+              <div className="w-full rounded-md relative">
+                <Progress
+                  value={progressPercent}
+                  colorScheme={ownedCount === totalCards ? 'green' : 'blue'}
+                  borderRadius="md"
+                  className="w-full !bg-primary"
+                  size="lg"
+                >
+                  <div className="absolute inset-0 flex items-center justify-center font-bold !text-secondary  text-sm">
+                    {ownedCount}/{totalCards}
+                  </div>
+                </Progress>
+              </div>
+            </div>
+          )
+        },
         enableSorting: true,
       }),
-      columnHelper.accessor(
-        (row) => ({
-          ownedCount: row.owned_count,
-          totalCards: siteUniqueCards[0]?.total_count || 0,
-        }),
-        {
-          header: `Total Completed`,
-          cell: (props) => {
-            const cellValue = props.getValue()
-            return (
-              <>
-                <Progress
-                  value={(cellValue.ownedCount / cellValue.totalCards) * 100}
-                  colorScheme={
-                    cellValue.ownedCount === cellValue.totalCards
-                      ? 'green'
-                      : 'blue'
-                  }
-                  borderRadius="md"
-                  hasStripe
-                ></Progress>
-                <div>
-                  {round(
-                    (cellValue.ownedCount / cellValue.totalCards) * 100,
-                    0
-                  )}
-                  %
-                </div>
-              </>
-            )
-          },
-          enableSorting: true,
-        }
-      ),
     ]
     return currentColumns
   }, [siteUniqueCards])
@@ -130,11 +123,11 @@ const UsersCollection = () => {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
-      sorting: [{ id: 'owned_count', desc: true }],
+      sorting: [{ id: 'ownedCount', desc: true }],
     },
     state: {
       columnVisibility: {
-        name: false,
+        username: false,
       },
     },
   })
@@ -149,7 +142,7 @@ const UsersCollection = () => {
           <MenuButton
             as={Button}
             rightIcon={<ChevronDownIcon />}
-            className="!bg-grey900 !text-secondary hover:!bg-highlighted/40"
+            className="!bg-grey900 !text-white hover:!bg-highlighted/40"
           >
             Rarity: {rarityMap[rarity]?.label || rarity}
           </MenuButton>
@@ -182,9 +175,14 @@ const UsersCollection = () => {
         <>
           <div className="flex justify-end"></div>
           <div className="space-y-4">
-            <div className="border rounded-lg overflow-hidden bg-table-header">
+            <div className="border rounded-lg overflow-hidden bg-primary">
               {Array.from({ length: 10 }).map((_, index) => (
-                <Box key={index} p="4" borderTop="1px" borderColor="gray.200">
+                <Box
+                  key={index}
+                  p="4"
+                  borderTop="1px"
+                  className="!border-primary"
+                >
                   <SkeletonText noOfLines={1} spacing="4" />
                 </Box>
               ))}
@@ -196,7 +194,7 @@ const UsersCollection = () => {
         <>
           <Table<UserUniqueCollection>
             table={table}
-            tableBehavioralFlags={BINDER_TABLE}
+            tableBehavioralFlags={CARDS_TABLE}
           />
         </>
       )}

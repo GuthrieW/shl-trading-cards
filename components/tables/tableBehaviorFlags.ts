@@ -16,6 +16,14 @@ export const BINDER_TABLE: TableBehavioralFlags = {
   showTableFilterOptions: false,
 }
 
+export const CARDS_TABLE: TableBehavioralFlags = {
+  stickyFirstColumn: false,
+  showTableFooter: false,
+  enablePagination: true,
+  enableFiltering: true,
+  showTableFilterOptions: false,
+}
+
 export interface TableBehavioralFlags {
   stickyFirstColumn: boolean
   showTableFooter: boolean
