@@ -26,6 +26,8 @@ import {
   Divider,
   VStack,
   Stack,
+  FormLabel,
+  Switch,
 } from '@chakra-ui/react'
 import TablePagination from '@components/table/TablePagination'
 import { GET, POST } from '@constants/http-methods'
@@ -111,6 +113,7 @@ export default function NewTrade({
     TradeCard[]
   >([])
   const [cardAdded, setCardAdded] = useState(false)
+  const [otherUID, setOtherUID] = useState<string>('')
 
   const [uid] = useCookie(config.userIDCookieName)
 
@@ -119,6 +122,7 @@ export default function NewTrade({
       setloggedInUserCardsToTrade([])
       setPartnerUserCardsToTrade([])
       setResetTradeCards(false)
+      setOtherUID('')
     }
   }, [resetTradeCards, setResetTradeCards])
 
@@ -188,6 +192,7 @@ export default function NewTrade({
         String(tablePage),
         sortColumn,
         sortDirection,
+        otherUID,
       ],
       queryFn: () =>
         axios({
@@ -202,6 +207,7 @@ export default function NewTrade({
             offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
             sortColumn,
             sortDirection,
+            otherUID: otherUID,
           },
         }),
       enabled: !!selectedUserId,
@@ -265,6 +271,18 @@ export default function NewTrade({
     })
   }
 
+  const setFilteredUID = (value: boolean) => {
+    if (value) {
+      if (String(selectedUser?.uid) === uid) {
+        setOtherUID(tradePartnerUid)
+      } else {
+        setOtherUID(uid)
+      }
+    } else {
+      setOtherUID('')
+    }
+  }
+
   const toggleLeague = (league: string) => {
     setLeague([league])
   }
@@ -285,6 +303,7 @@ export default function NewTrade({
     setTeams([])
     setRarities([])
     setLeague([])
+    setOtherUID('')
     onOpen()
   }
 
@@ -669,6 +688,16 @@ export default function NewTrade({
                   ))}
                 </Select>
               </Box>
+              <FormControl className="flex flex-row justify-start items-center">
+                <FormLabel className="flex items-center mr-4">
+                  Filter Out Cards
+                </FormLabel>
+                <Switch
+                  className="flex items-center"
+                  placeholder="User ID"
+                  onChange={(e) => setFilteredUID(e.target.checked)}
+                />
+              </FormControl>
             </Flex>
             <SimpleGrid
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 bg-primary"

@@ -61,6 +61,7 @@ export default async function tradeCollectionEndpoint(
     const sortColumn = (req.query.sortColumn ??
       'overall') as keyof Readonly<Card>
     const sortDirection = (req.query.sortDirection ?? 'DESC') as SortDirection
+    const otherUID = req.query.otherUID as string
 
     if (!uid) {
       res.status(StatusCodes.BAD_REQUEST).json({
@@ -132,6 +133,21 @@ export default async function tradeCollectionEndpoint(
           : query.append(SQL` OR card.teamID=${parseInt(team)}`)
       )
       query.append(SQL`)`)
+    }
+
+    if (otherUID) {
+      countQuery.append(
+        SQL` AND card.cardID NOT IN (
+            SELECT cardID 
+            FROM ownedCards 
+            WHERE userID =${parseInt(otherUID)} )`
+      )
+      query.append(
+        SQL` AND card.cardID NOT IN (
+            SELECT cardID 
+            FROM ownedCards 
+            WHERE userID =${parseInt(otherUID)} )`
+      )
     }
 
     if (rarities.length !== 0) {

@@ -44,6 +44,9 @@ import filterTeamsByLeague from 'utils/filterTeamsByLeague'
 import { Fragment, useEffect, useState } from 'react'
 import DisplayPacks from '@components/collection/DisplayPacks'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
+import { useCookie } from '@hooks/useCookie'
+import config from 'lib/config'
+import e from 'cors'
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {
@@ -123,6 +126,17 @@ export default ({ uid }: { uid: string }) => {
   )
   const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
   const [tablePage, setTablePage] = useState<number>(1)
+  const [otherUID, setOtherUID] = useState<string>('')
+
+  const [loggedInUID] = useCookie(config.userIDCookieName)
+
+  const setFilteredUID = (value: boolean) => {
+    if (value) {
+      setOtherUID(loggedInUID)
+    } else {
+      setOtherUID('')
+    }
+  }
 
   const { payload: user, isLoading: userIsLoading } = query<UserData>({
     queryKey: ['collectionUser', session?.token, uid],
@@ -165,6 +179,7 @@ export default ({ uid }: { uid: string }) => {
       sortColumn,
       sortDirection,
       String(showNotOwnedCards),
+      otherUID,
     ],
     queryFn: () =>
       axios({
@@ -181,6 +196,7 @@ export default ({ uid }: { uid: string }) => {
           sortColumn,
           sortDirection,
           showNotOwnedCards,
+          otherUID: otherUID,
         },
       }),
   })
@@ -202,6 +218,7 @@ export default ({ uid }: { uid: string }) => {
     sortDirection,
     tablePage,
     showNotOwnedCards,
+    otherUID,
   ])
 
   const toggleLeague = (league: string) => {
@@ -376,6 +393,18 @@ export default ({ uid }: { uid: string }) => {
             onChange={() => setShowNotOwnedCards(!showNotOwnedCards)}
           />
         </FormControl>
+        {loggedInUID && loggedInUID !== uid && (
+          <FormControl className="flex flex-row justify-start items-center">
+            <FormLabel className="flex items-center mr-4">
+              Filter Out Your Cards
+            </FormLabel>
+            <Switch
+              className="flex items-center"
+              placeholder="User ID"
+              onChange={(e) => setFilteredUID(e.target.checked)}
+            />
+          </FormControl>
+        )}
         <FormControl>
           <FormLabel>Sort</FormLabel>
           <Select
