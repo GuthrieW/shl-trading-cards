@@ -276,9 +276,7 @@ export default async function collectionEndpoint(
     if (offset) {
       query.append(SQL` OFFSET ${parseInt(offset)}`)
     }
-    console.log(countQuery)
     const countResult = await cardsQuery<ListTotal>(countQuery)
-    console.log(countResult)
     if ('error' in countResult) {
       console.error(countResult.error)
       res
