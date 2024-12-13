@@ -30,7 +30,7 @@ export const CardInfoTooltip = ({ card }: { card: Card }) => {
   return (
     <Tooltip
       label={generateCardTooltipContent(card)}
-      placement="top"
+      placement="right"
       shouldWrapChildren
       whiteSpace="pre-line"
     >
