@@ -12,7 +12,7 @@ import axios from 'axios'
 import { Skeleton, SimpleGrid, useToast, Select, Badge } from '@chakra-ui/react'
 import { UserData } from '@pages/api/v3/user'
 import { useSession } from 'contexts/AuthContext'
-import { warningToastOptions } from '@utils/toast'
+import { errorToastOptions, warningToastOptions } from '@utils/toast'
 
 export type UserPackWithCover = UserPacks & {
   cover: string
@@ -120,6 +120,16 @@ const OpenPacks = () => {
     Router.push('/packs/last-pack')
   }
 
+  React.useEffect(() => {
+    if (useOpenPackIsError) {
+      toast({
+        title: 'Pack Opening Error',
+        description: 'Unable to open the pack. Please try again.',
+        ...errorToastOptions,
+      })
+    }
+  }, [useOpenPackIsError])
+
   if (userIDLoading || packsLoading) {
     return (
       <PageWrapper>
@@ -219,6 +229,7 @@ const OpenPacks = () => {
               onAccept={handleOpenPack}
               setShowModal={setShowModal}
               pack={modalPack}
+              onError={useOpenPackIsError}
             />
           )}
         </div>
