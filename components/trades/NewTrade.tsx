@@ -690,7 +690,7 @@ export default function NewTrade({
               </Box>
               <FormControl className="flex flex-row justify-start items-center">
                 <FormLabel className="flex items-center mr-4">
-                  Filter Out Cards
+                  Hide My Cards / Partner's Cards
                 </FormLabel>
                 <Switch
                   className="flex items-center"
