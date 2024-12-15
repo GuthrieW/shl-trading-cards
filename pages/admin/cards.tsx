@@ -108,6 +108,7 @@ export default () => {
   const [tablePage, setTablePage] = useState<number>(1)
   const [selectedCard, setSelectedCard] = useState<Card>(null)
   const [imageUrl, setImageUrl] = useState<string>(null)
+  const [cardID, setCardID] = useState<string>(null)
 
   const claimCardDialog = useDisclosure()
   const updateModal = useDisclosure()
@@ -149,6 +150,7 @@ export default () => {
       sortColumn,
       sortDirection,
       String(tablePage),
+      cardID,
     ],
     queryFn: () =>
       axios({
@@ -171,6 +173,7 @@ export default () => {
           viewDone,
           sortColumn,
           sortDirection,
+          cardID: cardID,
         },
       }),
   })
@@ -192,6 +195,22 @@ export default () => {
     setRarities((currentValue) => toggleOnfilters(currentValue, rarity))
   }
 
+  const setPlayerOrCardID = (value: string) => {
+    if (/^\d+$/.test(value)) {
+      // if the value is only a number
+      setCardID(value)
+      setPlayerName(null)
+    } else {
+      if (value.length > 0) {
+        setPlayerName(value)
+        setCardID(null)
+      } else {
+        setPlayerName(null)
+        setCardID(null)
+      }
+    }
+  }
+
   return (
     <>
       <PageWrapper
@@ -203,9 +222,9 @@ export default () => {
           <FormControl>
             <Input
               className="w-full bg-secondary border-grey100"
-              placeholder="Search By Player Name"
+              placeholder="Search By Player Name or Card ID"
               size="lg"
-              onChange={(event) => setPlayerName(event.target.value)}
+              onChange={(event) => setPlayerOrCardID(event.target.value)}
             />
           </FormControl>
           <div className="m-2 flex flex-col gap-4 md:flex-row md:justify-between">

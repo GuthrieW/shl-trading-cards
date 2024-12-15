@@ -53,6 +53,8 @@ export default async function cardsEndpoint(
       viewDone,
     ].some((viewStatus) => viewStatus === 'true')
 
+    const cardID = req.query.cardID as string
+
     const countQuery = SQL`
       SELECT count(*) as total
       FROM cards
@@ -99,6 +101,10 @@ export default async function cardsEndpoint(
       query.append(SQL` AND (author_userID = ${userID})`)
     }
 
+    if (cardID) {
+      countQuery.append(SQL` AND cardID = ${cardID}`)
+      query.append(SQL` AND cardID = ${cardID}`)
+    }
     const statusesToAppend: SQLStatement[] = []
 
     if (hasSortStatus) {
