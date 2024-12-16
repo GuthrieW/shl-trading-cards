@@ -174,6 +174,13 @@ const index = async (
       return
     }
 
+    if (pulledCards.length > 6) {
+      response.status(StatusCodes.BAD_REQUEST).json({
+        error: `Pack can only hold 6 cards`,
+      })
+      return
+    }
+
     pulledCards.map(async (pulledCard) => {
       await cardsQuery(
         SQL`

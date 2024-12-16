@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Modal,
   ModalOverlay,
@@ -11,13 +11,14 @@ import {
   Text,
   Spinner,
 } from '@chakra-ui/react'
-import { packService, PackInfo } from 'services/packService'
+import { packService } from 'services/packService'
 import { UserPackWithCover } from '@pages/packs'
 
 type OpenPackModalProps = {
   onAccept: (packID: number) => void
   setShowModal: (show: boolean) => void
   pack: UserPackWithCover
+  onError?: boolean
 }
 
 const getPackTypeData = (pack: UserPackWithCover) => {
@@ -33,6 +34,7 @@ const OpenPackModal = ({
   onAccept,
   setShowModal,
   pack,
+  onError,
 }: OpenPackModalProps) => {
   const [isOpening, setIsOpening] = useState(false)
   const packTypeData = getPackTypeData(pack)
@@ -41,6 +43,12 @@ const OpenPackModal = ({
     setIsOpening(true)
     onAccept(Number(pack.packID))
   }
+
+  useEffect(() => {
+    if (onError) {
+      setIsOpening(false)
+    }
+  }, [onError])
 
   return (
     <Modal

@@ -65,6 +65,7 @@ export default async function collectionEndpoint(
     const showNotOwnedCards = (req.query.showNotOwnedCards ?? 'false') as
       | 'true'
       | 'false'
+    const otherUID = req.query.otherUID as string
 
     if (!uid) {
       res.status(StatusCodes.BAD_REQUEST).json({
@@ -198,6 +199,20 @@ export default async function collectionEndpoint(
       }
     }
 
+    if (otherUID) {
+      countQuery.append(
+        SQL` AND card.cardID NOT IN (
+        SELECT cardID 
+        FROM ownedCards 
+        WHERE userID =${parseInt(otherUID)} )`
+      )
+      query.append(
+        SQL` AND card.cardID NOT IN (
+        SELECT cardID 
+        FROM ownedCards 
+        WHERE userID =${parseInt(otherUID)} )`
+      )
+    }
     if (rarities.length !== 0) {
       countQuery.append(SQL` AND (`)
       rarities.forEach((rarity, index) =>
@@ -261,9 +276,7 @@ export default async function collectionEndpoint(
     if (offset) {
       query.append(SQL` OFFSET ${parseInt(offset)}`)
     }
-
     const countResult = await cardsQuery<ListTotal>(countQuery)
-
     if ('error' in countResult) {
       console.error(countResult.error)
       res

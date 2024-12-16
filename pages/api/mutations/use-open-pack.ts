@@ -19,16 +19,16 @@ type UseOpenPack = {
 const useOpenPack = (): UseOpenPack => {
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
-    async ({ packID,packType }: UseOpenPackRequest) => {
+    async ({ packID, packType }: UseOpenPackRequest) => {
       return await axios({
         method: POST,
         url: `/api/v3/packs/open/${packID}`,
-        data: {packType},
+        data: { packType },
       })
     },
     {
       onSuccess: (data) => {
-        invalidateQueries(queryClient, [`daily-subscription`])
+        invalidateQueries(queryClient, [`packs`])
       },
       onError: () => {},
     }
