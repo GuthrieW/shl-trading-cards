@@ -186,7 +186,7 @@ async function checkForDuplicatesAndCreateCardRequestData(
   const duplicates: BaseRequest[] = []
   const errors: BaseRequest[] = []
   await Promise.all(
-    players.map(async (player: IndexPlayer) => {
+    players.map(async (player: IndexPlayer, index) => {
       try {
         const {
           position,
@@ -206,19 +206,30 @@ async function checkForDuplicatesAndCreateCardRequestData(
         const teamId = teamNameToId(player.team)
         const raritiesToCheck = getSameAndHigherRaritiesQueryFragment(rarity)
 
-        const playerResult = await cardsQuery<{
-          count: number
-        }>(
-          SQL`
-            SELECT count(*) as amount
-            FROM cards
-            WHERE player_name="${player.name}"
-              AND teamID=${teamId} 
-              AND playerID=${player.id} 
-              AND ${raritiesToCheck} 
-              AND position=${position};
-          `
-        )
+        const query = SQL`
+        SELECT count(*) as amount
+        FROM cards
+        WHERE player_name=${player.name}
+          AND teamID=${teamId} 
+          AND playerID=${player.id} 
+          AND position=${position}
+          
+      `
+        raritiesToCheck.forEach((rarity, index) => {
+          if (index === 0) {
+            query.append(SQL` AND (card_rarity=${rarity}`)
+          } else {
+            query.append(SQL` OR card_rarity=${rarity}`)
+          }
+        })
+        query.append(');')
+
+        const playerResult = await cardsQuery<{ amount: number }>(query)
+
+        if (index === 1) {
+          console.log('query', query)
+          console.log('playerResult', playerResult)
+        }
 
         if (playerResult[0] && playerResult[0].amount > 0) {
           const duplicate = {
@@ -300,7 +311,8 @@ export async function requestCards(cardRequests: CardRequest[]): Promise<void> {
         }, 0);
       `
 
-      return await cardsQuery(insertQuery)
+      return
+      // return await cardsQuery(insertQuery)
     })
   )
   return
@@ -449,21 +461,32 @@ export const calculateAttributesAndPosition = (
  */
 export const getSameAndHigherRaritiesQueryFragment = (
   rarity: string
-): string => {
+): string[] => {
   if (rarity === rarityMap.bronze.value) {
-    return `(card_rarity=${rarityMap.bronze.value} OR card_rarity=${rarityMap.silver.value} OR card_rarity=${rarityMap.gold.value} OR card_rarity=${rarityMap.ruby.value} OR card_rarity=${rarityMap.diamond.value})`
+    return [
+      rarityMap.bronze.value,
+      rarityMap.silver.value,
+      rarityMap.gold.value,
+      rarityMap.ruby.value,
+      rarityMap.diamond.value,
+    ]
   }
   if (rarity === rarityMap.silver.value) {
-    return `(card_rarity=${rarityMap.silver.value} OR card_rarity=${rarityMap.gold.value} OR card_rarity=${rarityMap.ruby.value} OR card_rarity=${rarityMap.diamond.value})`
+    return [
+      rarityMap.silver.value,
+      rarityMap.gold.value,
+      rarityMap.ruby.value,
+      rarityMap.diamond.value,
+    ]
   }
   if (rarity === rarityMap.gold.value) {
-    return `(card_rarity=${rarityMap.gold.value} OR card_rarity=${rarityMap.ruby.value} OR card_rarity=${rarityMap.diamond.value})`
+    return [rarityMap.gold.value, rarityMap.ruby.value, rarityMap.diamond.value]
   }
   if (rarity === rarityMap.ruby.value) {
-    return `(card_rarity=${rarityMap.ruby.value} OR card_rarity=${rarityMap.diamond.value})`
+    return [rarityMap.ruby.value, rarityMap.diamond.value]
   }
   if (rarity === rarityMap.diamond.value) {
-    return `(card_rarity=${rarityMap.diamond.value})`
+    return [rarityMap.diamond.value]
   }
 }
 
