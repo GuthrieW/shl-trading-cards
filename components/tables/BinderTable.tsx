@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import axios from 'axios'
 import {
   Skeleton,
@@ -29,10 +29,19 @@ import { TableHeader } from './TableHeader'
 import { simpleGlobalFilterFn } from './shared'
 import { Table } from './Table'
 import { TextWithTooltip } from '@components/common/TruncateText'
+import { useRouterPageState } from '@hooks/useRouterPageState'
 
 const columnHelper = createColumnHelper<binders>()
 
 const BinderTables = () => {
+  const { page, setRouterPageState } = useRouterPageState<{
+    page: number
+  }>({
+    keys: ['page'],
+    initialState: {
+      page: 1,
+    },
+  })
   const { loggedIn } = useSession()
   const [uid] = useCookie(config.userIDCookieName)
 
@@ -59,6 +68,31 @@ const BinderTables = () => {
         },
       }),
   })
+
+  const totalPages = useMemo(
+    () => (binders ? Math.ceil(binders.length / 10) : 1),
+    [binders]
+  )
+  const [pagination, setPagination] = useState(() => ({
+    pageIndex: page - 1,
+    pageSize: 10,
+  }))
+
+  useEffect(() => {
+    if (isLoading || !binders) return
+
+    let validPageIndex = page
+    if (page > totalPages || page < 1) {
+      validPageIndex = 1
+      setRouterPageState('page', 1)
+    }
+
+    setPagination({
+      pageIndex: validPageIndex - 1,
+      pageSize: 10,
+    })
+  }, [binders, isLoading, page, totalPages, setRouterPageState])
+
   const userBinders =
     binders?.filter((binder) => binder.userID === Number(uid)) || []
   const reachedLimit = useMemo(
@@ -88,15 +122,8 @@ const BinderTables = () => {
             )
           },
           enableSorting: true,
-          enableGlobalFilter: true,
         }
       ),
-      columnHelper.accessor('binder_name', {
-        header: () => (
-          <TableHeader title="binder_name">binder_name</TableHeader>
-        ),
-        enableGlobalFilter: true,
-      }),
       columnHelper.accessor('username', {
         header: () => <TableHeader title="Username">Username</TableHeader>,
         enableGlobalFilter: true,
@@ -127,16 +154,27 @@ const BinderTables = () => {
     globalFilterFn: simpleGlobalFilterFn,
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: (PaginationState) => {
+      const newPagination =
+        typeof PaginationState === 'function'
+          ? PaginationState(pagination)
+          : PaginationState
+      setPagination(newPagination)
+      setRouterPageState('page', newPagination.pageIndex + 1)
+    },
     initialState: {
-      sorting: [{ id: 'binderID', desc: true }],
+      pagination: {
+        pageIndex: pagination.pageIndex,
+        pageSize: 10,
+      },
     },
     state: {
+      pagination,
       columnVisibility: {
-        binder_name: false,
+        name: false,
       },
     },
   })
-
   return (
     <div className="w-full p-4 min-h-[400px]">
       {isLoading ? (
