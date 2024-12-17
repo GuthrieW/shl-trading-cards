@@ -306,8 +306,7 @@ export async function requestCards(cardRequests: CardRequest[]): Promise<void> {
         }, 0);
       `
 
-      return
-      // return await cardsQuery(insertQuery)
+      return await cardsQuery(insertQuery)
     })
   )
   return
