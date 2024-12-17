@@ -216,7 +216,7 @@ async function checkForDuplicatesAndCreateCardRequestData(
               AND teamID=${teamId} 
               AND playerID=${player.id} 
               AND ${raritiesToCheck} 
-              AND position='${position}';
+              AND position=${position};
           `
         )
 
@@ -451,19 +451,19 @@ export const getSameAndHigherRaritiesQueryFragment = (
   rarity: string
 ): string => {
   if (rarity === rarityMap.bronze.value) {
-    return `(card_rarity='${rarityMap.bronze.value}' OR card_rarity='${rarityMap.silver.value}' OR card_rarity='${rarityMap.gold.value}' OR card_rarity='${rarityMap.ruby.value}' OR card_rarity='${rarityMap.diamond.value}')`
+    return `(card_rarity=${rarityMap.bronze.value} OR card_rarity=${rarityMap.silver.value} OR card_rarity=${rarityMap.gold.value} OR card_rarity=${rarityMap.ruby.value} OR card_rarity=${rarityMap.diamond.value})`
   }
   if (rarity === rarityMap.silver.value) {
-    return `(card_rarity='${rarityMap.silver.value}' OR card_rarity='${rarityMap.gold.value}' OR card_rarity='${rarityMap.ruby.value}' OR card_rarity='${rarityMap.diamond.value}')`
+    return `(card_rarity=${rarityMap.silver.value} OR card_rarity=${rarityMap.gold.value} OR card_rarity=${rarityMap.ruby.value} OR card_rarity=${rarityMap.diamond.value})`
   }
   if (rarity === rarityMap.gold.value) {
-    return `(card_rarity='${rarityMap.gold.value}' OR card_rarity='${rarityMap.ruby.value}' OR card_rarity='${rarityMap.diamond.value}')`
+    return `(card_rarity=${rarityMap.gold.value} OR card_rarity=${rarityMap.ruby.value} OR card_rarity=${rarityMap.diamond.value})`
   }
   if (rarity === rarityMap.ruby.value) {
-    return `(card_rarity='${rarityMap.ruby.value}' OR card_rarity='${rarityMap.diamond.value}')`
+    return `(card_rarity=${rarityMap.ruby.value} OR card_rarity=${rarityMap.diamond.value})`
   }
   if (rarity === rarityMap.diamond.value) {
-    return `(card_rarity='${rarityMap.diamond.value}')`
+    return `(card_rarity=${rarityMap.diamond.value})`
   }
 }
 
