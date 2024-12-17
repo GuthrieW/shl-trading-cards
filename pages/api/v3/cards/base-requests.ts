@@ -5,16 +5,21 @@ import { GET, POST } from '@constants/http-methods'
 import Cors from 'cors'
 import methodNotAllowed from '../lib/methodNotAllowed'
 import { StatusCodes } from 'http-status-codes'
-import {
-  ImportError,
-  IndexPlayer,
-  PortalPlayer,
-  Position,
-} from './card-requests'
+import { IndexPlayer, PortalPlayer, Position } from './card-requests'
 import { rarityMap } from '@constants/rarity-map'
 import { cardsQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import axios, { AxiosResponse } from 'axios'
+
+export type BaseRequest = {
+  playerID: string
+  playerName: string
+  teamID: string
+  rarity: string
+  created: boolean
+  needsSeason: boolean
+  error?: string
+}
 
 const allowedMethods: string[] = [POST]
 const cors = Cors({
@@ -24,7 +29,11 @@ const cors = Cors({
 export default async function baseRequestsEndpoint(
   req: NextApiRequest,
   res: NextApiResponse<
-    ApiResponse<{ skaterErrors: string[]; goalieErrors: string[] }>
+    ApiResponse<{
+      created: BaseRequest[]
+      duplicates: BaseRequest[]
+      errors: BaseRequest[]
+    }>
   >
 ): Promise<void> {
   await middleware(req, res, cors)
@@ -44,24 +53,41 @@ export default async function baseRequestsEndpoint(
       const skaters: IndexPlayer[] = await getIndexSkaters(season)
       const goalies: IndexPlayer[] = await getIndexGoalies(season)
       const portalPlayers: PortalPlayer[] = await getPortalPlayers()
-      const { updatedPlayers: skatersWithSeason, errors: skaterErrors } =
-        addSeasonToPlayers(skaters, portalPlayers)
-      const { updatedPlayers: goaliesWithSeason, errors: goalieErrors } =
-        addSeasonToPlayers(goalies, portalPlayers)
 
-      const cardRequests: CardRequest[] =
+      const {
+        updatedPlayers: skatersWithSeason,
+        missingSeason: skatersMissingSeason,
+      } = addSeasonToPlayers(skaters, portalPlayers)
+      const {
+        updatedPlayers: goaliesWithSeason,
+        missingSeason: goaliesMissingSeason,
+      } = addSeasonToPlayers(goalies, portalPlayers)
+
+      const { cardRequests, duplicates, errors } =
         await checkForDuplicatesAndCreateCardRequestData([
           ...skatersWithSeason,
           ...goaliesWithSeason,
         ])
       await requestCards(cardRequests)
 
+      const created = cardRequests.map(
+        (cardRequest): BaseRequest => ({
+          playerID: cardRequest.playerID?.toString(),
+          playerName: cardRequest.player_name,
+          teamID: cardRequest.teamID?.toString(),
+          rarity: cardRequest.card_rarity,
+          created: true,
+          needsSeason: [...skatersMissingSeason, ...goaliesMissingSeason].some(
+            (playerMissingSeason) =>
+              playerMissingSeason.id === cardRequest.playerID?.toString()
+          ),
+          error: null,
+        })
+      )
+
       res.status(StatusCodes.OK).json({
         status: 'success',
-        payload: {
-          skaterErrors,
-          goalieErrors,
-        },
+        payload: { created, duplicates, errors },
       })
       return
     } catch (error) {
@@ -125,8 +151,11 @@ async function getPortalPlayers(): Promise<PortalPlayer[]> {
 function addSeasonToPlayers(
   indexPlayers: IndexPlayer[],
   portalPlayers: PortalPlayer[]
-): { updatedPlayers: IndexPlayer[]; errors: string[] } {
-  const errors: string[] = []
+): {
+  updatedPlayers: IndexPlayer[]
+  missingSeason: IndexPlayer[]
+} {
+  const missingSeason: IndexPlayer[] = []
   const updatedPlayers = indexPlayers.map((indexPlayer) => {
     const matchingPortalPlayer = portalPlayers.find(
       (portalPlayer) => portalPlayer.playerName === indexPlayer.name
@@ -134,14 +163,12 @@ function addSeasonToPlayers(
     if (matchingPortalPlayer) {
       return { ...indexPlayer, season: matchingPortalPlayer.seasonID }
     } else {
-      const error = `Please manually enter season for index player with id and name: ${indexPlayer.id} ${indexPlayer.name}`
-      console.error(error)
-      errors.push(error)
+      missingSeason.push(indexPlayer)
       return indexPlayer
     }
   })
 
-  return { updatedPlayers, errors }
+  return { updatedPlayers, missingSeason }
 }
 
 /**
@@ -149,33 +176,39 @@ function addSeasonToPlayers(
  */
 async function checkForDuplicatesAndCreateCardRequestData(
   players: IndexPlayer[]
-): Promise<CardRequest[]> {
-  const errors: ImportError[] = []
-  const unfilteredPlayerRequests: CardRequest[] = await Promise.all(
-    players.map(async (player: IndexPlayer) => {
-      try {
-        const {
-          position,
-          overall,
-          skating,
-          shooting,
-          hands,
-          checking,
-          defense,
-          high_shots,
-          low_shots,
-          quickness,
-          control,
-          conditioning,
-        } = calculateAttributesAndPosition(player)
-        const rarity = calculateRarity(position, overall)
-        const teamId = teamNameToId(player.team)
-        const raritiesToCheck = getSameAndHigherRaritiesQueryFragment(rarity)
+): Promise<{
+  cardRequests: CardRequest[]
+  duplicates: BaseRequest[]
+  errors: BaseRequest[]
+}> {
+  const cardRequests: CardRequest[] = []
+  const duplicates: BaseRequest[] = []
+  const errors: BaseRequest[] = []
 
-        const playerResult = await cardsQuery<{
-          count: number
-        }>(
-          SQL`
+  players.forEach(async (player: IndexPlayer) => {
+    try {
+      const {
+        position,
+        overall,
+        skating,
+        shooting,
+        hands,
+        checking,
+        defense,
+        high_shots,
+        low_shots,
+        quickness,
+        control,
+        conditioning,
+      } = calculateAttributesAndPosition(player)
+      const rarity = calculateRarity(position, overall)
+      const teamId = teamNameToId(player.team)
+      const raritiesToCheck = getSameAndHigherRaritiesQueryFragment(rarity)
+
+      const playerResult = await cardsQuery<{
+        count: number
+      }>(
+        SQL`
             SELECT count(*) as amount
             FROM cards
             WHERE player_name="${player.name}"
@@ -184,13 +217,22 @@ async function checkForDuplicatesAndCreateCardRequestData(
               AND ${raritiesToCheck} 
               AND position='${position}';
           `
-        )
+      )
 
-        if (playerResult[0] && playerResult[0].count > 0) {
-          return null
-        }
-
-        return {
+      if (playerResult[0] && playerResult[0].count > 0) {
+        const duplicate = {
+          cardID: null,
+          playerID: player.id,
+          playerName: player.name,
+          teamID: player.team,
+          rarity: rarity,
+          created: false,
+          needsSeason: false,
+          error: 'Duplicate',
+        } as BaseRequest
+        duplicates.push(duplicate)
+      } else {
+        const cardRequest = {
           teamID: teamId,
           playerID: Number(player.id),
           player_name: player.name,
@@ -210,24 +252,26 @@ async function checkForDuplicatesAndCreateCardRequestData(
           control,
           conditioning,
         } as CardRequest
-      } catch (e) {
-        console.log('error', e)
-        errors.push({ error: e, player })
-        return null
+        cardRequests.push(cardRequest)
       }
-    })
-  )
+    } catch (e) {
+      errors.push({
+        playerID: player.id,
+        playerName: player.name,
+        teamID: player.team,
+        rarity: null,
+        created: false,
+        needsSeason: false,
+        error: e,
+      })
+    }
+  })
 
-  if (errors.length !== 0) {
-    console.log(
-      'error generating requests for: ',
-      JSON.stringify(errors, null, 2)
-    )
-  } else {
-    console.log('No errors while generating card requests!')
+  return {
+    cardRequests,
+    duplicates,
+    errors,
   }
-
-  return unfilteredPlayerRequests.filter((cardRequest) => !!cardRequest)
 }
 
 export async function requestCards(cardRequests: CardRequest[]): Promise<void> {
