@@ -1,4 +1,10 @@
-import { Button, FormControl, FormLabel, Input } from '@chakra-ui/react'
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Textarea,
+} from '@chakra-ui/react'
 import { POST } from '@constants/http-methods'
 import { mutation } from '@pages/api/database/mutation'
 import { BaseRequest } from '@pages/api/v3/cards/base-requests'
@@ -20,9 +26,9 @@ export default function RequestBaseCardsForm({
   onError: (errorMessage) => void
 }) {
   const router = useRouter()
-  const [created, setCreated] = useState<BaseRequest>(null)
-  const [duplicates, setDuplicates] = useState<BaseRequest>(null)
-  const [errors, setErrors] = useState<BaseRequest>(null)
+  const [created, setCreated] = useState<BaseRequest[]>(null)
+  const [duplicates, setDuplicates] = useState<BaseRequest[]>(null)
+  const [errors, setErrors] = useState<BaseRequest[]>(null)
 
   const { mutateAsync: requestBaseCards } = mutation<void, { season: number }>({
     mutationFn: async ({ season }: { season: number }) => {
@@ -91,6 +97,7 @@ export default function RequestBaseCardsForm({
           <Input
             type="number"
             isRequired={true}
+            disabled={isSubmitting}
             onChange={handleChange}
             onBlur={handleBlur}
             name="season"
@@ -100,24 +107,33 @@ export default function RequestBaseCardsForm({
       </form>
       <div className="flex flex-col">
         {created && (
-          <div className="my-2">
-            <pre>
-              <code>{JSON.stringify(created, null, 2)}</code>
-            </pre>
+          <div className="my-2 p-2 border border-black rounded">
+            Created - {created.length}
+            <Textarea
+              value={JSON.stringify(created, null, 2)}
+              disabled={true}
+              rows={10}
+            />
           </div>
         )}
         {duplicates && (
-          <div className="my-2">
-            <pre>
-              <code>{JSON.stringify(created, null, 2)}</code>
-            </pre>
+          <div className="my-2 p-2 border border-black rounded">
+            Duplicates - {duplicates.length}
+            <Textarea
+              value={JSON.stringify(duplicates, null, 2)}
+              disabled={true}
+              rows={10}
+            />
           </div>
         )}
         {errors && (
-          <div className="my-2">
-            <pre>
-              <code>{JSON.stringify(errors, null, 2)}</code>
-            </pre>
+          <div className="my-2 p-2 border border-black rounded">
+            Errors - {errors.length}
+            <Textarea
+              value={JSON.stringify(errors, null, 2)}
+              disabled={true}
+              rows={10}
+            />
           </div>
         )}
       </div>

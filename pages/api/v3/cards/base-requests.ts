@@ -68,6 +68,7 @@ export default async function baseRequestsEndpoint(
           ...skatersWithSeason,
           ...goaliesWithSeason,
         ])
+
       await requestCards(cardRequests)
 
       const created = cardRequests.map(
@@ -184,61 +185,10 @@ async function checkForDuplicatesAndCreateCardRequestData(
   const cardRequests: CardRequest[] = []
   const duplicates: BaseRequest[] = []
   const errors: BaseRequest[] = []
-
-  players.forEach(async (player: IndexPlayer) => {
-    try {
-      const {
-        position,
-        overall,
-        skating,
-        shooting,
-        hands,
-        checking,
-        defense,
-        high_shots,
-        low_shots,
-        quickness,
-        control,
-        conditioning,
-      } = calculateAttributesAndPosition(player)
-      const rarity = calculateRarity(position, overall)
-      const teamId = teamNameToId(player.team)
-      const raritiesToCheck = getSameAndHigherRaritiesQueryFragment(rarity)
-
-      const playerResult = await cardsQuery<{
-        count: number
-      }>(
-        SQL`
-            SELECT count(*) as amount
-            FROM cards
-            WHERE player_name="${player.name}"
-              AND teamID=${teamId} 
-              AND playerID=${player.id} 
-              AND ${raritiesToCheck} 
-              AND position='${position}';
-          `
-      )
-
-      if (playerResult[0] && playerResult[0].count > 0) {
-        const duplicate = {
-          cardID: null,
-          playerID: player.id,
-          playerName: player.name,
-          teamID: player.team,
-          rarity: rarity,
-          created: false,
-          needsSeason: false,
-          error: 'Duplicate',
-        } as BaseRequest
-        duplicates.push(duplicate)
-      } else {
-        const cardRequest = {
-          teamID: teamId,
-          playerID: Number(player.id),
-          player_name: player.name,
-          season: player.season,
-          card_rarity: rarity,
-          sub_type: null,
+  await Promise.all(
+    players.map(async (player: IndexPlayer) => {
+      try {
+        const {
           position,
           overall,
           skating,
@@ -251,21 +201,76 @@ async function checkForDuplicatesAndCreateCardRequestData(
           quickness,
           control,
           conditioning,
-        } as CardRequest
-        cardRequests.push(cardRequest)
+        } = calculateAttributesAndPosition(player)
+        const rarity = calculateRarity(position, overall)
+        const teamId = teamNameToId(player.team)
+        const raritiesToCheck = getSameAndHigherRaritiesQueryFragment(rarity)
+
+        const playerResult = await cardsQuery<{
+          count: number
+        }>(
+          SQL`
+            SELECT count(*) as amount
+            FROM cards
+            WHERE player_name="${player.name}"
+              AND teamID=${teamId} 
+              AND playerID=${player.id} 
+              AND ${raritiesToCheck} 
+              AND position='${position}';
+          `
+        )
+
+        if (playerResult[0] && playerResult[0].amount > 0) {
+          const duplicate = {
+            cardID: null,
+            playerID: player.id,
+            playerName: player.name,
+            teamID: player.team,
+            rarity: rarity,
+            created: false,
+            needsSeason: false,
+            error: 'Duplicate',
+          } as BaseRequest
+          duplicates.push(duplicate)
+          return
+        } else {
+          const cardRequest = {
+            teamID: teamId,
+            playerID: Number(player.id),
+            player_name: player.name,
+            season: player.season,
+            card_rarity: rarity,
+            sub_type: null,
+            position,
+            overall,
+            skating,
+            shooting,
+            hands,
+            checking,
+            defense,
+            high_shots,
+            low_shots,
+            quickness,
+            control,
+            conditioning,
+          } as CardRequest
+          cardRequests.push(cardRequest)
+          return
+        }
+      } catch (e) {
+        errors.push({
+          playerID: player.id,
+          playerName: player.name,
+          teamID: player.team,
+          rarity: null,
+          created: false,
+          needsSeason: false,
+          error: e,
+        })
+        return
       }
-    } catch (e) {
-      errors.push({
-        playerID: player.id,
-        playerName: player.name,
-        teamID: player.team,
-        rarity: null,
-        created: false,
-        needsSeason: false,
-        error: e,
-      })
-    }
-  })
+    })
+  )
 
   return {
     cardRequests,
