@@ -226,11 +226,6 @@ async function checkForDuplicatesAndCreateCardRequestData(
 
         const playerResult = await cardsQuery<{ amount: number }>(query)
 
-        if (index === 1) {
-          console.log('query', query)
-          console.log('playerResult', playerResult)
-        }
-
         if (playerResult[0] && playerResult[0].amount > 0) {
           const duplicate = {
             cardID: null,
