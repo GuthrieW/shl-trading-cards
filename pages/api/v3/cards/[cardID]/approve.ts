@@ -59,7 +59,7 @@ export default async function approveImageEndpoint(
 
     const queryResult = await cardsQuery(SQL`
       UPDATE cards
-      SET approved=1, pullable=1
+      SET approved=1, pullable=1, date_approved= ${new Date()}
       WHERE cardID=${cardID};
     `)
 

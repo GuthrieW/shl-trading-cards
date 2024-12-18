@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tooltip } from '@chakra-ui/react'
+import { Tooltip, useBreakpointValue } from '@chakra-ui/react'
 import { InfoIcon } from '@chakra-ui/icons'
 import { iihfTeamsMap, shlTeamMap } from '@constants/teams-map'
 
@@ -27,10 +27,11 @@ Team: ${teamInfo.label} (${teamInfo.abbreviation})
 }
 
 export const CardInfoTooltip = ({ card }: { card: Card }) => {
+  const isMobile = useBreakpointValue({ base: true, md: false })
   return (
     <Tooltip
       label={generateCardTooltipContent(card)}
-      placement="right"
+      placement={isMobile ? 'bottom' : 'right'}
       shouldWrapChildren
       whiteSpace="pre-line"
     >
