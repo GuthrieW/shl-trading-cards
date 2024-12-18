@@ -57,6 +57,7 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import { Fragment, useEffect, useState } from 'react'
 import { useQueryClient } from 'react-query'
+import RemoveButton from './RemoveButton'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
   {
@@ -462,10 +463,15 @@ export default function NewTrade({
                           />
                         </Box>
                       }
-                      onClick={() =>
-                        !isSubmittingTrade && removeCardFromTrade(card, true)
-                      }
+                      onClick={() => !isSubmittingTrade}
                       cursor={isSubmittingTrade ? 'not-allowed' : 'pointer'}
+                    />
+                    <RemoveButton
+                      onClick={removeCardFromTrade}
+                      isLoggedInUser={true}
+                      card={card}
+                      rightSide={isMobile ? 2 : 10}
+                      size={isMobile ? 'xs' : 'sm'}
                     />
                     <Badge
                       position="absolute"
@@ -510,10 +516,15 @@ export default function NewTrade({
                         />
                       </Box>
                     }
-                    onClick={() =>
-                      !isSubmittingTrade && removeCardFromTrade(card, false)
-                    }
+                    onClick={() => !isSubmittingTrade}
                     cursor={isSubmittingTrade ? 'not-allowed' : 'pointer'}
+                  />
+                  <RemoveButton
+                    onClick={removeCardFromTrade}
+                    isLoggedInUser={false}
+                    card={card}
+                    rightSide={isMobile ? 2 : 10}
+                    size={isMobile ? 'xs' : 'sm'}
                   />
                   <Badge
                     position="absolute"
@@ -760,16 +771,13 @@ export default function NewTrade({
                       }
                     />
                     {isInTrade && (
-                      <button
-                        onClick={() => {
-                          removeCardFromTrade(card, isLoggedInUser)
-                        }}
-                        className="absolute top-2 right-2 bg-red200 text-secondary hover:bg-secondary rounded-full p-2 md:p-1 md:top-2 md:right-2 hover:bg-red-600 text-xs md:text-sm"
-                        style={{ minWidth: '80px' }}
-                        aria-label="Remove from trade"
-                      >
-                        Remove
-                      </button>
+                      <RemoveButton
+                        onClick={removeCardFromTrade}
+                        isLoggedInUser={isLoggedInUser}
+                        card={card}
+                        rightSide={4}
+                        size={isMobile ? 'xs' : 'sm'}
+                      />
                     )}
                     {!selectedUserCardsIsLoading && (
                       <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-primary transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
