@@ -46,7 +46,6 @@ import DisplayPacks from '@components/collection/DisplayPacks'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
 import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
-import e from 'cors'
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {
