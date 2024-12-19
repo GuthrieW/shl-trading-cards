@@ -127,7 +127,7 @@ export default function UpdateMonthlySubscriptionModal({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>
+        <ModalHeader className="bg-primary text-secondary">
           Update {pluralizeName(setting?.username)} Subscription
         </ModalHeader>
         {formError && (
@@ -137,7 +137,7 @@ export default function UpdateMonthlySubscriptionModal({
           </Alert>
         )}
         <form onSubmit={handleSubmit}>
-          <ModalBody>
+          <ModalBody className="bg-primary text-secondary">
             <Input
               label="User ID"
               value={values.uid}
@@ -169,7 +169,7 @@ export default function UpdateMonthlySubscriptionModal({
               onBlur={handleBlur}
             />
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter className="bg-primary text-secondary">
             <Button mr={3} onClick={onClose}>
               Close
             </Button>

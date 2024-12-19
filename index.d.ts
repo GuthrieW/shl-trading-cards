@@ -27,6 +27,7 @@ type Card = {
   packID?: number
   quantity?: number
   totalCardQuantity?: number
+  date_approved?: string
 }
 
 type CardRequest = {

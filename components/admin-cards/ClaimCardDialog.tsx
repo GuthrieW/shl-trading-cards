@@ -57,6 +57,7 @@ export default function ClaimCardDialog({
           title: 'Sucessfully Claimed Card',
           ...successToastOptions,
         })
+        queryClient.invalidateQueries(['cards'])
       } catch (error) {
         console.error(error)
         toast({
