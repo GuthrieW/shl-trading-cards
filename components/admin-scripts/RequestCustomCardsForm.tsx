@@ -178,7 +178,6 @@ const validateCard = (
   index: number
 ): { status: true } | { status: false; error: string } => {
   if (
-    !card.teamID ||
     !Object.keys(allTeamsMaps).some((teamId) => teamId === String(card.teamID))
   ) {
     return { status: false, error: `teamID missing on row ${index}` }
