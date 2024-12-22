@@ -3,6 +3,7 @@ import {
   Alert,
   AlertIcon,
   Button,
+  Image,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -33,6 +34,7 @@ const updateValidationSchema = Yup.object({}).shape({
   card_rarity: Yup.string().required('Rarity is required'),
   sub_type: Yup.string(),
   player_name: Yup.string().required('Player Name'),
+  render_name: Yup.string().optional(),
   pullable: Yup.number()
     .integer()
     .min(0)
@@ -122,6 +124,7 @@ export default function UpdateCardModal({
       card_rarity: card.card_rarity ?? undefined,
       sub_type: card.sub_type ?? undefined,
       player_name: card.player_name ?? undefined,
+      render_name: card.render_name ?? undefined,
       pullable: card.pullable ?? undefined,
       approved: card.approved ?? undefined,
       image_url: card.image_url ?? undefined,
@@ -176,7 +179,7 @@ export default function UpdateCardModal({
   })
 
   return (
-    <Modal size="xl" isOpen={isOpen} onClose={onClose}>
+    <Modal size="2xl" isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent className="!bg-primary !text-secondary">
         <ModalHeader>Update Card #{card.cardID}</ModalHeader>
@@ -261,6 +264,16 @@ export default function UpdateCardModal({
                 type="string"
                 name="player_name"
                 isInvalid={!!errors.player_name && touched.player_name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <Input
+                label="Render Name"
+                value={values.render_name}
+                disabled={isSubmitting}
+                type="string"
+                name="render_name"
+                isInvalid={!!errors.render_name && touched.render_name}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
@@ -438,6 +451,21 @@ export default function UpdateCardModal({
                 </>
               )}
             </Stack>
+            {card.image_url && (
+              <Stack className="flex justify-center items-center">
+                <Image
+                  className={`cursor-pointer`}
+                  src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+                  fallback={
+                    <div className="relative z-10">
+                      <Image src="/cardback.png" />
+                      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+                    </div>
+                  }
+                  alt={`${card.player_name} Card`}
+                />
+              </Stack>
+            )}
           </ModalBody>
           <ModalFooter>
             <Button mr={3} onClick={onClose}>
