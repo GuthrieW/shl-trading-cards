@@ -1,4 +1,4 @@
-import { Button, useToast } from '@chakra-ui/react'
+import { Button, Spinner, useToast } from '@chakra-ui/react'
 import { POST } from '@constants/http-methods'
 import { rarityMap } from '@constants/rarity-map'
 import { allTeamsMaps } from '@constants/teams-map'
@@ -7,6 +7,28 @@ import { successToastOptions } from '@utils/toast'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import CSVReader from 'react-csv-reader'
+
+const DATA_COLUMNS = {
+  teamID: 0,
+  playerID: 1,
+  player_name: 2,
+  render_name: 3,
+  season: 4,
+  card_rarity: 5,
+  sub_type: 6,
+  position: 7,
+  overall: 8,
+  skating: 9,
+  shooting: 10,
+  hands: 11,
+  checking: 12,
+  defense: 13,
+  high_shots: 14,
+  low_shots: 15,
+  quickness: 16,
+  control: 17,
+  conditioning: 18,
+}
 
 export default function RequestCustomCardsForm({
   onError,
@@ -53,24 +75,58 @@ export default function RequestCustomCardsForm({
       if (index === 0) return
 
       const newCard: Partial<Card> = {
-        teamID: parseInt(row[0]),
-        playerID: parseInt(row[1]),
-        player_name: row[2],
-        season: parseInt(row[3]),
-        card_rarity: row[4],
-        sub_type: row[5].length === 0 ? null : row[5],
-        position: row[6],
-        overall: parseInt(row[7]),
-        skating: row[6] !== 'G' ? parseInt(row[8]) : null,
-        shooting: row[6] !== 'G' ? parseInt(row[9]) : null,
-        hands: row[6] !== 'G' ? parseInt(row[10]) : null,
-        checking: row[6] !== 'G' ? parseInt(row[11]) : null,
-        defense: row[6] !== 'G' ? parseInt(row[12]) : null,
-        high_shots: row[6] !== 'G' ? null : parseInt(row[13]),
-        low_shots: row[6] !== 'G' ? null : parseInt(row[14]),
-        quickness: row[6] !== 'G' ? null : parseInt(row[15]),
-        control: row[6] !== 'G' ? null : parseInt(row[16]),
-        conditioning: row[6] !== 'G' ? null : parseInt(row[17]),
+        teamID: parseInt(row[DATA_COLUMNS.teamID]),
+        playerID: parseInt(row[DATA_COLUMNS.playerID]),
+        player_name: row[DATA_COLUMNS.player_name],
+        render_name: row[DATA_COLUMNS.render_name],
+        season: parseInt(row[DATA_COLUMNS.season]),
+        card_rarity: row[DATA_COLUMNS.card_rarity],
+        sub_type:
+          row[DATA_COLUMNS.sub_type].length === 0
+            ? null
+            : row[DATA_COLUMNS.sub_type],
+        position: row[DATA_COLUMNS.position],
+        overall: parseInt(row[DATA_COLUMNS.overall]),
+        skating:
+          row[DATA_COLUMNS.position] !== 'G'
+            ? parseInt(row[DATA_COLUMNS.skating])
+            : null,
+        shooting:
+          row[DATA_COLUMNS.position] !== 'G'
+            ? parseInt(row[DATA_COLUMNS.shooting])
+            : null,
+        hands:
+          row[DATA_COLUMNS.position] !== 'G'
+            ? parseInt(row[DATA_COLUMNS.hands])
+            : null,
+        checking:
+          row[DATA_COLUMNS.position] !== 'G'
+            ? parseInt(row[DATA_COLUMNS.checking])
+            : null,
+        defense:
+          row[DATA_COLUMNS.position] !== 'G'
+            ? parseInt(row[DATA_COLUMNS.defense])
+            : null,
+        high_shots:
+          row[DATA_COLUMNS.position] !== 'G'
+            ? null
+            : parseInt(row[DATA_COLUMNS.high_shots]),
+        low_shots:
+          row[DATA_COLUMNS.position] !== 'G'
+            ? null
+            : parseInt(row[DATA_COLUMNS.low_shots]),
+        quickness:
+          row[DATA_COLUMNS.position] !== 'G'
+            ? null
+            : parseInt(row[DATA_COLUMNS.quickness]),
+        control:
+          row[DATA_COLUMNS.position] !== 'G'
+            ? null
+            : parseInt(row[DATA_COLUMNS.control]),
+        conditioning:
+          row[DATA_COLUMNS.position] !== 'G'
+            ? null
+            : parseInt(row[DATA_COLUMNS.conditioning]),
       }
 
       const validation = validateCard(newCard, index)
@@ -110,7 +166,7 @@ export default function RequestCustomCardsForm({
           disabled={!canSubmitCsv || isSubmitting || isLoading}
           onClick={handleUploadCsv}
         >
-          Submit Cards
+          {isLoading || isSubmitting ? <Spinner /> : 'Submit Cards'}
         </Button>
       </div>
     </div>

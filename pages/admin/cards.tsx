@@ -70,6 +70,7 @@ const LOADING_TABLE_DATA: { rows: Card[] } = {
     card_rarity: 'card_rarity',
     sub_type: 'sub_type',
     player_name: 'player_name',
+    render_name: 'render_name',
     pullable: 1,
     approved: 1,
     image_url: 'image_url',
@@ -404,6 +405,7 @@ export default () => {
                       )}
                     </span>
                   </Th>
+                  <Th>Render</Th>
                   <Th
                     className="cursor-pointer"
                     onClick={() => handleSortChange('cardID')}
@@ -750,6 +752,7 @@ export default () => {
                           {cardService.calculateStatus(card)}
                         </Td>
                         <Td isLoading={isLoading}>{card.player_name}</Td>
+                        <Td isLoading={isLoading}>{card.render_name}</Td>
                         <Td isLoading={isLoading}>{card.cardID}</Td>
                         <Td isLoading={isLoading}>{card.playerID}</Td>
                         <Td isLoading={isLoading}>{card.teamID}</Td>

@@ -7,6 +7,7 @@ type Card = {
   card_rarity: string
   sub_type: string
   player_name: string
+  render_name?: string
   pullable: 0 | 1
   approved: 0 | 1
   image_url?: string
