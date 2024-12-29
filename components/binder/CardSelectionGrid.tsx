@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import {
   SimpleGrid,
   Box,
@@ -34,6 +34,7 @@ import { allTeamsMaps } from '@constants/teams-map'
 import filterTeamsByLeague from '@utils/filterTeamsByLeague'
 import { useCookie } from '@hooks/useCookie'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
+import { debounce } from 'lodash'
 
 interface CardSelectionGridProps {
   handleCardSelect: (card: TradeCard) => void
@@ -79,6 +80,17 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
         base: 4,
         md: 5,
       }) || 5
+
+    const debouncedSearchChange = debounce((value: string) => {
+      setPlayerName(value)
+    }, 500)
+
+    const handleSearchChange = useCallback(
+      (value: string) => {
+        debouncedSearchChange(value)
+      },
+      [debouncedSearchChange]
+    )
 
     const LOADING_GRID_DATA: { rows: TradeCard[] } = {
       rows: Array.from({ length: ROWS_PER_PAGE }, (_, index) => ({
@@ -157,7 +169,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
               onChange={(e) => {
                 // Reset page when searching
                 setTablePage(1)
-                setPlayerName(e.target.value)
+                handleSearchChange(e.target.value)
               }}
               className="w-full !bg-secondary"
             />

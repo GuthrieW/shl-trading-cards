@@ -54,10 +54,11 @@ import axios from 'axios'
 import config from 'lib/config'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Fragment, useEffect, useState } from 'react'
 import { useQueryClient } from 'react-query'
 import RemoveButton from './RemoveButton'
+import { debounce } from 'lodash'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
   {
@@ -338,6 +339,17 @@ export default function NewTrade({
     })
   }
 
+  const debouncedSearchChange = debounce((value: string) => {
+    setPlayerName(value)
+  }, 500)
+
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      debouncedSearchChange(value)
+    },
+    [debouncedSearchChange]
+  )
+
   const handleSubmitTrade = async () => {
     try {
       await submitTrade({
@@ -560,7 +572,7 @@ export default function NewTrade({
               <FormControl mb={2}>
                 <Input
                   placeholder="Player Name Search"
-                  onChange={(event) => setPlayerName(event.target.value)}
+                  onChange={(event) => handleSearchChange(event.target.value)}
                   className="w-full !bg-secondary"
                 />
               </FormControl>
