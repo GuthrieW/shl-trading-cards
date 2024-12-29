@@ -367,7 +367,7 @@ export default () => {
                         className="!bg-[transparent] hover:!bg-highlighted/40 active:!bg-blue700"
                         onClick={() => setViewDone(!viewDone)}
                       >
-                        Completed
+                        Done
                       </MenuItemOption>
                     </MenuOptionGroup>
                   </MenuList>
