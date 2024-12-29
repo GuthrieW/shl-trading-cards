@@ -16,7 +16,7 @@ import { warningToastOptions } from '@utils/toast'
 import axios from 'axios'
 import { useState } from 'react'
 import { errorToastOptions, successToastOptions } from '@utils/toast'
-import { CardInfoTooltip } from '@components/common/CardInfoToolTip'
+import { CardInfo } from '@components/common/CardInfo'
 
 export default function SubmitImageModal({
   card,
@@ -97,7 +97,6 @@ export default function SubmitImageModal({
       <ModalContent>
         <ModalHeader className="!bg-primary !text-secondary">
           Submit Image for #{card.cardID} - {card.player_name} &nbsp;
-          <CardInfoTooltip card={card} />
         </ModalHeader>
         <ModalCloseButton />
         {formError && (
@@ -112,6 +111,7 @@ export default function SubmitImageModal({
           </div>
           Upload Card Image
           <input disabled={isLoading} type="file" onChange={onFileChange} />
+          <CardInfo card={card} />
           <div className="flex items-center justify-end p-6">
             <Button
               disabled={isLoading}
