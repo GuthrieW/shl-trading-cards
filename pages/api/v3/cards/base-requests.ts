@@ -169,7 +169,7 @@ function addSeasonToPlayers(
       return { ...indexPlayer, season: matchingPortalPlayer.draftSeason }
     } else {
       missingSeason.push(indexPlayer)
-      return indexPlayer
+      return { ...indexPlayer, season: -1 }
     }
   })
 
