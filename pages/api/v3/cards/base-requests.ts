@@ -136,7 +136,7 @@ async function getIndexGoalies(season: number): Promise<IndexPlayer[]> {
 async function getPortalPlayers(): Promise<PortalPlayer[]> {
   const players: AxiosResponse<PortalPlayer[], any> = await axios({
     method: GET,
-    url: `https://portal.simulationhockey.com/api/v1/history/draft?leagueID=0`,
+    url: `https://portal.simulationhockey.com/api/v1/player?leagueID=0`,
   })
   if (players.status !== 200) {
     throw new Error('Error fetching players from portal')
@@ -158,14 +158,18 @@ function addSeasonToPlayers(
 } {
   const missingSeason: IndexPlayer[] = []
   const updatedPlayers = indexPlayers.map((indexPlayer) => {
-    const matchingPortalPlayer = portalPlayers.find(
-      (portalPlayer) => portalPlayer.playerName === indexPlayer.name
+    const matchingPortalPlayer = portalPlayers.find((portalPlayer) =>
+      portalPlayer.indexRecords.some(
+        (indexRecord) =>
+          String(indexRecord.indexID) === indexPlayer.id &&
+          indexRecord.leagueID == 0
+      )
     )
     if (matchingPortalPlayer) {
-      return { ...indexPlayer, season: matchingPortalPlayer.seasonID }
+      return { ...indexPlayer, season: matchingPortalPlayer.draftSeason }
     } else {
       missingSeason.push(indexPlayer)
-      return indexPlayer
+      return { ...indexPlayer, season: -1 }
     }
   })
 

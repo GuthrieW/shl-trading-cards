@@ -44,3 +44,4 @@ id_rsa
 run-db-tunnel.sh
 
 /temp
+**/temp*
