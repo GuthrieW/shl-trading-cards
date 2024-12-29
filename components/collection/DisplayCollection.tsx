@@ -28,7 +28,9 @@ const DisplayCollection = ({
 }: DisplayCollectionProps) => {
   const getUserOwnedCount = (rarity: string) => {
     const userCard = userUniqueCards.find((card) => card.card_rarity === rarity)
-    return userCard ? userCard.owned_count : 0
+    return userCard
+      ? { owned_count: userCard.owned_count, rarity_rank: userCard.rarity_rank }
+      : { owned_count: 0, rarity_rank: 0 }
   }
 
   return (
@@ -53,16 +55,19 @@ const DisplayCollection = ({
             <Fragment>
               <Wrap spacing={4} mt={2}>
                 {siteUniqueCards.map((siteCard) => {
-                  const ownedCount = getUserOwnedCount(siteCard.card_rarity)
+                  const { owned_count, rarity_rank } = getUserOwnedCount(
+                    siteCard.card_rarity
+                  )
                   const totalCount = siteCard.total_count
-                  const progressValue = (ownedCount / totalCount) * 100
-                  const isComplete = ownedCount === totalCount
+                  const progressValue = (owned_count / totalCount) * 100
+                  const isComplete = owned_count === totalCount
 
                   return (
                     <WrapItem key={siteCard.card_rarity} width="100%">
                       <Box width="100%">
                         <div className="font-bold mb-1">
-                          {siteCard.card_rarity}: {ownedCount} / {totalCount}
+                          {siteCard.card_rarity}: {owned_count} / {totalCount} [
+                          #{rarity_rank} Global]
                         </div>
                         <Progress
                           value={progressValue}

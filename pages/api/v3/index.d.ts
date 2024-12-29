@@ -34,6 +34,7 @@ export type UserUniqueCollection = {
   username: string
   card_rarity: string
   owned_count: number
+  rarity_rank: number
 }
 
 export type SiteUniqueCards = {
