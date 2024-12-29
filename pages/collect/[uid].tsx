@@ -31,6 +31,7 @@ import {
   SortDirection,
   UserUniqueCollection,
 } from '@pages/api/v3'
+import debounce from 'lodash/debounce'
 import {
   OwnedCard,
   OwnedCardSortOption,
@@ -41,7 +42,7 @@ import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
 import { pluralizeName } from 'lib/pluralize-name'
 import filterTeamsByLeague from 'utils/filterTeamsByLeague'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import DisplayPacks from '@components/collection/DisplayPacks'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
 import { useCookie } from '@hooks/useCookie'
@@ -136,6 +137,17 @@ export default ({ uid }: { uid: string }) => {
       setOtherUID('')
     }
   }
+
+  const debouncedSearchChange = debounce((value: string) => {
+    setPlayerName(value)
+  }, 500)
+
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      debouncedSearchChange(value)
+    },
+    [debouncedSearchChange]
+  )
 
   const { payload: user, isLoading: userIsLoading } = query<UserData>({
     queryKey: ['collectionUser', session?.token, uid],
@@ -280,7 +292,7 @@ export default ({ uid }: { uid: string }) => {
             className="w-full bg-secondary border-grey100"
             placeholder="Search By Player Name"
             size="lg"
-            onChange={(event) => setPlayerName(event.target.value)}
+            onChange={(event) => handleSearchChange(event.target.value)}
           />
         </FormControl>
         <div className="flex flex-col sm:flex-row justify-start items-stretch gap-4">
