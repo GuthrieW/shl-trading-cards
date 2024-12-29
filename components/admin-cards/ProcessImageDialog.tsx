@@ -15,7 +15,6 @@ import {
   AlertIcon,
   Box,
   Button,
-  Flex,
   Image,
   useToast,
 } from '@chakra-ui/react'
@@ -24,7 +23,7 @@ import {
   errorToastOptions,
   successToastOptions,
 } from '@utils/toast'
-import { CardInfoTooltip } from '@components/common/CardInfoToolTip'
+import { CardInfo } from '@components/common/CardInfo'
 import GetUsername from '@components/common/GetUsername'
 
 export default function ProcessImageDialog({
@@ -129,7 +128,6 @@ export default function ProcessImageDialog({
             className="!bg-primary !div-secondary"
           >
             Process Image #{card.cardID} &nbsp;
-            <CardInfoTooltip card={card} />
           </AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody className="!bg-primary !div-secondary">
@@ -147,6 +145,7 @@ export default function ProcessImageDialog({
                 </Box>
               }
             />
+            <CardInfo card={card} />
           </AlertDialogBody>
           <AlertDialogFooter className="!bg-primary !div-secondary">
             {formError && (

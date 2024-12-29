@@ -1,5 +1,5 @@
-import React from 'react'
-import { Tooltip, useBreakpointValue } from '@chakra-ui/react'
+import React, { useState } from 'react'
+import { Button } from '@chakra-ui/react'
 import { InfoIcon } from '@chakra-ui/icons'
 import { iihfTeamsMap, shlTeamMap } from '@constants/teams-map'
 
@@ -7,10 +7,14 @@ export const generateCardTooltipContent = (card: Card) => {
   const league = card.card_rarity === 'IIHF Awards' ? 'IIHF' : 'SHL'
   const teamMap = league === 'IIHF' ? iihfTeamsMap : shlTeamMap
   const teamInfo = teamMap[card.teamID] || { label: 'Unknown Team' }
+  const award_rarity =
+    card.card_rarity === 'Awards'
+      ? `Awards - ${card.sub_type}`
+      : card.card_rarity
 
   const basicInfo = `
 ${card.player_name}
-Rarity: ${card.card_rarity} | Pos: ${card.position}
+Rarity: ${award_rarity} | Pos: ${card.position}
 Season: ${card.season} | Overall: ${card.overall}
 Team: ${teamInfo.label} (${teamInfo.abbreviation})
   `.trim()
@@ -26,16 +30,22 @@ Team: ${teamInfo.label} (${teamInfo.abbreviation})
   return `${basicInfo}\n${positionSkills}`
 }
 
-export const CardInfoTooltip = ({ card }: { card: Card }) => {
-  const isMobile = useBreakpointValue({ base: true, md: false })
+export const CardInfo = ({ card }: { card: Card }) => {
+  const [isVisible, setIsVisible] = useState(false)
+
   return (
-    <Tooltip
-      label={generateCardTooltipContent(card)}
-      placement={isMobile ? 'bottom' : 'right'}
-      shouldWrapChildren
-      whiteSpace="pre-line"
-    >
-      <InfoIcon className="text-primary cursor-pointer" />
-    </Tooltip>
+    <div className="pt-2">
+      <Button
+        className="bg-primary text-secondary"
+        onClick={() => setIsVisible(!isVisible)}
+      >
+        Show Card Info
+      </Button>
+      {isVisible && (
+        <pre className="whitespace-pre-wrap break-words font-mono mt-2 sm:mt-4 lg:mt-6">
+          {generateCardTooltipContent(card)}
+        </pre>
+      )}
+    </div>
   )
 }
