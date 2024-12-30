@@ -4,7 +4,7 @@ import { GET } from '@constants/http-methods'
 import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
-import SQL from 'sql-template-strings'
+import SQL, { SQLStatement } from 'sql-template-strings'
 import { ApiResponse, UserPacks } from '../..'
 
 const allowedMethods = [GET]
@@ -13,45 +13,48 @@ const cors = Cors({
 })
 
 const index = async (
-  request: NextApiRequest,
+  req: NextApiRequest,
   res: NextApiResponse<ApiResponse<UserPacks[]>>
 ): Promise<void> => {
-  await middleware(request, res, cors)
-  const { method, query } = request
+  await middleware(req, res, cors)
+  const { method } = req
 
-  // Get all of a user's unopened packs
   if (method === GET) {
-    const { uid } = query
-    const result = await cardsQuery<UserPacks>(
-      SQL`
-      SELECT packID,
+    const uid = req.query.uid as string
+    const packType = req.query.packType as string
+
+    const query: SQLStatement = SQL`
+        SELECT packID,
         userID,
         packType,
         purchaseDate
       FROM packs_owned
-      WHERE userID=${uid}
-        AND opened=0;`
-    )
+      WHERE userID=${uid}`
 
-    if ('error' in result) {
-      console.error(result.error)
+    if (packType) {
+      query.append(SQL` AND packType = ${packType}`)
+    }
+    query.append(SQL` AND opened=0;`)
+
+    const queryResult = await cardsQuery<UserPacks>(query)
+
+    if ('error' in queryResult) {
+      console.error(queryResult.error)
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .end('Database connection failed')
       return
     }
-    if (result.length === 0) {
-      res
-        .status(StatusCodes.NOT_FOUND)
-        .json({
-          status: 'error',
-          message: 'No opened packs found for this user',
-        })
+    if (queryResult.length === 0) {
+      res.status(StatusCodes.NOT_FOUND).json({
+        status: 'error',
+        message: 'No opened packs found for this user',
+      })
       return
     }
     res.status(StatusCodes.OK).json({
       status: 'success',
-      payload: result,
+      payload: queryResult,
     })
     return
   }

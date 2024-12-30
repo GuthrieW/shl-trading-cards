@@ -1,19 +1,37 @@
 import useGetLatestPackCards from '@pages/api/queries/use-get-latest-pack-cards'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { NextSeo } from 'next-seo'
 import Router, { useRouter } from 'next/router'
 import ReactCardFlip from 'react-card-flip'
 import { rarityMap } from '@constants/rarity-map'
 import pathToCards from '@constants/path-to-cards'
-import { Button, Badge, useToast, Tooltip } from '@chakra-ui/react' // Import Badge from Chakra UI
+import {
+  Button,
+  Badge,
+  useToast,
+  Tooltip,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  Breadcrumb,
+  Spinner,
+} from '@chakra-ui/react'
 import { PageWrapper } from '@components/common/PageWrapper'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
-import { successToastOptions } from '@utils/toast'
+import {
+  successToastOptions,
+  warningToastOptions,
+  errorToastOptions,
+} from '@utils/toast'
 import CardLightBoxModal from '@components/modals/CardLightBoxModal'
+import { UserPacks } from '@pages/api/v3'
+import { useCookie } from '@hooks/useCookie'
+import config from 'lib/config'
+import useOpenPack from '@pages/api/mutations/use-open-pack'
+import { ChevronLeftIcon } from '@chakra-ui/icons'
 
 const HexCodes = {
   Ruby: '#E0115F',
@@ -30,12 +48,57 @@ const LastOpenedPack = () => {
   const [revealedCards, setRevealedCards] = useState<number[]>([])
   const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
   const [selectedCard, setSelectedCard] = useState<Card | null>(null)
+  const [loggedInUID] = useCookie(config.userIDCookieName)
+
+  const { type } = router.query as { type: string }
 
   useEffect(() => {
     if (!loggedIn) {
       router.replace('/')
     }
   })
+
+  const { payload: packs, isLoading: packsLoading } = query<UserPacks[]>({
+    queryKey: ['packs', String(loggedInUID), type],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/packs/${loggedInUID}?packType=${type}`,
+      }),
+    enabled: !!loggedInUID && !!type,
+  })
+  const firstPack = useMemo(() => {
+    return packs?.[0] || undefined
+  }, [packs])
+
+  const {
+    openPack,
+    response,
+    isSuccess: useOpenPackIsSuccess,
+    isLoading: useOpenPackIsLoading,
+    isError: useOpenPackIsError,
+  } = useOpenPack()
+
+  const OpenNextPack = (pack: UserPacks) => {
+    if (useOpenPackIsLoading) {
+      toast({
+        title: 'Already opening a pack',
+        description: `Bro chill we're still opening that pack`,
+        ...warningToastOptions,
+      })
+      return
+    }
+    if (!pack) {
+      toast({
+        title: 'No Packs Available',
+        description: `You don't have any ${type} packs to open.`,
+        ...errorToastOptions,
+      })
+      return
+    }
+    console.log(pack)
+    openPack({ packID: pack.packID })
+  }
 
   const { payload: user } = query<UserData>({
     queryKey: ['baseUser', session?.token],
@@ -126,16 +189,48 @@ const LastOpenedPack = () => {
       })
     })
   }
-  if (isLoading || isError || latestPackCards.length === 0) return null
 
+  if (useOpenPackIsSuccess) {
+    Router.reload()
+  }
+  React.useEffect(() => {
+    if (useOpenPackIsError) {
+      toast({
+        title: 'Pack Opening Error',
+        description: 'Unable to open the pack. Please try again.',
+        ...errorToastOptions,
+      })
+    }
+  }, [useOpenPackIsError])
+
+  if (isLoading || isError || latestPackCards.length === 0) return null
   return (
     <PageWrapper>
       <div className="h-full w-full m-1">
         <NextSeo title="Last Pack" />
-        <div className="flex flex-row items-center justify-start space-x-2">
-          <Button disabled={false} onClick={() => Router.push('/packs')}>
-            Open Another Pack
-          </Button>
+        <Breadcrumb>
+          <ChevronLeftIcon color="gray.500" />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/packs">Return to Packs</BreadcrumbLink>
+          </BreadcrumbItem>
+        </Breadcrumb>
+        <div className="flex flex-row items-center justify-start space-x-2 pt-3">
+          {firstPack ? (
+            <Tooltip label="Open a new pack">
+              <Button
+                isDisabled={useOpenPackIsLoading || packsLoading}
+                onClick={() => OpenNextPack(firstPack)}
+                position="relative"
+              >
+                {(useOpenPackIsLoading || packsLoading) && (
+                  <Spinner size="sm" mr={2} />
+                )}
+                Open Another {type} Pack
+              </Button>
+            </Tooltip>
+          ) : (
+            <Button isDisabled>No More {type} Packs to Open</Button>
+          )}
           <Button disabled={false} onClick={flipAllCards}>
             Flip All Cards
           </Button>

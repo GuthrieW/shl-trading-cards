@@ -18,11 +18,6 @@ const PACK_LIMITS = {
   ruby: 1,
 }
 
-interface PackCount {
-  base?: number
-  ruby?: number
-}
-
 const index = async (
   request: NextApiRequest,
   response: NextApiResponse

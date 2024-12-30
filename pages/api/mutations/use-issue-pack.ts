@@ -30,7 +30,7 @@ const useIssuePack = (): UseIssuePack => {
 
     {
       onSuccess: () => {
-        invalidateQueries(queryClient, [])
+        invalidateQueries(queryClient, ['packs'])
       },
       onError: () => {},
     }
