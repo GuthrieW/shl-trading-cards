@@ -54,11 +54,11 @@ import axios from 'axios'
 import config from 'lib/config'
 import { pluralizeName } from 'lib/pluralize-name'
 import { useRouter } from 'next/router'
-import React, { useCallback } from 'react'
+import React from 'react'
 import { Fragment, useEffect, useState } from 'react'
 import { useQueryClient } from 'react-query'
 import RemoveButton from './RemoveButton'
-import { debounce } from 'lodash'
+import { useDebounce } from 'use-debounce'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
   {
@@ -116,6 +116,7 @@ export default function NewTrade({
   >([])
   const [cardAdded, setCardAdded] = useState(false)
   const [otherUID, setOtherUID] = useState<string>('')
+  const [debouncedPlayerName] = useDebounce(playerName, 500)
 
   const [uid] = useCookie(config.userIDCookieName)
 
@@ -187,7 +188,7 @@ export default function NewTrade({
       queryKey: [
         'collection',
         selectedUserId,
-        playerName,
+        debouncedPlayerName,
         JSON.stringify(teams),
         JSON.stringify(rarities),
         JSON.stringify(leagues),
@@ -201,7 +202,8 @@ export default function NewTrade({
           url: `/api/v3/trades/collection/${selectedUserId}`,
           method: GET,
           params: {
-            playerName,
+            playerName:
+              debouncedPlayerName.length >= 1 ? debouncedPlayerName : '',
             teams: JSON.stringify(teams),
             rarities: JSON.stringify(rarities),
             leagues: JSON.stringify(leagues),
@@ -338,17 +340,6 @@ export default function NewTrade({
       ...successToastOptions,
     })
   }
-
-  const debouncedSearchChange = debounce((value: string) => {
-    setPlayerName(value)
-  }, 500)
-
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      debouncedSearchChange(value)
-    },
-    [debouncedSearchChange]
-  )
 
   const handleSubmitTrade = async () => {
     try {
@@ -572,7 +563,7 @@ export default function NewTrade({
               <FormControl mb={2}>
                 <Input
                   placeholder="Player Name Search"
-                  onChange={(event) => handleSearchChange(event.target.value)}
+                  onChange={(event) => setPlayerName(event.target.value)}
                   className="w-full !bg-secondary"
                 />
               </FormControl>

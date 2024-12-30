@@ -31,7 +31,6 @@ import {
   SortDirection,
   UserUniqueCollection,
 } from '@pages/api/v3'
-import debounce from 'lodash/debounce'
 import {
   OwnedCard,
   OwnedCardSortOption,
@@ -47,6 +46,7 @@ import DisplayPacks from '@components/collection/DisplayPacks'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
 import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
+import { useDebounce } from 'use-debounce'
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {
@@ -127,6 +127,7 @@ export default ({ uid }: { uid: string }) => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
   const [tablePage, setTablePage] = useState<number>(1)
   const [otherUID, setOtherUID] = useState<string>('')
+  const [debouncedPlayerName] = useDebounce(playerName, 500)
 
   const [loggedInUID] = useCookie(config.userIDCookieName)
 
@@ -137,18 +138,6 @@ export default ({ uid }: { uid: string }) => {
       setOtherUID('')
     }
   }
-
-  const debouncedSearchChange = debounce((value: string) => {
-    setPlayerName(value)
-  }, 500)
-
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      debouncedSearchChange(value)
-    },
-    [debouncedSearchChange]
-  )
-
   const { payload: user, isLoading: userIsLoading } = query<UserData>({
     queryKey: ['collectionUser', session?.token, uid],
     queryFn: () =>
@@ -182,7 +171,7 @@ export default ({ uid }: { uid: string }) => {
     queryKey: [
       'collection',
       uid,
-      playerName,
+      debouncedPlayerName,
       JSON.stringify(teams),
       JSON.stringify(rarities),
       JSON.stringify(leagues),
@@ -198,7 +187,8 @@ export default ({ uid }: { uid: string }) => {
         url: `/api/v3/collection/uid`,
         params: {
           uid,
-          playerName,
+          playerName:
+            debouncedPlayerName.length >= 1 ? debouncedPlayerName : '',
           teams: JSON.stringify(teams),
           rarities: JSON.stringify(rarities),
           leagues: JSON.stringify(leagues),
@@ -292,7 +282,7 @@ export default ({ uid }: { uid: string }) => {
             className="w-full bg-secondary border-grey100"
             placeholder="Search By Player Name"
             size="lg"
-            onChange={(event) => handleSearchChange(event.target.value)}
+            onChange={(event) => setPlayerName(event.target.value)}
           />
         </FormControl>
         <div className="flex flex-col sm:flex-row justify-start items-stretch gap-4">
