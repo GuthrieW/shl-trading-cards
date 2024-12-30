@@ -117,7 +117,7 @@ const OpenPacks = () => {
   }
 
   if (useOpenPackIsSuccess) {
-    Router.push('/packs/last-pack')
+    Router.push(`/packs/last-pack?type=${modalPack.packType}`)
   }
 
   React.useEffect(() => {

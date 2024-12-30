@@ -41,11 +41,12 @@ import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
 import { pluralizeName } from 'lib/pluralize-name'
 import filterTeamsByLeague from 'utils/filterTeamsByLeague'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import DisplayPacks from '@components/collection/DisplayPacks'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
 import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
+import { useDebounce } from 'use-debounce'
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {
@@ -126,6 +127,7 @@ export default ({ uid }: { uid: string }) => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
   const [tablePage, setTablePage] = useState<number>(1)
   const [otherUID, setOtherUID] = useState<string>('')
+  const [debouncedPlayerName] = useDebounce(playerName, 500)
 
   const [loggedInUID] = useCookie(config.userIDCookieName)
 
@@ -136,7 +138,6 @@ export default ({ uid }: { uid: string }) => {
       setOtherUID('')
     }
   }
-
   const { payload: user, isLoading: userIsLoading } = query<UserData>({
     queryKey: ['collectionUser', session?.token, uid],
     queryFn: () =>
@@ -170,7 +171,7 @@ export default ({ uid }: { uid: string }) => {
     queryKey: [
       'collection',
       uid,
-      playerName,
+      debouncedPlayerName,
       JSON.stringify(teams),
       JSON.stringify(rarities),
       JSON.stringify(leagues),
@@ -186,7 +187,8 @@ export default ({ uid }: { uid: string }) => {
         url: `/api/v3/collection/uid`,
         params: {
           uid,
-          playerName,
+          playerName:
+            debouncedPlayerName.length >= 1 ? debouncedPlayerName : '',
           teams: JSON.stringify(teams),
           rarities: JSON.stringify(rarities),
           leagues: JSON.stringify(leagues),

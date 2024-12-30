@@ -26,7 +26,8 @@ export default async function uniqueCardsEndpoint(
     uuc.userID,
     ui.username,
     uuc.card_rarity,
-    uuc.owned_count
+    uuc.owned_count,
+    uuc.rarity_rank
 FROM
     user_unique_cards uuc JOIN user_info ui ON uuc.userID = ui.uid WHERE 1 `
     if (card_rarity) {

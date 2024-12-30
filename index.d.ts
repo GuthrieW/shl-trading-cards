@@ -206,6 +206,7 @@ type InternalUserUniqueCollection = {
   username: string
   card_rarity: string
   owned_count: number
+  rarity_rank: number
 }
 
 type InternalSiteUniqueCards = {

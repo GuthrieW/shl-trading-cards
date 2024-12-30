@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import {
   SimpleGrid,
   Box,
@@ -34,6 +34,7 @@ import { allTeamsMaps } from '@constants/teams-map'
 import filterTeamsByLeague from '@utils/filterTeamsByLeague'
 import { useCookie } from '@hooks/useCookie'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
+import { useDebounce } from 'use-debounce'
 
 interface CardSelectionGridProps {
   handleCardSelect: (card: TradeCard) => void
@@ -73,13 +74,13 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
     const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
     const [tablePage, setTablePage] = useState<number>(1)
     const [uid] = useCookie(config.userIDCookieName)
+    const [debouncedPlayerName] = useDebounce(playerName, 500)
 
     const ROWS_PER_PAGE =
       useBreakpointValue({
         base: 4,
         md: 5,
       }) || 5
-
     const LOADING_GRID_DATA: { rows: TradeCard[] } = {
       rows: Array.from({ length: ROWS_PER_PAGE }, (_, index) => ({
         cardID: index,
@@ -114,7 +115,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
       queryKey: [
         'collection',
         uid,
-        playerName,
+        debouncedPlayerName,
         JSON.stringify(teams),
         JSON.stringify(rarities),
         JSON.stringify(leagues),
@@ -127,7 +128,8 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
           url: `/api/v3/trades/collection/${uid}`,
           method: GET,
           params: {
-            playerName,
+            playerName:
+              debouncedPlayerName.length >= 1 ? debouncedPlayerName : '',
             teams: JSON.stringify(teams),
             rarities: JSON.stringify(rarities),
             leagues: JSON.stringify(leagues),

@@ -58,6 +58,7 @@ import React from 'react'
 import { Fragment, useEffect, useState } from 'react'
 import { useQueryClient } from 'react-query'
 import RemoveButton from './RemoveButton'
+import { useDebounce } from 'use-debounce'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
   {
@@ -115,6 +116,7 @@ export default function NewTrade({
   >([])
   const [cardAdded, setCardAdded] = useState(false)
   const [otherUID, setOtherUID] = useState<string>('')
+  const [debouncedPlayerName] = useDebounce(playerName, 500)
 
   const [uid] = useCookie(config.userIDCookieName)
 
@@ -186,7 +188,7 @@ export default function NewTrade({
       queryKey: [
         'collection',
         selectedUserId,
-        playerName,
+        debouncedPlayerName,
         JSON.stringify(teams),
         JSON.stringify(rarities),
         JSON.stringify(leagues),
@@ -200,7 +202,8 @@ export default function NewTrade({
           url: `/api/v3/trades/collection/${selectedUserId}`,
           method: GET,
           params: {
-            playerName,
+            playerName:
+              debouncedPlayerName.length >= 1 ? debouncedPlayerName : '',
             teams: JSON.stringify(teams),
             rarities: JSON.stringify(rarities),
             leagues: JSON.stringify(leagues),

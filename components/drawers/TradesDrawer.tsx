@@ -16,12 +16,10 @@ import {
   Stack,
   StackDivider,
 } from '@chakra-ui/react'
-import { TradeCard } from '@components/cards/TradeCard'
 import GetUsername from '@components/common/GetUsername'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
-import { UserData } from '@pages/api/v3/user'
 import { formatDateTime } from '@utils/formatDateTime'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
