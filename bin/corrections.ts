@@ -56,9 +56,7 @@ async function main() {
     records.map(async (record, index) => {
       const query = SQL`SELECT cardID, player_name, sub_type FROM cards WHERE playerID=${record.playerId} AND card_rarity=${record.rarity} AND sub_type=${record.subType}`
       const result = await cardsQuery(query)
-      if (result.length > 1) {
-        console.info(result.length, result)
-      }
+      console.info(result)
     })
   )
 }
