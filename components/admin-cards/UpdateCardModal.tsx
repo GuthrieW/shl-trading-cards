@@ -206,7 +206,7 @@ export default function UpdateCardModal({
               <Input
                 label="Author ID"
                 value={values.author_userID}
-                disabled={true}
+                disabled={false}
                 type="number"
                 name="author_userID"
                 isInvalid={!!errors.author_userID && touched.author_userID}
@@ -300,7 +300,7 @@ export default function UpdateCardModal({
             </Stack>
             <Stack className="mx-2">
               <Input
-                disabled={isSubmitting}
+                disabled={true}
                 label="Image URL"
                 value={values.image_url}
                 type="string"
