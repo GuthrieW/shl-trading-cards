@@ -6,7 +6,8 @@
     "dev": "next dev -p 9000",
     "build": "next build",
     "start": "next start -p 9000",
-    "start:dev": "NODE_ENV=development next start -p 6500"
+    "start:dev": "NODE_ENV=development next start -p 6500",
+    "corrections": "tsx bin/corrections.ts"
   },
   "dependencies": {
     "@babel/core": "^7.23.5",
