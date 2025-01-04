@@ -35,10 +35,10 @@ import { ChevronLeftIcon } from '@chakra-ui/icons'
 
 const HexCodes = {
   Ruby: '#E0115F',
-  Diamond: '#45ACA5',
-  Gold: '#FFD700',
-  Charity: '#8437f0',
-  Award: '#0c4feb',
+  Diamond: '#459F94',
+  Gold: '#BD8700 ',
+  Charity: '#9737F0',
+  Award: '#0C65EE',
 }
 
 const LastOpenedPack = () => {
