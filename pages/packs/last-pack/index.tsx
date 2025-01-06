@@ -208,12 +208,24 @@ const LastOpenedPack = () => {
     <PageWrapper>
       <div className="h-full w-full m-1">
         <NextSeo title="Last Pack" />
-        <Breadcrumb>
-          <ChevronLeftIcon color="gray.500" />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/packs">Return to Packs</BreadcrumbLink>
-          </BreadcrumbItem>
-        </Breadcrumb>
+        <div className="flex items-center space-x-2">
+          <Breadcrumb>
+            <ChevronLeftIcon color="gray.500" />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/packs">Return to Packs</BreadcrumbLink>
+            </BreadcrumbItem>
+          </Breadcrumb>
+
+          {firstPack && (
+            <Badge
+              colorScheme="green"
+              variant="subtle"
+              className="text-xs sm:text-lg"
+            >
+              {packs?.length} {type} {packs?.length === 1 ? 'Pack' : 'Packs'}
+            </Badge>
+          )}
+        </div>
         <div className="flex flex-row items-center justify-start space-x-2 pt-3">
           {firstPack ? (
             <Tooltip label="Open a new pack">
@@ -221,6 +233,7 @@ const LastOpenedPack = () => {
                 isDisabled={useOpenPackIsLoading || packsLoading}
                 onClick={() => OpenNextPack(firstPack)}
                 position="relative"
+                className="text-xs sm:text-lg"
               >
                 {(useOpenPackIsLoading || packsLoading) && (
                   <Spinner size="sm" mr={2} />
@@ -231,10 +244,18 @@ const LastOpenedPack = () => {
           ) : (
             <Button isDisabled>No More {type} Packs to Open</Button>
           )}
-          <Button disabled={false} onClick={flipAllCards}>
+          <Button
+            className="text-xs sm:text-lg"
+            disabled={false}
+            onClick={flipAllCards}
+          >
             Flip All Cards
           </Button>
-          <Button onClick={shareMessage} colorScheme="teal">
+          <Button
+            className="text-xs sm:text-lg"
+            onClick={shareMessage}
+            colorScheme="teal"
+          >
             Share
           </Button>
         </div>
