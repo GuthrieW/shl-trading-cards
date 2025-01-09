@@ -7,6 +7,7 @@ import { UserCollection } from '@pages/api/v3'
 import pathToCards from '@constants/path-to-cards'
 import Image from 'next/image'
 import GetUsername from '@components/common/GetUsername'
+import { Skeleton, SkeletonText, Stack } from '@chakra-ui/react'
 
 export const Carousel = React.memo(
   ({
@@ -40,65 +41,65 @@ export const Carousel = React.memo(
       ],
     }
 
+    const loadingCards = Array(3).fill(null)
+
     return (
       <div className="w-full carousel-container">
         <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
           Latest Cards Opened
         </div>
 
-        {isLoading ? (
-          <div className="flex py-2 px-0 sm:px-8">
-            <div className="mr-0 w-full animate-pulse rounded-lg border bg-primary p-4 md:mr-2 md:w-1/2">
-              <div className="mb-2 h-6 rounded bg-primary"></div>
-              <div className="mb-2 h-12 rounded bg-primary"></div>
-              <div className="mb-2 h-6 rounded bg-primary"></div>
-            </div>
-            <div className="hidden w-1/2 animate-pulse rounded-lg border bg-primary p-4  md:block">
-              <div className="mb-2 h-6 rounded bg-primary"></div>
-              <div className="mb-2 h-12 rounded bg-primary"></div>
-              <div className="mb-2 h-6 rounded bg-primary"></div>
-            </div>
-          </div>
-        ) : (
-          <div className="px-0 sm:px-8 carousel-wrapper">
-            <Slider {...settings}>
-              {cards.map((card: UserCollection, index: number) => (
-                <div key={card.cardID} className="px-2 card-slide">
-                  <div className="card-wrapper">
-                    <Image
-                      src={`${pathToCards}${card.imageURL}`}
-                      width={300}
-                      height={475}
-                      alt={`Card ${card.cardID}`}
-                      className="rounded-sm shadow-lg"
-                      loading="lazy"
-                      unoptimized
-                    />
-                    <div className="card-info !bg-secondary">
-                      <div className="text-secondary">
-                        Opened by:{' '}
+        <div className="px-0 sm:px-8 carousel-wrapper">
+          <Slider {...settings}>
+            {isLoading
+              ? loadingCards.map((_, index) => (
+                  <div key={index} className="px-2 card-slide">
+                    <Stack
+                      spacing={4}
+                      p={4}
+                      borderWidth="1px"
+                      borderRadius="lg"
+                    >
+                      <Skeleton height="475px" width="300px" />
+                      <SkeletonText noOfLines={2} spacing={4} />
+                    </Stack>
+                  </div>
+                ))
+              : cards.map((card: UserCollection, index: number) => (
+                  <div key={card.cardID} className="px-2 card-slide">
+                    <div className="card-wrapper">
+                      <Image
+                        src={`${pathToCards}${card.imageURL}`}
+                        width={300}
+                        height={475}
+                        alt={`Card ${card.cardID}`}
+                        className="rounded-sm shadow-lg"
+                        loading="lazy"
+                      />
+                      <div className="card-info !bg-secondary">
+                        <div className="text-secondary">
+                          Opened by:{' '}
+                          <Link
+                            className="!text-link"
+                            href={`/collect/${card.userID}`}
+                            target="_blank"
+                          >
+                            <GetUsername userID={card.userID} />
+                          </Link>
+                        </div>
                         <Link
                           className="!text-link"
-                          href={`/collect/${card.userID}`}
+                          href={`/packs/${card.packID}`}
                           target="_blank"
                         >
-                          <GetUsername userID={card.userID} />
+                          View Pack
                         </Link>
                       </div>
-                      <Link
-                        className="!text-link"
-                        href={`/packs/${card.packID}`}
-                        target="_blank"
-                      >
-                        View Pack
-                      </Link>
                     </div>
                   </div>
-                </div>
-              ))}
-            </Slider>
-          </div>
-        )}
+                ))}
+          </Slider>
+        </div>
       </div>
     )
   }

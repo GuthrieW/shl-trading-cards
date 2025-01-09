@@ -2,12 +2,10 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import {
   SimpleGrid,
   Box,
-  Image,
   Badge,
   Input,
   Select,
   Flex,
-  Skeleton,
   Button,
   useBreakpointValue,
   FormControl,
@@ -35,6 +33,7 @@ import filterTeamsByLeague from '@utils/filterTeamsByLeague'
 import { useCookie } from '@hooks/useCookie'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
 import { useDebounce } from 'use-debounce'
+import ImageWithFallback from '@components/images/ImageWithFallback'
 
 interface CardSelectionGridProps {
   handleCardSelect: (card: TradeCard) => void
@@ -325,7 +324,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                 tabIndex={0}
                 role="button"
                 key={`${card.cardID}-${index}`}
-                className={`m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl ${
+                className={`m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl max-w-xs sm:max-w-sm aspect-[3/4] ${
                   isInDisplayCards
                     ? 'grayscale cursor-default'
                     : 'cursor-pointer'
@@ -342,16 +341,18 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                   }
                 }}
               >
-                <Image
+                <ImageWithFallback
                   className={`cursor-pointer`}
                   src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
-                  fallback={
-                    <div className="relative z-10">
-                      <Image src="/cardback.png" />
-                      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
-                    </div>
-                  }
                   alt={`${card.player_name} Card`}
+                  loading="lazy"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 256px"
+                  style={{
+                    objectFit: 'contain',
+                    width: '100%',
+                    height: '100%',
+                  }}
                 />
                 <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-primary transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
                   {card.card_rarity}

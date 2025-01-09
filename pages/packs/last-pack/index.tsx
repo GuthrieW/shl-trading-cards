@@ -32,6 +32,7 @@ import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
 import useOpenPack from '@pages/api/mutations/use-open-pack'
 import { ChevronLeftIcon } from '@chakra-ui/icons'
+import Image from 'next/image'
 
 const HexCodes = {
   Ruby: '#E0115F',
@@ -270,13 +271,12 @@ const LastOpenedPack = () => {
                   onClick={() => handleCardClick(index, card)}
                 >
                   <ReactCardFlip isFlipped={revealedCards.includes(index)}>
-                    <img
-                      width="320"
-                      height="440"
+                    <Image
                       key={index}
                       draggable={false}
                       className={`rounded-sm transition-all duration-200 cursor-pointer select-none`}
                       style={{
+                        objectFit: 'contain',
                         boxShadow: `${
                           revealedCards.includes(index)
                             ? `0px 0px 16px 10px ${cardRarityShadows.find(
@@ -286,15 +286,18 @@ const LastOpenedPack = () => {
                         }`,
                       }}
                       src={`/cardback.png`}
+                      alt="cardback"
+                      layout="responsive"
+                      width={600}
+                      height={800}
                       onClick={() => updateRevealedCards(index)}
                     />
-                    <img
-                      width="320"
-                      height="440"
+                    <Image
                       key={index}
                       draggable={false}
                       className={`rounded-sm transition-all duration-200 select-none`}
                       style={{
+                        objectFit: 'contain',
                         boxShadow: `${
                           revealedCards.includes(index)
                             ? `0px 0px 16px 10px ${cardRarityShadows.find(
@@ -303,7 +306,11 @@ const LastOpenedPack = () => {
                             : 'none'
                         }`,
                       }}
+                      layout="responsive"
+                      width={600}
+                      height={800}
                       src={`${pathToCards}${card.image_url}`}
+                      alt="cardback"
                     />
                   </ReactCardFlip>
 
