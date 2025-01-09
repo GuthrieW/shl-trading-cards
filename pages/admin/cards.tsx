@@ -877,10 +877,8 @@ export default () => {
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody className="bg-primary text-secondary">
-              <TradingCard
-                source={imageUrl}
-                rarity={''}
-                playerName={'Pending'}
+              <Image
+                src={`https://simulationhockey.com/tradingcards/${imageUrl}`}
               />
             </ModalBody>
           </ModalContent>

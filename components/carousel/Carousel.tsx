@@ -60,7 +60,7 @@ export const Carousel = React.memo(
                       borderWidth="1px"
                       borderRadius="lg"
                     >
-                      <Skeleton height="475px" width="300px" />
+                      <Skeleton height="400px" width="250px" />
                       <SkeletonText noOfLines={2} spacing={4} />
                     </Stack>
                   </div>
