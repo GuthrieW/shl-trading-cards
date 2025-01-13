@@ -2,25 +2,30 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 const ImageWithFallback = ({
+  src,
   fallback = '/cardback.png',
   alt,
-  src,
   ...props
 }) => {
-  const [error, setError] = useState(null)
-
+  const [currentSrc, setCurrentSrc] = useState(src)
+  const [isError, setIsError] = useState(false)
   useEffect(() => {
-    setError(null)
-  }, [src])
+    if (!src) {
+      setCurrentSrc(fallback)
+    } else {
+      setCurrentSrc(src)
+      setIsError(false)
+    }
+  }, [src, fallback])
 
-  return (
-    <Image
-      alt={alt}
-      onError={() => setError(true)}
-      src={error ? fallback : src}
-      {...props}
-    />
-  )
+  const handleError = () => {
+    if (!isError) {
+      setCurrentSrc(fallback)
+      setIsError(true)
+    }
+  }
+
+  return <Image alt={alt} src={currentSrc} onError={handleError} {...props} />
 }
 
 export default ImageWithFallback
