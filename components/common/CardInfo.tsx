@@ -31,7 +31,7 @@ Team: ${teamInfo.label} (${teamInfo.abbreviation})
 }
 
 export const CardInfo = ({ card }: { card: Card }) => {
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
 
   return (
     <div className="pt-2">
