@@ -169,11 +169,22 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
             position="relative"
             cursor="move"
             _hover={{ opacity: 0.8 }}
-            h={{ base: '40vh', md: '40vh', lg: '50vh' }}
+            h={{ base: 'auto', md: '40vh', lg: '50vh' }}
+            border="2px"
+            borderColor="gray.200"
+            borderRadius="lg"
+            p={2}
+            className="bg-secondary"
+            shadow="md"
           >
             {card ? (
-              <>
-                <Box position="relative" w="full" h="full">
+              <Flex direction={{ base: 'column', md: 'column' }} h="full">
+                <Box
+                  position="relative"
+                  w="full"
+                  h={{ base: '30vh', md: 'full' }}
+                  mb={{ base: 2, md: 0 }}
+                >
                   <Image
                     className="select-none rounded-lg"
                     src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
@@ -182,59 +193,140 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
                     fill
                     style={{ objectFit: 'contain' }}
                   />
-                  <Box position="absolute" top={2} right={2} zIndex={10}>
-                    <Flex
-                      justifyContent="space-between"
-                      alignItems="center"
-                      gap={2}
-                      flexDirection={{ base: 'column', md: 'row' }}
+                  {!isMobile && (
+                    <Box
+                      position="absolute"
+                      top={2}
+                      right={2}
+                      zIndex={10}
+                      className="bg-primary"
+                      p={1}
+                      borderRadius="md"
+                      shadow="sm"
+                    >
+                      <Flex
+                        justifyContent="space-between"
+                        alignItems="center"
+                        gap={2}
+                        flexDirection="row"
+                      >
+                        <Button
+                          size="sm"
+                          colorScheme="blue"
+                          onClick={() => {
+                            setSelectedPosition(index + 1)
+                            onOpen()
+                          }}
+                        >
+                          Replace
+                        </Button>
+                        <Button
+                          size="sm"
+                          colorScheme="red"
+                          onClick={() => handleRemoveCard(index + 1)}
+                        >
+                          Remove
+                        </Button>
+                      </Flex>
+                    </Box>
+                  )}
+                </Box>
+                {isMobile && (
+                  <Flex
+                    className="bg-primary"
+                    p={1}
+                    borderRadius="md"
+                    shadow="sm"
+                    gap={2}
+                    justifyContent="center"
+                  >
+                    <Button
+                      size="sm"
+                      colorScheme="blue"
+                      onClick={() => {
+                        setSelectedPosition(index + 1)
+                        onOpen()
+                      }}
+                      className="!text-xs"
+                    >
+                      Replace
+                    </Button>
+                    <Button
+                      size="sm"
+                      colorScheme="red"
+                      onClick={() => handleRemoveCard(index + 1)}
+                      className="!text-xs"
+                    >
+                      Remove
+                    </Button>
+                  </Flex>
+                )}
+              </Flex>
+            ) : (
+              <Flex direction={{ base: 'column', md: 'column' }} h="full">
+                <Box
+                  position="relative"
+                  w="full"
+                  h={{ base: '30vh', md: 'full' }}
+                  mb={{ base: 2, md: 0 }}
+                  onClick={() => {
+                    setSelectedPosition(index + 1)
+                    onOpen()
+                  }}
+                >
+                  <Image
+                    className="select-none rounded-lg"
+                    src="/cardback.png"
+                    alt="Card Placeholder"
+                    loading="lazy"
+                    fill
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                    style={{ objectFit: 'contain' }}
+                  />
+                  {!isMobile && (
+                    <Box
+                      position="absolute"
+                      top={2}
+                      right={2}
+                      className="bg-primary"
+                      p={1}
+                      borderRadius="md"
+                      shadow="sm"
                     >
                       <Button
-                        size={{ base: 'xs', md: 'sm' }}
+                        size="sm"
                         colorScheme="blue"
                         onClick={() => {
                           setSelectedPosition(index + 1)
                           onOpen()
                         }}
                       >
-                        Replace
+                        Add Card
                       </Button>
-                      <Button
-                        size={{ base: 'xs', md: 'sm' }}
-                        colorScheme="red"
-                        onClick={() => handleRemoveCard(index + 1)}
-                      >
-                        Remove
-                      </Button>
-                    </Flex>
-                  </Box>
+                    </Box>
+                  )}
                 </Box>
-              </>
-            ) : (
-              <Box
-                position="relative"
-                w="full"
-                h="full"
-                onClick={() => {
-                  setSelectedPosition(index + 1)
-                  onOpen()
-                }}
-              >
-                <Image
-                  className="select-none rounded-lg"
-                  src="/cardback.png"
-                  alt="Card Placeholder"
-                  loading="lazy"
-                  fill
-                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
-                  style={{ objectFit: 'contain' }}
-                />
-                <Box position="absolute" top={2} right={2}>
-                  <Button size="sm" colorScheme="blue">
-                    Add Card
-                  </Button>
-                </Box>
-              </Box>
+                {isMobile && (
+                  <Flex
+                    className="bg-primary"
+                    p={1}
+                    borderRadius="md"
+                    shadow="sm"
+                    justifyContent="center"
+                  >
+                    <Button
+                      size="sm"
+                      colorScheme="blue"
+                      onClick={() => {
+                        setSelectedPosition(index + 1)
+                        onOpen()
+                      }}
+                    >
+                      Add Card
+                    </Button>
+                  </Flex>
+                )}
+              </Flex>
             )}
           </Box>
         ))}
