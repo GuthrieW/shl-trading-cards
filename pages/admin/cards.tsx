@@ -87,6 +87,7 @@ const LOADING_TABLE_DATA: { rows: Card[] } = {
     conditioning: 0,
     season: 0,
     author_paid: 1,
+    date_approved: null,
   })),
 } as const
 

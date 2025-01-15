@@ -151,6 +151,12 @@ export const Header = ({ showAuthButtons = true }) => {
                 >
                   Binders
                 </MenuItem>
+                <MenuItem
+                  className="hover:!bg-highlighted/40 hover:!text-primary"
+                  onClick={() => router.push('/community/new_cards')}
+                >
+                  Newest Cards
+                </MenuItem>
                 <MenuDivider />
                 {externalLinks.map(({ name, href }) => (
                   <MenuItem

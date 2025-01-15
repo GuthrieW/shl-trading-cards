@@ -22,8 +22,10 @@ export default async function cardsEndpoint(
   if (req.method === GET) {
     const playerName = (req.query.playerName ?? '') as string
     const userID = req.query.userID as string
-    const teams = JSON.parse(req.query.teams as string) as string[]
-    const rarities = JSON.parse(req.query.rarities as string) as string[]
+    const teams = req.query.teams ? JSON.parse(req.query.teams as string) : []
+    const rarities = req.query.rarities
+      ? JSON.parse(req.query.rarities as string)
+      : []
     const limit = (req.query.limit ?? 10) as string
     const offset = (req.query.offset ?? 0) as string
     const sortColumn = (req.query.sortColumn ??
@@ -54,6 +56,7 @@ export default async function cardsEndpoint(
     ].some((viewStatus) => viewStatus === 'true')
 
     const cardID = req.query.cardID as string
+    const date_approved = req.query.date_approved as string
 
     const countQuery = SQL`
       SELECT count(*) as total
@@ -84,18 +87,20 @@ export default async function cardsEndpoint(
         control,
         conditioning,
         season,
-        author_paid
+        author_paid,
+        date_approved
       FROM cards
     `
-
-    if (viewSkaters === 'true') {
+    if (date_approved === 'true') {
+      countQuery.append(SQL` WHERE date_approved IS NOT NULL`)
+      query.append(SQL` WHERE date_approved IS NOT NULL`)
+    } else if (viewSkaters === 'true') {
       countQuery.append(SQL` WHERE (position = 'F' OR position = 'D')`)
       query.append(SQL` WHERE (position = 'F' OR position = 'D')`)
     } else {
       countQuery.append(SQL` WHERE (position = 'G')`)
       query.append(SQL` WHERE (position = 'G')`)
     }
-
     if (viewMyCards === 'true') {
       countQuery.append(SQL` AND (author_userID = ${userID})`)
       query.append(SQL` AND (author_userID = ${userID})`)
@@ -239,6 +244,7 @@ export default async function cardsEndpoint(
     if (sortColumn === 'control') query.append(SQL` control`)
     if (sortColumn === 'conditioning') query.append(SQL` conditioning`)
     if (sortColumn === 'card_rarity') query.append(SQL` card_rarity`)
+    if (sortColumn === 'date_approved') query.append(SQL` date_approved`)
     sortDirection === 'ASC' ? query.append(SQL` ASC`) : query.append(` DESC`)
 
     if (limit) {
@@ -258,7 +264,6 @@ export default async function cardsEndpoint(
         .end('Server connection failed')
       return
     }
-
     const queryResult = await cardsQuery<Card>(query)
 
     if ('error' in queryResult) {
