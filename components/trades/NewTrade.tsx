@@ -29,6 +29,7 @@ import {
   FormLabel,
   Switch,
   Progress,
+  HStack,
 } from '@chakra-ui/react'
 import TablePagination from '@components/table/TablePagination'
 import { GET, POST } from '@constants/http-methods'
@@ -342,6 +343,9 @@ export default function NewTrade({
       ...successToastOptions,
     })
   }
+  const handleResetTradeCards = () => {
+    setResetTradeCards(true)
+  }
 
   const handleSubmitTrade = async () => {
     try {
@@ -408,7 +412,6 @@ export default function NewTrade({
           <Flex
             direction={['column', 'column', 'row']}
             width={['100%', '100%', 'auto']}
-            order={[1, 1, 1]}
           >
             <Button
               onClick={() => openDrawer(uid)}
@@ -427,19 +430,28 @@ export default function NewTrade({
               Open {pluralizeName(tradePartnerUser?.username)} Cards
             </Button>
           </Flex>
-          <Button
-            colorScheme="green"
-            isDisabled={
-              isSubmittingTrade ||
-              loggedInUserCardsToTrade.length === 0 ||
-              partnerUserCardsToTrade.length === 0
-            }
-            onClick={handleSubmitTrade}
-            order={[2, 2, 2]}
-            width={['100%', '100%', 'auto']}
-          >
-            Submit Trade
-          </Button>
+          <HStack>
+            <Button
+              colorScheme="green"
+              isDisabled={
+                isSubmittingTrade ||
+                loggedInUserCardsToTrade.length === 0 ||
+                partnerUserCardsToTrade.length === 0
+              }
+              onClick={handleSubmitTrade}
+              order={[2, 2, 2]}
+              width={['100%', '100%', 'auto']}
+            >
+              Submit Trade
+            </Button>
+            <Button
+              colorScheme="red"
+              onClick={handleResetTradeCards}
+              width={['100%', '100%', 'auto']}
+            >
+              Reset Trade
+            </Button>
+          </HStack>
         </Stack>
 
         <VStack spacing={4} align="stretch">
