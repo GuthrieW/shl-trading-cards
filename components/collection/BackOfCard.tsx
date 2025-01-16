@@ -5,7 +5,6 @@ import { query } from '@pages/api/database/query'
 import { UserCollection } from '@pages/api/v3'
 import axios from 'axios'
 import { Box, Stack, Skeleton, SkeletonText, Image } from '@chakra-ui/react'
-import TradingCard from '@components/images/TradingCard'
 
 interface BackOfCardProps {
   cardID: string
@@ -72,7 +71,7 @@ export const BackOfCard: React.FC<BackOfCardProps> = ({
         ))
       ) : (
         <Image
-          className={`${!isOwned ? 'grayscale' : ''}`}
+          className={`${!isOwned && userID !== undefined ? 'grayscale' : ''}`}
           src={`/cardback.png`}
         />
       )}

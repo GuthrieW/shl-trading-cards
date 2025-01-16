@@ -1,7 +1,6 @@
-import React, { useMemo } from 'react'
-import { Box, useBreakpointValue } from '@chakra-ui/react'
+import React from 'react'
+import { Box, useBreakpointValue, Image } from '@chakra-ui/react'
 import pathToCards from '@constants/path-to-cards'
-import Image from 'next/image'
 import Head from 'next/head'
 
 export type TradingCardProps = {
@@ -43,8 +42,15 @@ const TradingCard = ({
             src={`${pathToCards}${source}`}
             alt={`${rarity} ${playerName}`}
             loading="lazy"
-            fill
-            style={{ objectFit: 'contain' }}
+            fallback={
+              <div className="relative z-10">
+                <Image src="/cardback.png" />
+                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+              </div>
+            }
+            objectFit="contain"
+            width="100%"
+            height="100%"
             className={`rounded-sm ${className}`}
           />
         </Box>
