@@ -23,7 +23,6 @@ import axios from 'axios'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
 import { UserCollection } from '@pages/api/v3'
-import GetUsername from '@components/common/GetUsername'
 import Router from 'next/router'
 import { useSession } from 'contexts/AuthContext'
 
