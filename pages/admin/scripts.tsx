@@ -1,6 +1,5 @@
 import { Alert, AlertIcon } from '@chakra-ui/react'
 import AddCardsToUsersForm from '@components/admin-scripts/AddCardsToUsersForms'
-import DeleteDuplicateCardsForm from '@components/admin-scripts/DeleteDuplicateCardsForm'
 import MonthlySubscriptionsForm from '@components/admin-scripts/MonthlySubscriptionsForm'
 import RequestBaseCardsForm from '@components/admin-scripts/RequestBaseCardsForm'
 import { PageWrapper } from '@components/common/PageWrapper'

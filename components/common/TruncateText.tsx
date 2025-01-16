@@ -1,7 +1,4 @@
-import React, { useState, useMemo } from 'react'
-import { Link } from '@chakra-ui/react'
-import { createColumnHelper } from '@tanstack/react-table'
-import { binders } from '@pages/api/v3'
+import React from 'react'
 
 export const TextWithTooltip: React.FC<{
   text: string

@@ -1,4 +1,4 @@
-import { Badge, Button, Image, SimpleGrid, useToast } from '@chakra-ui/react'
+import { Badge, Button, SimpleGrid, useToast } from '@chakra-ui/react'
 import { AuthGuard } from '@components/auth/AuthGuard'
 import { PageWrapper } from '@components/common/PageWrapper'
 import { GET, POST } from '@constants/http-methods'

@@ -1,22 +1,14 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import Slider, { type Settings } from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import {
-  Box,
   CardHeader,
   CardBody,
   Card,
   Heading,
   Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   useDisclosure,
-  useToast,
   Menu,
   MenuButton,
   MenuItem,
@@ -27,9 +19,6 @@ import {
   Link,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
-import axios from 'axios'
-import { useSession } from 'contexts/AuthContext'
-import { useQueryClient } from 'react-query'
 import CreateBinder from '@components/modals/CreateBinder'
 import { binders } from '@pages/api/v3'
 import { HamburgerIcon } from '@chakra-ui/icons'
