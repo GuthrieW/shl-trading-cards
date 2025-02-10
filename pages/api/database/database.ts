@@ -21,7 +21,7 @@ const cardsDatabase: ServerlessMysql = initializeDB(
 
 const usersDatabase: ServerlessMysql = initializeDB(
   // process.env.NODE_ENV === 'production' ? 'admin_testdb' : 'admin_testdb' // dev
-  process.env.NODE_ENV === 'production' ? 'admin_mybb' : 'dev_cards' // prod
+  process.env.NODE_ENV === 'production' ? 'admin_mybb' : 'dev_portal' // prod
 )
 
 const portalDatabase: ServerlessMysql = initializeDB(
