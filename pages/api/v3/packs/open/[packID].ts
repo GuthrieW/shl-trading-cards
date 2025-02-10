@@ -6,7 +6,6 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
-// import packsMap from '@constants/packs-map'
 import assertBoom from '@pages/api/lib/assertBoom'
 import { packService } from 'services/packService'
 

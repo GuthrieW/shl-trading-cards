@@ -1,6 +1,4 @@
-// View a specific trade, accept or decline if pending
-
-import { Badge, Button, Image, SimpleGrid, useToast } from '@chakra-ui/react'
+import { Badge, Button, SimpleGrid, useToast } from '@chakra-ui/react'
 import { AuthGuard } from '@components/auth/AuthGuard'
 import { PageWrapper } from '@components/common/PageWrapper'
 import { GET, POST } from '@constants/http-methods'
@@ -14,12 +12,12 @@ import { useRouter } from 'next/router'
 import { useMemo } from 'react'
 import { useQueryClient } from 'react-query'
 import { GetServerSideProps } from 'next'
-import TradingCard from '@components/images/TradingCard'
 import { formatDateTime } from '@utils/formatDateTime'
 import { useEffect, useState } from 'react'
 import { IconButton } from '@chakra-ui/react'
 import { ChevronRightIcon, ChevronUpIcon } from '@chakra-ui/icons'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
+import ImageWithFallback from '@components/images/ImageWithFallback'
 
 export default ({ tradeid }: { tradeid: string }) => {
   const toast = useToast()
@@ -326,13 +324,19 @@ const TradeSection = ({
       {cards.map((card) => (
         <div
           key={card.ownedcardid}
-          className="relative group transition-all duration-200"
+          className="relative group transition-all duration-200 max-w-xs sm:max-w-sm aspect-[3/4]"
         >
-          <TradingCard
-            className="rounded-lg shadow-md transform transition-transform w-full h-auto"
-            source={card.image_url}
-            rarity={''}
-            playerName={''}
+          <ImageWithFallback
+            src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+            alt={`Card`}
+            loading="lazy"
+            fill
+            sizes="(max-width: 768px) 100vw, 256px"
+            style={{
+              objectFit: 'contain',
+              width: '100%',
+              height: '100%',
+            }}
           />
         </div>
       ))}

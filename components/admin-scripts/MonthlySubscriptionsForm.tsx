@@ -27,7 +27,6 @@ import { useState } from 'react'
 import { MonthlySettingsData } from '@pages/api/v3/settings/monthly'
 import DeleteMonthlySubscriptionDialog from '@components/admin-cards/DeleteMonthlySubscriptionDialog'
 import UpdateMonthlySubscriptionModal from '@components/admin-cards/UpdateMonthlySubscriptionModal'
-import { useQueryClient } from 'react-query'
 
 type ColumnName = 'subscription' | 'username'
 

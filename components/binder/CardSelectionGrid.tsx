@@ -2,12 +2,10 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import {
   SimpleGrid,
   Box,
-  Image,
   Badge,
   Input,
   Select,
   Flex,
-  Skeleton,
   Button,
   useBreakpointValue,
   FormControl,
@@ -16,6 +14,7 @@ import {
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
+  Progress,
 } from '@chakra-ui/react'
 import { binderCards, ListResponse, SortDirection } from '@pages/api/v3'
 import axios from 'axios'
@@ -35,6 +34,7 @@ import filterTeamsByLeague from '@utils/filterTeamsByLeague'
 import { useCookie } from '@hooks/useCookie'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
 import { useDebounce } from 'use-debounce'
+import ImageWithFallback from '@components/images/ImageWithFallback'
 
 interface CardSelectionGridProps {
   handleCardSelect: (card: TradeCard) => void
@@ -312,53 +312,78 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 bg-primary"
           columns={{ base: 2, lg: 5 }}
         >
-          {(selectedUserCardsIsLoading
-            ? LOADING_GRID_DATA
-            : selectedUserCards
-          )?.rows.map((card, index) => {
-            const isInDisplayCards = displayCards.some(
-              (displayCard) => displayCard?.ownedCardID === card?.ownedCardID
-            )
+          {selectedUserCardsIsLoading
+            ? LOADING_GRID_DATA.rows.map((_, index) => (
+                <div
+                  key={`loading-${index}`}
+                  className="m-4 flex flex-col relative max-w-xs sm:max-w-sm"
+                >
+                  <div className="relative aspect-[3/4]">
+                    <ImageWithFallback
+                      src="/cardback.png"
+                      alt="Loading card"
+                      priority
+                      fill
+                      sizes="(max-width: 768px) 100vw, 256px"
+                      style={{
+                        objectFit: 'contain',
+                        width: '100%',
+                        height: '100%',
+                      }}
+                    />
+                  </div>
+                  <div className="mt-2">
+                    <Progress size="xs" isIndeterminate />
+                  </div>
+                </div>
+              ))
+            : selectedUserCards?.rows.map((card, index) => {
+                const isInDisplayCards = displayCards.some(
+                  (displayCard) =>
+                    displayCard?.ownedCardID === card?.ownedCardID
+                )
 
-            return (
-              <div
-                tabIndex={0}
-                role="button"
-                key={`${card.cardID}-${index}`}
-                className={`m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl ${
-                  isInDisplayCards
-                    ? 'grayscale cursor-default'
-                    : 'cursor-pointer'
-                }`}
-                onClick={() => {
-                  if (!isInDisplayCards) {
-                    handleCardSelect(card)
-                  }
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    handleCardSelect(card)
-                  }
-                }}
-              >
-                <Image
-                  className={`cursor-pointer`}
-                  src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
-                  fallback={
-                    <div className="relative z-10">
-                      <Image src="/cardback.png" />
-                      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
-                    </div>
-                  }
-                  alt={`${card.player_name} Card`}
-                />
-                <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-primary transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
-                  {card.card_rarity}
-                </Badge>
-              </div>
-            )
-          })}
+                return (
+                  <div
+                    tabIndex={0}
+                    role="button"
+                    key={`${card.cardID}-${index}`}
+                    className={`m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl max-w-xs sm:max-w-sm aspect-[3/4] ${
+                      isInDisplayCards
+                        ? 'grayscale cursor-default'
+                        : 'cursor-pointer'
+                    }`}
+                    onClick={() => {
+                      if (!isInDisplayCards) {
+                        handleCardSelect(card)
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        handleCardSelect(card)
+                      }
+                    }}
+                  >
+                    <ImageWithFallback
+                      className={`cursor-pointer`}
+                      src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+                      alt={`${card.player_name} Card`}
+                      loading="lazy"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 256px"
+                      style={{
+                        objectFit: 'contain',
+                        width: '100%',
+                        height: '100%',
+                      }}
+                    />
+                    <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-primary transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
+                      {card.card_rarity}
+                    </Badge>
+                  </div>
+                )
+              })}
         </SimpleGrid>
         <TablePagination
           totalRows={selectedUserCards?.total}

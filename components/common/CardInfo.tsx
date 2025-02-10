@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Button } from '@chakra-ui/react'
-import { InfoIcon } from '@chakra-ui/icons'
 import { iihfTeamsMap, shlTeamMap } from '@constants/teams-map'
 
 export const generateCardTooltipContent = (card: Card) => {

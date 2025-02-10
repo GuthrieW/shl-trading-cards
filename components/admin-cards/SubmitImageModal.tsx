@@ -7,7 +7,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Tooltip,
   useToast,
 } from '@chakra-ui/react'
 import { POST } from '@constants/http-methods'

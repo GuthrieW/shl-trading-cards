@@ -3,16 +3,15 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
   ModalBody,
   ModalFooter,
   Button,
-  Image,
   Text,
   Spinner,
 } from '@chakra-ui/react'
 import { packService } from 'services/packService'
 import { UserPackWithCover } from '@pages/packs'
+import Image from 'next/image'
 
 type OpenPackModalProps = {
   onAccept: (packID: number) => void
@@ -55,18 +54,25 @@ const OpenPackModal = ({
       isOpen={true}
       blockScrollOnMount={false}
       onClose={() => setShowModal(false)}
-      size={{ base: 'xs', sm: 'sm', md: 'sm', lg: 'sm' }}
     >
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader className="bg-primary text-secondary">
-          <div className="select-none">{packTypeData.label}</div>
-        </ModalHeader>
+      <ModalContent
+        sx={{
+          maxW: { base: '75%', sm: '60%', md: '40%', lg: '25%' },
+        }}
+      >
         <ModalBody className="flex flex-col justify-center items-center bg-primary text-secondary">
           <Image
             src={pack.cover}
             alt={packTypeData.label}
-            className="select-none w-full max-w-xs sm:max-w-sm"
+            className="select-none max-w-xs sm:max-w-sm"
+            layout="responsive"
+            width={600}
+            height={800}
+            style={{
+              objectFit: 'contain',
+              transform: 'scale(0.85)',
+            }}
           />
           <Text mt={2} className="text-sm md:text-base">
             {packTypeData.description}

@@ -66,12 +66,12 @@ export type UserPacks = {
 export type LatestCards = {
   ownedCardID: number
   userID: number
-  cardID: string
+  cardID: number
   packID: number
   playerName: string
   playerID: number
   card_rarity: string
-  imageURL: number
+  imageURL: string
 }
 
 export type UserMostCards = {

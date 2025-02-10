@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
 import {
   Box,
-  Image,
   SimpleGrid,
   Skeleton,
   Text,
@@ -25,6 +24,7 @@ import axios from 'axios'
 import UpdateBinder from './UpdateBinder'
 import { BINDER_CONSTANTS } from 'lib/constants'
 import CardLightBoxModal from '@components/modals/CardLightBoxModal'
+import Image from 'next/image'
 
 const BinderDetailPage = ({
   bid,
@@ -165,21 +165,29 @@ const BinderDetailPage = ({
                 textAlign="center"
               >
                 {card ? (
-                  <>
+                  <div className="relative w-full max-w-xs sm:max-w-sm aspect-[3/4]">
                     <Image
-                      className="cursor-pointer select-none w-full max-w-xs sm:max-w-sm"
+                      className="cursor-pointer select-none"
                       src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
                       alt={card.player_name}
+                      loading="lazy"
+                      fill
+                      style={{ objectFit: 'contain' }}
                     />
                     <Text>{card.player_name}</Text>
                     <Text>{card.card_rarity}</Text>
-                  </>
+                  </div>
                 ) : (
-                  <Image
-                    className="cursor-pointer select-none w-full max-w-xs sm:max-w-sm"
-                    src="/cardback.png"
-                    alt="Card Placeholder"
-                  />
+                  <div className="relative w-full max-w-xs sm:max-w-sm aspect-[3/4]">
+                    <Image
+                      className="cursor-pointer select-none"
+                      src="/cardback.png"
+                      alt="Card Placeholder"
+                      loading="lazy"
+                      fill
+                      style={{ objectFit: 'contain' }}
+                    />
+                  </div>
                 )}
               </Box>
             ))}

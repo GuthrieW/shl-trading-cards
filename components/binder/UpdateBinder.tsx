@@ -1,4 +1,3 @@
-import { ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
 import {
   SimpleGrid,
   Box,
@@ -11,7 +10,6 @@ import {
   DrawerHeader,
   DrawerBody,
   Flex,
-  Image,
   Text,
   Button,
   ButtonGroup,
@@ -24,6 +22,7 @@ import { useQueryClient, useMutation } from 'react-query'
 import CardSelectionGrid from './CardSelectionGrid'
 import { useSession } from 'contexts/AuthContext'
 import { TradeCard } from '@pages/api/v3/trades/collection/[uid]'
+import Image from 'next/image'
 
 interface UpdateBinderProps {
   bid: string
@@ -170,61 +169,164 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
             position="relative"
             cursor="move"
             _hover={{ opacity: 0.8 }}
+            h={{ base: 'auto', md: '40vh', lg: '50vh' }}
+            border="2px"
+            borderColor="gray.200"
+            borderRadius="lg"
+            p={2}
+            className="bg-secondary"
+            shadow="md"
           >
             {card ? (
-              <>
-                <Image
-                  className="select-none w-full max-w-xs sm:max-w-sm"
-                  src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
-                  alt={card.player_name}
-                />
-                <Text>{card.player_name}</Text>
-                <Text>{card.card_rarity}</Text>
-                <Box position="absolute" top={2} right={2}>
+              <Flex direction={{ base: 'column', md: 'column' }} h="full">
+                <Box
+                  position="relative"
+                  w="full"
+                  h={{ base: '30vh', md: 'full' }}
+                  mb={{ base: 2, md: 0 }}
+                >
+                  <Image
+                    className="select-none rounded-lg"
+                    src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+                    alt={card.player_name}
+                    loading="lazy"
+                    fill
+                    style={{ objectFit: 'contain' }}
+                  />
+                  {!isMobile && (
+                    <Box
+                      position="absolute"
+                      top={2}
+                      right={2}
+                      zIndex={10}
+                      className="bg-primary"
+                      p={1}
+                      borderRadius="md"
+                      shadow="sm"
+                    >
+                      <Flex
+                        justifyContent="space-between"
+                        alignItems="center"
+                        gap={2}
+                        flexDirection="row"
+                      >
+                        <Button
+                          size="sm"
+                          colorScheme="blue"
+                          onClick={() => {
+                            setSelectedPosition(index + 1)
+                            onOpen()
+                          }}
+                        >
+                          Replace
+                        </Button>
+                        <Button
+                          size="sm"
+                          colorScheme="red"
+                          onClick={() => handleRemoveCard(index + 1)}
+                        >
+                          Remove
+                        </Button>
+                      </Flex>
+                    </Box>
+                  )}
+                </Box>
+                {isMobile && (
                   <Flex
-                    justifyContent="space-between"
-                    alignItems="center"
+                    className="bg-primary"
+                    p={1}
+                    borderRadius="md"
+                    shadow="sm"
                     gap={2}
-                    flexDirection={{ base: 'column', md: 'row' }}
+                    justifyContent="center"
                   >
                     <Button
-                      size={{ base: 'xs', md: 'sm' }}
+                      size="sm"
+                      colorScheme="blue"
+                      onClick={() => {
+                        setSelectedPosition(index + 1)
+                        onOpen()
+                      }}
+                      className="!text-xs"
+                    >
+                      Replace
+                    </Button>
+                    <Button
+                      size="sm"
+                      colorScheme="red"
+                      onClick={() => handleRemoveCard(index + 1)}
+                      className="!text-xs"
+                    >
+                      Remove
+                    </Button>
+                  </Flex>
+                )}
+              </Flex>
+            ) : (
+              <Flex direction={{ base: 'column', md: 'column' }} h="full">
+                <Box
+                  position="relative"
+                  w="full"
+                  h={{ base: '30vh', md: 'full' }}
+                  mb={{ base: 2, md: 0 }}
+                  onClick={() => {
+                    setSelectedPosition(index + 1)
+                    onOpen()
+                  }}
+                >
+                  <Image
+                    className="select-none rounded-lg"
+                    src="/cardback.png"
+                    alt="Card Placeholder"
+                    loading="lazy"
+                    fill
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                    style={{ objectFit: 'contain' }}
+                  />
+                  {!isMobile && (
+                    <Box
+                      position="absolute"
+                      top={2}
+                      right={2}
+                      className="bg-primary"
+                      p={1}
+                      borderRadius="md"
+                      shadow="sm"
+                    >
+                      <Button
+                        size="sm"
+                        colorScheme="blue"
+                        onClick={() => {
+                          setSelectedPosition(index + 1)
+                          onOpen()
+                        }}
+                      >
+                        Add Card
+                      </Button>
+                    </Box>
+                  )}
+                </Box>
+                {isMobile && (
+                  <Flex
+                    className="bg-primary"
+                    p={1}
+                    borderRadius="md"
+                    shadow="sm"
+                    justifyContent="center"
+                  >
+                    <Button
+                      size="sm"
                       colorScheme="blue"
                       onClick={() => {
                         setSelectedPosition(index + 1)
                         onOpen()
                       }}
                     >
-                      Replace
-                    </Button>
-                    <Button
-                      size={{ base: 'xs', md: 'sm' }}
-                      colorScheme="red"
-                      onClick={() => handleRemoveCard(index + 1)}
-                    >
-                      Remove
+                      Add Card
                     </Button>
                   </Flex>
-                </Box>
-              </>
-            ) : (
-              <Box
-                onClick={() => {
-                  setSelectedPosition(index + 1)
-                  onOpen()
-                }}
-              >
-                <Image
-                  className="select-none w-full max-w-xs sm:max-w-sm"
-                  src="/cardback.png"
-                  alt="Card Placeholder"
-                />
-                <Box position="absolute" top={2} right={2}>
-                  <Button size="sm" colorScheme="blue">
-                    Add Card
-                  </Button>
-                </Box>
-              </Box>
+                )}
+              </Flex>
             )}
           </Box>
         ))}

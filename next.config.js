@@ -1,6 +1,22 @@
 module.exports = {
   swcMinify: true,
   transpilePackages: ['crypto-js'],
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'simulationhockey.com',
+        port: '',
+        pathname: '/tradingcards/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'simulationhockey.com',
+        port: '',
+        pathname: '/uploads/avatars/**',
+      },
+    ],
+  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/i,

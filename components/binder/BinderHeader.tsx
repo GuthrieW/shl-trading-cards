@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { useQuery, useQueryClient } from 'react-query'
+import React, { useState } from 'react'
+import { useQueryClient } from 'react-query'
 import {
   Box,
   Text,
-  Skeleton,
   Button,
   Flex,
   FormControl,
@@ -23,7 +22,7 @@ import {
   Link,
 } from '@chakra-ui/react'
 import { binders } from '@pages/api/v3'
-import { GET, PUT } from '@constants/http-methods'
+import { PUT } from '@constants/http-methods'
 import axios from 'axios'
 import { EditIcon } from '@chakra-ui/icons'
 import { useSession } from 'contexts/AuthContext'

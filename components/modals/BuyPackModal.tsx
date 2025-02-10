@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { PackInfoWithCover } from '@pages/shop/index'
 import { warningToastOptions } from '@utils/toast'
+import Image from 'next/image'
 
 type BuyPackModalProps = {
   isOpen: boolean
@@ -35,11 +36,18 @@ const BuyPackModal = ({
         <ModalCloseButton />
         <ModalBody className="bg-primary text-secondary">
           <div className="flex flex-col justify-center items-center bg-primary text-secondary">
-            <div className="w-1/2 flex flex-col justify-center items-center">
-              <img
+            <div className="w-1/2 flex flex-col justify-center items-center max-w-xs sm:max-w-sm aspect-[3/4]">
+              <Image
                 className="select-none"
                 src={pack.cover}
                 alt={`${pack.label} Pack`}
+                loading="lazy"
+                layout="responsive"
+                width={600}
+                height={800}
+                style={{
+                  objectFit: 'contain',
+                }}
               />
             </div>
             <p>{pack.description}</p>

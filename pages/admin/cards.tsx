@@ -55,7 +55,6 @@ import ProcessImageDialog from '@components/admin-cards/ProcessImageDialog'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
 import MisprintDialog from '@components/admin-cards/MisprintDialog'
 import { usePermissions } from '@hooks/usePermissions'
-import TradingCard from '@components/images/TradingCard'
 
 type ColumnName = keyof Readonly<Card>
 
@@ -877,10 +876,8 @@ export default () => {
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody className="bg-primary text-secondary">
-              <TradingCard
-                source={imageUrl}
-                rarity={''}
-                playerName={'Pending'}
+              <Image
+                src={`https://simulationhockey.com/tradingcards/${imageUrl}`}
               />
             </ModalBody>
           </ModalContent>

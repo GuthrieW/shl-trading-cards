@@ -13,6 +13,7 @@ import { Skeleton, SimpleGrid, useToast, Select, Badge } from '@chakra-ui/react'
 import { UserData } from '@pages/api/v3/user'
 import { useSession } from 'contexts/AuthContext'
 import { errorToastOptions, warningToastOptions } from '@utils/toast'
+import Image from 'next/image'
 
 export type UserPackWithCover = UserPacks & {
   cover: string
@@ -213,11 +214,18 @@ const OpenPacks = () => {
                       filteredPacks.length
                     }`}
                   >
-                    <img
+                    <Image
                       className="select-none h-96 w-full object-contain transition ease-linear group-hover:scale-105 group-hover:shadow-xl group-focus:scale-105 group-focus:shadow-xl"
                       src={pack.cover}
                       alt={`${pack.packType} trading card pack ${index + 1}`}
                       role="presentation"
+                      layout="responsive"
+                      width={600}
+                      height={800}
+                      style={{
+                        objectFit: 'contain',
+                        transform: 'scale(0.85)',
+                      }}
                     />
                   </button>
                 ))}

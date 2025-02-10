@@ -3,13 +3,13 @@ import {
   Badge,
   FormControl,
   FormLabel,
-  Image,
   Input,
   Menu,
   MenuButton,
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
+  Progress,
   Select,
   SimpleGrid,
   Spinner,
@@ -25,12 +25,7 @@ import { GET } from '@constants/http-methods'
 import { rarityMap } from '@constants/rarity-map'
 import { allTeamsMaps, shlTeamMap, iihfTeamsMap } from '@constants/teams-map'
 import { query } from '@pages/api/database/query'
-import {
-  ListResponse,
-  SiteUniqueCards,
-  SortDirection,
-  UserUniqueCollection,
-} from '@pages/api/v3'
+import { ListResponse, SortDirection } from '@pages/api/v3'
 import {
   OwnedCard,
   OwnedCardSortOption,
@@ -41,12 +36,13 @@ import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
 import { pluralizeName } from 'lib/pluralize-name'
 import filterTeamsByLeague from 'utils/filterTeamsByLeague'
-import { Fragment, useCallback, useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import DisplayPacks from '@components/collection/DisplayPacks'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
 import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
 import { useDebounce } from 'use-debounce'
+import ImageWithFallback from '@components/images/ImageWithFallback'
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {
@@ -147,26 +143,6 @@ export default ({ uid }: { uid: string }) => {
       }),
   })
 
-  const { payload: userUniqueCards, isLoading: userUniqueCardsIsLoading } =
-    query<UserUniqueCollection[]>({
-      queryKey: ['user-unique-cards', uid],
-      queryFn: () =>
-        axios({
-          method: GET,
-          url: `/api/v3/collection/collection-by-rarity?userID=${uid}`,
-        }),
-    })
-
-  const { payload: siteUniqueCards, isLoading: siteUniqueCardsIsLoading } =
-    query<SiteUniqueCards[]>({
-      queryKey: ['unique-cards'],
-      queryFn: () =>
-        axios({
-          method: GET,
-          url: `/api/v3/collection/unique-cards`,
-        }),
-    })
-
   const { payload, isLoading, refetch } = query<ListResponse<OwnedCard>>({
     queryKey: [
       'collection',
@@ -263,11 +239,7 @@ export default ({ uid }: { uid: string }) => {
       </div>
       <div className="mb-3" />
       {payload && payload.totalOwned !== null && (
-        <DisplayCollection
-          siteUniqueCards={siteUniqueCards}
-          userUniqueCards={userUniqueCards}
-          isLoading={userUniqueCardsIsLoading || siteUniqueCardsIsLoading}
-        />
+        <DisplayCollection uid={uid} />
       )}
       <div className="mb-3" />
       {payload && payload.totalOwned !== null && <DisplayPacks userID={uid} />}
@@ -450,48 +422,72 @@ export default ({ uid }: { uid: string }) => {
         spacing={4}
         className="mt-6 px-4"
       >
-        {(isLoading ? LOADING_GRID_DATA : payload)?.rows.map((card, index) => (
-          <div
-            key={`${card.cardID}-${index}`}
-            onClick={() => {
-              if (!isLoading) {
-                setSelectedCard(card)
-                setLightBoxIsOpen(true)
-              }
-            }}
-            className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl"
-          >
-            <Image
-              className={`cursor-pointer ${
-                card.quantity === 0 ? 'grayscale' : ''
-              }`}
-              src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
-              fallback={
-                <div className="relative z-10">
-                  <Image src="/cardback.png" />
-                  <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+        {isLoading
+          ? LOADING_GRID_DATA.rows.map((_, index) => (
+              <div
+                key={`loading-${index}`}
+                className="m-4 flex flex-col relative max-w-xs sm:max-w-sm"
+              >
+                <div className="relative aspect-[3/4]">
+                  <ImageWithFallback
+                    src="/cardback.png"
+                    alt="Loading card"
+                    priority
+                    fill
+                    sizes="(max-width: 768px) 100vw, 256px"
+                    style={{
+                      objectFit: 'contain',
+                      width: '100%',
+                      height: '100%',
+                    }}
+                  />
                 </div>
-              }
-            />
-            {!isLoading && (
-              <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
-                {`${card.card_rarity} - ${card.quantity}`}
-              </Badge>
-            )}
-            {lightBoxIsOpen && (
-              <CardLightBoxModal
-                cardName={selectedCard.player_name}
-                cardImage={selectedCard.image_url}
-                owned={selectedCard.quantity}
-                rarity={selectedCard.card_rarity}
-                playerID={selectedCard.playerID}
-                cardID={selectedCard.cardID}
-                userID={uid}
-                setShowModal={() => setLightBoxIsOpen(false)}
-              />
-            )}
-          </div>
-        ))}
+                <div className="mt-2">
+                  <Progress size="xs" isIndeterminate />
+                </div>
+              </div>
+            ))
+          : payload?.rows.map((card, index) => (
+              <div
+                key={`${card.cardID}-${index}`}
+                onClick={() => {
+                  setSelectedCard(card)
+                  setLightBoxIsOpen(true)
+                }}
+                className="m-4 relative transition ease-linear shadow-none hover:scale-105 hover:shadow-xl max-w-xs sm:max-w-sm aspect-[3/4]"
+              >
+                <ImageWithFallback
+                  className={`cursor-pointer ${
+                    card.quantity === 0 ? 'grayscale' : ''
+                  }`}
+                  src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+                  alt={`${card.player_name} Card`}
+                  loading="lazy"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 256px"
+                  style={{
+                    objectFit: 'contain',
+                    width: '100%',
+                    height: '100%',
+                  }}
+                />
+                <Badge className="z-30 absolute top-0 left-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform -translate-x-1/4 -translate-y-3/4 bg-neutral-800 rounded-full">
+                  {`${card.card_rarity} - ${card.quantity}`}
+                </Badge>
+                {lightBoxIsOpen && (
+                  <CardLightBoxModal
+                    cardName={selectedCard.player_name}
+                    cardImage={selectedCard.image_url}
+                    owned={selectedCard.quantity}
+                    rarity={selectedCard.card_rarity}
+                    playerID={selectedCard.playerID}
+                    cardID={selectedCard.cardID}
+                    userID={uid}
+                    setShowModal={() => setLightBoxIsOpen(false)}
+                  />
+                )}
+              </div>
+            ))}
       </SimpleGrid>
       <TablePagination
         totalRows={payload?.total}
