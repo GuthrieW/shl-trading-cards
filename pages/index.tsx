@@ -132,7 +132,7 @@ export default () => {
           <Button
             mt={4}
             className="w-full bg-blue-500 !hover:bg-blue-600 hover:shadow-xl text-secondary font-bold py-2 px-4 rounded text-sm sm:text-xs"
-            onClick={() => router.push('/community/new_cards')}
+            onClick={() => router.push('/community/new-cards')}
           >
             See All New Cards
           </Button>
