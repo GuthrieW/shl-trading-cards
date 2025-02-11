@@ -21,12 +21,12 @@ const cardsDatabase: ServerlessMysql = initializeDB(
 
 const usersDatabase: ServerlessMysql = initializeDB(
   // process.env.NODE_ENV === 'production' ? 'admin_testdb' : 'admin_testdb' // dev
-  process.env.NODE_ENV === 'production' ? 'admin_mybb' : 'dev_portal' // prod
+  process.env.NODE_ENV === 'production' ? 'admin_mybb' : 'admin_testdb' // prod
 )
 
 const portalDatabase: ServerlessMysql = initializeDB(
   // process.env.NODE_ENV === 'production' ? 'dev_portal' : 'dev_portal' // dev
-  process.env.NODE_ENV === 'production' ? 'admin_portal' : 'dev_cards' // prod
+  process.env.NODE_ENV === 'production' ? 'admin_portal' : 'dev_portal' // prod
 )
 
 const getQueryFn =
