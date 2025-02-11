@@ -62,7 +62,7 @@ export default async function issueEndpoint(
     } else {
       res.status(githubResponse.status).json({
         status: 'error',
-        message: githubResponse?.response?.data?.message,
+        message: githubResponse?.data?.message,
       })
     }
     return

@@ -434,8 +434,7 @@ export const calculateAttributesAndPosition = (
     const conditioning: number = Math.ceil(
       (player.recovery + player.mentalToughness + player.goalieStamina) / 3
     )
-    const overall =
-      high_shots + low_shots + quickness + conditioning + conditioning
+    const overall = high_shots + low_shots + quickness + control + conditioning
 
     return {
       skating: null,
