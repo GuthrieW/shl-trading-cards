@@ -2,6 +2,7 @@ module.exports = {
   swcMinify: true,
   transpilePackages: ['crypto-js'],
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
