@@ -206,7 +206,7 @@ export default function UpdateCardModal({
               <Input
                 label="Author ID"
                 value={values.author_userID}
-                disabled={false}
+                disabled={isSubmitting}
                 type="number"
                 name="author_userID"
                 isInvalid={!!errors.author_userID && touched.author_userID}
@@ -450,6 +450,16 @@ export default function UpdateCardModal({
                   />
                 </>
               )}
+              <Input
+                label="Paid"
+                value={values.author_paid}
+                disabled={isSubmitting}
+                type="number"
+                name="author_paid"
+                isInvalid={!!errors.author_paid && touched.author_paid}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
             </Stack>
             {card.image_url && (
               <Stack className="flex justify-center items-center">
