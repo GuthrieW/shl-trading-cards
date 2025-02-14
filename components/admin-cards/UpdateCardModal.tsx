@@ -3,6 +3,7 @@ import {
   Alert,
   AlertIcon,
   Button,
+  FormLabel,
   Image,
   Modal,
   ModalBody,
@@ -12,6 +13,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Stack,
+  Text,
   useToast,
 } from '@chakra-ui/react'
 import { useFormik } from 'formik'
@@ -179,10 +181,12 @@ export default function UpdateCardModal({
   })
 
   return (
-    <Modal size="2xl" isOpen={isOpen} onClose={onClose}>
+    <Modal size="6xl" isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent className="!bg-primary !text-secondary">
-        <ModalHeader>Update Card #{card.cardID}</ModalHeader>
+        <ModalHeader fontSize="xx-large">
+          Update Card #{card.cardID}
+        </ModalHeader>
         <ModalCloseButton />
         {formError && (
           <Alert className="text-white" status="error">
@@ -193,6 +197,74 @@ export default function UpdateCardModal({
         <form onSubmit={handleSubmit}>
           <ModalBody className="flex flex-row">
             <Stack className="mx-2">
+              <FormLabel fontSize="x-large">Player Data</FormLabel>
+              <Input
+                label="Player Name"
+                value={values.player_name}
+                disabled={isSubmitting}
+                type="string"
+                name="player_name"
+                isInvalid={!!errors.player_name && touched.player_name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <Input
+                label="Render Name"
+                value={values.render_name}
+                disabled={isSubmitting}
+                type="string"
+                name="render_name"
+                isInvalid={!!errors.render_name && touched.render_name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <Input
+                label="Player ID"
+                value={values.playerID}
+                disabled={isSubmitting}
+                type="number"
+                name="playerID"
+                isInvalid={!!errors.playerID && touched.playerID}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <Input
+                label="Team ID"
+                value={values.teamID}
+                disabled={isSubmitting}
+                type="number"
+                name="teamID"
+                isInvalid={!!errors.teamID && touched.teamID}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <Select
+                name="position"
+                disabled={isSubmitting}
+                value={values.position}
+                label="Position"
+                options={Object.values(positionMap).map((position) => ({
+                  id: position.value,
+                  name: position.label,
+                }))}
+                placeholder="Select Position"
+                isInvalid={!!errors.position && touched.position}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <Input
+                label="Season"
+                value={values.season}
+                disabled={isSubmitting}
+                type="number"
+                name="season"
+                isInvalid={!!errors.season && touched.season}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+            </Stack>
+            <Stack className="mx-2">
+              <FormLabel fontSize="x-large">Card Data</FormLabel>
               <Input
                 label="Card ID"
                 value={values.cardID}
@@ -210,26 +282,6 @@ export default function UpdateCardModal({
                 type="number"
                 name="author_userID"
                 isInvalid={!!errors.author_userID && touched.author_userID}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <Input
-                label="Team ID"
-                value={values.teamID}
-                disabled={isSubmitting}
-                type="number"
-                name="teamID"
-                isInvalid={!!errors.teamID && touched.teamID}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <Input
-                label="Player ID"
-                value={values.playerID}
-                disabled={isSubmitting}
-                type="number"
-                name="playerID"
-                isInvalid={!!errors.playerID && touched.playerID}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
@@ -258,22 +310,12 @@ export default function UpdateCardModal({
                 onBlur={handleBlur}
               />
               <Input
-                label="Player Name"
-                value={values.player_name}
+                label="Approved"
+                value={values.approved}
                 disabled={isSubmitting}
-                type="string"
-                name="player_name"
-                isInvalid={!!errors.player_name && touched.player_name}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <Input
-                label="Render Name"
-                value={values.render_name}
-                disabled={isSubmitting}
-                type="string"
-                name="render_name"
-                isInvalid={!!errors.render_name && touched.render_name}
+                type="number"
+                name="approved"
+                isInvalid={!!errors.approved && touched.approved}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
@@ -288,17 +330,15 @@ export default function UpdateCardModal({
                 onBlur={handleBlur}
               />
               <Input
-                label="Approved"
-                value={values.approved}
+                label="Author Paid"
+                value={values.author_paid}
                 disabled={isSubmitting}
                 type="number"
-                name="approved"
-                isInvalid={!!errors.approved && touched.approved}
+                name="author_paid"
+                isInvalid={!!errors.author_paid && touched.author_paid}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
-            </Stack>
-            <Stack className="mx-2">
               <Input
                 disabled={true}
                 label="Image URL"
@@ -309,30 +349,9 @@ export default function UpdateCardModal({
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
-              <Select
-                name="position"
-                disabled={isSubmitting}
-                value={values.position}
-                label="Position"
-                options={Object.values(positionMap).map((position) => ({
-                  id: position.value,
-                  name: position.label,
-                }))}
-                placeholder="Select Position"
-                isInvalid={!!errors.position && touched.position}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <Input
-                label="Season"
-                value={values.season}
-                disabled={isSubmitting}
-                type="number"
-                name="season"
-                isInvalid={!!errors.season && touched.season}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
+            </Stack>
+            <Stack className="mx-2">
+              <FormLabel fontSize="x-large">Player Attributes</FormLabel>
               <Input
                 label="Overall"
                 value={values.overall}
@@ -450,16 +469,6 @@ export default function UpdateCardModal({
                   />
                 </>
               )}
-              <Input
-                label="Paid"
-                value={values.author_paid}
-                disabled={isSubmitting}
-                type="number"
-                name="author_paid"
-                isInvalid={!!errors.author_paid && touched.author_paid}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
             </Stack>
             {card.image_url && (
               <Stack className="flex justify-center items-center">
