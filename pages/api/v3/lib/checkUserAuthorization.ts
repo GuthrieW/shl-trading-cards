@@ -14,6 +14,7 @@ export const checkUserAuthorization = async (
 ): Promise<boolean> => {
   const authHeader: string = req.headers.authorization
   const bearerPrefix: string = 'Bearer '
+  console.log(authHeader)
 
   if (!authHeader?.startsWith(bearerPrefix)) {
     console.error('Missing valid bearer prefix')

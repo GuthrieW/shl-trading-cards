@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 import { invalidateQueries } from './invalidate-queries'
+import { useSession } from 'contexts/AuthContext'
 
 type UseOpenPackRequest = {
   packID: number
@@ -17,6 +18,7 @@ type UseOpenPack = {
 }
 
 const useOpenPack = (): UseOpenPack => {
+  const { session } = useSession()
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     async ({ packID, packType }: UseOpenPackRequest) => {
@@ -24,6 +26,7 @@ const useOpenPack = (): UseOpenPack => {
         method: POST,
         url: `/api/v3/packs/open/${packID}`,
         data: { packType },
+        headers: { Authorization: `Bearer ${session?.token}` },
       })
     },
     {
