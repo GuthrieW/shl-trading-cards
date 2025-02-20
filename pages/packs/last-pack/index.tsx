@@ -1,4 +1,6 @@
-import useGetLatestPackCards from '@pages/api/queries/use-get-latest-pack-cards'
+import useGetLatestPackCards, {
+  getLatestPackCardsKey,
+} from '@pages/api/queries/use-get-latest-pack-cards'
 import React, { useEffect, useMemo, useState } from 'react'
 import { NextSeo } from 'next-seo'
 import Router, { useRouter } from 'next/router'
@@ -33,6 +35,7 @@ import config from 'lib/config'
 import useOpenPack from '@pages/api/mutations/use-open-pack'
 import { ChevronLeftIcon } from '@chakra-ui/icons'
 import Image from 'next/image'
+import { useQueryClient } from 'react-query'
 
 const HexCodes = {
   Ruby: '#E0115F',
@@ -50,7 +53,7 @@ const LastOpenedPack = () => {
   const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
   const [selectedCard, setSelectedCard] = useState<Card | null>(null)
   const [loggedInUID] = useCookie(config.userIDCookieName)
-
+  const queryClient = useQueryClient()
   const { type } = router.query as { type: string }
 
   useEffect(() => {
@@ -58,6 +61,17 @@ const LastOpenedPack = () => {
       router.replace('/')
     }
   })
+
+  const resetPackState = () => {
+    setRevealedCards([])
+    setLightBoxIsOpen(false)
+    setSelectedCard(null)
+
+    if (user?.uid) {
+      queryClient.invalidateQueries(getLatestPackCardsKey(user.uid))
+      queryClient.invalidateQueries(['packs', String(loggedInUID), type])
+    }
+  }
 
   const { payload: packs, isLoading: packsLoading } = query<UserPacks[]>({
     queryKey: ['packs', String(loggedInUID), type],
@@ -97,7 +111,6 @@ const LastOpenedPack = () => {
       })
       return
     }
-    console.log(pack)
     openPack({ packID: pack.packID })
   }
 
@@ -191,10 +204,15 @@ const LastOpenedPack = () => {
     })
   }
 
-  if (useOpenPackIsSuccess) {
-    Router.reload()
-  }
-  React.useEffect(() => {
+  useEffect(() => {
+    if (useOpenPackIsSuccess) {
+      toast({
+        title: 'Opened Next Pack',
+        description: 'Flip the Cards again!',
+        ...successToastOptions,
+      })
+      resetPackState()
+    }
     if (useOpenPackIsError) {
       toast({
         title: 'Pack Opening Error',
@@ -202,7 +220,7 @@ const LastOpenedPack = () => {
         ...errorToastOptions,
       })
     }
-  }, [useOpenPackIsError])
+  }, [useOpenPackIsSuccess])
 
   if (isLoading || isError || latestPackCards.length === 0) return null
   return (
@@ -234,7 +252,7 @@ const LastOpenedPack = () => {
                 isDisabled={useOpenPackIsLoading || packsLoading}
                 onClick={() => OpenNextPack(firstPack)}
                 position="relative"
-                className="text-xs sm:text-lg"
+                className="!text-xs sm:!text-lg"
               >
                 {(useOpenPackIsLoading || packsLoading) && (
                   <Spinner size="sm" mr={2} />
@@ -246,14 +264,14 @@ const LastOpenedPack = () => {
             <Button isDisabled>No More {type} Packs to Open</Button>
           )}
           <Button
-            className="text-xs sm:text-lg"
+            className="!text-xs sm:!text-base"
             disabled={false}
             onClick={flipAllCards}
           >
             Flip All Cards
           </Button>
           <Button
-            className="text-xs sm:text-lg"
+            className="!text-lg"
             onClick={shareMessage}
             colorScheme="teal"
           >

@@ -13,17 +13,17 @@ type UseGetLatestPackCards = {
   isError: any
 }
 
-export const UseGetLatestPackCardsKey = 'use-get-latest-pack-cards'
+export const getLatestPackCardsKey = (uid: number) => ['latestPackCards', uid]
 
 const useGetLatestPackCards = ({
   uid,
 }: UseGetLatestPackCardsRequest): UseGetLatestPackCards => {
   const { data, error, isFetching, isSuccess } = useQuery(
-    `${UseGetLatestPackCardsKey}/${uid}`,
+    getLatestPackCardsKey(uid),
     async () => {
       return await axios({
         method: GET,
-        url: `/api/v3/collection/uid/last-pack?uid=${uid}`, 
+        url: `/api/v3/collection/uid/last-pack?uid=${uid}`,
       })
     },
     {
