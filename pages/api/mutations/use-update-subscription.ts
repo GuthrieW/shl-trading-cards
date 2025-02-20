@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import axios, { AxiosResponse } from 'axios'
 import { POST } from '@constants/http-methods'
 import { invalidateQueries } from './invalidate-queries'
+import { useSession } from 'contexts/AuthContext'
 
 type UseUpdateSubscriptionRequest = {
   uid: number
@@ -17,6 +18,7 @@ type UseUpdateSubscription = {
 }
 
 const useUpdateSubscription = (): UseUpdateSubscription => {
+  const { session } = useSession()
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
     async ({ uid, subscriptionAmount }: UseUpdateSubscriptionRequest) => {
@@ -24,6 +26,7 @@ const useUpdateSubscription = (): UseUpdateSubscription => {
         method: POST,
         url: `/api/v3/settings/daily/${uid}`,
         data: { subscription: subscriptionAmount },
+        headers: { Authorization: `Bearer ${session?.token}` },
       })
     },
     {

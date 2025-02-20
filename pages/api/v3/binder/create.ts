@@ -21,6 +21,10 @@ export default async function create_binder(
   await middleware(req, res, cors)
 
   if (req.method === POST) {
+    if (!(await checkUserAuthorization(req))) {
+      res.status(StatusCodes.UNAUTHORIZED).end('Not authorized')
+      return
+    }
     try {
       const authHeader = req.headers.authorization
       if (!authHeader || !authHeader.startsWith('Bearer ')) {

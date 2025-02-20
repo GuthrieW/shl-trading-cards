@@ -8,6 +8,7 @@ import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import assertBoom from '@pages/api/lib/assertBoom'
 import { packService } from 'services/packService'
+import { checkUserAuthorization } from '../../lib/checkUserAuthorization'
 
 const allowedMethods = []
 const cors = Cors({
@@ -128,6 +129,10 @@ const index = async (
   const { method, query } = request
 
   if (method === POST) {
+    if (!(await checkUserAuthorization(request))) {
+      response.status(StatusCodes.UNAUTHORIZED).end('Not authorized')
+      return
+    }
     const { packID } = query
 
     const missingPackId: boolean = assertBoom(

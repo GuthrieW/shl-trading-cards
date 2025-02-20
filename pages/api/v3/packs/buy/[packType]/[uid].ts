@@ -7,6 +7,7 @@ import SQL from 'sql-template-strings'
 import assertBoom from '@pages/api/lib/assertBoom'
 import { cardsQuery, portalQuery } from '@pages/api/database/database'
 import { packService } from 'services/packService'
+import { checkUserAuthorization } from '@pages/api/v3/lib/checkUserAuthorization'
 
 const allowedMethods = [POST]
 const cors = Cors({
@@ -26,6 +27,10 @@ const index = async (
   const { method, query } = request
 
   if (method === POST) {
+    if (!(await checkUserAuthorization(request))) {
+      response.status(StatusCodes.UNAUTHORIZED).end('Not authorized')
+      return
+    }
     const uid = request.query.uid as string
     const packType = request.query.packType as string
 

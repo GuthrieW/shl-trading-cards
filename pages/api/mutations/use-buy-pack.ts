@@ -4,6 +4,7 @@ import { POST } from '@constants/http-methods'
 import { invalidateQueries } from './invalidate-queries'
 import { useToast } from '@chakra-ui/react'
 import { errorToastOptions, successToastOptions } from '@utils/toast'
+import { useSession } from 'contexts/AuthContext'
 
 type UseBuyPackRequest = {
   uid: number
@@ -19,6 +20,7 @@ type UseBuyPack = {
 }
 
 const useBuyPack = (): UseBuyPack => {
+  const { session } = useSession()
   const toast = useToast()
   const queryClient = useQueryClient()
   const { mutate, data, error, isLoading, isSuccess } = useMutation(
@@ -27,6 +29,7 @@ const useBuyPack = (): UseBuyPack => {
         method: POST,
         url: `/api/v3/packs/buy/${packType}/${uid}`,
         data: {},
+        headers: { Authorization: `Bearer ${session?.token}` },
       })
     },
     {
