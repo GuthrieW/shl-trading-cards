@@ -7,13 +7,14 @@ import { cardsQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 import { ApiResponse, UserMostCards } from '..'
+import { rateLimit } from 'lib/rateLimit'
 
 const allowedMethods = [GET]
 const cors = Cors({
   methods: allowedMethods,
 })
 
-const index = async (
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<UserMostCards[] | null>>
 ): Promise<void> => {
@@ -59,4 +60,4 @@ const index = async (
     res.status(StatusCodes.METHOD_NOT_ALLOWED).end()
   }
 }
-export default index
+export default rateLimit(handler)

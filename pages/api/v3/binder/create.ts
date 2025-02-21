@@ -8,16 +8,17 @@ import SQL from 'sql-template-strings'
 import { checkUserAuthorization } from '../lib/checkUserAuthorization'
 import { StatusCodes } from 'http-status-codes'
 import methodNotAllowed from '../lib/methodNotAllowed'
+import { rateLimit } from 'lib/rateLimit'
 
 const allowedMethods: string[] = [POST] as const
 const cors = Cors({
   methods: allowedMethods,
 })
 
-export default async function create_binder(
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<ListResponse<null>>>
-): Promise<void> {
+) => {
   await middleware(req, res, cors)
 
   if (req.method === POST) {
@@ -71,3 +72,4 @@ export default async function create_binder(
 
   methodNotAllowed(req, res, allowedMethods)
 }
+export default rateLimit(handler)
