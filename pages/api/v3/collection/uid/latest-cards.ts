@@ -7,16 +7,17 @@ import { StatusCodes } from 'http-status-codes'
 import methodNotAllowed from '../../lib/methodNotAllowed'
 import { ApiResponse, LatestCards } from '../..'
 import { cardsQuery } from '@pages/api/database/database'
+import { rateLimit } from 'lib/rateLimit'
 
 const allowedMethods: string[] = [GET]
 const cors = Cors({
   methods: allowedMethods,
 })
 
-export default async function latestCardsEndpoint(
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<LatestCards[] | null>>
-): Promise<void> {
+) => {
   await middleware(req, res, cors)
 
   if (req.method === GET) {
@@ -60,3 +61,4 @@ WHERE col.packID =  ${packID}
 
   methodNotAllowed(req, res, allowedMethods)
 }
+export default rateLimit(handler)

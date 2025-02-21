@@ -7,6 +7,7 @@ import SQL, { SQLStatement } from 'sql-template-strings'
 import { cardsQuery } from '@pages/api/database/database'
 import { StatusCodes } from 'http-status-codes'
 import methodNotAllowed from '../../lib/methodNotAllowed'
+import { rateLimit } from 'lib/rateLimit'
 
 export type OwnedCard = {
   quantity: number
@@ -45,10 +46,10 @@ const cors = Cors({
   methods: allowedMethods,
 })
 
-export default async function collectionEndpoint(
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<ListResponse<OwnedCard>>>
-): Promise<void> {
+) => {
   await middleware(req, res, cors)
 
   if (req.method === GET) {
@@ -308,3 +309,4 @@ export default async function collectionEndpoint(
 
   methodNotAllowed(req, res, allowedMethods)
 }
+export default rateLimit(handler)

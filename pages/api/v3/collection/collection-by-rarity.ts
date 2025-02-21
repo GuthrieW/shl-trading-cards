@@ -7,16 +7,17 @@ import { StatusCodes } from 'http-status-codes'
 import methodNotAllowed from '../lib/methodNotAllowed'
 import { ApiResponse, UserUniqueCollection } from '..'
 import { cardsQuery } from '@pages/api/database/database'
+import { rateLimit } from 'lib/rateLimit'
 
 const allowedMethods: string[] = [GET]
 const cors = Cors({
   methods: allowedMethods,
 })
 
-export default async function uniqueCardsEndpoint(
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<InternalUserUniqueCollection[] | null>>
-): Promise<void> {
+) => {
   await middleware(req, res, cors)
   const card_rarity = req.query.card_rarity as string
   const userID = req.query.userID as string
@@ -65,3 +66,4 @@ FROM
 
   methodNotAllowed(req, res, allowedMethods)
 }
+export default rateLimit(handler)

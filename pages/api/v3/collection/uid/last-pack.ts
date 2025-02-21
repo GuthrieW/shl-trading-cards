@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes'
 import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
+import { rateLimit } from 'lib/rateLimit'
 
 const allowedMethods = [GET]
 const cors = Cors({
@@ -20,10 +21,7 @@ type QuantityResult = {
 // Define a type for the possible return value of cardsQuery
 type CardsQueryResult = QuantityResult[] | { error: unknown } // Adjust based on your actual error type
 
-const index = async (
-  request: NextApiRequest,
-  response: NextApiResponse
-): Promise<void> => {
+const handler = async (request: NextApiRequest, response: NextApiResponse) => {
   await middleware(request, response, cors)
   const { method, query } = request
 
@@ -138,4 +136,4 @@ const index = async (
   response.status(StatusCodes.METHOD_NOT_ALLOWED).end()
 }
 
-export default index
+export default rateLimit(handler)
