@@ -43,13 +43,13 @@ const CreateBinder: React.FC<CreateBinder> = ({ isOpen, onClose }) => {
         return axios({
           method: POST,
           url: '/api/v3/binder/create',
-          headers: {
-            Authorization: `Bearer ${session}`,
-          },
           data: {
             userID: userid,
             binderName: binderName,
             binderDesc: binderDescription,
+          },
+          headers: {
+            Authorization: `Bearer ${session?.token}`,
           },
         })
       },

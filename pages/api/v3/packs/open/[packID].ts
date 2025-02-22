@@ -9,6 +9,7 @@ import SQL from 'sql-template-strings'
 import assertBoom from '@pages/api/lib/assertBoom'
 import { packService } from 'services/packService'
 import { checkUserAuthorization } from '../../lib/checkUserAuthorization'
+import { rateLimit } from 'lib/rateLimit'
 
 const allowedMethods = []
 const cors = Cors({
@@ -121,7 +122,7 @@ const pullRubyPlusCards = async (): Promise<{ cardID: string }[]> => {
   return pulledCards
 }
 
-const index = async (
+const handler = async (
   request: NextApiRequest,
   response: NextApiResponse
 ): Promise<void> => {
@@ -210,4 +211,4 @@ const index = async (
   response.status(StatusCodes.METHOD_NOT_ALLOWED).end()
 }
 
-export default index
+export default rateLimit(handler)

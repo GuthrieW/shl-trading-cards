@@ -8,6 +8,7 @@ import { StatusCodes } from 'http-status-codes'
 import { usersQuery } from '@pages/api/database/database'
 import SQL from 'sql-template-strings'
 import methodNotAllowed from '../lib/methodNotAllowed'
+import { rateLimit } from 'lib/rateLimit'
 
 const allowedMethods: string[] = [GET] as const
 const cors = Cors({
@@ -19,10 +20,10 @@ export type PermissionsData = {
   groups: number[]
 }
 
-export default async function permissionsEndpoint(
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<PermissionsData>>
-): Promise<void> {
+) => {
   await middleware(req, res, cors)
 
   if (req.method === GET) {
@@ -84,3 +85,5 @@ export default async function permissionsEndpoint(
 
   methodNotAllowed(req, res, allowedMethods)
 }
+
+export default rateLimit(handler)

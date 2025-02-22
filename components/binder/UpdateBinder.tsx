@@ -133,6 +133,7 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
       cards: cardsToUpdate,
       removedPositions: removedPositions,
     })
+    localStorage.removeItem(`binder-${bid}`)
   }
 
   const hasSelectedCards = () => {

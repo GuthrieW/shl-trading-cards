@@ -8,16 +8,17 @@ import { cardsQuery } from '@pages/api/database/database'
 import SQL from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 import { checkUserAuthorization } from '../../lib/checkUserAuthorization'
+import { rateLimit } from 'lib/rateLimit'
 
 const allowedMethods = [POST]
 const cors = Cors({
   methods: allowedMethods,
 })
 
-export default async function dailySubscription(
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<any>>
-): Promise<void> {
+) => {
   await middleware(req, res, cors)
 
   const { uid } = req.query
@@ -59,3 +60,5 @@ export default async function dailySubscription(
     methodNotAllowed(req, res, allowedMethods)
   }
 }
+
+export default rateLimit(handler)

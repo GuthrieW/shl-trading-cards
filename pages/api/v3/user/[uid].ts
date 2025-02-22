@@ -8,6 +8,7 @@ import { usersQuery } from '@pages/api/database/database'
 import SQL from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 import methodNotAllowed from '../lib/methodNotAllowed'
+import { rateLimit } from 'lib/rateLimit'
 
 const DEFAULT_SHL_URL: string = 'https://simulationhockey.com/' as const
 const allowedMethods: string[] = [GET] as const
@@ -15,10 +16,10 @@ const cors = Cors({
   methods: allowedMethods,
 })
 
-export default async function userEndpoint(
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<UserData>>
-): Promise<void> {
+) => {
   await middleware(req, res, cors)
 
   if (req.method === GET) {
@@ -75,3 +76,5 @@ export default async function userEndpoint(
 
   methodNotAllowed(req, res, allowedMethods)
 }
+
+export default rateLimit(handler)

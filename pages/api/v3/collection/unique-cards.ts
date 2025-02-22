@@ -7,16 +7,17 @@ import { StatusCodes } from 'http-status-codes'
 import methodNotAllowed from '../lib/methodNotAllowed'
 import { ApiResponse, SiteUniqueCards } from '..'
 import { cardsQuery } from '@pages/api/database/database'
+import { rateLimit } from 'lib/rateLimit'
 
 const allowedMethods: string[] = [GET]
 const cors = Cors({
   methods: allowedMethods,
 })
 
-export default async function uniqueCardsEndpoint(
+const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<SiteUniqueCards[] | null>> // Expecting an array of SiteUniqueCards or null
-): Promise<void> {
+  res: NextApiResponse<ApiResponse<SiteUniqueCards[] | null>>
+) => {
   await middleware(req, res, cors)
 
   if (req.method === GET) {
@@ -49,10 +50,11 @@ export default async function uniqueCardsEndpoint(
 
     res.status(StatusCodes.OK).json({
       status: 'success',
-      payload: queryResult, // Returning array of unique cards
+      payload: queryResult,
     })
     return
   }
 
   methodNotAllowed(req, res, allowedMethods)
 }
+export default rateLimit(handler)

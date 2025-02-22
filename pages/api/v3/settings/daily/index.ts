@@ -7,6 +7,7 @@ import { cardsQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 import methodNotAllowed from '../../lib/methodNotAllowed'
+import { rateLimit } from 'lib/rateLimit'
 
 const allowedMethods: string[] = [GET] as const
 const cors = Cors({
@@ -19,10 +20,10 @@ export type DailySettingsData = {
   rubySubscription: number
 }
 
-export default async function settingsEndpoint(
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<DailySettingsData[]>>
-): Promise<void> {
+) => {
   await middleware(req, res, cors)
 
   if (req.method === GET) {
@@ -66,3 +67,4 @@ export default async function settingsEndpoint(
 
   methodNotAllowed(req, res, allowedMethods)
 }
+export default rateLimit(handler)

@@ -373,10 +373,10 @@ export const iihfTeamsMap = {
   },
   '8': {
     teamID: 8,
-    label: 'Russia',
-    city: 'Russia',
+    label: 'Quebec City',
+    city: 'Quebec City',
     team: null,
-    abbreviation: 'RUS',
+    abbreviation: 'QCC',
     league: 'IIHF',
     conference: null,
   },
@@ -616,5 +616,5 @@ export const shlTeamMap = {
     abbreviation: 'PHI',
     league: 'SHL',
     conference: 'East',
-  }
+  },
 }

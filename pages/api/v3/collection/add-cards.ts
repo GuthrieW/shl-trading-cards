@@ -7,16 +7,17 @@ import methodNotAllowed from '../lib/methodNotAllowed'
 import SQL from 'sql-template-strings'
 import { cardsQuery } from '@pages/api/database/database'
 import { StatusCodes } from 'http-status-codes'
+import { rateLimit } from 'lib/rateLimit'
 
 const allowedMethods: string[] = [POST]
 const cors = Cors({
   methods: allowedMethods,
 })
 
-export default async function addCardsEndpoint(
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<void>>
-): Promise<void> {
+) => {
   await middleware(req, res, cors)
 
   if (req.method === POST) {
@@ -64,3 +65,4 @@ export default async function addCardsEndpoint(
 
   methodNotAllowed(req, res, allowedMethods)
 }
+export default rateLimit(handler)

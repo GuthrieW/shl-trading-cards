@@ -47,7 +47,7 @@ const useBuyPack = (): UseBuyPack => {
           typeof errorData === 'string'
             ? errorData
             : errorData?.errorMessage ||
-              'Could be an error or already purchased 3 packs today'
+              'An error while trying to purchase a pack. Refresh or try again later'
 
         toast({
           title: 'Error Purchasing Pack',

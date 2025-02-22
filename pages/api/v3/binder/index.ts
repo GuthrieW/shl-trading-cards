@@ -6,13 +6,14 @@ import middleware from '@pages/api/database/middleware'
 import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import { ApiResponse, binders } from '..'
+import { rateLimit } from 'lib/rateLimit'
 
 const allowedMethods = [GET]
 const cors = Cors({
   methods: allowedMethods,
 })
 
-const index = async (
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<binders[]>>
 ): Promise<void> => {
@@ -39,7 +40,7 @@ JOIN
     if (bid) {
       binderQuery.append(SQL` WHERE b.binderID=${bid} `)
     }
-    if (userID){
+    if (userID) {
       binderQuery.append(SQL` AND u.uid=${userID} `)
     }
 
@@ -70,4 +71,4 @@ JOIN
   res.status(StatusCodes.METHOD_NOT_ALLOWED).end()
 }
 
-export default index
+export default rateLimit(handler)
