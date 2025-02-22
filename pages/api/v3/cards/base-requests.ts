@@ -158,12 +158,13 @@ function addSeasonToPlayers(
 } {
   const missingSeason: IndexPlayer[] = []
   const updatedPlayers = indexPlayers.map((indexPlayer) => {
-    const matchingPortalPlayer = portalPlayers.find((portalPlayer) =>
-      portalPlayer.indexRecords.some(
-        (indexRecord) =>
-          String(indexRecord.indexID) === indexPlayer.id &&
-          indexRecord.leagueID == 0
-      )
+    const matchingPortalPlayer = portalPlayers.find(
+      (portalPlayer) =>
+        portalPlayer.indexRecords?.some(
+          (indexRecord) =>
+            String(indexRecord.indexID) === indexPlayer.id &&
+            indexRecord.leagueID == 0
+        )
     )
     if (matchingPortalPlayer) {
       return { ...indexPlayer, season: matchingPortalPlayer.draftSeason }
