@@ -261,7 +261,9 @@ const LastOpenedPack = () => {
               </Button>
             </Tooltip>
           ) : (
-            <Button isDisabled>No More {type} Packs to Open</Button>
+            <Button className="!text-xs sm:!text-lg" isDisabled>
+              No More {type} Packs to Open
+            </Button>
           )}
           <Button
             className="!text-xs sm:!text-base"
