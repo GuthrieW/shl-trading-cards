@@ -95,8 +95,12 @@ export default async function cardsEndpoint(
       countQuery.append(SQL` WHERE date_approved IS NOT NULL`)
       query.append(SQL` WHERE date_approved IS NOT NULL`)
     } else if (viewSkaters === 'true') {
-      countQuery.append(SQL` WHERE (position = 'F' OR position = 'D')`)
-      query.append(SQL` WHERE (position = 'F' OR position = 'D')`)
+      countQuery.append(
+        SQL` WHERE (position = 'F' OR position = 'D' OR position = 'X')`
+      )
+      query.append(
+        SQL` WHERE (position = 'F' OR position = 'D' OR position = 'X')`
+      )
     } else {
       countQuery.append(SQL` WHERE (position = 'G')`)
       query.append(SQL` WHERE (position = 'G')`)
