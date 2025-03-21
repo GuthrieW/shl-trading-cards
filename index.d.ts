@@ -29,6 +29,7 @@ type Card = {
   quantity?: number
   totalCardQuantity?: number
   date_approved: string | null
+  author_username: string | null
 }
 
 type CardRequest = {

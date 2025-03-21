@@ -46,13 +46,7 @@ const handler = async (
         .end('Database connection failed')
       return
     }
-    if (queryResult.length === 0) {
-      res.status(StatusCodes.NOT_FOUND).json({
-        status: 'error',
-        message: 'No opened packs found for this user',
-      })
-      return
-    }
+
     res.status(StatusCodes.OK).json({
       status: 'success',
       payload: queryResult,

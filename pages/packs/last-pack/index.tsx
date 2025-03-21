@@ -60,9 +60,9 @@ const LastOpenedPack = () => {
     if (!loggedIn) {
       router.replace('/')
     }
-  })
+  }, [loggedIn])
 
-  const resetPackState = () => {
+  const resetPackState = async () => {
     setRevealedCards([])
     setLightBoxIsOpen(false)
     setSelectedCard(null)
@@ -82,9 +82,7 @@ const LastOpenedPack = () => {
       }),
     enabled: !!loggedInUID && !!type,
   })
-  const firstPack = useMemo(() => {
-    return packs?.[0] || undefined
-  }, [packs])
+  const firstPack = packs?.[0]
 
   const {
     openPack,

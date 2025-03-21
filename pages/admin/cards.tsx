@@ -88,6 +88,7 @@ const LOADING_TABLE_DATA: { rows: Card[] } = {
     season: 0,
     author_paid: 1,
     date_approved: null,
+    author_username: 'author_username',
   })),
 } as const
 
@@ -444,8 +445,8 @@ export default () => {
                     onClick={() => handleSortChange('author_userID')}
                   >
                     <span className="flex items-center">
-                      Author ID&nbsp;
-                      {sortColumn === 'author_userID' && (
+                      Author&nbsp;
+                      {sortColumn === 'author_username' && (
                         <SortIcon sortDirection={sortDirection} />
                       )}
                     </span>
@@ -756,7 +757,7 @@ export default () => {
                         <Td isLoading={isLoading}>{card.cardID}</Td>
                         <Td isLoading={isLoading}>{card.playerID}</Td>
                         <Td isLoading={isLoading}>{card.teamID}</Td>
-                        <Td isLoading={isLoading}>{card.author_userID}</Td>
+                        <Td isLoading={isLoading}>{card.author_username}</Td>
                         <Td isLoading={isLoading}>{card.pullable}</Td>
                         <Td isLoading={isLoading}>{card.approved}</Td>
                         <Td isLoading={isLoading}>{card.author_paid}</Td>
