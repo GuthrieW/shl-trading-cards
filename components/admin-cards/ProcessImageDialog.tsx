@@ -24,7 +24,6 @@ import {
   successToastOptions,
 } from '@utils/toast'
 import { CardInfo } from '@components/common/CardInfo'
-import GetUsername from '@components/common/GetUsername'
 
 export default function ProcessImageDialog({
   card,
@@ -133,7 +132,7 @@ export default function ProcessImageDialog({
           <AlertDialogBody className="!bg-primary !div-secondary">
             <div className="text-secondary">
               Author: &nbsp;
-              <GetUsername userID={card.author_userID} />
+              {card.author_username}
             </div>
             <Image
               className="cursor-pointer select-none w-full max-w-xs sm:max-w-sm"
