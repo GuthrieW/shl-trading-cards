@@ -156,10 +156,10 @@ const UsersCollection = () => {
               {Object.entries(rarityMap).map(([key, value]) => (
                 <MenuItemOption
                   className="hover:bg-highlighted/40"
-                  key={value.value}
-                  value={value.value}
+                  key={value.label}
+                  value={value.label}
                   icon={
-                    rarity === value.value ? (
+                    rarity === value.label ? (
                       <CheckIcon className="mx-2" />
                     ) : null
                   }

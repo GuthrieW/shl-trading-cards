@@ -151,7 +151,8 @@ const LastOpenedPack = () => {
     { id: rarityMap.firstOverall.label, color: HexCodes.Gold, emoji: '☝️' },
     { id: rarityMap.iihfAwards.label, color: HexCodes.Gold, emoji: '🌍' },
     { id: rarityMap.charity.label, color: HexCodes.Charity, emoji: '🎗️' },
-  ]
+    { id: rarityMap.charity.label, color: HexCodes.Gold, emoji: '🎊' },
+  ] as { id: string; color: typeof HexCodes; emoji: string }[]
 
   const updateRevealedCards = (index: number): void => {
     if (revealedCards.includes(index)) return

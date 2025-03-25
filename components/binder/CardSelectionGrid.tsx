@@ -242,14 +242,14 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                       Deselect All
                     </MenuItemOption>
                     {Object.entries(rarityMap).map(([key, value]) => {
-                      const isChecked: boolean = rarities.includes(value.value)
+                      const isChecked: boolean = rarities.includes(value.label)
 
                       const isDisabled =
-                        (value.value === 'IIHF Awards' &&
+                        (value.label === 'IIHF Awards' &&
                           rarities.length > 0 &&
                           !rarities.includes('IIHF Awards')) ||
                         (rarities.includes('IIHF Awards') &&
-                          value.value !== 'IIHF Awards')
+                          value.label !== 'IIHF Awards')
 
                       return (
                         <MenuItemOption
@@ -257,12 +257,12 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                           icon={null}
                           isChecked={isChecked}
                           aria-checked={isChecked}
-                          key={value.value}
-                          value={value.value}
+                          key={value.label}
+                          value={value.label}
                           onClick={() => {
                             if (!isDisabled) {
                               setTablePage(1)
-                              toggleRarity(value.value)
+                              toggleRarity(value.label)
                             }
                           }}
                           isDisabled={isDisabled}

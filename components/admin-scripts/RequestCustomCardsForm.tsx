@@ -194,7 +194,7 @@ const validateCard = (
   if (
     !card.card_rarity ||
     !Object.values(rarityMap).some(
-      (rarity) => rarity.value === card.card_rarity
+      (rarity) => rarity.label === card.card_rarity
     )
   ) {
     return {

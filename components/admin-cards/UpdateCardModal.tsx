@@ -291,7 +291,7 @@ export default function UpdateCardModal({
                 value={values.card_rarity}
                 label="Rarity"
                 options={Object.values(rarityMap).map((rarity) => ({
-                  id: rarity.value,
+                  id: rarity.label,
                   name: rarity.label,
                 }))}
                 placeholder="Select Rarity"

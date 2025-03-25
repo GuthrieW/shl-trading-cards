@@ -460,31 +460,31 @@ export const calculateAttributesAndPosition = (
 export const getSameAndHigherRaritiesQueryFragment = (
   rarity: string
 ): string[] => {
-  if (rarity === rarityMap.bronze.value) {
+  if (rarity === rarityMap.bronze.label) {
     return [
-      rarityMap.bronze.value,
-      rarityMap.silver.value,
-      rarityMap.gold.value,
-      rarityMap.ruby.value,
-      rarityMap.diamond.value,
+      rarityMap.bronze.label,
+      rarityMap.silver.label,
+      rarityMap.gold.label,
+      rarityMap.ruby.label,
+      rarityMap.diamond.label,
     ]
   }
-  if (rarity === rarityMap.silver.value) {
+  if (rarity === rarityMap.silver.label) {
     return [
-      rarityMap.silver.value,
-      rarityMap.gold.value,
-      rarityMap.ruby.value,
-      rarityMap.diamond.value,
+      rarityMap.silver.label,
+      rarityMap.gold.label,
+      rarityMap.ruby.label,
+      rarityMap.diamond.label,
     ]
   }
-  if (rarity === rarityMap.gold.value) {
-    return [rarityMap.gold.value, rarityMap.ruby.value, rarityMap.diamond.value]
+  if (rarity === rarityMap.gold.label) {
+    return [rarityMap.gold.label, rarityMap.ruby.label, rarityMap.diamond.label]
   }
-  if (rarity === rarityMap.ruby.value) {
-    return [rarityMap.ruby.value, rarityMap.diamond.value]
+  if (rarity === rarityMap.ruby.label) {
+    return [rarityMap.ruby.label, rarityMap.diamond.label]
   }
-  if (rarity === rarityMap.diamond.value) {
-    return [rarityMap.diamond.value]
+  if (rarity === rarityMap.diamond.label) {
+    return [rarityMap.diamond.label]
   }
 }
 
@@ -493,18 +493,18 @@ export const getSameAndHigherRaritiesQueryFragment = (
  */
 const calculateRarity = (position: Position, overall: number): string => {
   if (position === 'F' || position === 'D') {
-    if (overall < 70) return rarityMap.bronze.value
-    if (overall >= 70 && overall < 80) return rarityMap.silver.value
-    if (overall >= 80 && overall < 85) return rarityMap.gold.value
-    if (overall >= 85 && overall < 88) return rarityMap.ruby.value
-    if (overall >= 88) return rarityMap.diamond.value
+    if (overall < 70) return rarityMap.bronze.label
+    if (overall >= 70 && overall < 80) return rarityMap.silver.label
+    if (overall >= 80 && overall < 85) return rarityMap.gold.label
+    if (overall >= 85 && overall < 88) return rarityMap.ruby.label
+    if (overall >= 88) return rarityMap.diamond.label
     return rarityMap.bronze.label
   } else {
-    if (overall < 76) return rarityMap.bronze.value
-    if (overall >= 76 && overall < 81) return rarityMap.silver.value
-    if (overall >= 81 && overall < 86) return rarityMap.gold.value
-    if (overall >= 86 && overall < 89) return rarityMap.ruby.value
-    if (overall >= 89) return rarityMap.diamond.value
+    if (overall < 76) return rarityMap.bronze.label
+    if (overall >= 76 && overall < 81) return rarityMap.silver.label
+    if (overall >= 81 && overall < 86) return rarityMap.gold.label
+    if (overall >= 86 && overall < 89) return rarityMap.ruby.label
+    if (overall >= 89) return rarityMap.diamond.label
     return rarityMap.bronze.label
   }
 }

@@ -651,16 +651,16 @@ export default function NewTrade({
                         </MenuItemOption>
                         {Object.entries(rarityMap).map(([key, value]) => {
                           const isChecked: boolean = rarities.includes(
-                            value.value
+                            value.label
                           )
 
                           // Disable selection of any IIHF Awards and another rarity because trying to select different leagues teams at the same time with the same ID is hell
                           const isDisabled =
-                            (value.value === 'IIHF Awards' &&
+                            (value.label === 'IIHF Awards' &&
                               rarities.length > 0 &&
                               !rarities.includes('IIHF Awards')) ||
                             (rarities.includes('IIHF Awards') &&
-                              value.value !== 'IIHF Awards')
+                              value.label !== 'IIHF Awards')
 
                           return (
                             <MenuItemOption
@@ -668,10 +668,10 @@ export default function NewTrade({
                               icon={null}
                               isChecked={isChecked}
                               aria-checked={isChecked}
-                              key={value.value}
-                              value={value.value}
+                              key={value.label}
+                              value={value.label}
                               onClick={() =>
-                                !isDisabled && toggleRarity(value.value)
+                                !isDisabled && toggleRarity(value.label)
                               }
                               isDisabled={isDisabled}
                             >

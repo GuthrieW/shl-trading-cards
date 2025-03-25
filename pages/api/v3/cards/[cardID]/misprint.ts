@@ -68,7 +68,7 @@ export default async function misprintEndpoint(
 
     const updateResult = await cardsQuery(SQL`
       UPDATE cards
-      SET card_rarity=${rarityMap.misprint.value}, pullable = 0 
+      SET card_rarity=${rarityMap.misprint.label}, pullable = 0 
       WHERE cardID=${card.cardID};
     `)
 
