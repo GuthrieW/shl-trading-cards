@@ -88,8 +88,10 @@ export default async function cardsEndpoint(
         conditioning,
         season,
         author_paid,
-        date_approved
+        date_approved,
+        user_info.username as author_username
       FROM cards
+      LEFT JOIN user_info ON cards.author_userID = user_info.uid
     `
     if (date_approved === 'true') {
       countQuery.append(SQL` WHERE date_approved IS NOT NULL`)
