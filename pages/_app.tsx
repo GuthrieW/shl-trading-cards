@@ -1,107 +1,108 @@
 import React, { useEffect, useState } from 'react'
+import { Raleway, Montserrat } from '@next/font/google'
 import { DefaultSeo } from 'next-seo'
 import SEO from '../next-seo.config'
 import { AppProps } from 'next/app'
-import { DefaultLayout } from '@components/index'
-import { QueryClient, QueryClientProvider } from 'react-query'
+import { QueryCache, QueryClient, QueryClientProvider } from 'react-query'
 import { Hydrate } from 'react-query/hydration'
-import { ToastContainer } from 'react-toastify'
-import AES from 'crypto-js/aes'
-import 'react-toastify/dist/ReactToastify.css'
+import { SessionProvider, useSession } from 'contexts/AuthContext'
+import { CustomChakraProvider } from 'styles/CustomChakraProvider'
+import { IceLevelLogo } from '@components/common/IceLevelLogo'
+import { ThemeProvider } from 'next-themes'
+import { Footer } from '@components/common/Footer'
+import { Spinner, ToastProvider } from '@chakra-ui/react'
 import '../styles/globals.css'
+import '../styles/style.css'
 
-const AuthModal = () => (
-  <iframe
-    style={{
-      position: 'absolute',
-      top: '0',
-      left: '0',
-      width: '100%',
-      height: '100vh',
-    }}
-    name={'user-authentication-window'}
-    src={'https://simulationhockey.com/userinfo.php'}
-  />
-)
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: 'variable',
+  style: ['normal'],
+  variable: '--font-montserrat',
+})
 
-export default function MyApp({ Component, pageProps }: AppProps): JSX.Element {
-  const [showModal, setShowModal] = useState<boolean>(false)
+const raleway = Raleway({
+  subsets: ['latin'],
+  weight: 'variable',
+  style: ['normal'],
+  variable: '--font-raleway',
+})
 
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-      },
-    },
-  })
+const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
+  const { loggedIn, handleRefresh, isLoading } = useSession()
+
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        queryCache: new QueryCache({
+          onError: async (error: object, query) => {
+            if ('status' in error && error.status === 401) {
+              await handleRefresh()
+              if (loggedIn) {
+                queryClient.refetchQueries(query.queryKey)
+              }
+            }
+          },
+        }),
+      })
+  )
 
   useEffect(() => {
-    const windowExists = typeof window !== 'undefined'
-    const eventHandler = (event) => {
-      if (windowExists) {
-        if (event.origin === 'https://simulationhockey.com') {
-          setShowModal(false)
-          const { type, uid } = event.data
-          if (type == 'uid') {
-            sessionStorage.setItem(
-              'token',
-              AES.encrypt(
-                uid.toString(),
-                process.env.NEXT_PUBLIC_TOKEN_KEY
-              ).toString()
-            )
-          }
-        }
-      }
-    }
-
-    if (windowExists) {
-      if (!sessionStorage.getItem('token')) {
-        setShowModal(true)
-      }
-      window.addEventListener('message', eventHandler)
-    }
-
-    return () => {
-      if (windowExists) {
-        window.removeEventListener('message', eventHandler)
-      }
+    if (
+      localStorage.theme === 'dark' ||
+      (!('theme' in localStorage) &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      document.body.classList.add('dark')
+      document.documentElement.classList.add('dark')
+    } else {
+      document.body.classList.add('light')
+      document.documentElement.classList.add('light')
     }
   }, [])
 
   return (
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
-        {showModal && <AuthModal />}
-        {!showModal && (
-          <DefaultLayout>
-            <ToastContainer
-              position="bottom-left"
-              autoClose={5000}
-              hideProgressBar={true}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss={false}
-              draggable={false}
-              pauseOnHover={false}
-            />
-            <DefaultSeo {...SEO} />
-            <Component {...pageProps} />
-            <style global jsx>{`
-              body {
-                font-family: 'Raleway', sans-serif;
-                background-color: '#E9ECEF';
-              }
-              * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-              }
-            `}</style>
-          </DefaultLayout>
-        )}
+        <main
+          className={`${montserrat.variable} ${raleway.variable} relative min-h-screen font-raleway`}
+        >
+          <DefaultSeo {...SEO} />
+          <ThemeProvider
+            attribute="class"
+            storageKey="index-theme"
+            themes={['light', 'dark']}
+            value={{
+              light: 'index-theme-light',
+              dark: 'index-theme-dark',
+            }}
+            enableColorScheme={false}
+          >
+            <CustomChakraProvider>
+              {isLoading ? (
+                <>
+                  <div className="m-auto w-full pb-8 2xl:w-4/5">
+                    <div className="m-auto flex h-[calc(100vh-10rem)] w-full items-center justify-center">
+                      <Spinner size="xl" thickness="4px" />
+                    </div>
+                  </div>
+                  <Footer />
+                </>
+              ) : (
+                <Component {...pageProps} />
+              )}
+            </CustomChakraProvider>
+          </ThemeProvider>
+        </main>
       </Hydrate>
     </QueryClientProvider>
+  )
+}
+
+export default function App(props: AppProps) {
+  return (
+    <SessionProvider>
+      <AppWrappers {...props} />
+    </SessionProvider>
   )
 }

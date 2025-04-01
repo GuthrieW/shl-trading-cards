@@ -5,9 +5,11 @@ type Card = {
   playerID: number
   author_userID: number
   card_rarity: string
+  sub_type: string
   player_name: string
-  pullable: boolean
-  approved: boolean
+  render_name?: string
+  pullable: 0 | 1
+  approved: 0 | 1
   image_url?: string
   position: string
   overall: number
@@ -22,13 +24,19 @@ type Card = {
   control?: number | null
   conditioning?: number | null
   season: number
-  author_paid: boolean
+  author_paid: 0 | 1
+  packID?: number
+  quantity?: number
+  totalCardQuantity?: number
+  date_approved: string | null
+  author_username: string | null
 }
 
 type CardRequest = {
   teamID?: number
   playerID?: number
   card_rarity: string
+  sub_type: string
   player_name: string
   position: string
   overall: number
@@ -53,6 +61,11 @@ type CollectionCard = {
   player_name: string
   overall: number
   teamID: number
+  playerID: number
+}
+
+type NewCard = {
+  quantity: number
 }
 
 type SetCard = {
@@ -82,15 +95,30 @@ type StartingLineup = {
   goalie: number
 }
 
+type TradeStatus = 'COMPLETE' | 'PENDING' | 'DECLINED' | 'AUTO_DECLINED'
+
 type Trade = {
   tradeID: number
-  tradeAssetID: number
-  fromID: number
-  toID: number
+  initiatorID: number
+  recipientID: number
+  declineUserID: number
+  trade_status: TradeStatus
+  update_date: Date
+  create_date: string
+}
+
+type TradeDetails = {
+  tradeID: number
+  initiatorID: number
+  recipientID: number
+  trade_status: TradeStatus
+  ownedcardid: number
   cardID: number
-  trade_status: string
-  create_date: Date
-  update_data: Date
+  image_url: string
+  toID: number
+  fromID: numer
+  create_date: string
+  update_date: Date
 }
 
 type User = {
@@ -103,14 +131,13 @@ type User = {
   subscription?: number
 }
 
-type Rarity = {
-  rarity: string
-  imageUrl: string
-  enabled: boolean
+type TradeUser = {
+  username: string
+  userID: number
 }
 
-type PackKey = 'base'
-type PackLabel = 'Base'
+type PackKey = 'base' | 'ruby'
+type PackLabel = 'Base' | 'Ruby'
 
 type PackType = {
   key: PackKey
@@ -160,4 +187,30 @@ type PackData = {
   purchaseDate: Date
   openDate: Date
   source: string
+}
+
+type MostCardsOwner = {
+  userID: number
+  sum: number
+  uniqueCards: number
+  username: string
+  avatar?: string
+}
+
+type Donator = {
+  uid: number
+  subscription: number
+}
+
+type InternalUserUniqueCollection = {
+  userID: number
+  username: string
+  card_rarity: string
+  owned_count: number
+  rarity_rank: number
+}
+
+type InternalSiteUniqueCards = {
+  card_rarity: string
+  total_count: number
 }

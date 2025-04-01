@@ -1,34 +1,52 @@
-import ButtonGroup from '@components/buttons/button-group'
-import CommunityTable from '@components/tables/community-table'
-import { useGetAllUsersWithCards } from '@pages/api/queries'
-import { NextSeo } from 'next-seo'
-import React from 'react'
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@chakra-ui/react'
+import { PageWrapper } from '@components/common/PageWrapper'
+import MostCards from '@components/tables/MostCards'
+import UsersCollection from '@components/tables/UsersCollection'
+import UserTables from '@components/tables/UserTable'
 
-const Community = () => {
-  const {
-    users,
-    isSuccess: getAllUsersIsSuccess,
-    isLoading: getAllUsersIsLoading,
-    isError: getAllUsersIsError,
-  } = useGetAllUsersWithCards({})
-
-  if (getAllUsersIsLoading || getAllUsersIsError) {
-    return null
-  }
-
+export default () => {
   return (
-    <>
-      <NextSeo title="Community" />
-      <div className="m-2">
-        <h1 className="text-4xl text-center my-6">Community</h1>
-        {/* <div>
-        This should allow people to choose between finding a user and find who owns a card (and how many of that card)
-        <ButtonGroup buttons={} selectedButtonId={} />
-      </div> */}
-        <CommunityTable tableData={users} />
-      </div>
-    </>
+    <PageWrapper>
+      <Tabs isFitted variant="enclosed-colored" isLazy>
+        <TabList>
+          <Tab
+            _selected={{
+              borderBottomColor: 'blue.600',
+            }}
+            className="!bg-primary !text-secondary !border-b-4"
+          >
+            Search Users
+          </Tab>
+          <Tab
+            _selected={{
+              borderBottomColor: 'blue.600',
+            }}
+            className="!bg-primary !text-secondary !border-b-4"
+          >
+            Most Cards
+          </Tab>
+          <Tab
+            _selected={{
+              borderBottomColor: 'blue.600',
+            }}
+            className="!bg-primary !text-secondary !border-b-4"
+          >
+            Users Collections
+          </Tab>
+        </TabList>
+
+        <TabPanels>
+          <TabPanel>
+            <UserTables />
+          </TabPanel>
+          <TabPanel>
+            <MostCards />
+          </TabPanel>
+          <TabPanel>
+            <UsersCollection />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </PageWrapper>
   )
 }
-
-export default Community

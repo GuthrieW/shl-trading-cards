@@ -2,44 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
-.animate-slide-in-left {
-  position: relative;
-  animation: animateleft 1s;
-}
-@keyframes animateleft {
-  from {
-    left: -300px;
-    opacity: 0;
+@layer base {
+  html,
+  body {
+    @apply bg-secondary text-primary;
   }
-  to {
-    left: 0;
-    opacity: 1;
+      
+  * {
+    @apply m-0 p-0 box-border;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }
 
-.animate-slide-in-top {
-  position: relative;
-  animation: animatetop 300ms ease-out;
-}
-@keyframes animatetop {
-  from {
-    top: -10px;
-    opacity: 0;
-  }
-  to {
-    top: 0;
-    opacity: 1;
-  }
-}
+@layer utilities {
+  @variants responsive {
+    /* Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
 
-.badge {
-  position: absolute;
-  right: -20px;
-  top: 10px;
-  background: skyblue;
-  text-align: center;
-  border-radius: 30px 30px 30px 30px;
-  color: white;
-  padding: 5px 10px;
-  font-size: 20px;
+    .no-scrollbar {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+  }
 }

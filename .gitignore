@@ -10,6 +10,7 @@
 
 # next.js
 /.next/
+/_next/
 /out/
 
 # production
@@ -41,3 +42,7 @@ notes.md
 
 id_rsa
 run-db-tunnel.sh
+
+/temp
+**/temp*
+/scripts

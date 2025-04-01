@@ -1,39 +1,48 @@
-import mysql from 'serverless-mysql'
+import mysql, { ServerlessMysql } from 'serverless-mysql'
+import { SQLStatement } from 'sql-template-strings'
 
-const dbConnection = mysql(
-  process.env.NODE_ENV === 'production'
-    ? {
-        config: {
-          host: process.env.DATABASE_HOST,
-          user: process.env.DATABASE_USER,
-          password: process.env.DATABASE_PASSWORD,
-          database: process.env.DATABASE_NAME,
-        },
-      }
-    : {
-        config: {
-          host: process.env.DEV_DATABASE_HOST,
-          user: process.env.DEV_DATABASE_USER,
-          password: process.env.DEV_DATABASE_PASSWORD,
-          database: process.env.DEV_DATABASE_NAME,
-        },
-      }
+type SelectQueryResult<T> = T[] | { error: unknown }
+
+const initializeDB = (database: string | undefined): ServerlessMysql =>
+  mysql({
+    config: {
+      host: process.env.DATABASE_HOST,
+      user: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database,
+    },
+  })
+
+console.log('process.env.NODE_ENV', process.env.NODE_ENV)
+const cardsDatabase: ServerlessMysql = initializeDB(
+  // process.env.NODE_ENV === 'production' ? 'dev_cards' : 'dev_cards' // dev
+  process.env.NODE_ENV === 'production' ? 'admin_cards' : 'dev_cards' // prod
 )
 
-export const queryDatabase = async (query): Promise<any> => {
-  try {
-    const results = await dbConnection.query(query)
-    await dbConnection.end()
-    return results
-  } catch (error) {
-    return { error }
+const usersDatabase: ServerlessMysql = initializeDB(
+  // process.env.NODE_ENV === 'production' ? 'admin_testdb' : 'admin_testdb' // dev
+  process.env.NODE_ENV === 'production' ? 'admin_mybb' : 'admin_testdb' // prod
+)
+
+const portalDatabase: ServerlessMysql = initializeDB(
+  // process.env.NODE_ENV === 'production' ? 'dev_portal' : 'dev_portal' // dev
+  process.env.NODE_ENV === 'production' ? 'admin_portal' : 'dev_portal' // prod
+)
+
+const getQueryFn =
+  (db: ServerlessMysql) =>
+  async <T extends unknown>(
+    query: SQLStatement
+  ): Promise<SelectQueryResult<T>> => {
+    try {
+      const results: T[] = await db.query(query)
+      await db.end()
+      return results
+    } catch (error) {
+      return { error }
+    }
   }
-}
 
-export const getCardsDatabaseName = () => {
-  return process.env.NODE_ENV === 'production' ? 'admin_cards' : 'dev_cards'
-}
-
-export const getUsersDatabaseName = () => {
-  return process.env.NODE_ENV === 'production' ? 'admin_mybb' : 'dev_bank'
-}
+export const cardsQuery = getQueryFn(cardsDatabase)
+export const usersQuery = getQueryFn(usersDatabase)
+export const portalQuery = getQueryFn(portalDatabase)
