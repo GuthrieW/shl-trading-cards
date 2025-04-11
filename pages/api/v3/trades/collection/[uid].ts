@@ -11,26 +11,11 @@ import methodNotAllowed from '../../lib/methodNotAllowed'
 export type TradeCard = {
   cardID: number
   ownedCardID: number
-  teamName: string
-  teamNickName: string
   teamID: number
   player_name: string
-  position: 'F' | 'D' | 'G'
   card_rarity: string
-  season: number
   image_url: string
   overall: number
-  skating: number
-  shooting: number
-  hands: number
-  checking: number
-  defense: number
-  high_shots: number
-  low_shots: number
-  quickness: number
-  control: number
-  conditioning: number
-  playerID: number
   total: number
 }
 
