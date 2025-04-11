@@ -119,6 +119,7 @@ export default function NewTrade({
   >([])
   const [cardAdded, setCardAdded] = useState(false)
   const [otherUID, setOtherUID] = useState<string>('')
+  const [removeSingles, setRemoveSingles] = useState<boolean>(false)
   const [debouncedPlayerName] = useDebounce(playerName, 500)
 
   const [uid] = useCookie(config.userIDCookieName)
@@ -199,6 +200,7 @@ export default function NewTrade({
         sortColumn,
         sortDirection,
         otherUID,
+        String(removeSingles),
       ],
       queryFn: () =>
         axios({
@@ -215,6 +217,7 @@ export default function NewTrade({
             sortColumn,
             sortDirection,
             otherUID: otherUID,
+            removeSingles: removeSingles,
           },
         }),
       enabled: !!selectedUserId,
@@ -724,6 +727,15 @@ export default function NewTrade({
                   className="flex items-center"
                   placeholder="User ID"
                   onChange={(e) => setFilteredUID(e.target.checked)}
+                />
+              </FormControl>
+              <FormControl className="flex flex-row justify-start items-center">
+                <FormLabel className="flex items-center mr-4">
+                  Show only Duplicates
+                </FormLabel>
+                <Switch
+                  className="flex items-center"
+                  onChange={(e) => setRemoveSingles(e.target.checked)}
                 />
               </FormControl>
             </Flex>

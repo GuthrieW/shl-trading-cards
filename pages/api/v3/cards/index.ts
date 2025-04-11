@@ -58,11 +58,6 @@ export default async function cardsEndpoint(
     const cardID = req.query.cardID as string
     const date_approved = req.query.date_approved as string
 
-    const countQuery = SQL`
-      SELECT count(*) as total
-      FROM cards
-    `
-
     const query: SQLStatement = SQL`
       SELECT cardID,
         teamID,
@@ -89,38 +84,30 @@ export default async function cardsEndpoint(
         season,
         author_paid,
         date_approved,
-        user_info.username as author_username
+        user_info.username as author_username,
+        COUNT(*) OVER() AS total
       FROM cards
       LEFT JOIN user_info ON cards.author_userID = user_info.uid
     `
     if (date_approved === 'true') {
-      countQuery.append(SQL` WHERE date_approved IS NOT NULL`)
       query.append(SQL` WHERE date_approved IS NOT NULL`)
     } else if (viewSkaters === 'true') {
-      countQuery.append(
-        SQL` WHERE (position = 'F' OR position = 'D' OR position = 'X')`
-      )
       query.append(
         SQL` WHERE (position = 'F' OR position = 'D' OR position = 'X')`
       )
     } else {
-      countQuery.append(SQL` WHERE (position = 'G')`)
       query.append(SQL` WHERE (position = 'G')`)
     }
     if (viewMyCards === 'true') {
-      countQuery.append(SQL` AND (author_userID = ${userID})`)
       query.append(SQL` AND (author_userID = ${userID})`)
     }
 
     if (cardID) {
-      countQuery.append(SQL` AND cardID = ${cardID}`)
       query.append(SQL` AND cardID = ${cardID}`)
     }
     const statusesToAppend: SQLStatement[] = []
 
     if (hasSortStatus) {
-      countQuery.append(SQL` AND (`)
-
       if (viewNeedsAuthor === 'true') {
         statusesToAppend.push(SQL` (author_userID IS NULL)`)
       }
@@ -148,32 +135,9 @@ export default async function cardsEndpoint(
           SQL` (author_userID IS NOT NULL AND image_url IS NOT NULL AND approved = 1 AND author_paid = 1)`
         )
       }
-
-      statusesToAppend.forEach((statusToAppend, index) => {
-        if (index === 0) {
-          countQuery.append(statusToAppend)
-        } else {
-          countQuery.append(SQL` OR `)
-          countQuery.append(statusToAppend)
-        }
-      })
-
-      countQuery.append(SQL`)`)
     }
 
     if (hasSortStatus) {
-      countQuery.append(SQL` AND (`)
-
-      statusesToAppend.forEach((statusToAppend, index) => {
-        if (index === 0) {
-          countQuery.append(statusToAppend)
-        } else {
-          countQuery.append(SQL` OR `)
-          countQuery.append(statusToAppend)
-        }
-      })
-      countQuery.append(SQL`)`)
-
       query.append(SQL` AND (`)
 
       statusesToAppend.forEach((statusToAppend, index) => {
@@ -188,19 +152,10 @@ export default async function cardsEndpoint(
     }
 
     if (playerName.length !== 0) {
-      countQuery.append(SQL` AND player_name LIKE ${`%${playerName}%`}`)
       query.append(SQL` AND player_name LIKE ${`%${playerName}%`}`)
     }
 
     if (teams.length !== 0) {
-      countQuery.append(SQL` AND (`)
-      teams.forEach((team, index) =>
-        index === 0
-          ? countQuery.append(SQL`teamID=${parseInt(team)}`)
-          : countQuery.append(SQL` OR teamID=${parseInt(team)}`)
-      )
-      countQuery.append(SQL`)`)
-
       query.append(SQL` AND (`)
       teams.forEach((team, index) =>
         index === 0
@@ -211,14 +166,6 @@ export default async function cardsEndpoint(
     }
 
     if (rarities.length !== 0) {
-      countQuery.append(SQL` AND (`)
-      rarities.forEach((rarity, index) =>
-        index === 0
-          ? countQuery.append(SQL`card_rarity=${rarity}`)
-          : countQuery.append(SQL` OR card_rarity=${rarity}`)
-      )
-      countQuery.append(SQL`)`)
-
       query.append(SQL` AND (`)
       rarities.forEach((rarity, index) =>
         index === 0
@@ -261,15 +208,6 @@ export default async function cardsEndpoint(
       query.append(SQL` OFFSET ${parseInt(offset)}`)
     }
 
-    const count = await cardsQuery<ListTotal>(countQuery)
-
-    if ('error' in count) {
-      console.error(count)
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .end('Server connection failed')
-      return
-    }
     const queryResult = await cardsQuery<Card>(query)
 
     if ('error' in queryResult) {
@@ -280,9 +218,11 @@ export default async function cardsEndpoint(
       return
     }
 
+    const total = queryResult.length > 0 ? queryResult[0].total : 0
+
     res.status(StatusCodes.OK).json({
       status: 'success',
-      payload: { rows: queryResult, total: count[0].total },
+      payload: { rows: queryResult, total: total },
     })
     return
   }
