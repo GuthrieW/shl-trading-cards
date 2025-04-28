@@ -11,26 +11,12 @@ import methodNotAllowed from '../../lib/methodNotAllowed'
 export type TradeCard = {
   cardID: number
   ownedCardID: number
-  teamName: string
-  teamNickName: string
   teamID: number
   player_name: string
-  position: 'F' | 'D' | 'G'
   card_rarity: string
-  season: number
   image_url: string
   overall: number
-  skating: number
-  shooting: number
-  hands: number
-  checking: number
-  defense: number
-  high_shots: number
-  low_shots: number
-  quickness: number
-  control: number
-  conditioning: number
-  playerID: number
+  total: number
 }
 
 export type TradeCardSortValue = keyof TradeCard
@@ -62,6 +48,7 @@ export default async function tradeCollectionEndpoint(
       'overall') as keyof Readonly<Card>
     const sortDirection = (req.query.sortDirection ?? 'DESC') as SortDirection
     const otherUID = req.query.otherUID as string
+    const removeSingles = req.query.removeSingles as string
 
     if (!uid) {
       res.status(StatusCodes.BAD_REQUEST).json({
@@ -71,61 +58,39 @@ export default async function tradeCollectionEndpoint(
       return
     }
 
-    const countQuery: SQLStatement = SQL`
-      SELECT count(*) as total
-      FROM collection collectionCard
-      LEFT JOIN cards card
-        ON card.cardID=collectionCard.cardID
-      LEFT JOIN team_data team
-        ON card.teamID=team.teamID
-      WHERE collectionCard.userID=${uid}
-    `
-
     const query: SQLStatement = SQL`
       SELECT collectionCard.cardID,
-        collectionCard.ownedCardID,
-        team.Name as teamName,
-        team.Nickname as teamNickName,
-        card.teamID,
-        card.player_name,
-        card.position,
-        card.card_rarity,
-        card.season,
-        card.image_url,
-        card.overall,
-        card.skating,
-        card.shooting,
-        card.hands,
-        card.checking,
-        card.defense,
-        card.high_shots,
-        card.low_shots,
-        card.quickness,
-        card.control,
-        card.conditioning,
-        card.playerID
-      FROM collection collectionCard
+       collectionCard.ownedCardID,
+       card.teamID,
+       card.player_name,
+       card.card_rarity,
+       card.season,
+       card.image_url,
+       card.overall,
+       COUNT(*) OVER() AS total
+      FROM collection collectionCard`
+
+    if (removeSingles === 'true') {
+      query.append(SQL`
+          JOIN (
+            SELECT cardID
+            FROM collection
+            WHERE userID = ${uid}
+            GROUP BY cardID
+            HAVING COUNT(*) > 1
+          ) dupes ON collectionCard.cardID = dupes.cardID
+        `)
+    }
+    query.append(SQL`
       LEFT JOIN cards card
         ON card.cardID=collectionCard.cardID
-      LEFT JOIN team_data team
-        ON card.teamID=team.teamID
-      WHERE collectionCard.userID=${uid}
-    `
+        WHERE collectionCard.userID=${uid}`)
 
     if (playerName.length !== 0) {
-      countQuery.append(SQL` AND card.player_name LIKE ${`%${playerName}%`}`)
       query.append(SQL` AND card.player_name LIKE ${`%${playerName}%`}`)
     }
 
     if (teams.length !== 0) {
-      countQuery.append(SQL` AND (`)
-      teams.forEach((team, index) =>
-        index === 0
-          ? countQuery.append(SQL`card.teamID=${parseInt(team)}`)
-          : countQuery.append(SQL` OR card.teamID=${parseInt(team)}`)
-      )
-      countQuery.append(SQL`)`)
-
       query.append(SQL` AND (`)
       teams.forEach((team, index) =>
         index === 0
@@ -136,12 +101,6 @@ export default async function tradeCollectionEndpoint(
     }
 
     if (otherUID) {
-      countQuery.append(
-        SQL` AND card.cardID NOT IN (
-            SELECT cardID 
-            FROM ownedCards 
-            WHERE userID =${parseInt(otherUID)} )`
-      )
       query.append(
         SQL` AND card.cardID NOT IN (
             SELECT cardID 
@@ -151,14 +110,6 @@ export default async function tradeCollectionEndpoint(
     }
 
     if (rarities.length !== 0) {
-      countQuery.append(SQL` AND (`)
-      rarities.forEach((rarity, index) =>
-        index === 0
-          ? countQuery.append(SQL`card.card_rarity=${rarity}`)
-          : countQuery.append(SQL` OR card.card_rarity=${rarity}`)
-      )
-      countQuery.append(SQL`)`)
-
       query.append(SQL` AND (`)
       rarities.forEach((rarity, index) =>
         index === 0
@@ -199,17 +150,6 @@ export default async function tradeCollectionEndpoint(
     if (offset) {
       query.append(SQL` OFFSET ${parseInt(offset)}`)
     }
-
-    const countResult = await cardsQuery<ListTotal>(countQuery)
-
-    if ('error' in countResult) {
-      console.error(countResult.error)
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .end('Server connection failed')
-      return
-    }
-
     const queryResult = await cardsQuery<TradeCard>(query)
 
     if ('error' in queryResult) {
@@ -220,9 +160,12 @@ export default async function tradeCollectionEndpoint(
       return
     }
 
+    const total = queryResult.length > 0 ? queryResult[0].total : 0
+
+    console.log(total)
     res.status(StatusCodes.OK).json({
       status: 'success',
-      payload: { rows: queryResult, total: countResult[0].total },
+      payload: { rows: queryResult, total: total },
     })
     return
   }

@@ -119,6 +119,7 @@ export default function NewTrade({
   >([])
   const [cardAdded, setCardAdded] = useState(false)
   const [otherUID, setOtherUID] = useState<string>('')
+  const [removeSingles, setRemoveSingles] = useState<boolean>(false)
   const [debouncedPlayerName] = useDebounce(playerName, 500)
 
   const [uid] = useCookie(config.userIDCookieName)
@@ -144,26 +145,12 @@ export default function NewTrade({
     rows: Array.from({ length: ROWS_PER_PAGE }, (_, index) => ({
       cardID: index,
       ownedCardID: 1,
-      teamName: 'name',
-      teamNickName: 'nickName',
       teamID: 1,
       player_name: 'player_name',
-      position: 'F',
-      season: 1,
       card_rarity: 'Bronze',
       image_url: 'image_url',
       overall: 1,
-      skating: 1,
-      shooting: 1,
-      hands: 1,
-      checking: 1,
-      defense: 1,
-      high_shots: 1,
-      low_shots: 1,
-      quickness: 1,
-      control: 1,
-      conditioning: 1,
-      playerID: 0,
+      total: 0,
     })),
   } as const
 
@@ -199,6 +186,7 @@ export default function NewTrade({
         sortColumn,
         sortDirection,
         otherUID,
+        String(removeSingles),
       ],
       queryFn: () =>
         axios({
@@ -215,6 +203,7 @@ export default function NewTrade({
             sortColumn,
             sortDirection,
             otherUID: otherUID,
+            removeSingles: removeSingles,
           },
         }),
       enabled: !!selectedUserId,
@@ -724,6 +713,15 @@ export default function NewTrade({
                   className="flex items-center"
                   placeholder="User ID"
                   onChange={(e) => setFilteredUID(e.target.checked)}
+                />
+              </FormControl>
+              <FormControl className="flex flex-row justify-start items-center">
+                <FormLabel className="flex items-center mr-4">
+                  Show only Duplicates
+                </FormLabel>
+                <Switch
+                  className="flex items-center"
+                  onChange={(e) => setRemoveSingles(e.target.checked)}
                 />
               </FormControl>
             </Flex>
