@@ -107,6 +107,8 @@ const UpdateBinder = ({ bid, currentCards, onClose }: UpdateBinderProps) => {
       ...card,
       position: selectedPosition,
       binderID: Number(bid),
+      playerID: 0,
+      season: 0,
     }
 
     updatedCards[selectedPosition - 1] = newCard
