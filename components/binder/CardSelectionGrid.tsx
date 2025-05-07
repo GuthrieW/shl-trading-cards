@@ -105,6 +105,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
         control: 1,
         conditioning: 1,
         playerID: 0,
+        total: 0,
       })),
     } as const
 
