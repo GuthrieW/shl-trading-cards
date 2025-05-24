@@ -21,6 +21,12 @@ export type ListResponse<T> = {
   totalOwned?: number
 }
 
+export type CardMakerInfo = {
+  userID: number
+  username: string
+  date_approved: string
+}
+
 export type UserMostCards = {
   userID: number
   uniqueCards: number
