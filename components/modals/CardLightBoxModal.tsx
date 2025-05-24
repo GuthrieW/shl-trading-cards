@@ -18,10 +18,14 @@ import {
   Spinner,
   useBreakpointValue,
 } from '@chakra-ui/react'
+import { query } from '@pages/api/database/query'
 import { CardInformation } from '@components/collection/CardInformation'
 import axios from 'axios'
 import { BackOfCard } from '@components/collection/BackOfCard'
 import TradingCard from '@components/images/TradingCard'
+import { CardMakerInfo } from '@pages/api/v3'
+import { GET } from '@constants/http-methods'
+import { formatDateTime } from '@utils/formatDateTime'
 
 type CardLightBoxModalProps = {
   setShowModal: Function
@@ -65,6 +69,16 @@ const CardLightBoxModal = ({
   const isOwned = useMemo(() => {
     return userID !== undefined && owned > 0
   }, [userID, owned])
+
+  const { payload: cardMakerInfo } = query<CardMakerInfo[]>({
+    queryKey: ['cardMakerInfo', String(cardID)],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/cards/${cardID}/info`,
+      }),
+    enabled: !!cardID,
+  })
 
   const handleFlip = async () => {
     setIsLoading(true)
@@ -230,6 +244,23 @@ const CardLightBoxModal = ({
           <DrawerCloseButton className="bg-primary" />
           <DrawerHeader className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
             Card Information
+            <div>
+              {cardMakerInfo
+                ? cardMakerInfo?.map((info) => (
+                    <div key={info.userID} className="text-sm">
+                      Created by: {info.username}
+                    </div>
+                  ))
+                : null}
+              {cardMakerInfo && cardMakerInfo[0].date_approved !== null ? (
+                <div className="text-sm">
+                  Date Approved:{' '}
+                  {formatDateTime(cardMakerInfo[0].date_approved)}
+                </div>
+              ) : (
+                <div className="text-sm">Date Approved: None Recorded</div>
+              )}
+            </div>
           </DrawerHeader>
           <DrawerBody className="bg-secondary">
             <CardInformation
