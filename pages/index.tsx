@@ -14,7 +14,7 @@ import { useSession } from 'contexts/AuthContext'
 import { UserData } from './api/v3/user'
 import { Alert, AlertIcon, Button, Link } from '@chakra-ui/react'
 import NewestCards from '@components/tables/NewestCards'
-import { HOME_CARDS_TABLE } from '@components/tables/tableBehaviorFlags'
+import { HOME_CARDS_TABLE_NO_FILTER } from '@components/tables/tableBehaviorFlags'
 import router from 'next/router'
 
 export default () => {
@@ -126,7 +126,7 @@ export default () => {
           <NewestCards
             data={latestCards}
             isLoading={isLoadingLatestCards}
-            BehaviorFlag={HOME_CARDS_TABLE}
+            BehaviorFlag={HOME_CARDS_TABLE_NO_FILTER}
             uid={String(user?.uid)}
           />
           <Button
