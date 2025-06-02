@@ -49,7 +49,7 @@ const updateValidationSchema = Yup.object({}).shape({
     .required('Approved is required'),
   image_url: Yup.string().optional(),
   position: Yup.string()
-    .matches(/(F|D|G)/)
+    .matches(/(F|D|G|X)/)
     .required(),
   overall: Yup.number()
     .integer()
