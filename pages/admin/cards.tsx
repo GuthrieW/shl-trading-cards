@@ -406,7 +406,17 @@ export default () => {
                       )}
                     </span>
                   </Th>
-                  <Th>Render</Th>
+                  <Th
+                    className="cursor-pointer"
+                    onClick={() => handleSortChange('render_name')}
+                  >
+                    <span className="flex items-center">
+                      Render&nbsp;
+                      {sortColumn === 'render_name' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
+                  </Th>
                   <Th
                     className="cursor-pointer"
                     onClick={() => handleSortChange('cardID')}

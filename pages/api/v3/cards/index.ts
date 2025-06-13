@@ -66,6 +66,7 @@ export default async function cardsEndpoint(
         card_rarity,
         sub_type,
         player_name,
+        render_name,
         pullable,
         approved,
         image_url,
@@ -198,6 +199,7 @@ export default async function cardsEndpoint(
     if (sortColumn === 'conditioning') query.append(SQL` conditioning`)
     if (sortColumn === 'card_rarity') query.append(SQL` card_rarity`)
     if (sortColumn === 'date_approved') query.append(SQL` date_approved`)
+    if (sortColumn === 'render_name') query.append(SQL` render_name`)
     sortDirection === 'ASC' ? query.append(SQL` ASC`) : query.append(` DESC`)
 
     if (limit) {
