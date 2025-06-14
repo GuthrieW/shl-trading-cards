@@ -180,7 +180,7 @@ export default ({ tradeid }: { tradeid: string }) => {
         separator={<ChevronRightIcon color="gray.500" />}
       >
         <BreadcrumbItem>
-          <BreadcrumbLink href="/trade">Trade</BreadcrumbLink>
+          <BreadcrumbLink href="/trade?tab=view-trade">Trade</BreadcrumbLink>
         </BreadcrumbItem>
 
         <BreadcrumbItem isCurrentPage>
