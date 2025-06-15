@@ -103,7 +103,7 @@ export default () => {
           userPendingTrades.length > 0 && (
             <Alert className="text-black text-xl" status="info">
               <AlertIcon />
-              <Link href={`/trade`}>
+              <Link href={`/trade?tab=view-trade`}>
                 Welcome back {user?.username}, you have{' '}
                 {userPendingTrades.length} pending trades
               </Link>
