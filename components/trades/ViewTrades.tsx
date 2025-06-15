@@ -5,6 +5,8 @@ import {
   Select,
   Stack,
   Heading,
+  Radio,
+  RadioGroup,
 } from '@chakra-ui/react'
 import ViewTradeTable from '@components/tables/ViewTradeTable'
 import { GET } from '@constants/http-methods'
@@ -46,7 +48,7 @@ const TRADE_STATUS_OPTIONS: {
   },
 ] as const
 
-export default function TradesDrawer() {
+export default function ViewTrades() {
   const [tradeStatusFilter, setTradeStatusFilter] = useState<TradeStatus>(
     TRADE_STATUS_OPTIONS[1].value
   )
@@ -90,23 +92,18 @@ export default function TradesDrawer() {
           <Stack direction={{ base: 'column', md: 'row' }} spacing={4} flex="1">
             <FormControl>
               <FormLabel>Status</FormLabel>
-              <Select
+              <RadioGroup
                 value={tradeStatusFilter}
-                onChange={(e) =>
-                  setTradeStatusFilter(e.target.value as TradeStatus)
-                }
-                className="bg-secondary text-primary"
+                onChange={(value) => setTradeStatusFilter(value as TradeStatus)}
               >
-                {TRADE_STATUS_OPTIONS.map((option) => (
-                  <option
-                    className="!bg-secondary !text-primary"
-                    key={option.value}
-                    value={option.value}
-                  >
-                    {option.label}
-                  </option>
-                ))}
-              </Select>
+                <Stack direction={{ base: 'column', md: 'row' }}>
+                  {TRADE_STATUS_OPTIONS.map((option) => (
+                    <Radio key={option.value} value={option.value}>
+                      {option.label}
+                    </Radio>
+                  ))}
+                </Stack>
+              </RadioGroup>
             </FormControl>
 
             <FormControl>
