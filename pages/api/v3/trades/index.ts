@@ -47,16 +47,28 @@ export default async function tradesEndpoint(
     }
 
     const userId = req.cookies.userid
-    const tradesQuery = SQL`SELECT * FROM trades`
+    const tradesQuery = SQL`  SELECT 
+    t.tradeID,
+    t.initiatorID,
+    initiator.username AS initiatorUsername,
+    t.recipientID,
+    recipient.username AS recipientUsername,
+    t.trade_status,
+    t.create_date,
+    t.update_date,
+    t.declineUserID
+  FROM trades AS t
+  INNER JOIN user_info AS initiator ON initiator.uid = t.initiatorID
+  INNER JOIN user_info AS recipient ON recipient.uid = t.recipientID`
 
     if (tradePartners.length === 0) {
       tradesQuery.append(
-        SQL` WHERE (initiatorID=${userId} OR recipientID=${userId})`
+        SQL` WHERE (t.initiatorID=${userId} OR t.recipientID=${userId})`
       )
     } else {
       const partnerIds = tradePartners.map((partner) => partner.uid)
       tradesQuery.append(
-        SQL` WHERE ((initiatorID=${userId} AND recipientID IN (`
+        SQL` WHERE ((t.initiatorID=${userId} AND t.recipientID IN (`
       )
       partnerIds.forEach((id, index) => {
         if (index === 0) {
@@ -66,7 +78,9 @@ export default async function tradesEndpoint(
 
         tradesQuery.append(SQL`, ${id}`)
       })
-      tradesQuery.append(SQL`)) OR (recipientID=${userId} AND initiatorID IN (`)
+      tradesQuery.append(
+        SQL`)) OR (t.recipientID=${userId} AND t.initiatorID IN (`
+      )
       partnerIds.forEach((id, index) => {
         if (index === 0) {
           tradesQuery.append(SQL` ${id}`)
@@ -79,7 +93,9 @@ export default async function tradesEndpoint(
     }
 
     if (status.length !== 0) {
-      tradesQuery.append(SQL` AND trade_status=${status} ORDER BY create_date DESC`)
+      tradesQuery.append(
+        SQL` AND t.trade_status=${status} ORDER BY t.create_date DESC`
+      )
     }
 
     const queryResult = await cardsQuery<Trade>(tradesQuery)

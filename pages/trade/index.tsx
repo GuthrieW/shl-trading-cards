@@ -8,7 +8,6 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { PageWrapper } from '@components/common/PageWrapper'
-import TradesDrawer from '@components/drawers/TradesDrawer'
 import Autocomplete from '@components/forms/Autocomplete'
 import NewTrade from '@components/trades/NewTrade'
 import ViewTrades from '@components/trades/ViewTrades'
@@ -99,15 +98,7 @@ export default () => {
             }}
             className="!bg-primary !text-secondary !border-b-4"
           >
-            View Trades
-          </Tab>
-          <Tab
-            _selected={{
-              borderBottomColor: 'blue.600',
-            }}
-            className="!bg-primary !text-secondary !border-b-4"
-          >
-            Marketplace
+            Your Trades
           </Tab>
         </TabList>
         <TabPanels>
@@ -131,9 +122,6 @@ export default () => {
           </TabPanel>
           <TabPanel>
             <ViewTrades />
-          </TabPanel>
-          <TabPanel>
-            <p>Marketplace</p>
           </TabPanel>
         </TabPanels>
       </Tabs>

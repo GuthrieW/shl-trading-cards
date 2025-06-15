@@ -55,20 +55,16 @@ const ViewTradeTable = ({ trades, isLoading }: TradeProps) => {
         ),
         enableGlobalFilter: true,
       }),
-      columnHelper.accessor('initiatorID', {
-        header: () => <TableHeader title="initiatorID">Sender</TableHeader>,
-        cell: (props) => {
-          const cellValue = props.getValue()
-          return <GetUsername userID={cellValue} />
-        },
+      columnHelper.accessor('initiatorUsername', {
+        header: () => (
+          <TableHeader title="initiatorUsername">Sender</TableHeader>
+        ),
         enableGlobalFilter: true,
       }),
-      columnHelper.accessor('recipientID', {
-        header: () => <TableHeader title="recipientID">Receiver</TableHeader>,
-        cell: (props) => {
-          const cellValue = props.getValue()
-          return <GetUsername userID={cellValue} />
-        },
+      columnHelper.accessor('recipientUsername', {
+        header: () => (
+          <TableHeader title="recipientUsername">Receiver</TableHeader>
+        ),
         enableGlobalFilter: false,
       }),
       columnHelper.accessor('create_date', {
