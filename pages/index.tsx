@@ -12,18 +12,7 @@ import { Carousel } from '@components/carousel/Carousel'
 import { useMemo } from 'react'
 import { useSession } from 'contexts/AuthContext'
 import { UserData } from './api/v3/user'
-import {
-  Alert,
-  AlertIcon,
-  Badge,
-  Button,
-  IconButton,
-  Link,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-} from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import NewestCards from '@components/tables/NewestCards'
 import { HOME_CARDS_TABLE_NO_FILTER } from '@components/tables/tableBehaviorFlags'
 import router from 'next/router'
