@@ -29,8 +29,10 @@ export default async function tradeEndpoint(
 
     const queryResult = await cardsQuery<TradeDetails>(
       SQL`
-        SELECT * FROM trade_details
-        WHERE tradeID=${parseInt(tradeID)}
+       SELECT dt.tradeID, dt.initiatorID, dt.recipientID, dt.trade_status, dt.ownedcardid, dt.cardID, dt.image_url, dt.toID, dt.fromID, dt.create_date, dt.update_date, oc.quantity 
+       FROM trade_details AS dt 
+       LEFT JOIN ownedCards as oc on oc.userID = dt.fromID and oc.cardID = dt.cardID
+       WHERE tradeID=${parseInt(tradeID)}
       `
     )
 
