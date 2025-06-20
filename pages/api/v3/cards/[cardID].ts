@@ -117,6 +117,7 @@ export default async function cardsEndpoint(
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).end('Card not found')
       return
     }
+    console.log(card.render_name)
 
     const queryResult = await cardsQuery(SQL`
       UPDATE cards
@@ -142,7 +143,8 @@ export default async function cardsEndpoint(
         low_shots=${card.low_shots},
         quickness=${card.quickness},
         control=${card.control},
-        conditioning=${card.conditioning}
+        conditioning=${card.conditioning},
+        render_name=${card.render_name}
       WHERE cardID=${cardID};
     `)
 

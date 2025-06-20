@@ -144,8 +144,6 @@ export default async function tradesEndpoint(
         const cardOwner = await cardsQuery<{ userID: string }>(
           SQL`SELECT userID FROM collection WHERE ownedCardId=${asset.ownedCardId} LIMIT 1`
         )
-
-        console.log('card', cardOwner[0].userID, asset.fromId)
         if (cardOwner[0].userID != asset.fromId) {
           tradeError = true
         }
