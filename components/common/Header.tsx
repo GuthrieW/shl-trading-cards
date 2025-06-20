@@ -217,7 +217,7 @@ export const Header = ({ showAuthButtons = true }) => {
                       <div className="relative">
                         <BellIcon className="w-6 h-6 !text-white hover:!text-red200" />
                         <Badge
-                          colorScheme="red"
+                          bg="red.600"
                           borderRadius="full"
                           position="absolute"
                           top="-1"
@@ -240,7 +240,7 @@ export const Header = ({ showAuthButtons = true }) => {
                           )}
                           target="_blank"
                         >
-                          Pending Trade with {user?.username}
+                          Pending Trade with {trade.initiatorUsername}
                         </Link>
                       </MenuItem>
                     ))}
