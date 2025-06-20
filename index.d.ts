@@ -122,6 +122,7 @@ type TradeDetails = {
   fromID: numer
   create_date: string
   update_date: Date
+  quantity: number
 }
 
 type User = {
