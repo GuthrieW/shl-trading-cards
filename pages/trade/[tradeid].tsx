@@ -382,7 +382,7 @@ const TradeSection = ({
                   height: '100%',
                 }}
               />
-              {card.quantity > 1 && (
+              {card.quantity > 1 && card.trade_status === 'PENDING' && (
                 <Badge
                   position="absolute"
                   top="-2"
@@ -402,17 +402,20 @@ const TradeSection = ({
                 </Badge>
               )}
             </div>
-            {runningOutCardIDs.has(card.cardID) && card.quantity > 1 && (
-              <Alert
-                status="warning"
-                variant="subtle"
-                mt="2"
-                className="!bg-primary"
-              >
-                <AlertIcon boxSize="12px" mr="1" />
-                <span className="text-xs">No copies left after this trade</span>
-              </Alert>
-            )}
+            {runningOutCardIDs.has(card.cardID) &&
+              card.trade_status === 'PENDING' && (
+                <Alert
+                  status="warning"
+                  variant="subtle"
+                  mt="2"
+                  className="!bg-primary"
+                >
+                  <AlertIcon boxSize="12px" mr="1" />
+                  <span className="text-xs">
+                    No copies left after this trade
+                  </span>
+                </Alert>
+              )}
           </div>
         ))}
       </SimpleGrid>
