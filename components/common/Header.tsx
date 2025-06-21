@@ -1,5 +1,5 @@
 import { NextRouter, useRouter } from 'next/router'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from './Link'
 import { IceLevelLogo } from './IceLevelLogo'
 import { useSession } from 'contexts/AuthContext'
@@ -12,8 +12,10 @@ import {
   MenuItem,
   MenuList,
   MenuDivider,
+  Badge,
+  IconButton,
 } from '@chakra-ui/react'
-import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'
+import { BellIcon, ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons'
 import axios from 'axios'
 import classnames from 'classnames'
 import { query } from '@pages/api/database/query'
@@ -25,6 +27,7 @@ import config from 'lib/config'
 import { AuthGuard } from '@components/auth/AuthGuard'
 import { Squash as Hamburger } from 'hamburger-react'
 import { RoleGuard } from '@components/auth/RoleGuard'
+import { ListResponse } from '@pages/api/v3'
 
 const CURRENT_PAGE_LINK_CLASSES =
   'border-b-0 sm:border-b-[4px] border-l-[4px] sm:border-l-0 pt-0 sm:pt-[4px] pr-[14px] sm:pr-[10px] border-secondary'
@@ -68,6 +71,26 @@ export const Header = ({ showAuthButtons = true }) => {
       }),
     enabled: loggedIn,
   })
+
+  const { payload: pendingTrades, isLoading: isLoadingPendingTrades } = query<
+    ListResponse<Trade>
+  >({
+    queryKey: ['pending-trades', String(user?.uid)],
+    queryFn: () =>
+      axios({
+        method: 'GET',
+        url: `/api/v3/trades?username=${user?.uid}&status=PENDING`,
+      }),
+    enabled: !!user?.uid,
+  })
+
+  const userPendingTrades = useMemo(() => {
+    return (
+      pendingTrades?.rows.filter(
+        (trade: Trade) => trade.recipientID === user?.uid
+      ) || []
+    )
+  }, [pendingTrades, user?.uid])
 
   return (
     <div>
@@ -181,6 +204,49 @@ export const Header = ({ showAuthButtons = true }) => {
             />
           </div>
           <div className="relative order-3 mr-4 flex flex-1 items-center justify-end space-x-3 sm:mr-[2%] sm:ml-auto sm:w-auto">
+            {!isLoadingPendingTrades &&
+              loggedIn &&
+              userPendingTrades.length > 0 && (
+                <Menu isLazy placement="bottom-end">
+                  <MenuButton
+                    as={IconButton}
+                    aria-label="Pending trades"
+                    _hover={{ bg: 'gray.700' }}
+                    _active={{ bg: 'gray.800' }}
+                    icon={
+                      <div className="relative">
+                        <BellIcon className="w-6 h-6 !text-white hover:!text-red200" />
+                        <Badge
+                          bg="red.600"
+                          borderRadius="full"
+                          position="absolute"
+                          top="-1"
+                          right="-1"
+                          fontSize="0.7em"
+                        >
+                          {userPendingTrades.length}
+                        </Badge>
+                      </div>
+                    }
+                    variant="ghost"
+                  />
+                  <MenuList>
+                    {userPendingTrades.map((trade) => (
+                      <MenuItem key={trade.tradeID}>
+                        <Link
+                          href={`/trade/${trade.tradeID}`}
+                          className={classnames(
+                            '!hover:no-underline flex w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:underline'
+                          )}
+                          target="_blank"
+                        >
+                          Pending Trade with {trade.initiatorUsername}
+                        </Link>
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </Menu>
+              )}
             <ColorModeSwitcher className="mr-1 !text-grey100 hover:!text-grey900 md:mr-2" />
             {!loggedIn && showAuthButtons && (
               <Button onClick={() => router.push('/login')}>Log In</Button>

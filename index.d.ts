@@ -101,7 +101,9 @@ type TradeStatus = 'COMPLETE' | 'PENDING' | 'DECLINED' | 'AUTO_DECLINED'
 type Trade = {
   tradeID: number
   initiatorID: number
+  initiatorUsername: string
   recipientID: number
+  recipientUsername: string
   declineUserID: number
   trade_status: TradeStatus
   update_date: Date
@@ -120,6 +122,7 @@ type TradeDetails = {
   fromID: numer
   create_date: string
   update_date: Date
+  quantity: number
 }
 
 type User = {
