@@ -207,7 +207,7 @@ export const Header = ({ showAuthButtons = true }) => {
             {!isLoadingPendingTrades &&
               loggedIn &&
               userPendingTrades.length > 0 && (
-                <Menu isLazy>
+                <Menu isLazy placement="bottom-end">
                   <MenuButton
                     as={IconButton}
                     aria-label="Pending trades"

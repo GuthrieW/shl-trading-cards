@@ -16,7 +16,6 @@ import { Button } from '@chakra-ui/react'
 import NewestCards from '@components/tables/NewestCards'
 import { HOME_CARDS_TABLE_NO_FILTER } from '@components/tables/tableBehaviorFlags'
 import router from 'next/router'
-import { BellIcon } from '@chakra-ui/icons'
 
 export default () => {
   const { session, loggedIn, handleLogout } = useSession()
