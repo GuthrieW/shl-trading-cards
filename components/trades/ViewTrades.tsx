@@ -2,7 +2,6 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Select,
   Stack,
   Heading,
   Radio,
@@ -14,7 +13,8 @@ import { query } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
-import { useState } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
+import { useCallback, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 
 const TRADE_STATUS_OPTIONS: {
@@ -49,12 +49,33 @@ const TRADE_STATUS_OPTIONS: {
 ] as const
 
 export default function ViewTrades() {
-  const [tradeStatusFilter, setTradeStatusFilter] = useState<TradeStatus>(
-    TRADE_STATUS_OPTIONS[1].value
-  )
+  const searchParams = useSearchParams()
+  const router = useRouter()
+
+  const initialStatus = (searchParams.get('status') as TradeStatus) ?? 'PENDING'
+  const [tradeStatusFilter, setTradeStatusFilter] =
+    useState<TradeStatus>(initialStatus)
+
   const [partnerUsername, setPartnerUsername] = useState<string>('')
   const [debouncedUsername] = useDebounce(partnerUsername, 500)
   const { session, loggedIn } = useSession()
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(Array.from(searchParams.entries()))
+      params.set(name, value)
+      return params.toString()
+    },
+    [searchParams]
+  )
+
+  const setStatusCallback = useCallback(
+    (value: TradeStatus) => {
+      router.push(`/trade?${createQueryString('status', value)}`)
+      setTradeStatusFilter(value)
+    },
+    [router, createQueryString]
+  )
 
   const { payload: loggedInTrades, isLoading } = query<ListResponse<Trade>>({
     queryKey: [
@@ -94,7 +115,7 @@ export default function ViewTrades() {
               <FormLabel>Status</FormLabel>
               <RadioGroup
                 value={tradeStatusFilter}
-                onChange={(value) => setTradeStatusFilter(value as TradeStatus)}
+                onChange={(value) => setStatusCallback(value as TradeStatus)}
               >
                 <Stack direction={{ base: 'column', md: 'row' }}>
                   {TRADE_STATUS_OPTIONS.map((option) => (
