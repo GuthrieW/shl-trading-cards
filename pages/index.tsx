@@ -12,7 +12,7 @@ import { Carousel } from '@components/carousel/Carousel'
 import { useMemo } from 'react'
 import { useSession } from 'contexts/AuthContext'
 import { UserData } from './api/v3/user'
-import { Alert, AlertIcon, Button, Link } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import NewestCards from '@components/tables/NewestCards'
 import { HOME_CARDS_TABLE_NO_FILTER } from '@components/tables/tableBehaviorFlags'
 import router from 'next/router'
@@ -50,26 +50,6 @@ export default () => {
     enabled: loggedIn,
   })
 
-  const { payload: pendingTrades, isLoading: isLoadingPendingTrades } = query<
-    ListResponse<Trade>
-  >({
-    queryKey: ['pending-trades', String(user?.uid)],
-    queryFn: () =>
-      axios({
-        method: 'GET',
-        url: `/api/v3/trades?username=${user?.uid}&status=PENDING`,
-      }),
-    enabled: !!user?.uid,
-  })
-
-  const userPendingTrades = useMemo(() => {
-    return (
-      pendingTrades?.rows.filter(
-        (trade: Trade) => trade.recipientID === user?.uid
-      ) || []
-    )
-  }, [pendingTrades, user?.uid])
-
   const limitedCards = useMemo(
     () => (packs?.length ? packs.slice(0, 30) : []),
     [packs]
@@ -98,17 +78,6 @@ export default () => {
         <h1 className="text-3xl font-bold text-center mb-4">
           Welcome to Ice Level {user?.username}
         </h1>
-        {!isLoadingPendingTrades &&
-          !isLoadingUser &&
-          userPendingTrades.length > 0 && (
-            <Alert className="text-black text-xl" status="info">
-              <AlertIcon />
-              <Link href={`/trade`}>
-                Welcome back {user?.username}, you have{' '}
-                {userPendingTrades.length} pending trades
-              </Link>
-            </Alert>
-          )}
 
         <div>
           <Carousel cards={limitedCards} isLoading={packsLoading} />

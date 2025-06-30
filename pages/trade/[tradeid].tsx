@@ -1,4 +1,11 @@
-import { Badge, Button, SimpleGrid, useToast } from '@chakra-ui/react'
+import {
+  Alert,
+  AlertIcon,
+  Badge,
+  Button,
+  SimpleGrid,
+  useToast,
+} from '@chakra-ui/react'
 import { AuthGuard } from '@components/auth/AuthGuard'
 import { PageWrapper } from '@components/common/PageWrapper'
 import { GET, POST } from '@constants/http-methods'
@@ -180,7 +187,7 @@ export default ({ tradeid }: { tradeid: string }) => {
         separator={<ChevronRightIcon color="gray.500" />}
       >
         <BreadcrumbItem>
-          <BreadcrumbLink href="/trade">Trade</BreadcrumbLink>
+          <BreadcrumbLink href="/trade?tab=view-trade">Trade</BreadcrumbLink>
         </BreadcrumbItem>
 
         <BreadcrumbItem isCurrentPage>
@@ -311,38 +318,108 @@ const TradeSection = ({
   id?: string
   title: string
   cards: TradeDetails[]
-}) => (
-  <div
-    id={id}
-    className="flex-1 bg-primary rounded-xl shadow-lg overflow-hidden"
-  >
-    <div className="bg-primary shadow-sm">
-      <div className="text-xl text-secondary text-center">{title}</div>
-    </div>
+}) => {
+  const cardsRunningOut = useMemo(() => {
+    const totals = new Map<
+      number,
+      { cardID: number; tradeQuantity: number; ownedQuantity: number }
+    >()
 
-    <SimpleGrid columns={{ base: 2, sm: 2, md: 3 }} spacing={4} className="p-6">
-      {cards.map((card) => (
-        <div
-          key={card.ownedcardid}
-          className="relative group transition-all duration-200 max-w-xs sm:max-w-sm aspect-[3/4]"
-        >
-          <ImageWithFallback
-            src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
-            alt={`Card`}
-            loading="lazy"
-            fill
-            sizes="(max-width: 768px) 100vw, 256px"
-            style={{
-              objectFit: 'contain',
-              width: '100%',
-              height: '100%',
-            }}
-          />
-        </div>
-      ))}
-    </SimpleGrid>
-  </div>
-)
+    cards.forEach((card) => {
+      const entry = totals.get(card.cardID)
+      if (entry) {
+        entry.tradeQuantity += 1
+      } else {
+        totals.set(card.cardID, {
+          cardID: card.cardID,
+          tradeQuantity: 1,
+          ownedQuantity: card.quantity,
+        })
+      }
+    })
+
+    return Array.from(totals.values()).filter(
+      (entry) => entry.tradeQuantity >= entry.ownedQuantity
+    )
+  }, [cards])
+  const runningOutCardIDs = useMemo(
+    () => new Set(cardsRunningOut.map((entry) => entry.cardID)),
+    [cardsRunningOut]
+  )
+
+  return (
+    <div
+      id={id}
+      className="flex-1 bg-primary rounded-xl shadow-lg overflow-hidden"
+    >
+      <div className="bg-primary shadow-sm">
+        <div className="text-xl text-secondary text-center">{title}</div>
+      </div>
+
+      <SimpleGrid
+        columns={{ base: 2, sm: 2, md: 3 }}
+        spacing={4}
+        className="p-6"
+      >
+        {cards.map((card) => (
+          <div
+            key={card.ownedcardid}
+            className="relative group flex flex-col items-center transition-all duration-200 max-w-xs sm:max-w-sm aspect-[3/4]"
+          >
+            <div className="relative w-full h-full">
+              <ImageWithFallback
+                src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+                alt={`Card`}
+                loading="lazy"
+                fill
+                sizes="(max-width: 768px) 100vw, 256px"
+                style={{
+                  objectFit: 'contain',
+                  width: '100%',
+                  height: '100%',
+                }}
+              />
+              {card.quantity > 1 && card.trade_status === 'PENDING' && (
+                <Badge
+                  position="absolute"
+                  top="-2"
+                  right="-2"
+                  zIndex="10"
+                  borderRadius="full"
+                  px="2"
+                  py="1"
+                  fontSize="xs"
+                  fontWeight="bold"
+                  bg="teal.700"
+                  color="white"
+                  border="1px solid white"
+                  boxShadow="0 0 4px rgba(0,0,0,0.4)"
+                >
+                  {card.quantity}
+                </Badge>
+              )}
+            </div>
+            {runningOutCardIDs.has(card.cardID) &&
+              card.trade_status === 'PENDING' && (
+                <Alert
+                  status="warning"
+                  variant="subtle"
+                  mt="2"
+                  className="!bg-primary"
+                >
+                  <AlertIcon boxSize="12px" mr="1" />
+                  <span className="text-xs">
+                    No copies left after this trade
+                  </span>
+                </Alert>
+              )}
+          </div>
+        ))}
+      </SimpleGrid>
+    </div>
+  )
+}
+
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { tradeid } = query
 
