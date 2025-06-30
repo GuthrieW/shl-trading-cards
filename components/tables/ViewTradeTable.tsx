@@ -13,7 +13,6 @@ import { TableHeader } from './TableHeader'
 import { simpleGlobalFilterFn } from './shared'
 import { Table } from './Table'
 import { TextWithTooltip } from '@components/common/TruncateText'
-import GetUsername from '@components/common/GetUsername'
 import { formatDateTime } from '@utils/formatDateTime'
 
 const columnHelper = createColumnHelper<Trade>()

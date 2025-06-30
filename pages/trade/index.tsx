@@ -1,12 +1,4 @@
-import {
-  Button,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
-  Tabs,
-  useDisclosure,
-} from '@chakra-ui/react'
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
 import { PageWrapper } from '@components/common/PageWrapper'
 import Autocomplete from '@components/forms/Autocomplete'
 import NewTrade from '@components/trades/NewTrade'
@@ -21,7 +13,6 @@ import { useState, useEffect } from 'react'
 
 export default () => {
   const { session, loggedIn } = useSession()
-  const tradesDrawer = useDisclosure()
   const router = useRouter()
 
   const [tradePartnerUid, setTradePartnerUid] = useState<number>(null)
