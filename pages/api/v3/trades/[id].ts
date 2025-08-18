@@ -29,11 +29,30 @@ export default async function tradeEndpoint(
 
     const queryResult = await cardsQuery<TradeDetails>(
       SQL`
-       SELECT dt.tradeID, dt.initiatorID, dt.recipientID, dt.trade_status, dt.ownedcardid, dt.cardID, dt.image_url, dt.toID, dt.fromID, dt.create_date, dt.update_date, oc.quantity 
-       FROM trade_details AS dt 
-       LEFT JOIN ownedCards as oc on oc.userID = dt.fromID and oc.cardID = dt.cardID
-       WHERE tradeID=${parseInt(tradeID)}
-      `
+       SELECT 
+        dt.tradeID,
+        dt.initiatorID,
+        dt.recipientID,
+        dt.trade_status,
+        dt.ownedcardid,
+        dt.cardID,
+        dt.image_url,
+        dt.toID,
+        dt.fromID,
+        dt.create_date,
+        dt.update_date,
+        COALESCE(MAX(CASE WHEN oc.userID = dt.initiatorID THEN oc.quantity END), 0) AS initiator_quantity,
+        COALESCE(MAX(CASE WHEN oc.userID = dt.recipientID   THEN oc.quantity END), 0) AS recipient_quantity
+      FROM trade_details AS dt
+      LEFT JOIN ownedCards AS oc
+        ON oc.cardID = dt.cardID
+      AND oc.userID IN (dt.fromID, dt.toID)
+
+      WHERE dt.tradeID = ${parseInt(tradeID)}
+
+      GROUP BY dt.tradeID, dt.initiatorID, dt.recipientID, dt.trade_status,
+              dt.ownedcardid, dt.cardID, dt.image_url, dt.toID, dt.fromID,
+              dt.create_date, dt.update_date`
     )
 
     if ('error' in queryResult) {

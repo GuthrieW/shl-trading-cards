@@ -4,6 +4,7 @@ import {
   Badge,
   Button,
   SimpleGrid,
+  Tooltip,
   useToast,
 } from '@chakra-ui/react'
 import { AuthGuard } from '@components/auth/AuthGuard'
@@ -282,6 +283,7 @@ export default ({ tradeid }: { tradeid: string }) => {
           <TradeSection
             title={initiatorUser?.username}
             cards={initiatorCards}
+            loggedInID={loggedInUser?.uid}
           />
           <div className="flex items-center">
             <div className="h-full w-px bg-gray-200" />
@@ -289,6 +291,7 @@ export default ({ tradeid }: { tradeid: string }) => {
           <TradeSection
             title={recipientUser?.username}
             cards={recipientCards}
+            loggedInID={loggedInUser?.uid}
           />
         </div>
 
@@ -298,11 +301,13 @@ export default ({ tradeid }: { tradeid: string }) => {
             id="initiator-cards"
             title={initiatorUser?.username}
             cards={initiatorCards}
+            loggedInID={loggedInUser?.uid}
           />
           <TradeSection
             id="recipient-cards"
             title={recipientUser?.username}
             cards={recipientCards}
+            loggedInID={loggedInUser?.uid}
           />
         </div>
       </div>
@@ -314,38 +319,74 @@ const TradeSection = ({
   id,
   title,
   cards,
+  loggedInID = 0,
 }: {
   id?: string
   title: string
   cards: TradeDetails[]
+  loggedInID?: number
 }) => {
-  const cardsRunningOut = useMemo(() => {
-    const totals = new Map<
+  const { initiatorAlerts, recipientAlerts } = useMemo(() => {
+    const initiatorLastCopy = new Set<number>()
+    const initiatorAlreadyOwn = new Set<number>()
+    const recipientLastCopy = new Set<number>()
+    const recipientAlreadyOwn = new Set<number>()
+
+    const cardQuantities = new Map<
       number,
-      { cardID: number; tradeQuantity: number; ownedQuantity: number }
+      {
+        initiatorTrading: number
+        recipientTrading: number
+        initiatorOwned: number
+        recipientOwned: number
+      }
     >()
 
     cards.forEach((card) => {
-      const entry = totals.get(card.cardID)
-      if (entry) {
-        entry.tradeQuantity += 1
+      const existing = cardQuantities.get(card.cardID)
+      if (existing) {
+        existing.initiatorTrading += card.initiatorID === card.fromID ? 1 : 0
+        existing.recipientTrading += card.recipientID === card.fromID ? 1 : 0
       } else {
-        totals.set(card.cardID, {
-          cardID: card.cardID,
-          tradeQuantity: 1,
-          ownedQuantity: card.quantity,
+        cardQuantities.set(card.cardID, {
+          initiatorTrading: card.initiatorID === card.fromID ? 1 : 0,
+          recipientTrading: card.recipientID === card.fromID ? 1 : 0,
+          initiatorOwned: card.initiator_quantity,
+          recipientOwned: card.recipient_quantity,
         })
       }
     })
+    console.log('cardQuantities', cardQuantities)
 
-    return Array.from(totals.values()).filter(
-      (entry) => entry.tradeQuantity >= entry.ownedQuantity
-    )
+    cardQuantities.forEach((quantities, cardID) => {
+      if (
+        quantities.initiatorOwned > 0 &&
+        quantities.initiatorOwned === quantities.initiatorTrading
+      ) {
+        initiatorLastCopy.add(cardID)
+      }
+      if (quantities.recipientTrading > 0 && quantities.initiatorOwned > 0) {
+        initiatorAlreadyOwn.add(cardID)
+      }
+
+      if (
+        quantities.recipientOwned > 0 &&
+        quantities.recipientOwned === quantities.recipientTrading
+      ) {
+        recipientLastCopy.add(cardID)
+      }
+      if (quantities.initiatorTrading > 0 && quantities.recipientOwned > 0) {
+        recipientAlreadyOwn.add(cardID)
+      }
+    })
+    return {
+      initiatorAlerts: initiatorLastCopy,
+      recipientAlerts: {
+        lastCopy: recipientLastCopy,
+        alreadyOwn: recipientAlreadyOwn,
+      },
+    }
   }, [cards])
-  const runningOutCardIDs = useMemo(
-    () => new Set(cardsRunningOut.map((entry) => entry.cardID)),
-    [cardsRunningOut]
-  )
 
   return (
     <div
@@ -353,7 +394,7 @@ const TradeSection = ({
       className="flex-1 bg-primary rounded-xl shadow-lg overflow-hidden"
     >
       <div className="bg-primary shadow-sm">
-        <div className="text-xl text-secondary text-center">{title}</div>
+        <div className="text-xl text-secondary text-center">{title} trades</div>
       </div>
 
       <SimpleGrid
@@ -379,40 +420,76 @@ const TradeSection = ({
                   height: '100%',
                 }}
               />
-              {card.quantity > 1 && card.trade_status === 'PENDING' && (
-                <Badge
-                  position="absolute"
-                  top="-2"
-                  right="-2"
-                  zIndex="10"
-                  borderRadius="full"
-                  px="2"
-                  py="1"
-                  fontSize="xs"
-                  fontWeight="bold"
-                  bg="teal.700"
-                  color="white"
-                  border="1px solid white"
-                  boxShadow="0 0 4px rgba(0,0,0,0.4)"
-                >
-                  {card.quantity}
-                </Badge>
+              {loggedInID > 0 && card.trade_status === 'PENDING' && (
+                <Tooltip label="# of card(s) you own" placement="top">
+                  <Badge
+                    position="absolute"
+                    top="-2"
+                    right="-2"
+                    zIndex="10"
+                    borderRadius="full"
+                    px="2"
+                    py="1"
+                    fontSize="xs"
+                    fontWeight="bold"
+                    bg="teal.700"
+                    color="white"
+                    border="1px solid white"
+                    boxShadow="0 0 4px rgba(0,0,0,0.4)"
+                  >
+                    {loggedInID === card.initiatorID
+                      ? card.initiator_quantity
+                      : card.recipient_quantity}
+                  </Badge>
+                </Tooltip>
               )}
             </div>
-            {runningOutCardIDs.has(card.cardID) &&
-              card.trade_status === 'PENDING' && (
-                <Alert
-                  status="warning"
-                  variant="subtle"
-                  mt="2"
-                  className="!bg-primary"
-                >
-                  <AlertIcon boxSize="12px" mr="1" />
-                  <span className="text-xs">
-                    No copies left after this trade
-                  </span>
-                </Alert>
-              )}
+            {loggedInID > 0 && card.trade_status === 'PENDING' && (
+              <>
+                {loggedInID === card.initiatorID &&
+                  initiatorAlerts.has(card.cardID) && (
+                    <Alert
+                      status="warning"
+                      variant="subtle"
+                      mt="2"
+                      className="!bg-primary"
+                    >
+                      <AlertIcon boxSize="12px" mr="1" />
+                      <span className="text-xs">
+                        You are trading away your last copy
+                      </span>
+                    </Alert>
+                  )}
+
+                {loggedInID === card.recipientID &&
+                  recipientAlerts.alreadyOwn.has(card.cardID) && (
+                    <Alert
+                      status="info"
+                      variant="subtle"
+                      mt="2"
+                      className="!bg-primary"
+                    >
+                      <AlertIcon boxSize="12px" mr="1" />
+                      <span className="text-xs">You already own this card</span>
+                    </Alert>
+                  )}
+
+                {loggedInID !== card.recipientID &&
+                  recipientAlerts.lastCopy.has(card.cardID) && (
+                    <Alert
+                      status="warning"
+                      variant="subtle"
+                      mt="2"
+                      className="!bg-primary"
+                    >
+                      <AlertIcon boxSize="12px" mr="1" />
+                      <span className="text-xs">
+                        They are trading away their last copy
+                      </span>
+                    </Alert>
+                  )}
+              </>
+            )}
           </div>
         ))}
       </SimpleGrid>

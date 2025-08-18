@@ -204,49 +204,48 @@ export const Header = ({ showAuthButtons = true }) => {
             />
           </div>
           <div className="relative order-3 mr-4 flex flex-1 items-center justify-end space-x-3 sm:mr-[2%] sm:ml-auto sm:w-auto">
-            {!isLoadingPendingTrades &&
-              loggedIn &&
-              userPendingTrades.length > 0 && (
-                <Menu isLazy placement="bottom-end">
-                  <MenuButton
-                    as={IconButton}
-                    aria-label="Pending trades"
-                    _hover={{ bg: 'gray.700' }}
-                    _active={{ bg: 'gray.800' }}
-                    icon={
-                      <div className="relative">
-                        <BellIcon className="w-6 h-6 !text-white hover:!text-red200" />
-                        <Badge
-                          bg="red.600"
-                          borderRadius="full"
-                          position="absolute"
-                          top="-1"
-                          right="-1"
-                          fontSize="0.7em"
-                        >
-                          {userPendingTrades.length}
-                        </Badge>
-                      </div>
-                    }
-                    variant="ghost"
-                  />
-                  <MenuList>
-                    {userPendingTrades.map((trade) => (
-                      <MenuItem key={trade.tradeID}>
-                        <Link
-                          href={`/trade/${trade.tradeID}`}
-                          className={classnames(
-                            '!hover:no-underline flex w-full items-center justify-center px-[10px] text-sm font-bold capitalize !text-white hover:underline'
-                          )}
-                          target="_blank"
-                        >
-                          Pending Trade with {trade.initiatorUsername}
-                        </Link>
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </Menu>
-              )}
+            {!isLoadingPendingTrades && loggedIn && (
+              <Menu isLazy placement="bottom-end">
+                <MenuButton
+                  as={IconButton}
+                  aria-label="Pending trades"
+                  _hover={{ bg: 'gray.700' }}
+                  _active={{ bg: 'gray.800' }}
+                  isDisabled={userPendingTrades.length === 0}
+                  icon={
+                    <div className="relative">
+                      <BellIcon className="w-6 h-6 !text-white hover:!text-red200" />
+                      <Badge
+                        bg="red.600"
+                        borderRadius="full"
+                        position="absolute"
+                        top="-1"
+                        right="-1"
+                        fontSize="0.7em"
+                      >
+                        {userPendingTrades.length}
+                      </Badge>
+                    </div>
+                  }
+                  variant="ghost"
+                />
+                <MenuList>
+                  {userPendingTrades.map((trade) => (
+                    <MenuItem key={trade.tradeID}>
+                      <Link
+                        href={`/trade/${trade.tradeID}`}
+                        className={classnames(
+                          '!hover:no-underline flex w-full items-center justify-center px-[10px] text-sm font-bold capitalize text-primary hover:underline'
+                        )}
+                        target="_blank"
+                      >
+                        Pending Trade with {trade.initiatorUsername}
+                      </Link>
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
+            )}
             <ColorModeSwitcher className="mr-1 !text-grey100 hover:!text-grey900 md:mr-2" />
             {!loggedIn && showAuthButtons && (
               <Button onClick={() => router.push('/login')}>Log In</Button>
