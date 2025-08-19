@@ -16,6 +16,7 @@ export type BaseRequest = {
   playerName: string
   teamID: string
   rarity: string
+  season: number
   created: boolean
   needsSeason: boolean
   error?: string
@@ -33,6 +34,7 @@ export default async function baseRequestsEndpoint(
       created: BaseRequest[]
       duplicates: BaseRequest[]
       errors: BaseRequest[]
+      hasInvalidSeason: BaseRequest[]
     }>
   >
 ): Promise<void> {
@@ -77,6 +79,7 @@ export default async function baseRequestsEndpoint(
           playerName: cardRequest.player_name,
           teamID: cardRequest.teamID?.toString(),
           rarity: cardRequest.card_rarity,
+          season: cardRequest.season,
           created: true,
           needsSeason: [...skatersMissingSeason, ...goaliesMissingSeason].some(
             (playerMissingSeason) =>
@@ -86,9 +89,14 @@ export default async function baseRequestsEndpoint(
         })
       )
 
+      //creating return if cardRequests season is -1
+      const hasInvalidSeason = created.filter(
+        (request) => request.season === -1
+      )
+
       res.status(StatusCodes.OK).json({
         status: 'success',
-        payload: { created, duplicates, errors },
+        payload: { created, duplicates, errors, hasInvalidSeason },
       })
       return
     } catch (error) {
@@ -136,7 +144,7 @@ async function getIndexGoalies(season: number): Promise<IndexPlayer[]> {
 async function getPortalPlayers(): Promise<PortalPlayer[]> {
   const players: AxiosResponse<PortalPlayer[], any> = await axios({
     method: GET,
-    url: `https://portal.simulationhockey.com/api/v1/player?leagueID=0`,
+    url: `https://portal.simulationhockey.com/api/v1/player`,
   })
   if (players.status !== 200) {
     throw new Error('Error fetching players from portal')
@@ -157,16 +165,19 @@ function addSeasonToPlayers(
   missingSeason: IndexPlayer[]
 } {
   const missingSeason: IndexPlayer[] = []
+
   const updatedPlayers = indexPlayers.map((indexPlayer) => {
     const matchingPortalPlayer = portalPlayers.find(
       (portalPlayer) =>
         portalPlayer.indexRecords?.some(
           (indexRecord) =>
-            String(indexRecord.indexID) === indexPlayer.id &&
-            indexRecord.leagueID == 0
+            indexRecord.indexID === Number(indexPlayer.id) &&
+            indexRecord.leagueID === 0
         )
     )
+
     if (matchingPortalPlayer) {
+      indexPlayer.name = matchingPortalPlayer.name // Use the portal name for the fancy letters
       return { ...indexPlayer, season: matchingPortalPlayer.draftSeason }
     } else {
       missingSeason.push(indexPlayer)
@@ -238,6 +249,7 @@ async function checkForDuplicatesAndCreateCardRequestData(
             playerName: player.name,
             teamID: player.team,
             rarity: rarity,
+            season: player.season,
             created: false,
             needsSeason: false,
             error: 'Duplicate',
@@ -274,6 +286,7 @@ async function checkForDuplicatesAndCreateCardRequestData(
           playerName: player.name,
           teamID: player.team,
           rarity: null,
+          season: player.season,
           created: false,
           needsSeason: false,
           error: e,

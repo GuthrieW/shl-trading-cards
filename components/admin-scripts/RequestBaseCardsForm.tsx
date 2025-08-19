@@ -29,6 +29,7 @@ export default function RequestBaseCardsForm({
   const [created, setCreated] = useState<BaseRequest[]>(null)
   const [duplicates, setDuplicates] = useState<BaseRequest[]>(null)
   const [errors, setErrors] = useState<BaseRequest[]>(null)
+  const [hasInvalidSeason, setHasInvalidSeason] = useState<BaseRequest[]>(null)
 
   const { mutateAsync: requestBaseCards } = mutation<void, { season: number }>({
     mutationFn: async ({ season }: { season: number }) => {
@@ -42,6 +43,7 @@ export default function RequestBaseCardsForm({
         setCreated(response.data.payload.created)
         setDuplicates(response.data.payload.duplicates)
         setErrors(response.data.payload.errors)
+        setHasInvalidSeason(response.data.payload.hasInvalidSeason)
       }
     },
   })
@@ -111,6 +113,16 @@ export default function RequestBaseCardsForm({
             Created - {created.length}
             <Textarea
               value={JSON.stringify(created, null, 2)}
+              disabled={true}
+              rows={10}
+            />
+          </div>
+        )}
+        {hasInvalidSeason && (
+          <div className="my-2 p-2 border border-black rounded">
+            Created but invalid season - {hasInvalidSeason.length}
+            <Textarea
+              value={JSON.stringify(hasInvalidSeason, null, 2)}
               disabled={true}
               rows={10}
             />
