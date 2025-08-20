@@ -10,6 +10,7 @@ import { rarityMap } from '@constants/rarity-map'
 import { cardsQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import axios, { AxiosResponse } from 'axios'
+import { createPhotoshopCsv } from 'services/photoshopCSVService'
 
 export type BaseRequest = {
   playerID: string
@@ -19,6 +20,7 @@ export type BaseRequest = {
   season: number
   created: boolean
   needsSeason: boolean
+  renderName: string | null
   error?: string
 }
 
@@ -35,6 +37,7 @@ export default async function baseRequestsEndpoint(
       duplicates: BaseRequest[]
       errors: BaseRequest[]
       hasInvalidSeason: BaseRequest[]
+      photoshopCsv: Photoshopcsv[]
     }>
   >
 ): Promise<void> {
@@ -73,6 +76,8 @@ export default async function baseRequestsEndpoint(
 
       await requestCards(cardRequests)
 
+      const photoshopCsv = createPhotoshopCsv(cardRequests)
+
       const created = cardRequests.map(
         (cardRequest): BaseRequest => ({
           playerID: cardRequest.playerID?.toString(),
@@ -85,6 +90,7 @@ export default async function baseRequestsEndpoint(
             (playerMissingSeason) =>
               playerMissingSeason.id === cardRequest.playerID?.toString()
           ),
+          renderName: cardRequest.renderName,
           error: null,
         })
       )
@@ -96,7 +102,13 @@ export default async function baseRequestsEndpoint(
 
       res.status(StatusCodes.OK).json({
         status: 'success',
-        payload: { created, duplicates, errors, hasInvalidSeason },
+        payload: {
+          created,
+          duplicates,
+          errors,
+          hasInvalidSeason,
+          photoshopCsv,
+        },
       })
       return
     } catch (error) {
@@ -178,10 +190,14 @@ function addSeasonToPlayers(
 
     if (matchingPortalPlayer) {
       indexPlayer.name = matchingPortalPlayer.name // Use the portal name for the fancy letters
-      return { ...indexPlayer, season: matchingPortalPlayer.draftSeason }
+      return {
+        ...indexPlayer,
+        season: matchingPortalPlayer.draftSeason,
+        renderName: matchingPortalPlayer.render,
+      }
     } else {
       missingSeason.push(indexPlayer)
-      return { ...indexPlayer, season: -1 }
+      return { ...indexPlayer, season: -1, renderName: null }
     }
   })
 
@@ -253,6 +269,7 @@ async function checkForDuplicatesAndCreateCardRequestData(
             created: false,
             needsSeason: false,
             error: 'Duplicate',
+            renderName: null,
           } as BaseRequest
           duplicates.push(duplicate)
           return
@@ -276,6 +293,7 @@ async function checkForDuplicatesAndCreateCardRequestData(
             quickness,
             control,
             conditioning,
+            renderName: player.renderName,
           } as CardRequest
           cardRequests.push(cardRequest)
           return
@@ -290,6 +308,7 @@ async function checkForDuplicatesAndCreateCardRequestData(
           created: false,
           needsSeason: false,
           error: e,
+          renderName: player.renderName || null,
         })
         return
       }
@@ -308,7 +327,7 @@ export async function requestCards(cardRequests: CardRequest[]): Promise<void> {
     await cardRequests.map(async (cardRequest) => {
       const insertQuery: SQLStatement = SQL`
         INSERT INTO cards
-          (player_name, teamID, playerID, card_rarity, sub_type, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season, author_paid)
+          (player_name, teamID, playerID, card_rarity, sub_type, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season, author_paid, date_approved, render_name)
         VALUES (${cardRequest.player_name.trim()}, ${cardRequest.teamID}, ${
           cardRequest.playerID
         }, ${cardRequest.card_rarity}, ${cardRequest.sub_type}, 0, 0, ${
@@ -321,9 +340,8 @@ export async function requestCards(cardRequests: CardRequest[]): Promise<void> {
           cardRequest.hands
         }, ${cardRequest.checking}, ${cardRequest.defense}, ${
           cardRequest.season
-        }, 0);
+        }, 0, NULL, ${cardRequest.renderName});
       `
-
       return await cardsQuery(insertQuery)
     })
   )
@@ -538,7 +556,6 @@ const portalTeamsMap: { teamID: number; abbreviation: string }[] = [
   { teamID: 5, abbreviation: 'NEW' },
   { teamID: 6, abbreviation: 'TBB' },
   { teamID: 7, abbreviation: 'BAP' },
-  { teamID: 7, abbreviation: 'WKP' },
   { teamID: 8, abbreviation: 'CGY' },
   { teamID: 9, abbreviation: 'EDM' },
   { teamID: 10, abbreviation: 'MIN' },
@@ -551,4 +568,8 @@ const portalTeamsMap: { teamID: number; abbreviation: string }[] = [
   { teamID: 19, abbreviation: 'SEA' },
   { teamID: 20, abbreviation: 'MTL' },
   { teamID: 21, abbreviation: 'PHI' },
+  { teamID: 22, abbreviation: 'CIN' },
+  { teamID: 23, abbreviation: 'NSH' },
+  { teamID: 24, abbreviation: 'DEN' },
+  { teamID: 25, abbreviation: 'MAD' },
 ]

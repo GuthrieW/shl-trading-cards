@@ -1,3 +1,4 @@
+import { DownloadIcon } from '@chakra-ui/icons'
 import {
   Button,
   FormControl,
@@ -18,6 +19,25 @@ const requestCardsValidationSchema = Yup.object({}).shape({
   season: Yup.number().integer().required('Season number is required'),
 })
 
+function toCsv(data: Photoshopcsv[]): string {
+  if (!data || !data.length) return ''
+
+  const headers = Object.keys(data[0])
+  const rows = data.map((row) =>
+    headers
+      .map((field) => {
+        const val = (row as any)[field]
+        if (typeof val === 'string' && /[",\n]/.test(val)) {
+          return `"${val.replace(/"/g, '""')}"`
+        }
+        return val
+      })
+      .join(',')
+  )
+
+  return [headers.join(','), ...rows].join('\n')
+}
+
 type RequestBaseCardsValues = Yup.InferType<typeof requestCardsValidationSchema>
 
 export default function RequestBaseCardsForm({
@@ -30,6 +50,21 @@ export default function RequestBaseCardsForm({
   const [duplicates, setDuplicates] = useState<BaseRequest[]>(null)
   const [errors, setErrors] = useState<BaseRequest[]>(null)
   const [hasInvalidSeason, setHasInvalidSeason] = useState<BaseRequest[]>(null)
+  const [photoshopCsv, setPhotoshopCsv] = useState<Photoshopcsv[]>(null)
+
+  const handleDownloadCsv = () => {
+    if (!photoshopCsv?.length) return
+    const csvString = toCsv(photoshopCsv)
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', `photoshop-${Date.now()}.csv`)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }
 
   const { mutateAsync: requestBaseCards } = mutation<void, { season: number }>({
     mutationFn: async ({ season }: { season: number }) => {
@@ -44,6 +79,7 @@ export default function RequestBaseCardsForm({
         setDuplicates(response.data.payload.duplicates)
         setErrors(response.data.payload.errors)
         setHasInvalidSeason(response.data.payload.hasInvalidSeason)
+        setPhotoshopCsv(response.data.payload.photoshopCsv)
       }
     },
   })
@@ -108,6 +144,15 @@ export default function RequestBaseCardsForm({
         </FormControl>
       </form>
       <div className="flex flex-col">
+        {photoshopCsv && (
+          <Button
+            leftIcon={<DownloadIcon />}
+            mt={2}
+            onClick={handleDownloadCsv}
+          >
+            Download as CSV
+          </Button>
+        )}
         {created && (
           <div className="my-2 p-2 border border-black rounded">
             Created - {created.length}
