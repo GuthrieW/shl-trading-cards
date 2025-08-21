@@ -215,16 +215,18 @@ export const Header = ({ showAuthButtons = true }) => {
                   icon={
                     <div className="relative">
                       <BellIcon className="w-6 h-6 !text-white hover:!text-red200" />
-                      <Badge
-                        bg="red.600"
-                        borderRadius="full"
-                        position="absolute"
-                        top="-1"
-                        right="-1"
-                        fontSize="0.7em"
-                      >
-                        {userPendingTrades.length}
-                      </Badge>
+                      {userPendingTrades.length > 0 && (
+                        <Badge
+                          bg="red.600"
+                          borderRadius="full"
+                          position="absolute"
+                          top="-1"
+                          right="-1"
+                          fontSize="0.7em"
+                        >
+                          {userPendingTrades.length}
+                        </Badge>
+                      )}
                     </div>
                   }
                   variant="ghost"
