@@ -150,7 +150,7 @@ export default function RequestBaseCardsForm({
             mt={2}
             onClick={handleDownloadCsv}
           >
-            Download as CSV
+            Photoshop Download as CSV
           </Button>
         )}
         {created && (
