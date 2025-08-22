@@ -79,7 +79,7 @@ export const Header = ({ showAuthButtons = true }) => {
     queryFn: () =>
       axios({
         method: 'GET',
-        url: `/api/v3/trades?username=${user?.uid}&status=PENDING`,
+        url: `/api/v3/trades?status=PENDING&userID=${user?.uid}`,
       }),
     enabled: !!user?.uid,
   })

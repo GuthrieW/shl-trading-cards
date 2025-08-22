@@ -5,7 +5,6 @@ import Cors from 'cors'
 import { GET, POST } from '@constants/http-methods'
 import { cardsQuery, usersQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
-import { checkUserAuthorization } from '../lib/checkUserAuthorization'
 import { StatusCodes } from 'http-status-codes'
 import { UserData } from '../user'
 import methodNotAllowed from '../lib/methodNotAllowed'
@@ -25,6 +24,7 @@ export default async function tradesEndpoint(
   if (req.method === GET) {
     const username = (req.query.username ?? '') as string
     const status = (req.query.status ?? '') as string
+    const userID = req.query.userID as string
 
     let tradePartners = []
     if (username.length !== 0) {
@@ -46,7 +46,6 @@ export default async function tradesEndpoint(
       tradePartners = partnerUserQueryResult
     }
 
-    const userId = req.cookies.userid
     const tradesQuery = SQL`  SELECT 
     t.tradeID,
     t.initiatorID,
@@ -63,12 +62,12 @@ export default async function tradesEndpoint(
 
     if (tradePartners.length === 0) {
       tradesQuery.append(
-        SQL` WHERE (t.initiatorID=${userId} OR t.recipientID=${userId})`
+        SQL` WHERE (t.initiatorID=${userID} OR t.recipientID=${userID})`
       )
     } else {
       const partnerIds = tradePartners.map((partner) => partner.uid)
       tradesQuery.append(
-        SQL` WHERE ((t.initiatorID=${userId} AND t.recipientID IN (`
+        SQL` WHERE ((t.initiatorID=${userID} AND t.recipientID IN (`
       )
       partnerIds.forEach((id, index) => {
         if (index === 0) {
@@ -79,7 +78,7 @@ export default async function tradesEndpoint(
         tradesQuery.append(SQL`, ${id}`)
       })
       tradesQuery.append(
-        SQL`)) OR (t.recipientID=${userId} AND t.initiatorID IN (`
+        SQL`)) OR (t.recipientID=${userID} AND t.initiatorID IN (`
       )
       partnerIds.forEach((id, index) => {
         if (index === 0) {

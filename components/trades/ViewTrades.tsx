@@ -59,7 +59,6 @@ export default function ViewTrades() {
   const [partnerUsername, setPartnerUsername] = useState<string>('')
   const [debouncedUsername] = useDebounce(partnerUsername, 500)
   const { session, loggedIn } = useSession()
-
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(Array.from(searchParams.entries()))
@@ -92,6 +91,7 @@ export default function ViewTrades() {
         params: {
           username: debouncedUsername?.length >= 3 ? debouncedUsername : '',
           status: tradeStatusFilter,
+          userID: session.userId,
         },
       }),
     enabled: loggedIn,
