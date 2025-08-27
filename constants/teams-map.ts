@@ -325,9 +325,9 @@ export const allTeamsMaps = {
   },
   '38': {
     teamID: 24,
-    label: 'Denver Glacier Gaurdians',
+    label: 'Denver Glacier Guardians',
     city: 'Denver',
-    team: 'Glacier Gaurdians',
+    team: 'Glacier Guardians',
     abbreviation: 'DEN',
     league: 'SHL',
     conference: 'West',
@@ -673,9 +673,9 @@ export const shlTeamMap = {
   },
   '24': {
     teamID: 24,
-    label: 'Denver Glacier Gaurdians',
+    label: 'Denver Glacier Guardians',
     city: 'Denver',
-    team: 'Glacier Gaurdians',
+    team: 'Glacier Guardians',
     abbreviation: 'DEN',
     league: 'SHL',
     conference: 'West',
