@@ -52,6 +52,7 @@ type CardRequest = {
   control?: number | null
   conditioning?: number | null
   season: number
+  renderName?: string
 }
 
 type CollectionCard = {
@@ -218,4 +219,49 @@ type InternalUserUniqueCollection = {
 type InternalSiteUniqueCards = {
   card_rarity: string
   total_count: number
+}
+
+type Photoshopcsv = {
+  firstName: string
+  lastName: string
+  render: null
+  position: string
+  skater: boolean
+  goalie: boolean
+  ATL: boolean
+  BAP: boolean
+  BUF: boolean
+  CGY: boolean
+  CHI: boolean
+  EDM: boolean
+  HAM: boolean
+  LAP: boolean
+  MAN: boolean
+  MIN: boolean
+  MTL: boolean
+  NEW: boolean
+  NOL: boolean
+  PHI: boolean
+  SFP: boolean
+  SEA: boolean
+  TBB: boolean
+  TEX: boolean
+  TOR: boolean
+  WPG: boolean
+  CIN: boolean
+  DEN: boolean
+  NSH: boolean
+  MAD: boolean
+  OA: number
+  season: number
+  bronze: boolean
+  silver: boolean
+  gold: boolean
+  ruby: boolean
+  diamond: boolean
+  SKTHGH: number
+  SHTLOW: number
+  HNDQCK: number
+  CHKCTL: number
+  DEFCND: number
 }

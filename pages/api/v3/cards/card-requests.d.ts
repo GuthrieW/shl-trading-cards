@@ -56,6 +56,7 @@ export type IndexPlayer = IndexSkaterAttributes &
     professionalism: number
     position: string
     appliedTPE: number
+    renderName?: string
   }
 
 export type PortalSkaterAttributes = {
