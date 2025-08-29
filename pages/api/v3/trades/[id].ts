@@ -7,16 +7,17 @@ import methodNotAllowed from '../lib/methodNotAllowed'
 import { StatusCodes } from 'http-status-codes'
 import SQL from 'sql-template-strings'
 import { cardsQuery } from '@pages/api/database/database'
+import { rateLimit } from 'lib/rateLimit'
 
 const allowedMethods: string[] = [GET] as const
 const cors = Cors({
   methods: allowedMethods,
 })
 
-export default async function tradeEndpoint(
+const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<TradeDetails[]>>
-): Promise<void> {
+) => {
   await middleware(req, res, cors)
 
   if (req.method === GET) {
@@ -29,7 +30,7 @@ export default async function tradeEndpoint(
 
     const queryResult = await cardsQuery<TradeDetails>(
       SQL`
-       SELECT 
+      SELECT 
         dt.tradeID,
         dt.initiatorID,
         dt.recipientID,
@@ -41,18 +42,17 @@ export default async function tradeEndpoint(
         dt.fromID,
         dt.create_date,
         dt.update_date,
-        COALESCE(MAX(CASE WHEN oc.userID = dt.initiatorID THEN oc.quantity END), 0) AS initiator_quantity,
-        COALESCE(MAX(CASE WHEN oc.userID = dt.recipientID   THEN oc.quantity END), 0) AS recipient_quantity
+        COALESCE(oci.quantity, 0) AS initiator_quantity,
+        COALESCE(ocr.quantity, 0) AS recipient_quantity
       FROM trade_details AS dt
-      LEFT JOIN ownedCards AS oc
-        ON oc.cardID = dt.cardID
-      AND oc.userID IN (dt.fromID, dt.toID)
-
+      LEFT JOIN ownedCards AS oci
+        ON oci.cardID = dt.cardID
+      AND oci.userID = dt.initiatorID
+      LEFT JOIN ownedCards AS ocr
+        ON ocr.cardID = dt.cardID
+      AND ocr.userID = dt.recipientID
       WHERE dt.tradeID = ${parseInt(tradeID)}
-
-      GROUP BY dt.tradeID, dt.initiatorID, dt.recipientID, dt.trade_status,
-              dt.ownedcardid, dt.cardID, dt.image_url, dt.toID, dt.fromID,
-              dt.create_date, dt.update_date`
+    `
     )
 
     if ('error' in queryResult) {
@@ -77,3 +77,4 @@ export default async function tradeEndpoint(
 
   methodNotAllowed(req, res, allowedMethods)
 }
+export default rateLimit(handler)
