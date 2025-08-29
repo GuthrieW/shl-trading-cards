@@ -28,6 +28,7 @@ import { AuthGuard } from '@components/auth/AuthGuard'
 import { Squash as Hamburger } from 'hamburger-react'
 import { RoleGuard } from '@components/auth/RoleGuard'
 import { ListResponse } from '@pages/api/v3'
+import fixAvatar from '@utils/fix-avatar-url'
 
 const CURRENT_PAGE_LINK_CLASSES =
   'border-b-0 sm:border-b-[4px] border-l-[4px] sm:border-l-0 pt-0 sm:pt-[4px] pr-[14px] sm:pr-[10px] border-secondary'
@@ -265,7 +266,7 @@ export const Header = ({ showAuthButtons = true }) => {
                         <Avatar
                           size="sm"
                           name={user?.username}
-                          src={user?.avatar}
+                          src={fixAvatar(user?.avatar)}
                         />
                       </div>
                     </MenuButton>
