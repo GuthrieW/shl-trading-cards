@@ -15,10 +15,14 @@ import {
   MenuList,
   MenuOptionGroup,
   Progress,
+  Radio,
+  RadioGroup,
+  Stack,
+  Spinner,
 } from '@chakra-ui/react'
 import { binderCards, ListResponse, SortDirection } from '@pages/api/v3'
 import axios from 'axios'
-import { query } from '@pages/api/database/query'
+import { query, indexAxios } from '@pages/api/database/query'
 import { GET } from '@constants/http-methods'
 import {
   TradeCard,
@@ -28,13 +32,11 @@ import {
 import config from 'lib/config'
 import { ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
 import TablePagination from '@components/table/TablePagination'
-import { rarityMap } from '@constants/rarity-map'
-import { allTeamsMaps } from '@constants/teams-map'
-import filterTeamsByLeague from '@utils/filterTeamsByLeague'
 import { useCookie } from '@hooks/useCookie'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
 import { useDebounce } from 'use-debounce'
 import ImageWithFallback from '@components/images/ImageWithFallback'
+import { Team, Rarities } from '@pages/api/v3'
 
 interface CardSelectionGridProps {
   handleCardSelect: (card: TradeCard) => void
@@ -67,7 +69,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
     const [playerName, setPlayerName] = useState<string>('')
     const [teams, setTeams] = useState<string[]>([])
     const [rarities, setRarities] = useState<string[]>([])
-    const [leagues, setLeague] = useState<string[]>([])
+    const [leagueID, setLeagueID] = useState<string>('0')
     const [sortColumn, setSortColumn] = useState<TradeCardSortValue>(
       SORT_OPTIONS[0].value
     )
@@ -119,10 +121,10 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
         debouncedPlayerName,
         JSON.stringify(teams),
         JSON.stringify(rarities),
-        JSON.stringify(leagues),
         String(tablePage),
         sortColumn,
         sortDirection,
+        leagueID,
       ],
       queryFn: () =>
         axios({
@@ -133,14 +135,34 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
               debouncedPlayerName.length >= 1 ? debouncedPlayerName : '',
             teams: JSON.stringify(teams),
             rarities: JSON.stringify(rarities),
-            leagues: JSON.stringify(leagues),
             limit: ROWS_PER_PAGE,
             offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
             sortColumn,
             sortDirection,
+            leagueID,
           },
         }),
       enabled: !!uid,
+    })
+
+    const { payload: teamData, isLoading: teamDataIsLoading } = query<Team[]>({
+      queryKey: ['teamData', leagueID],
+      queryFn: () =>
+        indexAxios({
+          method: 'GET',
+          url: `/api/v1/teams?league=${leagueID}`,
+        }),
+    })
+
+    const { payload: rarityData, isLoading: rarityDataisLoading } = query<
+      Rarities[]
+    >({
+      queryKey: ['rarityData', leagueID],
+      queryFn: () =>
+        axios({
+          method: GET,
+          url: `/api/v3/cards/rarity-map?leagueID=${leagueID}`,
+        }),
     })
 
     const toggleTeam = (team: string) => {
@@ -164,6 +186,22 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
               }}
               className="w-full !bg-secondary"
             />
+          </FormControl>
+          <FormControl className="w-full sm:w-auto">
+            <RadioGroup
+              value={leagueID}
+              defaultValue="0"
+              onChange={(value) => {
+                setLeagueID(value)
+                setTeams([])
+                setRarities([])
+              }}
+            >
+              <Stack direction="row">
+                <Radio value="0">SHL</Radio>
+                <Radio value="2">IIHF</Radio>
+              </Stack>
+            </RadioGroup>
           </FormControl>
           <Flex justifyContent="space-between" alignItems="center">
             <Box flex={1} mr={2}>
@@ -190,29 +228,30 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                     >
                       Deselect All
                     </MenuItemOption>
-                    {filterTeamsByLeague(allTeamsMaps, rarities).map(
-                      ([key, value]) => {
+                    {teamDataIsLoading ? (
+                      <Spinner />
+                    ) : (
+                      teamData?.map((team) => {
                         const isChecked: boolean = teams.includes(
-                          String(value.teamID)
+                          String(team.id)
                         )
                         return (
                           <MenuItemOption
-                            className="hover:!bg-highlighted/40"
+                            className="hover:bg-highlighted/40"
                             icon={null}
                             isChecked={isChecked}
                             aria-checked={isChecked}
-                            key={value.teamID}
-                            value={String(value.teamID)}
+                            key={team.id}
+                            value={String(team.id)}
                             onClick={() => {
-                              setTablePage(1)
-                              toggleTeam(String(value.teamID))
+                              toggleTeam(String(team.id))
                             }}
                           >
-                            {value.label}
+                            {team.name}
                             {isChecked && <CheckIcon className="mx-2" />}
                           </MenuItemOption>
                         )
-                      }
+                      })
                     )}
                   </MenuOptionGroup>
                 </MenuList>
@@ -242,37 +281,31 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                     >
                       Deselect All
                     </MenuItemOption>
-                    {Object.entries(rarityMap).map(([key, value]) => {
-                      const isChecked: boolean = rarities.includes(value.label)
-
-                      const isDisabled =
-                        (value.label === 'IIHF Awards' &&
-                          rarities.length > 0 &&
-                          !rarities.includes('IIHF Awards')) ||
-                        (rarities.includes('IIHF Awards') &&
-                          value.label !== 'IIHF Awards')
-
-                      return (
-                        <MenuItemOption
-                          className="hover:bg-highlighted/40"
-                          icon={null}
-                          isChecked={isChecked}
-                          aria-checked={isChecked}
-                          key={value.label}
-                          value={value.label}
-                          onClick={() => {
-                            if (!isDisabled) {
-                              setTablePage(1)
-                              toggleRarity(value.label)
-                            }
-                          }}
-                          isDisabled={isDisabled}
-                        >
-                          {value.label}
-                          {isChecked && <CheckIcon className="mx-2" />}
-                        </MenuItemOption>
-                      )
-                    })}
+                    {rarityDataisLoading ? (
+                      <Spinner />
+                    ) : (
+                      rarityData?.map((rarity) => {
+                        const isChecked: boolean = rarities.includes(
+                          rarity.card_rarity
+                        )
+                        return (
+                          <MenuItemOption
+                            className="hover:bg-highlighted/40"
+                            icon={null}
+                            isChecked={isChecked}
+                            aria-checked={isChecked}
+                            key={rarity.card_rarity}
+                            value={rarity.card_rarity}
+                            onClick={() => {
+                              toggleRarity(rarity.card_rarity)
+                            }}
+                          >
+                            {rarity.card_rarity}
+                            {isChecked && <CheckIcon className="mx-2" />}
+                          </MenuItemOption>
+                        )
+                      })
+                    )}
                   </MenuOptionGroup>
                 </MenuList>
               </Menu>

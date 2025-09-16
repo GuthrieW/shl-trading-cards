@@ -46,6 +46,7 @@ export default async function cardsEndpoint(
       | 'true'
       | 'false'
     const viewDone = (req.query.viewDone ?? 'false') as 'true' | 'false'
+    const leagueID = req.query.leagueID as string
 
     const hasSortStatus: boolean = [
       viewNeedsAuthor,
@@ -85,11 +86,13 @@ export default async function cardsEndpoint(
         season,
         author_paid,
         date_approved,
+        leagueID,
         user_info.username as author_username,
         COUNT(*) OVER() AS total
       FROM cards
       LEFT JOIN user_info ON cards.author_userID = user_info.uid
     `
+
     if (date_approved === 'true') {
       query.append(SQL` WHERE date_approved IS NOT NULL`)
     } else if (viewSkaters === 'true') {
@@ -106,6 +109,7 @@ export default async function cardsEndpoint(
     if (cardID) {
       query.append(SQL` AND cardID = ${cardID}`)
     }
+    query.append(SQL` AND cards.leagueID = ${parseInt(leagueID)}`)
     const statusesToAppend: SQLStatement[] = []
 
     if (hasSortStatus) {

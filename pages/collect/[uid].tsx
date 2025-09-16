@@ -10,11 +10,14 @@ import {
   MenuList,
   MenuOptionGroup,
   Progress,
+  Radio,
+  RadioGroup,
   Select,
   SimpleGrid,
   Spinner,
   Switch,
   VStack,
+  Stack,
 } from '@chakra-ui/react'
 import DisplayCollection from '@components/collection/DisplayCollection'
 import { PageWrapper } from '@components/common/PageWrapper'
@@ -22,9 +25,7 @@ import CardLightBoxModal from '@components/modals/CardLightBoxModal'
 import TablePagination from '@components/table/TablePagination'
 import { GetServerSideProps } from 'next'
 import { GET } from '@constants/http-methods'
-import { rarityMap } from '@constants/rarity-map'
-import { allTeamsMaps, shlTeamMap, iihfTeamsMap } from '@constants/teams-map'
-import { query } from '@pages/api/database/query'
+import { query, indexAxios } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
 import {
   OwnedCard,
@@ -35,7 +36,6 @@ import { UserData } from '@pages/api/v3/user'
 import axios from 'axios'
 import { useSession } from 'contexts/AuthContext'
 import { pluralizeName } from 'lib/pluralize-name'
-import filterTeamsByLeague from 'utils/filterTeamsByLeague'
 import { Fragment, useEffect, useState } from 'react'
 import DisplayPacks from '@components/collection/DisplayPacks'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
@@ -43,6 +43,7 @@ import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
 import { useDebounce } from 'use-debounce'
 import ImageWithFallback from '@components/images/ImageWithFallback'
+import { Team, Rarities } from '@pages/api/v3'
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {
@@ -103,6 +104,7 @@ const LOADING_GRID_DATA: { rows: OwnedCard[] } = {
     control: 1,
     conditioning: 1,
     playerID: 1,
+    leagueID: 0,
   })),
 } as const
 
@@ -113,7 +115,6 @@ export default ({ uid }: { uid: string }) => {
   const [showNotOwnedCards, setShowNotOwnedCards] = useState<boolean>(false)
   const [playerName, setPlayerName] = useState<string>('')
   const [teams, setTeams] = useState<string[]>([])
-  const [leagues, setLeague] = useState<string[]>([])
   const [rarities, setRarities] = useState<string[]>([])
   const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
   const [selectedCard, setSelectedCard] = useState<CollectionCard | null>(null)
@@ -123,6 +124,7 @@ export default ({ uid }: { uid: string }) => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
   const [tablePage, setTablePage] = useState<number>(1)
   const [otherUID, setOtherUID] = useState<string>('')
+  const [leagueID, setLeagueID] = useState<string>('0')
   const [debouncedPlayerName] = useDebounce(playerName, 500)
 
   const [loggedInUID] = useCookie(config.userIDCookieName)
@@ -134,6 +136,27 @@ export default ({ uid }: { uid: string }) => {
       setOtherUID('')
     }
   }
+
+  const { payload: teamData, isLoading: teamDataIsLoading } = query<Team[]>({
+    queryKey: ['teamData', leagueID],
+    queryFn: () =>
+      indexAxios({
+        method: 'GET',
+        url: `/api/v1/teams?league=${leagueID}`,
+      }),
+  })
+
+  const { payload: rarityData, isLoading: rarityDataisLoading } = query<
+    Rarities[]
+  >({
+    queryKey: ['rarityData', leagueID],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/cards/rarity-map?leagueID=${leagueID}`,
+      }),
+  })
+
   const { payload: user, isLoading: userIsLoading } = query<UserData>({
     queryKey: ['collectionUser', session?.token, uid],
     queryFn: () =>
@@ -150,12 +173,12 @@ export default ({ uid }: { uid: string }) => {
       debouncedPlayerName,
       JSON.stringify(teams),
       JSON.stringify(rarities),
-      JSON.stringify(leagues),
       String(tablePage),
       sortColumn,
       sortDirection,
       String(showNotOwnedCards),
       otherUID,
+      leagueID,
     ],
     queryFn: () =>
       axios({
@@ -167,13 +190,13 @@ export default ({ uid }: { uid: string }) => {
             debouncedPlayerName.length >= 1 ? debouncedPlayerName : '',
           teams: JSON.stringify(teams),
           rarities: JSON.stringify(rarities),
-          leagues: JSON.stringify(leagues),
           limit: ROWS_PER_PAGE,
           offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
           sortColumn,
           sortDirection,
           showNotOwnedCards,
           otherUID: otherUID,
+          leagueID,
         },
       }),
   })
@@ -198,10 +221,6 @@ export default ({ uid }: { uid: string }) => {
     otherUID,
   ])
 
-  const toggleLeague = (league: string) => {
-    setLeague([league])
-  }
-
   const toggleTeam = (team: string) => {
     setTeams((currentValue) => toggleOnfilters(currentValue, team))
   }
@@ -212,13 +231,13 @@ export default ({ uid }: { uid: string }) => {
 
   const getActiveFilters = () => {
     const activeFilters = []
-    const selectedTeamMap = rarities.includes('IIHF Awards')
-      ? iihfTeamsMap
-      : shlTeamMap
 
     if (teams.length > 0) {
       activeFilters.push(
-        `Teams: ${teams.map((id) => selectedTeamMap[id]?.label).join(', ')}`
+        `Teams: ${teams
+          .map((id) => teamData?.find((team) => String(team.id) === id)?.name)
+          .filter(Boolean)
+          .join(', ')}`
       )
     }
     if (rarities.length > 0) {
@@ -257,6 +276,23 @@ export default ({ uid }: { uid: string }) => {
             onChange={(event) => setPlayerName(event.target.value)}
           />
         </FormControl>
+        <FormControl className="w-full sm:w-auto">
+          <RadioGroup
+            value={leagueID}
+            defaultValue="0"
+            onChange={(value) => {
+              setLeagueID(value)
+              setTeams([])
+              setRarities([])
+            }}
+          >
+            <Stack direction="row">
+              <Radio value="0">SHL</Radio>
+              <Radio value="2">IIHF</Radio>
+            </Stack>
+          </RadioGroup>
+        </FormControl>
+
         <div className="flex flex-col sm:flex-row justify-start items-stretch gap-4">
           <FormControl className="w-full sm:w-auto">
             <Menu closeOnSelect={false}>
@@ -275,29 +311,28 @@ export default ({ uid }: { uid: string }) => {
                   >
                     Deselect All
                   </MenuItemOption>
-                  {filterTeamsByLeague(allTeamsMaps, rarities).map(
-                    ([key, value]) => {
-                      const isChecked: boolean = teams.includes(
-                        String(value.teamID)
-                      )
+                  {teamDataIsLoading ? (
+                    <Spinner />
+                  ) : (
+                    teamData?.map((team) => {
+                      const isChecked: boolean = teams.includes(String(team.id))
                       return (
                         <MenuItemOption
                           className="hover:bg-highlighted/40"
                           icon={null}
                           isChecked={isChecked}
                           aria-checked={isChecked}
-                          key={value.teamID}
-                          value={String(value.teamID)}
+                          key={team.id}
+                          value={String(team.id)}
                           onClick={() => {
-                            toggleTeam(String(value.teamID))
-                            toggleLeague(value.league)
+                            toggleTeam(String(team.id))
                           }}
                         >
-                          {value.label}
+                          {team.name}
                           {isChecked && <CheckIcon className="mx-2" />}
                         </MenuItemOption>
                       )
-                    }
+                    })
                   )}
                 </MenuOptionGroup>
               </MenuList>
@@ -317,41 +352,36 @@ export default ({ uid }: { uid: string }) => {
                     aria-checked={false}
                     closeOnSelect
                     onClick={() => {
-                      if (rarities.includes('IIHF Awards')) {
-                        setTeams([])
-                      }
                       setRarities([])
                     }}
                   >
                     Deselect All
                   </MenuItemOption>
-                  {Object.entries(rarityMap).map(([key, value]) => {
-                    const isChecked: boolean = rarities.includes(value.label)
-
-                    // Disable selection of any IIHF Awards and another rarity because trying to select different leagues teams at the same time with the same ID is hell
-                    const isDisabled =
-                      (value.label === 'IIHF Awards' &&
-                        rarities.length > 0 &&
-                        !rarities.includes('IIHF Awards')) ||
-                      (rarities.includes('IIHF Awards') &&
-                        value.label !== 'IIHF Awards')
-
-                    return (
-                      <MenuItemOption
-                        className="hover:bg-highlighted/40"
-                        icon={null}
-                        isChecked={isChecked}
-                        aria-checked={isChecked}
-                        key={value.label}
-                        value={value.label}
-                        onClick={() => !isDisabled && toggleRarity(value.label)}
-                        isDisabled={isDisabled}
-                      >
-                        {value.label}
-                        {isChecked && <CheckIcon className="mx-2" />}
-                      </MenuItemOption>
-                    )
-                  })}
+                  {rarityDataisLoading ? (
+                    <Spinner />
+                  ) : (
+                    rarityData?.map((rarity) => {
+                      const isChecked: boolean = rarities.includes(
+                        rarity.card_rarity
+                      )
+                      return (
+                        <MenuItemOption
+                          className="hover:bg-highlighted/40"
+                          icon={null}
+                          isChecked={isChecked}
+                          aria-checked={isChecked}
+                          key={rarity.card_rarity}
+                          value={rarity.card_rarity}
+                          onClick={() => {
+                            toggleRarity(rarity.card_rarity)
+                          }}
+                        >
+                          {rarity.card_rarity}
+                          {isChecked && <CheckIcon className="mx-2" />}
+                        </MenuItemOption>
+                      )
+                    })
+                  )}
                 </MenuOptionGroup>
               </MenuList>
             </Menu>

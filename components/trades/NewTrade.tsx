@@ -30,14 +30,15 @@ import {
   Switch,
   Progress,
   HStack,
+  Spinner,
+  Radio,
+  RadioGroup,
 } from '@chakra-ui/react'
 import TablePagination from '@components/table/TablePagination'
 import { GET, POST } from '@constants/http-methods'
-import { rarityMap } from '@constants/rarity-map'
-import { allTeamsMaps } from '@constants/teams-map'
 import { useCookie } from '@hooks/useCookie'
 import { mutation } from '@pages/api/database/mutation'
-import { query } from '@pages/api/database/query'
+import { query, indexAxios } from '@pages/api/database/query'
 import { TradeAsset } from '@pages/api/mutations/use-create-trade'
 import { ListResponse, SortDirection } from '@pages/api/v3'
 import {
@@ -46,7 +47,6 @@ import {
   TradeCardSortValue,
 } from '@pages/api/v3/trades/collection/[uid]'
 import { UserData } from '@pages/api/v3/user'
-import filterTeamsByLeague from '@utils/filterTeamsByLeague'
 import {
   errorToastOptions,
   successToastOptions,
@@ -62,6 +62,7 @@ import { useQueryClient } from 'react-query'
 import RemoveButton from './RemoveButton'
 import { useDebounce } from 'use-debounce'
 import ImageWithFallback from '@components/images/ImageWithFallback'
+import { Team, Rarities } from '@pages/api/v3'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
   {
@@ -105,7 +106,6 @@ export default function NewTrade({
   const [playerName, setPlayerName] = useState<string>('')
   const [teams, setTeams] = useState<string[]>([])
   const [rarities, setRarities] = useState<string[]>([])
-  const [leagues, setLeague] = useState<string[]>([])
   const [sortColumn, setSortColumn] = useState<TradeCardSortValue>(
     SORT_OPTIONS[0].value
   )
@@ -121,6 +121,7 @@ export default function NewTrade({
   const [otherUID, setOtherUID] = useState<string>('')
   const [removeSingles, setRemoveSingles] = useState<boolean>(false)
   const [debouncedPlayerName] = useDebounce(playerName, 500)
+  const [leagueID, setLeagueID] = useState<string>('0')
 
   const [uid] = useCookie(config.userIDCookieName)
 
@@ -173,6 +174,26 @@ export default function NewTrade({
       }),
   })
 
+  const { payload: teamData, isLoading: teamDataIsLoading } = query<Team[]>({
+    queryKey: ['teamData', leagueID],
+    queryFn: () =>
+      indexAxios({
+        method: 'GET',
+        url: `/api/v1/teams?league=${leagueID}`,
+      }),
+  })
+
+  const { payload: rarityData, isLoading: rarityDataisLoading } = query<
+    Rarities[]
+  >({
+    queryKey: ['rarityData', leagueID],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/cards/rarity-map?leagueID=${leagueID}`,
+      }),
+  })
+
   const { payload: selectedUserCards, isLoading: selectedUserCardsIsLoading } =
     query<ListResponse<TradeCard>>({
       queryKey: [
@@ -181,12 +202,12 @@ export default function NewTrade({
         debouncedPlayerName,
         JSON.stringify(teams),
         JSON.stringify(rarities),
-        JSON.stringify(leagues),
         String(tablePage),
         sortColumn,
         sortDirection,
         otherUID,
         String(removeSingles),
+        leagueID,
       ],
       queryFn: () =>
         axios({
@@ -197,13 +218,13 @@ export default function NewTrade({
               debouncedPlayerName.length >= 1 ? debouncedPlayerName : '',
             teams: JSON.stringify(teams),
             rarities: JSON.stringify(rarities),
-            leagues: JSON.stringify(leagues),
             limit: ROWS_PER_PAGE,
             offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
             sortColumn,
             sortDirection,
             otherUID: otherUID,
             removeSingles: removeSingles,
+            leagueID,
           },
         }),
       enabled: !!selectedUserId,
@@ -279,10 +300,6 @@ export default function NewTrade({
     }
   }
 
-  const toggleLeague = (league: string) => {
-    setLeague([league])
-  }
-
   const toggleRarity = (rarity: string) => {
     setRarities((currentValue) => {
       const rarityIndex: number = currentValue.indexOf(rarity)
@@ -298,7 +315,6 @@ export default function NewTrade({
     setPlayerName('')
     setTeams([])
     setRarities([])
-    setLeague([])
     setOtherUID('')
     onOpen()
   }
@@ -592,26 +608,30 @@ export default function NewTrade({
                         >
                           Deselect All
                         </MenuItemOption>
-                        {filterTeamsByLeague(allTeamsMaps, rarities).map(
-                          ([key, value]) => {
+                        {teamDataIsLoading ? (
+                          <Spinner />
+                        ) : (
+                          teamData?.map((team) => {
                             const isChecked: boolean = teams.includes(
-                              String(value.teamID)
+                              String(team.id)
                             )
                             return (
                               <MenuItemOption
-                                className="hover:!bg-highlighted/40"
+                                className="hover:bg-highlighted/40"
                                 icon={null}
                                 isChecked={isChecked}
                                 aria-checked={isChecked}
-                                key={value.teamID}
-                                value={String(value.teamID)}
-                                onClick={() => toggleTeam(String(value.teamID))}
+                                key={team.id}
+                                value={String(team.id)}
+                                onClick={() => {
+                                  toggleTeam(String(team.id))
+                                }}
                               >
-                                {value.label}
+                                {team.name}
                                 {isChecked && <CheckIcon className="mx-2" />}
                               </MenuItemOption>
                             )
-                          }
+                          })
                         )}
                       </MenuOptionGroup>
                     </MenuList>
@@ -638,37 +658,31 @@ export default function NewTrade({
                         >
                           Deselect All
                         </MenuItemOption>
-                        {Object.entries(rarityMap).map(([key, value]) => {
-                          const isChecked: boolean = rarities.includes(
-                            value.label
-                          )
-
-                          // Disable selection of any IIHF Awards and another rarity because trying to select different leagues teams at the same time with the same ID is hell
-                          const isDisabled =
-                            (value.label === 'IIHF Awards' &&
-                              rarities.length > 0 &&
-                              !rarities.includes('IIHF Awards')) ||
-                            (rarities.includes('IIHF Awards') &&
-                              value.label !== 'IIHF Awards')
-
-                          return (
-                            <MenuItemOption
-                              className="hover:!bg-highlighted/40"
-                              icon={null}
-                              isChecked={isChecked}
-                              aria-checked={isChecked}
-                              key={value.label}
-                              value={value.label}
-                              onClick={() =>
-                                !isDisabled && toggleRarity(value.label)
-                              }
-                              isDisabled={isDisabled}
-                            >
-                              {value.label}
-                              {isChecked && <CheckIcon className="mx-2" />}
-                            </MenuItemOption>
-                          )
-                        })}
+                        {rarityDataisLoading ? (
+                          <Spinner />
+                        ) : (
+                          rarityData?.map((rarity) => {
+                            const isChecked: boolean = rarities.includes(
+                              rarity.card_rarity
+                            )
+                            return (
+                              <MenuItemOption
+                                className="hover:bg-highlighted/40"
+                                icon={null}
+                                isChecked={isChecked}
+                                aria-checked={isChecked}
+                                key={rarity.card_rarity}
+                                value={rarity.card_rarity}
+                                onClick={() => {
+                                  toggleRarity(rarity.card_rarity)
+                                }}
+                              >
+                                {rarity.card_rarity}
+                                {isChecked && <CheckIcon className="mx-2" />}
+                              </MenuItemOption>
+                            )
+                          })
+                        )}
                       </MenuOptionGroup>
                     </MenuList>
                   </Menu>
@@ -705,6 +719,22 @@ export default function NewTrade({
                   ))}
                 </Select>
               </Box>
+              <FormControl className="w-full sm:w-auto">
+                <RadioGroup
+                  value={leagueID}
+                  defaultValue="0"
+                  onChange={(value) => {
+                    setLeagueID(value)
+                    setTeams([])
+                    setRarities([])
+                  }}
+                >
+                  <Stack direction="row">
+                    <Radio value="0">SHL</Radio>
+                    <Radio value="2">IIHF</Radio>
+                  </Stack>
+                </RadioGroup>
+              </FormControl>
               <FormControl className="flex flex-row justify-start items-center">
                 <FormLabel className="flex items-center mr-4">
                   Hide My Cards / Partner's Cards

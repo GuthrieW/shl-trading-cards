@@ -32,6 +32,7 @@ export type OwnedCard = {
   control: number
   conditioning: number
   playerID: number
+  leagueID: number
 }
 
 export type OwnedCardSortValue = keyof OwnedCard
@@ -57,7 +58,6 @@ const handler = async (
     const playerName = req.query.playerName as string
     const teams = JSON.parse(req.query.teams as string) as string[]
     const rarities = JSON.parse(req.query.rarities as string) as string[]
-    const leagues = JSON.parse(req.query.leagues as string) as string[]
     const limit = (req.query.limit ?? 10) as string
     const offset = (req.query.offset ?? 0) as string
     const sortColumn = (req.query.sortColumn ??
@@ -67,6 +67,7 @@ const handler = async (
       | 'true'
       | 'false'
     const otherUID = req.query.otherUID as string
+    const leagueID = (req.query.leagueID as string) || '0'
 
     if (!uid) {
       res.status(StatusCodes.BAD_REQUEST).json({
@@ -104,7 +105,7 @@ const handler = async (
       showNotOwnedCards === 'true'
         ? SQL`
         WITH usercollection AS (
-          select * from ownedCards where userid=${parseInt(uid)}
+          select * from ownedCards where userid=${parseInt(uid)} 
         )
 
         SELECT COALESCE(ownedCard.quantity, 0) as quantity,
@@ -133,7 +134,7 @@ const handler = async (
         LEFT JOIN userCollection ownedCard
           ON card.cardID=ownedCard.cardID
         LEFT JOIN team_data team
-          ON card.teamID=team.teamID
+          ON card.teamID=team.teamID and ${parseInt(leagueID)}=team.LeagueID
         WHERE approved=1
       `
         : SQL`
@@ -163,9 +164,12 @@ const handler = async (
         LEFT JOIN ownedCards ownedCard
           ON card.cardID=ownedCard.cardID
         LEFT JOIN team_data team
-          ON card.teamID=team.teamID
-        WHERE ownedCard.userID=${parseInt(uid)}
+          ON card.teamID=team.teamID and ${parseInt(leagueID)}=team.LeagueID
+        WHERE ownedCard.userID=${parseInt(uid)} 
       `
+
+    countQuery.append(SQL` AND card.leagueID=${parseInt(leagueID)}`)
+    query.append(SQL` AND card.leagueID=${parseInt(leagueID)}`)
 
     if (playerName.length !== 0) {
       countQuery.append(SQL` AND card.player_name LIKE ${`%${playerName}%`}`)
@@ -188,16 +192,6 @@ const handler = async (
           : query.append(SQL` OR card.teamID=${parseInt(team)}`)
       )
       query.append(SQL`)`)
-
-      if (leagues.includes('IIHF')) {
-        if (!leagues.includes('SHL')) {
-          countQuery.append(SQL` AND card.card_rarity = 'IIHF Awards'`)
-          query.append(SQL` AND card.card_rarity = 'IIHF Awards'`)
-        }
-      } else {
-        countQuery.append(SQL` AND card.card_rarity != 'IIHF Awards'`)
-        query.append(SQL` AND card.card_rarity != 'IIHF Awards'`)
-      }
     }
 
     if (otherUID) {
@@ -256,7 +250,12 @@ const handler = async (
     }
 
     if (sortColumn === 'teamID') {
-      query.append(SQL` team.Name`)
+      if (leagueID === '2') {
+        query.append(SQL` team.NickName`)
+      } else {
+        query.append(SQL` team.Name`)
+      }
+
       sortDirection === 'DESC'
         ? query.append(SQL` ASC`)
         : query.append(SQL` DESC`)

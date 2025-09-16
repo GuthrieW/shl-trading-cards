@@ -49,6 +49,7 @@ export default async function tradeCollectionEndpoint(
     const sortDirection = (req.query.sortDirection ?? 'DESC') as SortDirection
     const otherUID = req.query.otherUID as string
     const removeSingles = req.query.removeSingles as string
+    const leagueID = req.query.leagueID as string
 
     if (!uid) {
       res.status(StatusCodes.BAD_REQUEST).json({
@@ -85,6 +86,8 @@ export default async function tradeCollectionEndpoint(
       LEFT JOIN cards card
         ON card.cardID=collectionCard.cardID
         WHERE collectionCard.userID=${uid}`)
+
+    query.append(SQL` AND card.leagueID = ${parseInt(leagueID)}`)
 
     if (playerName.length !== 0) {
       query.append(SQL` AND card.player_name LIKE ${`%${playerName}%`}`)
