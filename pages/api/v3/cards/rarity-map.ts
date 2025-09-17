@@ -15,7 +15,7 @@ const cors = Cors({
 
 export default async function rarityMap(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<Rarities[]>> // Changed from raritiesMap[] to Rarity[]
+  res: NextApiResponse<ApiResponse<Rarities[]>>
 ): Promise<void> {
   await middleware(req, res, cors)
 
@@ -33,7 +33,7 @@ export default async function rarityMap(
             )} ORDER BY cards.card_rarity
         `
 
-    const queryResult = await cardsQuery<Rarities>(query) // Changed from raritiesMap to Rarity
+    const queryResult = await cardsQuery<Rarities>(query)
 
     if ('error' in queryResult) {
       console.error(queryResult.error)

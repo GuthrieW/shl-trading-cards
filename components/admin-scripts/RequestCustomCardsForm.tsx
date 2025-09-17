@@ -28,6 +28,7 @@ const DATA_COLUMNS = {
   quickness: 16,
   control: 17,
   conditioning: 18,
+  leagueID: 0,
 }
 
 export default function RequestCustomCardsForm({
@@ -127,6 +128,7 @@ export default function RequestCustomCardsForm({
           row[DATA_COLUMNS.position] !== 'G'
             ? null
             : parseInt(row[DATA_COLUMNS.conditioning]),
+        leagueID: parseInt(row[DATA_COLUMNS.leagueID]),
       }
 
       const validation = validateCard(newCard, index)
@@ -185,6 +187,10 @@ const validateCard = (
 
   if (!card.playerID) {
     return { status: false, error: `playerID missing on row ${index}` }
+  }
+
+  if (!card.leagueID) {
+    return { status: false, error: `leagueID missing on row ${index}` }
   }
 
   if (!card.season || card.season < 0) {
