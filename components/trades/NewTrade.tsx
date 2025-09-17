@@ -1,4 +1,3 @@
-import { CheckIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import {
   Badge,
   Button,
@@ -11,11 +10,6 @@ import {
   FormControl,
   Image,
   Input,
-  Menu,
-  MenuButton,
-  MenuItemOption,
-  MenuList,
-  MenuOptionGroup,
   Select,
   SimpleGrid,
   useDisclosure,
@@ -30,9 +24,6 @@ import {
   Switch,
   Progress,
   HStack,
-  Spinner,
-  Radio,
-  RadioGroup,
 } from '@chakra-ui/react'
 import TablePagination from '@components/table/TablePagination'
 import { GET, POST } from '@constants/http-methods'
@@ -63,6 +54,9 @@ import RemoveButton from './RemoveButton'
 import { useDebounce } from 'use-debounce'
 import ImageWithFallback from '@components/images/ImageWithFallback'
 import { Team, Rarities } from '@pages/api/v3'
+import FilterDropdown from '@components/common/FilterDropdown'
+import RadioGroupSelector from '@components/common/RadioGroupSelector'
+import { LEAGUE_OPTIONS } from 'lib/constants'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
   {
@@ -588,104 +582,30 @@ export default function NewTrade({
               </FormControl>
               <Flex justifyContent="space-between" alignItems="center">
                 <Box flex={1} mr={2}>
-                  <Menu closeOnSelect={false}>
-                    <MenuButton
-                      as={Button}
-                      rightIcon={<ChevronDownIcon />}
-                      className="w-full !bg-secondary !text-secondary text-center hover:!bg-highlighted/40"
-                    >
-                      Teams ({teams.length})
-                    </MenuButton>
-                    <MenuList>
-                      <MenuOptionGroup type="checkbox">
-                        <MenuItemOption
-                          className="hover:!bg-highlighted/40"
-                          icon={null}
-                          isChecked={false}
-                          aria-checked={false}
-                          closeOnSelect
-                          onClick={() => setTeams([])}
-                        >
-                          Deselect All
-                        </MenuItemOption>
-                        {teamDataIsLoading ? (
-                          <Spinner />
-                        ) : (
-                          teamData?.map((team) => {
-                            const isChecked: boolean = teams.includes(
-                              String(team.id)
-                            )
-                            return (
-                              <MenuItemOption
-                                className="hover:bg-highlighted/40"
-                                icon={null}
-                                isChecked={isChecked}
-                                aria-checked={isChecked}
-                                key={team.id}
-                                value={String(team.id)}
-                                onClick={() => {
-                                  toggleTeam(String(team.id))
-                                }}
-                              >
-                                {team.name}
-                                {isChecked && <CheckIcon className="mx-2" />}
-                              </MenuItemOption>
-                            )
-                          })
-                        )}
-                      </MenuOptionGroup>
-                    </MenuList>
-                  </Menu>
+                  <FilterDropdown<Team>
+                    label="Teams"
+                    selectedValues={teams}
+                    options={teamData || []}
+                    isLoading={teamDataIsLoading}
+                    onToggle={toggleTeam}
+                    onDeselectAll={() => setTeams([])}
+                    getOptionId={(team) => String(team.id)}
+                    getOptionValue={(team) => String(team.id)}
+                    getOptionLabel={(team) => team.name}
+                  />
                 </Box>
                 <Box flex={1} mr={2}>
-                  <Menu closeOnSelect={false}>
-                    <MenuButton
-                      as={Button}
-                      rightIcon={<ChevronDownIcon />}
-                      className="w-full !bg-secondary !text-secondary text-center hover:!bg-highlighted/40"
-                    >
-                      Rarity ({rarities.length})
-                    </MenuButton>
-                    <MenuList>
-                      <MenuOptionGroup type="checkbox">
-                        <MenuItemOption
-                          className="hover:!bg-highlighted/40"
-                          icon={null}
-                          isChecked={false}
-                          aria-checked={false}
-                          closeOnSelect
-                          onClick={() => setRarities([])}
-                        >
-                          Deselect All
-                        </MenuItemOption>
-                        {rarityDataisLoading ? (
-                          <Spinner />
-                        ) : (
-                          rarityData?.map((rarity) => {
-                            const isChecked: boolean = rarities.includes(
-                              rarity.card_rarity
-                            )
-                            return (
-                              <MenuItemOption
-                                className="hover:bg-highlighted/40"
-                                icon={null}
-                                isChecked={isChecked}
-                                aria-checked={isChecked}
-                                key={rarity.card_rarity}
-                                value={rarity.card_rarity}
-                                onClick={() => {
-                                  toggleRarity(rarity.card_rarity)
-                                }}
-                              >
-                                {rarity.card_rarity}
-                                {isChecked && <CheckIcon className="mx-2" />}
-                              </MenuItemOption>
-                            )
-                          })
-                        )}
-                      </MenuOptionGroup>
-                    </MenuList>
-                  </Menu>
+                  <FilterDropdown<Rarities>
+                    label="Rarities"
+                    selectedValues={rarities}
+                    options={rarityData || []}
+                    isLoading={rarityDataisLoading}
+                    onToggle={toggleRarity}
+                    onDeselectAll={() => setRarities([])}
+                    getOptionId={(rarity) => rarity.card_rarity}
+                    getOptionValue={(rarity) => rarity.card_rarity}
+                    getOptionLabel={(rarity) => rarity.card_rarity}
+                  />
                 </Box>
               </Flex>
               <Box flex={1} mr={2} className="p-2">
@@ -719,22 +639,15 @@ export default function NewTrade({
                   ))}
                 </Select>
               </Box>
-              <FormControl className="w-full sm:w-auto">
-                <RadioGroup
-                  value={leagueID}
-                  defaultValue="0"
-                  onChange={(value) => {
-                    setLeagueID(value)
-                    setTeams([])
-                    setRarities([])
-                  }}
-                >
-                  <Stack direction="row">
-                    <Radio value="0">SHL</Radio>
-                    <Radio value="2">IIHF</Radio>
-                  </Stack>
-                </RadioGroup>
-              </FormControl>
+              <RadioGroupSelector
+                value={leagueID}
+                options={LEAGUE_OPTIONS}
+                onChange={(value) => {
+                  setLeagueID(value)
+                  setTeams([])
+                  setRarities([])
+                }}
+              />
               <FormControl className="flex flex-row justify-start items-center">
                 <FormLabel className="flex items-center mr-4">
                   Hide My Cards / Partner's Cards

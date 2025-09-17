@@ -46,7 +46,7 @@ export default async function cardsEndpoint(
       | 'true'
       | 'false'
     const viewDone = (req.query.viewDone ?? 'false') as 'true' | 'false'
-    const leagueID = req.query.leagueID as string
+    const leagueID = (req.query.leagueID ?? 0) as string
 
     const hasSortStatus: boolean = [
       viewNeedsAuthor,

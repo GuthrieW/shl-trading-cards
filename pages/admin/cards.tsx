@@ -1,4 +1,4 @@
-import { CheckIcon, ChevronDownIcon } from '@chakra-ui/icons'
+import { ChevronDownIcon } from '@chakra-ui/icons'
 import {
   Button,
   FormControl,
@@ -25,10 +25,6 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalHeader,
-  Radio,
-  RadioGroup,
-  Spinner,
-  Stack,
 } from '@chakra-ui/react'
 import DeleteCardDialog from '@components/admin-cards/DeleteCardDialog'
 import RemoveCardAuthorDialog from '@components/admin-cards/RemoveCardAuthorDialog'
@@ -57,6 +53,9 @@ import { toggleOnfilters } from '@utils/toggle-on-filters'
 import MisprintDialog from '@components/admin-cards/MisprintDialog'
 import { usePermissions } from '@hooks/usePermissions'
 import { Team, Rarities } from '@pages/api/v3'
+import FilterDropdown from '@components/common/FilterDropdown'
+import RadioGroupSelector from '@components/common/RadioGroupSelector'
+import { LEAGUE_OPTIONS } from 'lib/constants'
 
 type ColumnName = keyof Readonly<Card>
 
@@ -252,116 +251,46 @@ export default () => {
               onChange={(event) => setPlayerOrCardID(event.target.value)}
             />
           </FormControl>
-          <FormControl className="w-full sm:w-auto">
-            <RadioGroup
+          <div className="m-2 flex flex-col gap-4 md:flex-row md:justify-between">
+            <RadioGroupSelector
               value={leagueID}
-              defaultValue="0"
+              options={LEAGUE_OPTIONS}
               onChange={(value) => {
                 setLeagueID(value)
                 setTeams([])
                 setRarities([])
               }}
-            >
-              <Stack direction="row">
-                <Radio value="0">SHL</Radio>
-                <Radio value="2">IIHF</Radio>
-              </Stack>
-            </RadioGroup>
-          </FormControl>
+            />
+          </div>
+
           <div className="m-2 flex flex-col gap-4 md:flex-row md:justify-between">
             <div className="flex flex-row space-x-2">
-              <FormControl>
-                <Menu closeOnSelect={false}>
-                  <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary hover:!bg-highlighted/40">
-                    Teams&nbsp;{`(${teams.length})`}
-                  </MenuButton>
-                  <MenuList>
-                    <MenuOptionGroup type="checkbox">
-                      <MenuItemOption
-                        className="hover:!bg-highlighted/40"
-                        icon={null}
-                        isChecked={false}
-                        aria-checked={false}
-                        closeOnSelect
-                        onClick={() => setTeams([])}
-                      >
-                        Deselect All
-                      </MenuItemOption>
-                      {teamDataIsLoading ? (
-                        <Spinner />
-                      ) : (
-                        teamData?.map((team) => {
-                          const isChecked: boolean = teams.includes(
-                            String(team.id)
-                          )
-                          return (
-                            <MenuItemOption
-                              className="hover:bg-highlighted/40"
-                              icon={null}
-                              isChecked={isChecked}
-                              aria-checked={isChecked}
-                              key={team.id}
-                              value={String(team.id)}
-                              onClick={() => {
-                                toggleTeam(String(team.id))
-                              }}
-                            >
-                              {team.name}
-                              {isChecked && <CheckIcon className="mx-2" />}
-                            </MenuItemOption>
-                          )
-                        })
-                      )}
-                    </MenuOptionGroup>
-                  </MenuList>
-                </Menu>
-              </FormControl>
-              <FormControl>
-                <Menu closeOnSelect={false}>
-                  <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary hover:!bg-highlighted/40">
-                    Rarities&nbsp;{`(${rarities.length})`}
-                  </MenuButton>
-                  <MenuList>
-                    <MenuOptionGroup type="checkbox">
-                      <MenuItemOption
-                        className="hover:!bg-highlighted/40"
-                        icon={null}
-                        isChecked={false}
-                        aria-checked={false}
-                        closeOnSelect
-                        onClick={() => setRarities([])}
-                      >
-                        Deselect All
-                      </MenuItemOption>
-                      {rarityDataisLoading ? (
-                        <Spinner />
-                      ) : (
-                        rarityData?.map((rarity) => {
-                          const isChecked: boolean = rarities.includes(
-                            rarity.card_rarity
-                          )
-                          return (
-                            <MenuItemOption
-                              className="hover:bg-highlighted/40"
-                              icon={null}
-                              isChecked={isChecked}
-                              aria-checked={isChecked}
-                              key={rarity.card_rarity}
-                              value={rarity.card_rarity}
-                              onClick={() => {
-                                toggleRarity(rarity.card_rarity)
-                              }}
-                            >
-                              {rarity.card_rarity}
-                              {isChecked && <CheckIcon className="mx-2" />}
-                            </MenuItemOption>
-                          )
-                        })
-                      )}
-                    </MenuOptionGroup>
-                  </MenuList>
-                </Menu>
-              </FormControl>
+              <div className="flex flex-row space-x-2">
+                <FilterDropdown<Team>
+                  label="Teams"
+                  selectedValues={teams}
+                  options={teamData || []}
+                  isLoading={teamDataIsLoading}
+                  onToggle={toggleTeam}
+                  onDeselectAll={() => setTeams([])}
+                  getOptionId={(team) => String(team.id)}
+                  getOptionValue={(team) => String(team.id)}
+                  getOptionLabel={(team) => team.name}
+                />
+
+                <FilterDropdown<Rarities>
+                  label="Rarities"
+                  selectedValues={rarities}
+                  options={rarityData || []}
+                  isLoading={rarityDataisLoading}
+                  onToggle={toggleRarity}
+                  onDeselectAll={() => setRarities([])}
+                  getOptionId={(rarity) => rarity.card_rarity}
+                  getOptionValue={(rarity) => rarity.card_rarity}
+                  getOptionLabel={(rarity) => rarity.card_rarity}
+                />
+              </div>
+
               <FormControl>
                 <Menu closeOnSelect={false}>
                   <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
