@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { Button } from '@chakra-ui/react'
 import { iihfTeamsMap, shlTeamMap } from '@constants/teams-map'
+import { indexAxios, query } from '@pages/api/database/query'
+import { Team } from '@pages/api/v3'
 
-export const generateCardTooltipContent = (card: Card) => {
-  const league = card.card_rarity === 'IIHF Awards' ? 'IIHF' : 'SHL'
-  const teamMap = league === 'IIHF' ? iihfTeamsMap : shlTeamMap
-  const teamInfo = teamMap[card.teamID] || { label: 'Unknown Team' }
+export const generateCardTooltipContent = (card: Card, teamData: Team[]) => {
+  const teamInfo = teamData[card.teamID]
   const award_rarity =
     card.card_rarity === 'Awards'
       ? `Awards - ${card.sub_type}`
@@ -15,7 +15,7 @@ export const generateCardTooltipContent = (card: Card) => {
 ${card.player_name}
 Rarity: ${award_rarity} | Pos: ${card.position}
 Season: ${card.season} | Overall: ${card.overall}
-Team: ${teamInfo.label} (${teamInfo.abbreviation})
+Team: ${teamInfo.name} (${teamInfo.abbreviation})
   `.trim()
 
   let positionSkills = ``
@@ -32,6 +32,15 @@ Team: ${teamInfo.label} (${teamInfo.abbreviation})
 export const CardInfo = ({ card }: { card: Card }) => {
   const [isVisible, setIsVisible] = useState(true)
 
+  const { payload: teamData, isLoading: teamDataIsLoading } = query<Team[]>({
+    queryKey: ['teamData', String(card.leagueID)],
+    queryFn: () =>
+      indexAxios({
+        method: 'GET',
+        url: `/api/v1/teams?league=${card.leagueID}`,
+      }),
+  })
+
   return (
     <div className="pt-2">
       <Button
@@ -40,9 +49,9 @@ export const CardInfo = ({ card }: { card: Card }) => {
       >
         Show Card Info
       </Button>
-      {isVisible && (
+      {isVisible && !teamDataIsLoading && (
         <pre className="whitespace-pre-wrap break-words font-mono mt-2 sm:mt-4 lg:mt-6">
-          {generateCardTooltipContent(card)}
+          {generateCardTooltipContent(card, teamData)}
         </pre>
       )}
     </div>
