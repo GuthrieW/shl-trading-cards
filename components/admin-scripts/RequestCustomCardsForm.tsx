@@ -28,7 +28,7 @@ const DATA_COLUMNS = {
   quickness: 16,
   control: 17,
   conditioning: 18,
-  leagueID: 0,
+  leagueID: 19,
 }
 
 export default function RequestCustomCardsForm({
