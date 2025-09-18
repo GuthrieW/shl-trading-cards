@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import {
   SimpleGrid,
   Box,
@@ -20,7 +20,6 @@ import {
   TradeCardSortValue,
 } from '@pages/api/v3/trades/collection/[uid]'
 import config from 'lib/config'
-import { ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
 import TablePagination from '@components/table/TablePagination'
 import { useCookie } from '@hooks/useCookie'
 import { toggleOnfilters } from '@utils/toggle-on-filters'

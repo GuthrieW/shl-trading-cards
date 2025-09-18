@@ -57,6 +57,7 @@ import { Team, Rarities } from '@pages/api/v3'
 import FilterDropdown from '@components/common/FilterDropdown'
 import RadioGroupSelector from '@components/common/RadioGroupSelector'
 import { LEAGUE_OPTIONS } from 'lib/constants'
+import { useSession } from 'contexts/AuthContext'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
   {
@@ -92,6 +93,7 @@ export default function NewTrade({
   resetTradeCards: boolean
   setResetTradeCards: (value: boolean) => void
 }) {
+  const { session } = useSession()
   const toast = useToast()
   const queryClient = useQueryClient()
   const router = useRouter()
@@ -265,6 +267,9 @@ export default function NewTrade({
         method: POST,
         url: '/api/v3/trades',
         data: { initiatorId, recipientId, tradeAssets },
+        headers: {
+          Authorization: `Bearer ${session?.token}`,
+        },
       }),
   })
 

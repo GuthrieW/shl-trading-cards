@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Button } from '@chakra-ui/react'
-import { iihfTeamsMap, shlTeamMap } from '@constants/teams-map'
 import { indexAxios, query } from '@pages/api/database/query'
 import { Team } from '@pages/api/v3'
 
