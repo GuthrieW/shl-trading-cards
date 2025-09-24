@@ -16,7 +16,7 @@ const initializeDB = (database: string | undefined): ServerlessMysql =>
 console.log('process.env.NODE_ENV', process.env.NODE_ENV)
 const cardsDatabase: ServerlessMysql = initializeDB(
   // process.env.NODE_ENV === 'production' ? 'dev_cards' : 'dev_cards' // dev
-  process.env.NODE_ENV === 'production' ? 'admin_cards' : 'dev_cards' // prod
+  process.env.NODE_ENV === 'production' ? 'admin_cards' : 'admin_cards' // prod
 )
 
 const usersDatabase: ServerlessMysql = initializeDB(
@@ -26,7 +26,7 @@ const usersDatabase: ServerlessMysql = initializeDB(
 
 const portalDatabase: ServerlessMysql = initializeDB(
   // process.env.NODE_ENV === 'production' ? 'dev_portal' : 'dev_portal' // dev
-  process.env.NODE_ENV === 'production' ? 'admin_portal' : 'dev_portal' // prod
+  process.env.NODE_ENV === 'production' ? 'admin_portal' : 'admin_portal' // prod
 )
 
 const getQueryFn =

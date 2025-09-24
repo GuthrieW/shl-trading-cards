@@ -73,6 +73,10 @@ export type Rarities = {
   card_rarity: string
 }
 
+export type SubType = {
+  sub_type: string
+}
+
 export type LatestCards = {
   ownedCardID: number
   userID: number

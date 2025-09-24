@@ -9,6 +9,7 @@ import {
   Spinner,
 } from '@chakra-ui/react'
 import { CheckIcon } from '@chakra-ui/icons'
+import { Button } from '@chakra-ui/react'
 
 interface FilterDropdownProps<T = any> {
   label: string
@@ -36,7 +37,11 @@ const FilterDropdown = <T,>({
   return (
     <FormControl>
       <Menu closeOnSelect={false}>
-        <MenuButton className="!w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary hover:!bg-highlighted/40">
+        <MenuButton
+          as={Button}
+          isDisabled={isLoading || options.length === 0}
+          className="!w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary hover:!bg-highlighted/40 disabled:cursor-not-allowed disabled:opacity-60"
+        >
           {label}&nbsp;{`(${selectedValues.length})`}
         </MenuButton>
         <MenuList>

@@ -17,7 +17,7 @@ import TablePagination from '@components/table/TablePagination'
 import { GetServerSideProps } from 'next'
 import { GET } from '@constants/http-methods'
 import { query, indexAxios } from '@pages/api/database/query'
-import { ListResponse, SortDirection } from '@pages/api/v3'
+import { ListResponse, SortDirection, SubType } from '@pages/api/v3'
 import {
   OwnedCard,
   OwnedCardSortOption,
@@ -110,6 +110,7 @@ export default ({ uid }: { uid: string }) => {
   const [playerName, setPlayerName] = useState<string>('')
   const [teams, setTeams] = useState<string[]>([])
   const [rarities, setRarities] = useState<string[]>([])
+  const [subType, setSubType] = useState<string[]>([])
   const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
   const [selectedCard, setSelectedCard] = useState<CollectionCard | null>(null)
   const [sortColumn, setSortColumn] = useState<OwnedCardSortValue>(
@@ -151,6 +152,19 @@ export default ({ uid }: { uid: string }) => {
       }),
   })
 
+  const { payload: subTypeData, isLoading: subTypeDataIsLoading } = query<
+    SubType[]
+  >({
+    queryKey: ['subTypeData', leagueID, JSON.stringify(rarities)],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/cards/sub-rarity-map?leagueID=${leagueID}&rarities=${JSON.stringify(
+          rarities
+        )}`,
+      }),
+  })
+
   const { payload: user, isLoading: userIsLoading } = query<UserData>({
     queryKey: ['collectionUser', session?.token, uid],
     queryFn: () =>
@@ -167,6 +181,7 @@ export default ({ uid }: { uid: string }) => {
       debouncedPlayerName,
       JSON.stringify(teams),
       JSON.stringify(rarities),
+      JSON.stringify(subType),
       String(tablePage),
       sortColumn,
       sortDirection,
@@ -184,6 +199,7 @@ export default ({ uid }: { uid: string }) => {
             debouncedPlayerName.length >= 1 ? debouncedPlayerName : '',
           teams: JSON.stringify(teams),
           rarities: JSON.stringify(rarities),
+          subType: JSON.stringify(subType),
           limit: ROWS_PER_PAGE,
           offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
           sortColumn,
@@ -194,14 +210,15 @@ export default ({ uid }: { uid: string }) => {
         },
       }),
   })
+
   useEffect(() => {
     if (payload) {
       setTotalCards(payload.total)
       setTotalOwnedCards(payload.totalOwned)
     }
-  }, [payload])
-
-  useEffect(() => {
+    if (subTypeData && subTypeData.length === 0 && subType.length > 0) {
+      setSubType([])
+    }
     refetch()
   }, [
     uid,
@@ -213,6 +230,9 @@ export default ({ uid }: { uid: string }) => {
     tablePage,
     showNotOwnedCards,
     otherUID,
+    payload,
+    subTypeData,
+    subType,
   ])
 
   const toggleTeam = (team: string) => {
@@ -221,6 +241,10 @@ export default ({ uid }: { uid: string }) => {
 
   const toggleRarity = (rarity: string) => {
     setRarities((currentValue) => toggleOnfilters(currentValue, rarity))
+  }
+
+  const toggleSubType = (subType: string) => {
+    setSubType((currentValue) => toggleOnfilters(currentValue, subType))
   }
 
   const getActiveFilters = () => {
@@ -243,6 +267,15 @@ export default ({ uid }: { uid: string }) => {
                 ?.card_rarity ||
               rarityMap[r]?.label ||
               r
+          )
+          .join(', ')}`
+      )
+    }
+    if (subType.length > 0) {
+      activeFilters.push(
+        `Sub Types: ${subType
+          .map(
+            (s) => subTypeData?.find((sub) => sub.sub_type === s)?.sub_type || s
           )
           .join(', ')}`
       )
@@ -286,6 +319,7 @@ export default ({ uid }: { uid: string }) => {
               setLeagueID(value)
               setTeams([])
               setRarities([])
+              setSubType([])
             }}
           />
         </div>
@@ -312,6 +346,18 @@ export default ({ uid }: { uid: string }) => {
             getOptionId={(rarity) => rarity.card_rarity}
             getOptionValue={(rarity) => rarity.card_rarity}
             getOptionLabel={(rarity) => rarity.card_rarity}
+          />
+
+          <FilterDropdown<SubType>
+            label="Sub Types"
+            selectedValues={subType}
+            options={subTypeData || []}
+            isLoading={subTypeDataIsLoading}
+            onToggle={toggleSubType}
+            onDeselectAll={() => setSubType([])}
+            getOptionId={(subType) => subType.sub_type}
+            getOptionValue={(subType) => subType.sub_type}
+            getOptionLabel={(subType) => subType.sub_type}
           />
         </div>
         <FormControl className="flex flex-row justify-start items-center">

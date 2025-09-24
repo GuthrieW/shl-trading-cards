@@ -42,6 +42,7 @@ export default async function tradeCollectionEndpoint(
     const playerName = req.query.playerName as string
     const teams = JSON.parse(req.query.teams as string) as string[]
     const rarities = JSON.parse(req.query.rarities as string) as string[]
+    const subType = JSON.parse(req.query.subType as string) as string[]
     const limit = (req.query.limit ?? 10) as string
     const offset = (req.query.offset ?? 0) as string
     const sortColumn = (req.query.sortColumn ??
@@ -118,6 +119,16 @@ export default async function tradeCollectionEndpoint(
         index === 0
           ? query.append(SQL`card.card_rarity=${rarity}`)
           : query.append(SQL` OR card.card_rarity=${rarity}`)
+      )
+      query.append(SQL`)`)
+    }
+
+    if (subType.length !== 0) {
+      query.append(SQL` AND (`)
+      subType.forEach((sub_type, index) =>
+        index === 0
+          ? query.append(SQL`card.sub_type=${sub_type}`)
+          : query.append(SQL` OR card.sub_type=${sub_type}`)
       )
       query.append(SQL`)`)
     }

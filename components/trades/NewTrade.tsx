@@ -31,7 +31,7 @@ import { useCookie } from '@hooks/useCookie'
 import { mutation } from '@pages/api/database/mutation'
 import { query, indexAxios } from '@pages/api/database/query'
 import { TradeAsset } from '@pages/api/mutations/use-create-trade'
-import { ListResponse, SortDirection } from '@pages/api/v3'
+import { ListResponse, SortDirection, SubType } from '@pages/api/v3'
 import {
   TradeCard,
   TradeCardSortOption,
@@ -58,6 +58,7 @@ import FilterDropdown from '@components/common/FilterDropdown'
 import RadioGroupSelector from '@components/common/RadioGroupSelector'
 import { LEAGUE_OPTIONS } from 'lib/constants'
 import { useSession } from 'contexts/AuthContext'
+import { toggleOnfilters } from '@utils/toggle-on-filters'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
   {
@@ -102,6 +103,7 @@ export default function NewTrade({
   const [playerName, setPlayerName] = useState<string>('')
   const [teams, setTeams] = useState<string[]>([])
   const [rarities, setRarities] = useState<string[]>([])
+  const [subType, setSubType] = useState<string[]>([])
   const [sortColumn, setSortColumn] = useState<TradeCardSortValue>(
     SORT_OPTIONS[0].value
   )
@@ -120,15 +122,6 @@ export default function NewTrade({
   const [leagueID, setLeagueID] = useState<string>('0')
 
   const [uid] = useCookie(config.userIDCookieName)
-
-  useEffect(() => {
-    if (resetTradeCards) {
-      setloggedInUserCardsToTrade([])
-      setPartnerUserCardsToTrade([])
-      setResetTradeCards(false)
-      setOtherUID('')
-    }
-  }, [resetTradeCards, setResetTradeCards])
 
   const ROWS_PER_PAGE =
     useBreakpointValue({
@@ -190,6 +183,19 @@ export default function NewTrade({
       }),
   })
 
+  const { payload: subTypeData, isLoading: subTypeDataIsLoading } = query<
+    SubType[]
+  >({
+    queryKey: ['subTypeData', leagueID, JSON.stringify(rarities)],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/cards/sub-rarity-map?leagueID=${leagueID}&rarities=${JSON.stringify(
+          rarities
+        )}`,
+      }),
+  })
+
   const { payload: selectedUserCards, isLoading: selectedUserCardsIsLoading } =
     query<ListResponse<TradeCard>>({
       queryKey: [
@@ -198,6 +204,7 @@ export default function NewTrade({
         debouncedPlayerName,
         JSON.stringify(teams),
         JSON.stringify(rarities),
+        JSON.stringify(subType),
         String(tablePage),
         sortColumn,
         sortDirection,
@@ -214,6 +221,7 @@ export default function NewTrade({
               debouncedPlayerName.length >= 1 ? debouncedPlayerName : '',
             teams: JSON.stringify(teams),
             rarities: JSON.stringify(rarities),
+            subType: JSON.stringify(subType),
             limit: ROWS_PER_PAGE,
             offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
             sortColumn,
@@ -236,6 +244,15 @@ export default function NewTrade({
       enabled: !!tradePartnerUid && !!cardID,
     })
   useEffect(() => {
+    if (subTypeData && subTypeData.length === 0 && subType.length > 0) {
+      setSubType([])
+    }
+    if (resetTradeCards) {
+      setloggedInUserCardsToTrade([])
+      setPartnerUserCardsToTrade([])
+      setResetTradeCards(false)
+      setOtherUID('')
+    }
     if (!showSelectedCardLoading && showSelectedCard && !cardAdded) {
       if (showSelectedCard.rows.length > 0) {
         const cardToAdd = showSelectedCard.rows[0]
@@ -256,6 +273,10 @@ export default function NewTrade({
     loggedInUser.uid,
     tradePartnerUid,
     cardAdded,
+    resetTradeCards,
+    setResetTradeCards,
+    subTypeData,
+    subType,
   ])
 
   const { mutateAsync: submitTrade, isLoading: isSubmittingTrade } = mutation<
@@ -273,20 +294,6 @@ export default function NewTrade({
       }),
   })
 
-  const toggleTeam = (team: string) => {
-    setTeams((currentValue) => {
-      const teamIndex: number = currentValue.indexOf(team)
-      if (teamIndex === -1) {
-        return [...currentValue, team]
-      } else {
-        return [
-          ...currentValue.slice(0, teamIndex),
-          ...currentValue.slice(teamIndex + 1),
-        ]
-      }
-    })
-  }
-
   const setFilteredUID = (value: boolean) => {
     if (value) {
       if (String(selectedUser?.uid) === uid) {
@@ -299,14 +306,16 @@ export default function NewTrade({
     }
   }
 
+  const toggleTeam = (team: string) => {
+    setTeams((currentValue) => toggleOnfilters(currentValue, team))
+  }
+
   const toggleRarity = (rarity: string) => {
-    setRarities((currentValue) => {
-      const rarityIndex: number = currentValue.indexOf(rarity)
-      rarityIndex === -1
-        ? currentValue.push(rarity)
-        : currentValue.splice(rarityIndex)
-      return [...currentValue]
-    })
+    setRarities((currentValue) => toggleOnfilters(currentValue, rarity))
+  }
+
+  const toggleSubType = (subType: string) => {
+    setSubType((currentValue) => toggleOnfilters(currentValue, subType))
   }
 
   const openDrawer = (newSelecedUser: string) => {
@@ -585,8 +594,13 @@ export default function NewTrade({
                   className="w-full !bg-secondary"
                 />
               </FormControl>
-              <Flex justifyContent="space-between" alignItems="center">
-                <Box flex={1} mr={2}>
+              <Flex
+                direction={{ base: 'column', sm: 'row' }}
+                justifyContent="flex-start"
+                alignItems="stretch"
+                className="gap-4 w-full"
+              >
+                <Box flex={{ base: '1 1 100%', sm: 1 }} className="w-full">
                   <FilterDropdown<Team>
                     label="Teams"
                     selectedValues={teams}
@@ -599,7 +613,8 @@ export default function NewTrade({
                     getOptionLabel={(team) => team.name}
                   />
                 </Box>
-                <Box flex={1} mr={2}>
+
+                <Box flex={{ base: '1 1 100%', sm: 1 }} className="w-full">
                   <FilterDropdown<Rarities>
                     label="Rarities"
                     selectedValues={rarities}
@@ -610,6 +625,20 @@ export default function NewTrade({
                     getOptionId={(rarity) => rarity.card_rarity}
                     getOptionValue={(rarity) => rarity.card_rarity}
                     getOptionLabel={(rarity) => rarity.card_rarity}
+                  />
+                </Box>
+
+                <Box flex={{ base: '1 1 100%', sm: 1 }} className="w-full">
+                  <FilterDropdown<SubType>
+                    label="Sub Types"
+                    selectedValues={subType}
+                    options={subTypeData || []}
+                    isLoading={subTypeDataIsLoading}
+                    onToggle={toggleSubType}
+                    onDeselectAll={() => setSubType([])}
+                    getOptionId={(subType) => subType.sub_type}
+                    getOptionValue={(subType) => subType.sub_type}
+                    getOptionLabel={(subType) => subType.sub_type}
                   />
                 </Box>
               </Flex>
