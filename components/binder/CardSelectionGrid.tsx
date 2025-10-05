@@ -10,7 +10,12 @@ import {
   FormControl,
   Progress,
 } from '@chakra-ui/react'
-import { binderCards, ListResponse, SortDirection } from '@pages/api/v3'
+import {
+  binderCards,
+  ListResponse,
+  SortDirection,
+  SubType,
+} from '@pages/api/v3'
 import axios from 'axios'
 import { query, indexAxios } from '@pages/api/database/query'
 import { GET } from '@constants/http-methods'
@@ -68,6 +73,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
     const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
     const [tablePage, setTablePage] = useState<number>(1)
     const [uid] = useCookie(config.userIDCookieName)
+    const [subType, setSubType] = useState<string[]>([])
     const [debouncedPlayerName] = useDebounce(playerName, 500)
 
     const ROWS_PER_PAGE =
@@ -113,6 +119,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
         debouncedPlayerName,
         JSON.stringify(teams),
         JSON.stringify(rarities),
+        JSON.stringify(subType),
         String(tablePage),
         sortColumn,
         sortDirection,
@@ -127,6 +134,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
               debouncedPlayerName.length >= 1 ? debouncedPlayerName : '',
             teams: JSON.stringify(teams),
             rarities: JSON.stringify(rarities),
+            subType: JSON.stringify(subType),
             limit: ROWS_PER_PAGE,
             offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
             sortColumn,
@@ -157,12 +165,29 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
         }),
     })
 
+    const { payload: subTypeData, isLoading: subTypeDataIsLoading } = query<
+      SubType[]
+    >({
+      queryKey: ['subTypeData', leagueID, JSON.stringify(rarities)],
+      queryFn: () =>
+        axios({
+          method: GET,
+          url: `/api/v3/cards/sub-rarity-map?leagueID=${leagueID}&rarities=${JSON.stringify(
+            rarities
+          )}`,
+        }),
+    })
+
     const toggleTeam = (team: string) => {
       setTeams((currentValue) => toggleOnfilters(currentValue, team))
     }
 
     const toggleRarity = (rarity: string) => {
       setRarities((currentValue) => toggleOnfilters(currentValue, rarity))
+    }
+
+    const toggleSubType = (subType: string) => {
+      setSubType((currentValue) => toggleOnfilters(currentValue, subType))
     }
 
     return (
@@ -188,7 +213,12 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
               setRarities([])
             }}
           />
-          <Flex justifyContent="space-between" alignItems="center">
+          <Flex
+            mb={4}
+            mt={4}
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Box flex={1} mr={2}>
               <FilterDropdown<Team>
                 label="Teams"
@@ -213,6 +243,20 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
                 getOptionId={(rarity) => rarity.card_rarity}
                 getOptionValue={(rarity) => rarity.card_rarity}
                 getOptionLabel={(rarity) => rarity.card_rarity}
+              />
+            </Box>
+
+            <Box flex={{ base: '1 1 100%', sm: 1 }} className="w-full">
+              <FilterDropdown<SubType>
+                label="Sub Types"
+                selectedValues={subType}
+                options={subTypeData || []}
+                isLoading={subTypeDataIsLoading}
+                onToggle={toggleSubType}
+                onDeselectAll={() => setSubType([])}
+                getOptionId={(subType) => subType.sub_type}
+                getOptionValue={(subType) => subType.sub_type}
+                getOptionLabel={(subType) => subType.sub_type}
               />
             </Box>
           </Flex>

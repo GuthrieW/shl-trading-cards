@@ -1,5 +1,11 @@
 import React from 'react'
-import { FormControl, RadioGroup, Stack, Radio } from '@chakra-ui/react'
+import {
+  FormControl,
+  RadioGroup,
+  Stack,
+  Box,
+  VisuallyHidden,
+} from '@chakra-ui/react'
 
 interface RadioOption {
   value: string
@@ -25,17 +31,51 @@ const RadioGroupSelector: React.FC<RadioGroupSelectorProps> = ({
 }) => {
   return (
     <FormControl className={className}>
+      <div className="text-sm md:text-lg mb-2">League</div>
       <RadioGroup value={value} defaultValue={defaultValue} onChange={onChange}>
-        <Stack direction={direction}>
+        <Stack direction={direction} spacing={5}>
           {options.map((option) => (
-            <Radio
+            <Box
               key={option.value}
-              value={option.value}
-              tabIndex={0}
-              _focusVisible={{ boxShadow: '0 0 0 2px #3182ce' }}
+              as="label"
+              flex="1"
+              minW="75px"
+              cursor="pointer"
             >
-              {option.label}
-            </Radio>
+              <VisuallyHidden>
+                <input
+                  type="radio"
+                  value={option.value}
+                  checked={value === option.value}
+                  onChange={(e) => onChange(e.target.value)}
+                />
+              </VisuallyHidden>
+
+              <Box
+                tabIndex={0}
+                role="radio"
+                aria-checked={value === option.value}
+                className={`
+                  px-5 py-3 text-center font-medium text-[15px] 
+                  border-2 rounded-lg transition-all duration-200 outline-none
+                  ${
+                    value === option.value
+                      ? 'bg-highlighted border-blue-600 text-white'
+                      : 'bg-secondary border-gray-700 text-gray-100'
+                  }
+                  hover:-translate-y-px hover:shadow-lg hover:bg-highlighted/40
+                  focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                `}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    onChange(option.value)
+                  }
+                }}
+              >
+                {option.label}
+              </Box>
+            </Box>
           ))}
         </Stack>
       </RadioGroup>

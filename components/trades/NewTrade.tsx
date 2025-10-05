@@ -594,10 +594,21 @@ export default function NewTrade({
                   className="w-full !bg-secondary"
                 />
               </FormControl>
+              <RadioGroupSelector
+                value={leagueID}
+                options={LEAGUE_OPTIONS}
+                onChange={(value) => {
+                  setLeagueID(value)
+                  setTeams([])
+                  setRarities([])
+                }}
+              />
               <Flex
                 direction={{ base: 'column', sm: 'row' }}
                 justifyContent="flex-start"
                 alignItems="stretch"
+                mb={4}
+                mt={4}
                 className="gap-4 w-full"
               >
                 <Box flex={{ base: '1 1 100%', sm: 1 }} className="w-full">
@@ -642,66 +653,62 @@ export default function NewTrade({
                   />
                 </Box>
               </Flex>
-              <Box flex={1} mr={2} className="p-2">
-                <Select
-                  className="w-full !bg-secondary hover:!bg-highlighted/40"
-                  onChange={(event) => {
-                    const [sortColumn, sortDirection] =
-                      event.target.value.split(':') as [
-                        TradeCardSortValue,
-                        SortDirection,
-                      ]
-                    setSortColumn(sortColumn)
-                    setSortDirection(sortDirection)
-                  }}
-                >
-                  {SORT_OPTIONS.map((option, index) => (
-                    <Fragment key={`${option.value}-${index}`}>
-                      <option
-                        className="!bg-secondary"
-                        value={`${option.value}:DESC`}
-                      >
-                        {option.label}&nbsp;{option.sortLabel('DESC')}
-                      </option>
-                      <option
-                        className="!bg-secondary"
-                        value={`${option.value}:ASC`}
-                      >
-                        {option.label}&nbsp;{option.sortLabel('ASC')}
-                      </option>
-                    </Fragment>
-                  ))}
-                </Select>
-              </Box>
-              <RadioGroupSelector
-                value={leagueID}
-                options={LEAGUE_OPTIONS}
-                onChange={(value) => {
-                  setLeagueID(value)
-                  setTeams([])
-                  setRarities([])
-                }}
-              />
-              <FormControl className="flex flex-row justify-start items-center">
-                <FormLabel className="flex items-center mr-4">
-                  Hide My Cards / Partner's Cards
-                </FormLabel>
-                <Switch
-                  className="flex items-center"
-                  placeholder="User ID"
-                  onChange={(e) => setFilteredUID(e.target.checked)}
-                />
-              </FormControl>
-              <FormControl className="flex flex-row justify-start items-center">
-                <FormLabel className="flex items-center mr-4">
-                  Show only Duplicates
-                </FormLabel>
-                <Switch
-                  className="flex items-center"
-                  onChange={(e) => setRemoveSingles(e.target.checked)}
-                />
-              </FormControl>
+
+              <Flex
+                direction={{ base: 'column', sm: 'row' }}
+                gap={4}
+                className="w-full"
+              >
+                <FormControl className="flex flex-row justify-between items-center bg-secondary border-2 px-4 py-3.5 rounded-lg flex-1">
+                  <FormLabel className="text-primary flex items-center !mb-0">
+                    Hide My Cards / Partner's Cards
+                  </FormLabel>
+                  <Switch
+                    className="flex items-center"
+                    onChange={(e) => setFilteredUID(e.target.checked)}
+                  />
+                </FormControl>
+
+                <FormControl className="flex flex-row justify-between items-center bg-secondary border-2 px-4 py-3.5 rounded-lg flex-1">
+                  <FormLabel className="text-primary flex items-center !mb-0">
+                    Show Only Duplicates
+                  </FormLabel>
+                  <Switch
+                    className="flex items-center"
+                    onChange={(e) => setRemoveSingles(e.target.checked)}
+                  />
+                </FormControl>
+              </Flex>
             </Flex>
+            <Box flex={1} mr={2} className="p-2">
+              <Select
+                className="w-full !bg-secondary hover:!bg-highlighted/40"
+                onChange={(event) => {
+                  const [sortColumn, sortDirection] = event.target.value.split(
+                    ':'
+                  ) as [TradeCardSortValue, SortDirection]
+                  setSortColumn(sortColumn)
+                  setSortDirection(sortDirection)
+                }}
+              >
+                {SORT_OPTIONS.map((option, index) => (
+                  <Fragment key={`${option.value}-${index}`}>
+                    <option
+                      className="!bg-secondary"
+                      value={`${option.value}:DESC`}
+                    >
+                      {option.label}&nbsp;{option.sortLabel('DESC')}
+                    </option>
+                    <option
+                      className="!bg-secondary"
+                      value={`${option.value}:ASC`}
+                    >
+                      {option.label}&nbsp;{option.sortLabel('ASC')}
+                    </option>
+                  </Fragment>
+                ))}
+              </Select>
+            </Box>
             <SimpleGrid
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 bg-primary"
               columns={{ base: 2, lg: 5 }}

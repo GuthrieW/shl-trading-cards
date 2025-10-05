@@ -38,6 +38,7 @@ import { Team, Rarities } from '@pages/api/v3'
 import FilterDropdown from '@components/common/FilterDropdown'
 import RadioGroupSelector from '@components/common/RadioGroupSelector'
 import { LEAGUE_OPTIONS } from 'lib/constants'
+import ActiveFilters from '@components/common/ActiveFilters'
 
 const SORT_OPTIONS: OwnedCardSortOption[] = [
   {
@@ -123,6 +124,12 @@ export default ({ uid }: { uid: string }) => {
   const [debouncedPlayerName] = useDebounce(playerName, 500)
 
   const [loggedInUID] = useCookie(config.userIDCookieName)
+
+  const clearAllFilters = () => {
+    setTeams([])
+    setRarities([])
+    setSubType([])
+  }
 
   const setFilteredUID = (value: boolean) => {
     if (value) {
@@ -247,41 +254,6 @@ export default ({ uid }: { uid: string }) => {
     setSubType((currentValue) => toggleOnfilters(currentValue, subType))
   }
 
-  const getActiveFilters = () => {
-    const activeFilters = []
-
-    if (teams.length > 0) {
-      activeFilters.push(
-        `Teams: ${teams
-          .map((id) => teamData?.find((team) => String(team.id) === id)?.name)
-          .filter(Boolean)
-          .join(', ')}`
-      )
-    }
-    if (rarities.length > 0) {
-      activeFilters.push(
-        `Rarities: ${rarities
-          .map(
-            (r) =>
-              rarityData?.find((rarity) => rarity.card_rarity === r)
-                ?.card_rarity ||
-              rarityMap[r]?.label ||
-              r
-          )
-          .join(', ')}`
-      )
-    }
-    if (subType.length > 0) {
-      activeFilters.push(
-        `Sub Types: ${subType
-          .map(
-            (s) => subTypeData?.find((sub) => sub.sub_type === s)?.sub_type || s
-          )
-          .join(', ')}`
-      )
-    }
-    return activeFilters.join(' | ')
-  }
   return (
     <PageWrapper>
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
@@ -311,18 +283,17 @@ export default ({ uid }: { uid: string }) => {
             onChange={(event) => setPlayerName(event.target.value)}
           />
         </FormControl>
-        <div className="m-2 flex flex-col gap-4 md:flex-row md:justify-between">
+        <div className="flex flex-col gap-4 md:flex-row md:justify-between w-full">
           <RadioGroupSelector
             value={leagueID}
             options={LEAGUE_OPTIONS}
             onChange={(value) => {
               setLeagueID(value)
-              setTeams([])
-              setRarities([])
-              setSubType([])
+              clearAllFilters()
             }}
           />
         </div>
+        <div className="text-sm md:text-lg">Card Filters</div>
         <div className="flex flex-col sm:flex-row justify-start gap-4">
           <FilterDropdown<Team>
             label="Teams"
@@ -360,24 +331,27 @@ export default ({ uid }: { uid: string }) => {
             getOptionLabel={(subType) => subType.sub_type}
           />
         </div>
-        <FormControl className="flex flex-row justify-start items-center">
-          <FormLabel className="flex items-center mr-4">
+        <FormControl className="flex flex-row justify-between items-center bg-secondary border-2 px-4 py-3.5 rounded-lg">
+          <FormLabel className="text-primary flex items-center !mb-0">
             Show Unowned Cards
           </FormLabel>
           <Switch
-            className="flex items-center"
+            isChecked={showNotOwnedCards}
             onChange={() => setShowNotOwnedCards(!showNotOwnedCards)}
+            size="lg"
           />
         </FormControl>
+
         {loggedInUID && loggedInUID !== uid && (
-          <FormControl className="flex flex-row justify-start items-center">
-            <FormLabel className="flex items-center mr-4">
+          <FormControl className="flex flex-row justify-between items-center bg-secondary border-2 px-4 py-3.5 rounded-lg">
+            <FormLabel className="text-primary flex items-center !mb-0">
               Filter Out Your Cards
             </FormLabel>
             <Switch
               className="flex items-center"
               placeholder="User ID"
               onChange={(e) => setFilteredUID(e.target.checked)}
+              size="lg"
             />
           </FormControl>
         )}
@@ -408,17 +382,27 @@ export default ({ uid }: { uid: string }) => {
             ))}
           </Select>
         </FormControl>
-      </VStack>
 
-      {showNotOwnedCards && (
-        <div>
-          Owned Cards: {totalOwnedCards} / {totalCards} (
-          {((totalOwnedCards / totalCards) * 100).toFixed(2)}%)
-        </div>
-      )}
-      {getActiveFilters() && (
-        <div className="text-sm">Active Filters: {getActiveFilters()}</div>
-      )}
+        {showNotOwnedCards && (
+          <div>
+            Owned Cards: {totalOwnedCards} / {totalCards} (
+            {((totalOwnedCards / totalCards) * 100).toFixed(2)}%)
+          </div>
+        )}
+
+        <ActiveFilters
+          teams={teams}
+          rarities={rarities}
+          subTypes={subType}
+          teamData={teamData}
+          rarityData={rarityData}
+          subTypeData={subTypeData}
+          onToggleTeam={toggleTeam}
+          onToggleRarity={toggleRarity}
+          onToggleSubType={toggleSubType}
+          onClearAll={clearAllFilters}
+        />
+      </VStack>
 
       <SimpleGrid
         columns={{ base: 2, sm: 3, md: 4, lg: 6 }}

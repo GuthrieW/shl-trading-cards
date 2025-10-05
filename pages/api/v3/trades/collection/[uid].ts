@@ -167,7 +167,6 @@ export default async function tradeCollectionEndpoint(
     const queryResult = await cardsQuery<TradeCard>(query)
 
     if ('error' in queryResult) {
-      console.error(queryResult.error)
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .end('Server connection failed')
@@ -176,7 +175,6 @@ export default async function tradeCollectionEndpoint(
 
     const total = queryResult.length > 0 ? queryResult[0].total : 0
 
-    console.log(total)
     res.status(StatusCodes.OK).json({
       status: 'success',
       payload: { rows: queryResult, total: total },
