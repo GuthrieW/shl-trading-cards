@@ -7,6 +7,7 @@ import { cardsQuery } from '@pages/api/database/database'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 import methodNotAllowed from '../lib/methodNotAllowed'
+import { parseQueryArray } from '@utils/parse-query-array'
 
 const allowedMethods: string[] = [GET] as const
 const cors = Cors({
@@ -22,10 +23,6 @@ export default async function cardsEndpoint(
   if (req.method === GET) {
     const playerName = (req.query.playerName ?? '') as string
     const userID = req.query.userID as string
-    const teams = req.query.teams ? JSON.parse(req.query.teams as string) : []
-    const rarities = req.query.rarities
-      ? JSON.parse(req.query.rarities as string)
-      : []
     const limit = (req.query.limit ?? 10) as string
     const offset = (req.query.offset ?? 0) as string
     const sortColumn = (req.query.sortColumn ??
@@ -46,7 +43,10 @@ export default async function cardsEndpoint(
       | 'true'
       | 'false'
     const viewDone = (req.query.viewDone ?? 'false') as 'true' | 'false'
-    const leagueID = (req.query.leagueID ?? 0) as string
+
+    const leagues = parseQueryArray(req.query.leagueID)
+    const teams = parseQueryArray(req.query.teams)
+    const rarities = parseQueryArray(req.query.rarities)
 
     const hasSortStatus: boolean = [
       viewNeedsAuthor,
@@ -109,7 +109,11 @@ export default async function cardsEndpoint(
     if (cardID) {
       query.append(SQL` AND cardID = ${cardID}`)
     }
-    query.append(SQL` AND cards.leagueID = ${parseInt(leagueID)}`)
+
+    if (leagues.length === 1) {
+      query.append(SQL` AND cards.leagueID = ${parseInt(leagues[0])}`)
+    }
+
     const statusesToAppend: SQLStatement[] = []
 
     if (hasSortStatus) {
@@ -162,11 +166,22 @@ export default async function cardsEndpoint(
 
     if (teams.length !== 0) {
       query.append(SQL` AND (`)
-      teams.forEach((team, index) =>
-        index === 0
-          ? query.append(SQL`teamID=${parseInt(team)}`)
-          : query.append(SQL` OR teamID=${parseInt(team)}`)
-      )
+      teams.forEach((team, index) => {
+        const [teamLeagueID, teamID] = team.split('-')
+        if (index === 0) {
+          query.append(
+            SQL`(teamID=${parseInt(teamID)} AND leagueID=${parseInt(
+              teamLeagueID
+            )})`
+          )
+        } else {
+          query.append(
+            SQL` OR (teamID=${parseInt(teamID)} AND leagueID=${parseInt(
+              teamLeagueID
+            )})`
+          )
+        }
+      })
       query.append(SQL`)`)
     }
 

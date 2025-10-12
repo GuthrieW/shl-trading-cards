@@ -105,8 +105,11 @@ export default () => {
 
   const [playerName, setPlayerName] = useState<string>(null)
   const [teams, setTeams] = useState<string[]>([])
+  const [teamLeagueID, setTeamLeagueID] = useState<{ [key: string]: string }>(
+    {}
+  )
   const [rarities, setRarities] = useState<string[]>([])
-  const [leagueID, setLeagueID] = useState<string>('0')
+  const [leagueID, setLeagueID] = useState<string[]>(['0'])
   const [sortColumn, setSortColumn] = useState<ColumnName>('player_name')
   const [sortDirection, setSortDirection] = useState<SortDirection>('ASC')
   const [tablePage, setTablePage] = useState<number>(1)
@@ -131,19 +134,24 @@ export default () => {
     roles: ['TRADING_CARD_ADMIN', 'TRADING_CARD_TEAM'],
   })
 
+  const clearAllFilters = () => {
+    setTeams([])
+    setRarities([])
+  }
+
   const { payload: teamData, isLoading: teamDataIsLoading } = query<Team[]>({
-    queryKey: ['teamData', leagueID],
+    queryKey: ['teamData', leagueID.join(',')],
     queryFn: () =>
       indexAxios({
         method: 'GET',
-        url: `/api/v1/teams?league=${leagueID}`,
+        url: `/api/v2/teams?league=${leagueID}&SeasonID=83`,
       }),
   })
 
   const { payload: rarityData, isLoading: rarityDataisLoading } = query<
     Rarities[]
   >({
-    queryKey: ['rarityData', leagueID],
+    queryKey: ['rarityData', leagueID.join(',')],
     queryFn: () =>
       axios({
         method: GET,
@@ -174,7 +182,8 @@ export default () => {
       sortDirection,
       String(tablePage),
       cardID,
-      leagueID,
+      JSON.stringify(leagueID),
+      JSON.stringify(teamLeagueID),
     ],
     queryFn: () =>
       axios({
@@ -197,7 +206,8 @@ export default () => {
           sortColumn,
           sortDirection,
           cardID: cardID,
-          leagueID,
+          leagueID: JSON.stringify(leagueID),
+          teamLeagueID: JSON.stringify(teamLeagueID),
         },
       }),
   })
@@ -255,26 +265,29 @@ export default () => {
             <RadioGroupSelector
               value={leagueID}
               options={LEAGUE_OPTIONS}
+              allValues={['0', '1', '2']}
               onChange={(value) => {
-                setLeagueID(value)
-                setTeams([])
-                setRarities([])
+                setLeagueID(Array.isArray(value) ? value : [value])
+                clearAllFilters()
               }}
             />
           </div>
 
           <div className="m-2 flex flex-col gap-4 md:flex-row md:justify-between">
-            <div className="flex flex-row space-x-2">
-              <div className="flex flex-row space-x-2">
-                <FilterDropdown<Team>
+            <div className="flex flex-col gap-4 md:flex-row md:space-x-2 w-full md:w-auto">
+              <div className="flex flex-col gap-4 md:flex-row md:space-x-2 w-full md:w-auto">
+                <FilterDropdown
                   label="Teams"
                   selectedValues={teams}
                   options={teamData || []}
                   isLoading={teamDataIsLoading}
                   onToggle={toggleTeam}
-                  onDeselectAll={() => setTeams([])}
-                  getOptionId={(team) => String(team.id)}
-                  getOptionValue={(team) => String(team.id)}
+                  onDeselectAll={() => {
+                    setTeams([])
+                    setTeamLeagueID({})
+                  }}
+                  getOptionId={(team) => `${team.league}-${team.id}`}
+                  getOptionValue={(team) => `${team.league}-${team.id}`}
                   getOptionLabel={(team) => team.name}
                 />
 

@@ -49,7 +49,6 @@ export default async function tradeCollectionEndpoint(
     const sortDirection = (req.query.sortDirection ?? 'DESC') as SortDirection
     const otherUID = req.query.otherUID as string
     const removeSingles = req.query.removeSingles as string
-    const leagueID = req.query.leagueID as string
 
     const leagues = parseQueryArray(req.query.leagueID)
     const teams = parseQueryArray(req.query.teams)
