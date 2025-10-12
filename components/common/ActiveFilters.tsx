@@ -10,7 +10,7 @@ interface ActiveFiltersProps {
   teams: string[]
   rarities: string[]
   subTypes: string[]
-  teamData?: Array<{ id: number; name: string }>
+  teamData?: Array<{ id: number; name: string; league: number }>
   rarityData?: Array<{ card_rarity: string }>
   subTypeData?: Array<{ sub_type: string }>
   onToggleTeam: (teamId: string) => void
@@ -32,11 +32,19 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
   onClearAll,
 }) => {
   const filterChips: FilterChip[] = [
-    ...teams.map((id) => ({
-      id,
-      label: teamData.find((t) => String(t.id) === id)?.name || id,
-      type: 'team' as const,
-    })),
+    ...teams.map((teamKey) => {
+      const [leagueStr, idStr] = teamKey.split('-')
+      const teamName =
+        teamData.find(
+          (t) => t.league === Number(leagueStr) && t.id === Number(idStr)
+        )?.name || teamKey
+
+      return {
+        id: teamKey,
+        label: teamName,
+        type: 'team' as const,
+      }
+    }),
     ...rarities.map((r) => ({
       id: r,
       label: rarityData.find((rd) => rd.card_rarity === r)?.card_rarity || r,
@@ -61,7 +69,7 @@ const ActiveFilters: React.FC<ActiveFiltersProps> = ({
   if (filterChips.length === 0) return null
 
   return (
-    <div className="flex flex-wrap gap-2 p-4 bg-secondary rounded-lg mb-6">
+    <div className="flex flex-wrap gap-2 p-4 bg-secondary rounded-lg mb-6 relative z-0">
       <span className="text-sm font-medium">Active Filters:</span>
 
       {filterChips.map((chip) => (

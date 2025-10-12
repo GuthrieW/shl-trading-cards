@@ -20,7 +20,7 @@ export default async function rarityMap(
   await middleware(req, res, cors)
 
   if (req.method === GET) {
-    const leagueID = req.query.leagueID as string
+    const leagueID = req.query.leagueID as string[]
     const rarities = JSON.parse(req.query.rarities as string) as string[]
 
     if (!rarities) {
@@ -41,7 +41,7 @@ export default async function rarityMap(
     const query = SQL`
     SELECT DISTINCT cards.sub_type
     FROM cards
-    WHERE leagueID = ${leagueID}
+    WHERE leagueID  IN (${leagueID})
         AND cards.card_rarity IN (${rarities})
         AND cards.sub_type IS NOT NULL
         AND cards.sub_type != ''

@@ -65,8 +65,11 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
   ({ handleCardSelect, displayCards }) => {
     const [playerName, setPlayerName] = useState<string>('')
     const [teams, setTeams] = useState<string[]>([])
+    const [teamLeagueID, setTeamLeagueID] = useState<{ [key: string]: string }>(
+      {}
+    )
     const [rarities, setRarities] = useState<string[]>([])
-    const [leagueID, setLeagueID] = useState<string>('0')
+    const [leagueID, setLeagueID] = useState<string[]>(['0'])
     const [sortColumn, setSortColumn] = useState<TradeCardSortValue>(
       SORT_OPTIONS[0].value
     )
@@ -75,6 +78,12 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
     const [uid] = useCookie(config.userIDCookieName)
     const [subType, setSubType] = useState<string[]>([])
     const [debouncedPlayerName] = useDebounce(playerName, 500)
+
+    const clearAllFilters = () => {
+      setTeams([])
+      setRarities([])
+      setSubType([])
+    }
 
     const ROWS_PER_PAGE =
       useBreakpointValue({
@@ -123,7 +132,8 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
         String(tablePage),
         sortColumn,
         sortDirection,
-        leagueID,
+        JSON.stringify(leagueID),
+        JSON.stringify(teamLeagueID),
       ],
       queryFn: () =>
         axios({
@@ -139,25 +149,26 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
             offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
             sortColumn,
             sortDirection,
-            leagueID,
+            leagueID: JSON.stringify(leagueID),
+            teamLeagueID: JSON.stringify(teamLeagueID),
           },
         }),
       enabled: !!uid,
     })
 
     const { payload: teamData, isLoading: teamDataIsLoading } = query<Team[]>({
-      queryKey: ['teamData', leagueID],
+      queryKey: ['teamData', leagueID.join(',')],
       queryFn: () =>
         indexAxios({
           method: 'GET',
-          url: `/api/v1/teams?league=${leagueID}`,
+          url: `/api/v2/teams?league=${leagueID}&SeasonID=83`,
         }),
     })
 
     const { payload: rarityData, isLoading: rarityDataisLoading } = query<
       Rarities[]
     >({
-      queryKey: ['rarityData', leagueID],
+      queryKey: ['rarityData', leagueID.join(',')],
       queryFn: () =>
         axios({
           method: GET,
@@ -168,7 +179,7 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
     const { payload: subTypeData, isLoading: subTypeDataIsLoading } = query<
       SubType[]
     >({
-      queryKey: ['subTypeData', leagueID, JSON.stringify(rarities)],
+      queryKey: ['subTypeData', leagueID.join(','), JSON.stringify(rarities)],
       queryFn: () =>
         axios({
           method: GET,
@@ -178,8 +189,24 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
         }),
     })
 
-    const toggleTeam = (team: string) => {
-      setTeams((currentValue) => toggleOnfilters(currentValue, team))
+    const toggleTeam = (teamKey: string) => {
+      setTeams((currentValue) => toggleOnfilters(currentValue, teamKey))
+
+      setTeamLeagueID((prev) => {
+        const updated = { ...prev }
+        if (updated[teamKey]) {
+          delete updated[teamKey]
+        } else {
+          const [leagueStr, idStr] = teamKey.split('-')
+          const team = teamData?.find(
+            (t) => t.league === Number(leagueStr) && t.id === Number(idStr)
+          )
+          if (team) {
+            updated[teamKey] = String(team.league)
+          }
+        }
+        return updated
+      })
     }
 
     const toggleRarity = (rarity: string) => {
@@ -204,15 +231,51 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
               className="w-full !bg-secondary"
             />
           </FormControl>
-          <RadioGroupSelector
-            value={leagueID}
-            options={LEAGUE_OPTIONS}
-            onChange={(value) => {
-              setLeagueID(value)
-              setTeams([])
-              setRarities([])
-            }}
-          />
+          <Box
+            flex={1}
+            mr={2}
+            className="p-2 flex flex-col sm:flex-row gap-2 items-start sm:items-center"
+          >
+            <Select
+              className="w-full sm:flex-1 !bg-secondary hover:!bg-highlighted/40"
+              onChange={(event) => {
+                const [sortColumn, sortDirection] = event.target.value.split(
+                  ':'
+                ) as [TradeCardSortValue, SortDirection]
+                setSortColumn(sortColumn)
+                setSortDirection(sortDirection)
+              }}
+            >
+              {SORT_OPTIONS.map((option, index) => (
+                <Fragment key={`${option.value}-${index}`}>
+                  <option
+                    className="!bg-secondary"
+                    value={`${option.value}:DESC`}
+                  >
+                    {option.label}&nbsp;{option.sortLabel('DESC')}
+                  </option>
+                  <option
+                    className="!bg-secondary"
+                    value={`${option.value}:ASC`}
+                  >
+                    {option.label}&nbsp;{option.sortLabel('ASC')}
+                  </option>
+                </Fragment>
+              ))}
+            </Select>
+
+            <Box className="w-full sm:flex-1">
+              <RadioGroupSelector
+                value={leagueID}
+                options={LEAGUE_OPTIONS}
+                allValues={['0', '1', '2']}
+                onChange={(value) => {
+                  setLeagueID(Array.isArray(value) ? value : [value])
+                  clearAllFilters()
+                }}
+              />
+            </Box>
+          </Box>
           <Flex
             mb={4}
             mt={4}
@@ -220,15 +283,18 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
             alignItems="center"
           >
             <Box flex={1} mr={2}>
-              <FilterDropdown<Team>
+              <FilterDropdown
                 label="Teams"
                 selectedValues={teams}
                 options={teamData || []}
                 isLoading={teamDataIsLoading}
                 onToggle={toggleTeam}
-                onDeselectAll={() => setTeams([])}
-                getOptionId={(team) => String(team.id)}
-                getOptionValue={(team) => String(team.id)}
+                onDeselectAll={() => {
+                  setTeams([])
+                  setTeamLeagueID({})
+                }}
+                getOptionId={(team) => `${team.league}-${team.id}`}
+                getOptionValue={(team) => `${team.league}-${team.id}`}
                 getOptionLabel={(team) => team.name}
               />
             </Box>
@@ -260,36 +326,6 @@ const CardSelectionGrid: React.FC<CardSelectionGridProps> = React.memo(
               />
             </Box>
           </Flex>
-          <Box flex={1} mr={2} className="p-2">
-            <Select
-              className="w-full !bg-secondary hover:!bg-highlighted/40"
-              onChange={(event) => {
-                setTablePage(1)
-                const [sortColumn, sortDirection] = event.target.value.split(
-                  ':'
-                ) as [TradeCardSortValue, SortDirection]
-                setSortColumn(sortColumn)
-                setSortDirection(sortDirection)
-              }}
-            >
-              {SORT_OPTIONS.map((option, index) => (
-                <Fragment key={`${option.value}-${index}`}>
-                  <option
-                    className="!bg-secondary"
-                    value={`${option.value}:DESC`}
-                  >
-                    {option.label}&nbsp;{option.sortLabel('DESC')}
-                  </option>
-                  <option
-                    className="!bg-secondary"
-                    value={`${option.value}:ASC`}
-                  >
-                    {option.label}&nbsp;{option.sortLabel('ASC')}
-                  </option>
-                </Fragment>
-              ))}
-            </Select>
-          </Box>
         </Flex>
         <SimpleGrid
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 bg-primary"

@@ -1,5 +1,11 @@
 import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
   Badge,
+  Box,
   FormControl,
   FormLabel,
   Input,
@@ -110,6 +116,9 @@ export default ({ uid }: { uid: string }) => {
   const [showNotOwnedCards, setShowNotOwnedCards] = useState<boolean>(false)
   const [playerName, setPlayerName] = useState<string>('')
   const [teams, setTeams] = useState<string[]>([])
+  const [teamLeagueID, setTeamLeagueID] = useState<{ [key: string]: string }>(
+    {}
+  )
   const [rarities, setRarities] = useState<string[]>([])
   const [subType, setSubType] = useState<string[]>([])
   const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
@@ -120,7 +129,7 @@ export default ({ uid }: { uid: string }) => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
   const [tablePage, setTablePage] = useState<number>(1)
   const [otherUID, setOtherUID] = useState<string>('')
-  const [leagueID, setLeagueID] = useState<string>('0')
+  const [leagueID, setLeagueID] = useState<string[]>(['0'])
   const [debouncedPlayerName] = useDebounce(playerName, 500)
 
   const [loggedInUID] = useCookie(config.userIDCookieName)
@@ -140,18 +149,18 @@ export default ({ uid }: { uid: string }) => {
   }
 
   const { payload: teamData, isLoading: teamDataIsLoading } = query<Team[]>({
-    queryKey: ['teamData', leagueID],
+    queryKey: ['teamData', leagueID.join(',')],
     queryFn: () =>
       indexAxios({
         method: 'GET',
-        url: `/api/v1/teams?league=${leagueID}`,
+        url: `/api/v2/teams?league=${leagueID}&SeasonID=83`,
       }),
   })
 
   const { payload: rarityData, isLoading: rarityDataisLoading } = query<
     Rarities[]
   >({
-    queryKey: ['rarityData', leagueID],
+    queryKey: ['rarityData', leagueID.join(',')],
     queryFn: () =>
       axios({
         method: GET,
@@ -162,7 +171,7 @@ export default ({ uid }: { uid: string }) => {
   const { payload: subTypeData, isLoading: subTypeDataIsLoading } = query<
     SubType[]
   >({
-    queryKey: ['subTypeData', leagueID, JSON.stringify(rarities)],
+    queryKey: ['subTypeData', leagueID.join(','), JSON.stringify(rarities)],
     queryFn: () =>
       axios({
         method: GET,
@@ -194,7 +203,8 @@ export default ({ uid }: { uid: string }) => {
       sortDirection,
       String(showNotOwnedCards),
       otherUID,
-      leagueID,
+      JSON.stringify(leagueID),
+      JSON.stringify(teamLeagueID),
     ],
     queryFn: () =>
       axios({
@@ -213,7 +223,8 @@ export default ({ uid }: { uid: string }) => {
           sortDirection,
           showNotOwnedCards,
           otherUID: otherUID,
-          leagueID,
+          leagueID: JSON.stringify(leagueID),
+          teamLeagueID: JSON.stringify(teamLeagueID),
         },
       }),
   })
@@ -242,8 +253,24 @@ export default ({ uid }: { uid: string }) => {
     subType,
   ])
 
-  const toggleTeam = (team: string) => {
-    setTeams((currentValue) => toggleOnfilters(currentValue, team))
+  const toggleTeam = (teamKey: string) => {
+    setTeams((currentValue) => toggleOnfilters(currentValue, teamKey))
+
+    setTeamLeagueID((prev) => {
+      const updated = { ...prev }
+      if (updated[teamKey]) {
+        delete updated[teamKey]
+      } else {
+        const [leagueStr, idStr] = teamKey.split('-')
+        const team = teamData?.find(
+          (t) => t.league === Number(leagueStr) && t.id === Number(idStr)
+        )
+        if (team) {
+          updated[teamKey] = String(team.league)
+        }
+      }
+      return updated
+    })
   }
 
   const toggleRarity = (rarity: string) => {
@@ -274,146 +301,213 @@ export default ({ uid }: { uid: string }) => {
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl mb-6">
         Filters
       </div>
-      <VStack spacing={4} align="stretch" className="px-4">
-        <FormControl>
-          <Input
-            className="w-full bg-secondary border-grey100"
-            placeholder="Search By Player Name"
-            size="lg"
-            onChange={(event) => setPlayerName(event.target.value)}
-          />
-        </FormControl>
-        <div className="flex flex-col gap-4 md:flex-row md:justify-between w-full">
-          <RadioGroupSelector
-            value={leagueID}
-            options={LEAGUE_OPTIONS}
-            onChange={(value) => {
-              setLeagueID(value)
-              clearAllFilters()
-            }}
-          />
-        </div>
-        <div className="text-sm md:text-lg">Card Filters</div>
-        <div className="flex flex-col sm:flex-row justify-start gap-4">
-          <FilterDropdown<Team>
-            label="Teams"
-            selectedValues={teams}
-            options={teamData || []}
-            isLoading={teamDataIsLoading}
-            onToggle={toggleTeam}
-            onDeselectAll={() => setTeams([])}
-            getOptionId={(team) => String(team.id)}
-            getOptionValue={(team) => String(team.id)}
-            getOptionLabel={(team) => team.name}
-          />
 
-          <FilterDropdown<Rarities>
-            label="Rarities"
-            selectedValues={rarities}
-            options={rarityData || []}
-            isLoading={rarityDataisLoading}
-            onToggle={toggleRarity}
-            onDeselectAll={() => setRarities([])}
-            getOptionId={(rarity) => rarity.card_rarity}
-            getOptionValue={(rarity) => rarity.card_rarity}
-            getOptionLabel={(rarity) => rarity.card_rarity}
-          />
-
-          <FilterDropdown<SubType>
-            label="Sub Types"
-            selectedValues={subType}
-            options={subTypeData || []}
-            isLoading={subTypeDataIsLoading}
-            onToggle={toggleSubType}
-            onDeselectAll={() => setSubType([])}
-            getOptionId={(subType) => subType.sub_type}
-            getOptionValue={(subType) => subType.sub_type}
-            getOptionLabel={(subType) => subType.sub_type}
-          />
-        </div>
-        <FormControl className="flex flex-row justify-between items-center bg-secondary border-2 px-4 py-3.5 rounded-lg">
-          <FormLabel className="text-primary flex items-center !mb-0">
-            Show Unowned Cards
-          </FormLabel>
-          <Switch
-            isChecked={showNotOwnedCards}
-            onChange={() => setShowNotOwnedCards(!showNotOwnedCards)}
-            size="lg"
-          />
-        </FormControl>
-
-        {loggedInUID && loggedInUID !== uid && (
-          <FormControl className="flex flex-row justify-between items-center bg-secondary border-2 px-4 py-3.5 rounded-lg">
-            <FormLabel className="text-primary flex items-center !mb-0">
-              Filter Out Your Cards
-            </FormLabel>
-            <Switch
-              className="flex items-center"
-              placeholder="User ID"
-              onChange={(e) => setFilteredUID(e.target.checked)}
-              size="lg"
-            />
-          </FormControl>
-        )}
-        <FormControl>
-          <FormLabel>Sort</FormLabel>
-          <Select
-            className="cursor-pointer w-full sm:w-auto border-grey800 border-1 rounded px-2 !bg-secondary"
-            onChange={(event) => {
-              const [sortColumn, sortDirection] = event.target.value.split(
-                ':'
-              ) as [OwnedCardSortValue, SortDirection]
-              setSortColumn(sortColumn)
-              setSortDirection(sortDirection)
+      <Accordion allowToggle defaultIndex={[0]}>
+        <AccordionItem className="overflow-visible">
+          <AccordionButton
+            className="flex w-full items-center justify-between gap-2 md:gap-4 px-0"
+            onClick={(e) => {
+              if (
+                !e.currentTarget.contains(e.target as Node) ||
+                ((e.target as Element).closest &&
+                  (e.target as Element).closest('.accordion-toggle-icon'))
+              ) {
+              } else {
+                e.preventDefault()
+              }
             }}
           >
-            {SORT_OPTIONS.map((option, index) => (
-              <Fragment key={`${option.value}-${index}`}>
-                <option
-                  className="!bg-secondary"
-                  value={`${option.value}:DESC`}
-                >
-                  {option.label}&nbsp;{option.sortLabel('DESC')}
-                </option>
-                <option className="!bg-secondary" value={`${option.value}:ASC`}>
-                  {option.label}&nbsp;{option.sortLabel('ASC')}
-                </option>
-              </Fragment>
-            ))}
-          </Select>
-        </FormControl>
+            <div className="flex w-full items-center gap-2 md:gap-3 min-w-0">
+              <div className="flex-1 min-w-0">
+                <Input
+                  className="w-full bg-secondary border-grey100 text-sm md:text-base"
+                  placeholder="Search By Player Name"
+                  size="lg"
+                  onChange={(event) => setPlayerName(event.target.value)}
+                />
+              </div>
 
-        {showNotOwnedCards && (
-          <div>
-            Owned Cards: {totalOwnedCards} / {totalCards} (
-            {((totalOwnedCards / totalCards) * 100).toFixed(2)}%)
+              <div
+                className="hidden sm:flex items-center justify-end space-x-2 flex-shrink-0"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <FormLabel className="mb-0 whitespace-nowrap text-xs md:text-sm font-medium">
+                  Show Unowned
+                </FormLabel>
+                <Switch
+                  isChecked={showNotOwnedCards}
+                  onChange={() => setShowNotOwnedCards(!showNotOwnedCards)}
+                  size="md"
+                />
+              </div>
+            </div>
+
+            <AccordionIcon
+              fontSize="40px"
+              className="accordion-toggle-icon cursor-pointer flex-shrink-0 ml-2"
+            />
+          </AccordionButton>
+
+          <div className="sm:hidden px-4 py-3 border-b border-grey100 flex items-center justify-between">
+            <FormLabel className="mb-0 text-xs font-medium">
+              Show Unowned
+            </FormLabel>
+            <Switch
+              isChecked={showNotOwnedCards}
+              onChange={() => setShowNotOwnedCards(!showNotOwnedCards)}
+              size="md"
+            />
           </div>
-        )}
+          {loggedInUID && loggedInUID !== uid && (
+            <div className="sm:hidden px-4 py-3 border-b border-grey100 flex items-center justify-between">
+              <FormLabel className="mb-0 text-xs font-medium">
+                Filter Out Your Cards
+              </FormLabel>
+              <Switch
+                onChange={(e) => setFilteredUID(e.target.checked)}
+                size="md"
+              />
+            </div>
+          )}
+          <AccordionPanel pb={4} className="overflow-visible">
+            <VStack spacing={4} align="stretch" className="px-4">
+              <div className="flex flex-col gap-4 md:flex-row md:justify-between w-full">
+                <div className="flex-[4]">
+                  <FormControl>
+                    <FormLabel>Sort</FormLabel>
+                    <Select
+                      className="cursor-pointer w-full sm:w-auto border-grey800 border-1 rounded px-2 !bg-secondary"
+                      onChange={(event) => {
+                        const [sortColumn, sortDirection] =
+                          event.target.value.split(':') as [
+                            OwnedCardSortValue,
+                            SortDirection,
+                          ]
+                        setSortColumn(sortColumn)
+                        setSortDirection(sortDirection)
+                      }}
+                    >
+                      {SORT_OPTIONS.map((option, index) => (
+                        <Fragment key={`${option.value}-${index}`}>
+                          <option
+                            className="!bg-secondary"
+                            value={`${option.value}:DESC`}
+                          >
+                            {option.label}&nbsp;{option.sortLabel('DESC')}
+                          </option>
+                          <option
+                            className="!bg-secondary"
+                            value={`${option.value}:ASC`}
+                          >
+                            {option.label}&nbsp;{option.sortLabel('ASC')}
+                          </option>
+                        </Fragment>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+                <div className="flex-[1]">
+                  <RadioGroupSelector
+                    value={leagueID}
+                    options={LEAGUE_OPTIONS}
+                    allValues={['0', '1', '2']}
+                    onChange={(value) => {
+                      setLeagueID(Array.isArray(value) ? value : [value])
+                      clearAllFilters()
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="text-sm md:text-lg">Card Filters</div>
+              <div className="flex flex-col sm:flex-row justify-start gap-4 relative z-20">
+                <FilterDropdown
+                  label="Teams"
+                  selectedValues={teams}
+                  options={teamData || []}
+                  isLoading={teamDataIsLoading}
+                  onToggle={toggleTeam}
+                  onDeselectAll={() => {
+                    setTeams([])
+                    setTeamLeagueID({})
+                  }}
+                  getOptionId={(team) => `${team.league}-${team.id}`}
+                  getOptionValue={(team) => `${team.league}-${team.id}`}
+                  getOptionLabel={(team) => team.name}
+                />
 
-        <ActiveFilters
-          teams={teams}
-          rarities={rarities}
-          subTypes={subType}
-          teamData={teamData}
-          rarityData={rarityData}
-          subTypeData={subTypeData}
-          onToggleTeam={toggleTeam}
-          onToggleRarity={toggleRarity}
-          onToggleSubType={toggleSubType}
-          onClearAll={clearAllFilters}
-        />
-      </VStack>
+                <FilterDropdown
+                  label="Rarities"
+                  selectedValues={rarities}
+                  options={rarityData || []}
+                  isLoading={rarityDataisLoading}
+                  onToggle={toggleRarity}
+                  onDeselectAll={() => setRarities([])}
+                  getOptionId={(rarity) => rarity.card_rarity}
+                  getOptionValue={(rarity) => rarity.card_rarity}
+                  getOptionLabel={(rarity) => rarity.card_rarity}
+                />
+
+                <FilterDropdown
+                  label="Sub Types"
+                  selectedValues={subType}
+                  options={subTypeData || []}
+                  isLoading={subTypeDataIsLoading}
+                  onToggle={toggleSubType}
+                  onDeselectAll={() => setSubType([])}
+                  getOptionId={(subType) => subType.sub_type}
+                  getOptionValue={(subType) => subType.sub_type}
+                  getOptionLabel={(subType) => subType.sub_type}
+                />
+              </div>
+
+              {loggedInUID && loggedInUID !== uid && (
+                <FormControl className="hidden sm:flex flex-row justify-between items-center bg-secondary border-2 px-4 py-3.5 rounded-lg relative z-0">
+                  <FormLabel className="text-primary flex items-center !mb-0">
+                    Filter Out Your Cards
+                  </FormLabel>
+                  <Switch
+                    className="flex items-center"
+                    placeholder="User ID"
+                    onChange={(e) => setFilteredUID(e.target.checked)}
+                    size="lg"
+                  />
+                </FormControl>
+              )}
+
+              {showNotOwnedCards && (
+                <div className="relative z-0">
+                  Owned Cards: {totalOwnedCards} / {totalCards} (
+                  {((totalOwnedCards / totalCards) * 100).toFixed(2)}%)
+                </div>
+              )}
+
+              <ActiveFilters
+                teams={teams}
+                rarities={rarities}
+                subTypes={subType}
+                teamData={teamData}
+                rarityData={rarityData}
+                subTypeData={subTypeData}
+                onToggleTeam={toggleTeam}
+                onToggleRarity={toggleRarity}
+                onToggleSubType={toggleSubType}
+                onClearAll={clearAllFilters}
+              />
+            </VStack>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
 
       <SimpleGrid
         columns={{ base: 2, sm: 3, md: 4, lg: 6 }}
         spacing={4}
-        className="mt-6 px-4"
+        className="mt-6 px-4 relative z-0"
       >
         {isLoading
           ? LOADING_GRID_DATA.rows.map((_, index) => (
               <div
                 key={`loading-${index}`}
-                className="m-4 flex flex-col relative max-w-xs sm:max-w-sm"
+                className="m-4 flex flex-col relative max-w-xs sm:max-w-sm z-0"
               >
                 <div className="relative aspect-[3/4]">
                   <ImageWithFallback

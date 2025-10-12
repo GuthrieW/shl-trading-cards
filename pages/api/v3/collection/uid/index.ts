@@ -8,6 +8,7 @@ import { cardsQuery } from '@pages/api/database/database'
 import { StatusCodes } from 'http-status-codes'
 import methodNotAllowed from '../../lib/methodNotAllowed'
 import { rateLimit } from 'lib/rateLimit'
+import { parseQueryArray } from '@utils/parse-query-array'
 
 export type OwnedCard = {
   quantity: number
@@ -56,9 +57,6 @@ const handler = async (
   if (req.method === GET) {
     const uid = req.query.uid as string
     const playerName = req.query.playerName as string
-    const teams = JSON.parse(req.query.teams as string) as string[]
-    const rarities = JSON.parse(req.query.rarities as string) as string[]
-    const subType = JSON.parse(req.query.subType as string) as string[]
     const limit = (req.query.limit ?? 10) as string
     const offset = (req.query.offset ?? 0) as string
     const sortColumn = (req.query.sortColumn ??
@@ -68,7 +66,11 @@ const handler = async (
       | 'true'
       | 'false'
     const otherUID = req.query.otherUID as string
-    const leagueID = (req.query.leagueID as string) || '0'
+
+    const leagues = parseQueryArray(req.query.leagueID)
+    const teams = parseQueryArray(req.query.teams)
+    const rarities = parseQueryArray(req.query.rarities)
+    const subType = parseQueryArray(req.query.subType)
 
     if (!uid) {
       res.status(StatusCodes.BAD_REQUEST).json({
@@ -135,7 +137,7 @@ const handler = async (
         LEFT JOIN userCollection ownedCard
           ON card.cardID=ownedCard.cardID
         LEFT JOIN team_data team
-          ON card.teamID=team.teamID and ${parseInt(leagueID)}=team.LeagueID
+          ON card.teamID=team.teamID and team.LeagueID = card.LeagueID
         WHERE approved=1
       `
         : SQL`
@@ -165,13 +167,14 @@ const handler = async (
         LEFT JOIN ownedCards ownedCard
           ON card.cardID=ownedCard.cardID
         LEFT JOIN team_data team
-          ON card.teamID=team.teamID and ${parseInt(leagueID)}=team.LeagueID
+          ON card.teamID=team.teamID and team.LeagueID = card.LeagueID
         WHERE ownedCard.userID=${parseInt(uid)} 
       `
 
-    countQuery.append(SQL` AND card.leagueID=${parseInt(leagueID)}`)
-    query.append(SQL` AND card.leagueID=${parseInt(leagueID)}`)
-
+    if (leagues.length === 1) {
+      countQuery.append(SQL` AND card.leagueID = ${leagues[0]}`)
+      query.append(SQL` AND card.leagueID = ${leagues[0]}`)
+    }
     if (playerName.length !== 0) {
       countQuery.append(SQL` AND card.player_name LIKE ${`%${playerName}%`}`)
       query.append(SQL` AND card.player_name LIKE ${`%${playerName}%`}`)
@@ -179,19 +182,37 @@ const handler = async (
 
     if (teams.length !== 0) {
       countQuery.append(SQL` AND (`)
-      teams.forEach((team, index) =>
+      teams.forEach((team, index) => {
+        const [teamLeagueID, teamID] = team.split('-')
         index === 0
-          ? countQuery.append(SQL`card.teamID=${parseInt(team)}`)
-          : countQuery.append(SQL` OR card.teamID=${parseInt(team)}`)
-      )
+          ? countQuery.append(
+              SQL`(card.teamID=${parseInt(teamID)} AND card.LeagueID=${parseInt(
+                teamLeagueID
+              )})`
+            )
+          : countQuery.append(
+              SQL` OR (card.teamID=${parseInt(
+                teamID
+              )} AND card.LeagueID=${parseInt(teamLeagueID)})`
+            )
+      })
       countQuery.append(SQL`)`)
 
       query.append(SQL` AND (`)
-      teams.forEach((team, index) =>
+      teams.forEach((team, index) => {
+        const [teamLeagueID, teamID] = team.split('-')
         index === 0
-          ? query.append(SQL`card.teamID=${parseInt(team)}`)
-          : query.append(SQL` OR card.teamID=${parseInt(team)}`)
-      )
+          ? query.append(
+              SQL`(card.teamID=${parseInt(teamID)} AND card.LeagueID=${parseInt(
+                teamLeagueID
+              )})`
+            )
+          : query.append(
+              SQL` OR (card.teamID=${parseInt(
+                teamID
+              )} AND card.LeagueID=${parseInt(teamLeagueID)})`
+            )
+      })
       query.append(SQL`)`)
     }
 
@@ -267,12 +288,7 @@ const handler = async (
     }
 
     if (sortColumn === 'teamID') {
-      if (leagueID === '2') {
-        query.append(SQL` team.NickName`)
-      } else {
-        query.append(SQL` team.Name`)
-      }
-
+      query.append(SQL` team.Name`)
       sortDirection === 'DESC'
         ? query.append(SQL` ASC`)
         : query.append(SQL` DESC`)

@@ -20,7 +20,10 @@ export default async function rarityMap(
   await middleware(req, res, cors)
 
   if (req.method === GET) {
-    const leagueID = req.query.leagueID as string
+    const leagueID = req.query.leagueID as string[]
+
+    const leagues = Array.isArray(leagueID) ? leagueID : [leagueID]
+
     if (!leagueID) {
       res
         .status(StatusCodes.BAD_REQUEST)
@@ -28,10 +31,10 @@ export default async function rarityMap(
       return
     }
     const query = SQL`
-            SELECT DISTINCT cards.card_rarity from cards where leagueID = ${parseInt(
-              leagueID
-            )} ORDER BY cards.card_rarity
-        `
+            SELECT DISTINCT cards.card_rarity from cards where leagueID IN (`.append(
+      leagues.join(',')
+    ).append(SQL`) ORDER BY cards.card_rarity
+        `)
 
     const queryResult = await cardsQuery<Rarities>(query)
 

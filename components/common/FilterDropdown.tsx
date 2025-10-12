@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
   FormControl,
   Menu,
@@ -35,22 +35,32 @@ const FilterDropdown = <T,>({
   getOptionValue,
   getOptionLabel,
 }: FilterDropdownProps<T>) => {
+  const buttonIsDisabled = useMemo(
+    () => isLoading || options.length === 0,
+    [isLoading, options]
+  )
+
   return (
     <FormControl>
-      <Menu closeOnSelect={false}>
+      <Menu
+        closeOnSelect={false}
+        strategy="fixed"
+        autoSelect={false}
+        placement="bottom-start"
+      >
         <Tooltip
-          isDisabled={isLoading || options.length > 0}
-          label="No options available for current selection"
+          isDisabled={!buttonIsDisabled}
+          label={'No options available for current selection'}
         >
           <MenuButton
             as={Button}
-            isDisabled={isLoading || options.length === 0}
+            isDisabled={buttonIsDisabled}
             className="!w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary hover:!bg-highlighted/40 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {label}&nbsp;{`(${selectedValues.length})`}
           </MenuButton>
         </Tooltip>
-        <MenuList>
+        <MenuList className="max-h-96 overflow-y-auto" zIndex={9999}>
           <MenuOptionGroup type="checkbox">
             <MenuItemOption
               className="hover:!bg-highlighted/40"

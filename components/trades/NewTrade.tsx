@@ -102,6 +102,9 @@ export default function NewTrade({
   const [selectedUserId, setSelectedUserId] = useState<string>('')
   const [playerName, setPlayerName] = useState<string>('')
   const [teams, setTeams] = useState<string[]>([])
+  const [teamLeagueID, setTeamLeagueID] = useState<{ [key: string]: string }>(
+    {}
+  )
   const [rarities, setRarities] = useState<string[]>([])
   const [subType, setSubType] = useState<string[]>([])
   const [sortColumn, setSortColumn] = useState<TradeCardSortValue>(
@@ -119,9 +122,15 @@ export default function NewTrade({
   const [otherUID, setOtherUID] = useState<string>('')
   const [removeSingles, setRemoveSingles] = useState<boolean>(false)
   const [debouncedPlayerName] = useDebounce(playerName, 500)
-  const [leagueID, setLeagueID] = useState<string>('0')
+  const [leagueID, setLeagueID] = useState<string[]>(['0'])
 
   const [uid] = useCookie(config.userIDCookieName)
+
+  const clearAllFilters = () => {
+    setTeams([])
+    setRarities([])
+    setSubType([])
+  }
 
   const ROWS_PER_PAGE =
     useBreakpointValue({
@@ -164,18 +173,18 @@ export default function NewTrade({
   })
 
   const { payload: teamData, isLoading: teamDataIsLoading } = query<Team[]>({
-    queryKey: ['teamData', leagueID],
+    queryKey: ['teamData', leagueID.join(',')],
     queryFn: () =>
       indexAxios({
         method: 'GET',
-        url: `/api/v1/teams?league=${leagueID}`,
+        url: `/api/v2/teams?league=${leagueID}&SeasonID=83`,
       }),
   })
 
   const { payload: rarityData, isLoading: rarityDataisLoading } = query<
     Rarities[]
   >({
-    queryKey: ['rarityData', leagueID],
+    queryKey: ['rarityData', leagueID.join(',')],
     queryFn: () =>
       axios({
         method: GET,
@@ -186,7 +195,7 @@ export default function NewTrade({
   const { payload: subTypeData, isLoading: subTypeDataIsLoading } = query<
     SubType[]
   >({
-    queryKey: ['subTypeData', leagueID, JSON.stringify(rarities)],
+    queryKey: ['subTypeData', leagueID.join(','), JSON.stringify(rarities)],
     queryFn: () =>
       axios({
         method: GET,
@@ -210,7 +219,8 @@ export default function NewTrade({
         sortDirection,
         otherUID,
         String(removeSingles),
-        leagueID,
+        JSON.stringify(leagueID),
+        JSON.stringify(teamLeagueID),
       ],
       queryFn: () =>
         axios({
@@ -228,7 +238,8 @@ export default function NewTrade({
             sortDirection,
             otherUID: otherUID,
             removeSingles: removeSingles,
-            leagueID,
+            leagueID: JSON.stringify(leagueID),
+            teamLeagueID: JSON.stringify(teamLeagueID),
           },
         }),
       enabled: !!selectedUserId,
@@ -306,8 +317,24 @@ export default function NewTrade({
     }
   }
 
-  const toggleTeam = (team: string) => {
-    setTeams((currentValue) => toggleOnfilters(currentValue, team))
+  const toggleTeam = (teamKey: string) => {
+    setTeams((currentValue) => toggleOnfilters(currentValue, teamKey))
+
+    setTeamLeagueID((prev) => {
+      const updated = { ...prev }
+      if (updated[teamKey]) {
+        delete updated[teamKey]
+      } else {
+        const [leagueStr, idStr] = teamKey.split('-')
+        const team = teamData?.find(
+          (t) => t.league === Number(leagueStr) && t.id === Number(idStr)
+        )
+        if (team) {
+          updated[teamKey] = String(team.league)
+        }
+      }
+      return updated
+    })
   }
 
   const toggleRarity = (rarity: string) => {
@@ -400,21 +427,9 @@ export default function NewTrade({
   const selectedUser: UserData =
     selectedUserId === uid ? loggedInUser : tradePartnerUser
 
-  const waitForSelectedUserCards = () => {
-    return new Promise<void>((resolve) => {
-      const checkInterval = setInterval(() => {
-        if (selectedUserCards && !selectedUserCardsIsLoading) {
-          clearInterval(checkInterval)
-          resolve()
-        }
-      }, 100)
-    })
-  }
-
   return (
     <>
       <Box>
-        <div className="mb-3"></div>
         <Stack
           direction={['column', 'column', 'row']}
           spacing={[4, 4, 2]}
@@ -594,15 +609,54 @@ export default function NewTrade({
                   className="w-full !bg-secondary"
                 />
               </FormControl>
-              <RadioGroupSelector
-                value={leagueID}
-                options={LEAGUE_OPTIONS}
-                onChange={(value) => {
-                  setLeagueID(value)
-                  setTeams([])
-                  setRarities([])
-                }}
-              />
+              <Box
+                flex={1}
+                mr={2}
+                className="p-2 flex flex-col sm:flex-row gap-2 items-start sm:items-center"
+              >
+                <Select
+                  className="w-full sm:flex-1 !bg-secondary hover:!bg-highlighted/40"
+                  onChange={(event) => {
+                    const [sortColumn, sortDirection] =
+                      event.target.value.split(':') as [
+                        TradeCardSortValue,
+                        SortDirection,
+                      ]
+                    setSortColumn(sortColumn)
+                    setSortDirection(sortDirection)
+                  }}
+                >
+                  {SORT_OPTIONS.map((option, index) => (
+                    <Fragment key={`${option.value}-${index}`}>
+                      <option
+                        className="!bg-secondary"
+                        value={`${option.value}:DESC`}
+                      >
+                        {option.label}&nbsp;{option.sortLabel('DESC')}
+                      </option>
+                      <option
+                        className="!bg-secondary"
+                        value={`${option.value}:ASC`}
+                      >
+                        {option.label}&nbsp;{option.sortLabel('ASC')}
+                      </option>
+                    </Fragment>
+                  ))}
+                </Select>
+
+                <Box className="w-full sm:flex-1">
+                  <RadioGroupSelector
+                    value={leagueID}
+                    options={LEAGUE_OPTIONS}
+                    allValues={['0', '1', '2']}
+                    onChange={(value) => {
+                      setLeagueID(Array.isArray(value) ? value : [value])
+                      clearAllFilters()
+                    }}
+                  />
+                </Box>
+              </Box>
+
               <Flex
                 direction={{ base: 'column', sm: 'row' }}
                 justifyContent="flex-start"
@@ -612,15 +666,18 @@ export default function NewTrade({
                 className="gap-4 w-full"
               >
                 <Box flex={{ base: '1 1 100%', sm: 1 }} className="w-full">
-                  <FilterDropdown<Team>
+                  <FilterDropdown
                     label="Teams"
                     selectedValues={teams}
                     options={teamData || []}
                     isLoading={teamDataIsLoading}
                     onToggle={toggleTeam}
-                    onDeselectAll={() => setTeams([])}
-                    getOptionId={(team) => String(team.id)}
-                    getOptionValue={(team) => String(team.id)}
+                    onDeselectAll={() => {
+                      setTeams([])
+                      setTeamLeagueID({})
+                    }}
+                    getOptionId={(team) => `${team.league}-${team.id}`}
+                    getOptionValue={(team) => `${team.league}-${team.id}`}
                     getOptionLabel={(team) => team.name}
                   />
                 </Box>
@@ -680,35 +737,7 @@ export default function NewTrade({
                 </FormControl>
               </Flex>
             </Flex>
-            <Box flex={1} mr={2} className="p-2">
-              <Select
-                className="w-full !bg-secondary hover:!bg-highlighted/40"
-                onChange={(event) => {
-                  const [sortColumn, sortDirection] = event.target.value.split(
-                    ':'
-                  ) as [TradeCardSortValue, SortDirection]
-                  setSortColumn(sortColumn)
-                  setSortDirection(sortDirection)
-                }}
-              >
-                {SORT_OPTIONS.map((option, index) => (
-                  <Fragment key={`${option.value}-${index}`}>
-                    <option
-                      className="!bg-secondary"
-                      value={`${option.value}:DESC`}
-                    >
-                      {option.label}&nbsp;{option.sortLabel('DESC')}
-                    </option>
-                    <option
-                      className="!bg-secondary"
-                      value={`${option.value}:ASC`}
-                    >
-                      {option.label}&nbsp;{option.sortLabel('ASC')}
-                    </option>
-                  </Fragment>
-                ))}
-              </Select>
-            </Box>
+
             <SimpleGrid
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 bg-primary"
               columns={{ base: 2, lg: 5 }}
