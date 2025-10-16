@@ -7,6 +7,7 @@ import { cardsQuery } from '@pages/api/database/database'
 import SQL from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 import methodNotAllowed from '../lib/methodNotAllowed'
+import { parseQueryArray } from '@utils/parse-query-array'
 
 const allowedMethods: string[] = [GET]
 const cors = Cors({
@@ -20,8 +21,9 @@ export default async function rarityMap(
   await middleware(req, res, cors)
 
   if (req.method === GET) {
-    const leagueID = req.query.leagueID as string[]
-    const rarities = JSON.parse(req.query.rarities as string) as string[]
+    const leagues = parseQueryArray(req.query.leagueID)
+
+    const rarities = parseQueryArray(req.query.rarities)
 
     if (!rarities) {
       res
@@ -41,7 +43,7 @@ export default async function rarityMap(
     const query = SQL`
     SELECT DISTINCT cards.sub_type
     FROM cards
-    WHERE leagueID  IN (${leagueID})
+    WHERE leagueID  IN (${leagues})
         AND cards.card_rarity IN (${rarities})
         AND cards.sub_type IS NOT NULL
         AND cards.sub_type != ''

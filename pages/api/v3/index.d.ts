@@ -123,24 +123,10 @@ export type Team = {
   id: number
   season: number
   league: number
-  conference: number
-  division: number
   name: string
-  nameDetails: { first: string; second: string }
   abbreviation: string
   location: string
   colors: { primary: string; secondary: string; text: string }
-  stats: {
-    wins: number
-    losses: number
-    overtimeLosses: number
-    shootoutWins: number
-    shootoutLosses: number
-    points: number
-    goalsFor: number
-    goalsAgainst: number
-    winPercent: number
-  }
 }
 
 export type SortDirection = 'ASC' | 'DESC'

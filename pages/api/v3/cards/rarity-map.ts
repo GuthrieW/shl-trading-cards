@@ -7,6 +7,7 @@ import { cardsQuery } from '@pages/api/database/database'
 import SQL from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 import methodNotAllowed from '../lib/methodNotAllowed'
+import { parseQueryArray } from '@utils/parse-query-array'
 
 const allowedMethods: string[] = [GET]
 const cors = Cors({
@@ -20,11 +21,9 @@ export default async function rarityMap(
   await middleware(req, res, cors)
 
   if (req.method === GET) {
-    const leagueID = req.query.leagueID as string[]
+    const leagues = parseQueryArray(req.query.leagueID)
 
-    const leagues = Array.isArray(leagueID) ? leagueID : [leagueID]
-
-    if (!leagueID) {
+    if (!leagues) {
       res
         .status(StatusCodes.BAD_REQUEST)
         .json({ status: 'error', message: 'Missing leagueID' })
