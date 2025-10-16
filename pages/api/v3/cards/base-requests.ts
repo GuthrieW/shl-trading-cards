@@ -327,7 +327,7 @@ export async function requestCards(cardRequests: CardRequest[]): Promise<void> {
     await cardRequests.map(async (cardRequest) => {
       const insertQuery: SQLStatement = SQL`
         INSERT INTO cards
-          (player_name, teamID, playerID, card_rarity, sub_type, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season, author_paid, date_approved, render_name)
+          (player_name, teamID, playerID, card_rarity, sub_type, pullable, approved, position, overall, high_shots, low_shots, quickness, control, conditioning, skating, shooting, hands, checking, defense, season, author_paid, date_approved, render_name, leagueID)
         VALUES (${cardRequest.player_name.trim()}, ${cardRequest.teamID}, ${
           cardRequest.playerID
         }, ${cardRequest.card_rarity}, ${cardRequest.sub_type}, 0, 0, ${
@@ -340,7 +340,7 @@ export async function requestCards(cardRequests: CardRequest[]): Promise<void> {
           cardRequest.hands
         }, ${cardRequest.checking}, ${cardRequest.defense}, ${
           cardRequest.season
-        }, 0, NULL, ${cardRequest.renderName});
+        }, 0, NULL, ${cardRequest.renderName}, 0);
       `
       return await cardsQuery(insertQuery)
     })
