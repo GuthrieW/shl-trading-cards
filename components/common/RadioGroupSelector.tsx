@@ -34,7 +34,7 @@ const RadioGroupSelector: React.FC<RadioGroupSelectorProps> = ({
   const isArray = Array.isArray(value)
   const currentValues = isArray ? value : [value]
 
-  const isAllSelected = useMemo(
+  const allLeagueSelected = useMemo(
     () =>
       isArray &&
       allValues &&
@@ -56,7 +56,7 @@ const RadioGroupSelector: React.FC<RadioGroupSelectorProps> = ({
     [allValues, options]
   )
 
-  const displayValue = isAllSelected ? 'all' : currentValues[0]
+  const displayValue = allLeagueSelected ? 'all' : currentValues[0]
 
   return (
     <FormControl className={className}>
