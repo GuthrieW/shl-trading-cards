@@ -9,6 +9,7 @@ import { StatusCodes } from 'http-status-codes'
 import { UserData } from '../user'
 import methodNotAllowed from '../lib/methodNotAllowed'
 import { TradeAsset } from '@pages/api/mutations/use-create-trade'
+import { checkUserAuthorization } from '../lib/checkUserAuthorization'
 
 const allowedMethods: string[] = [GET, POST] as const
 const cors = Cors({
@@ -118,6 +119,10 @@ export default async function tradesEndpoint(
   }
 
   if (req.method === POST) {
+    if (!(await checkUserAuthorization(req))) {
+      res.status(StatusCodes.UNAUTHORIZED).end('Not authorized')
+      return
+    }
     const initiatorId = req.body.initiatorId as string
     const recipientId = req.body.recipientId as string
     const tradeAssets = req.body.tradeAssets as TradeAsset[]

@@ -23,6 +23,12 @@ export const generateIndexLink = (playerID: number, withPortalMode?: string) =>
     withPortalMode ? `?portalView=${withPortalMode}` : ''
   }`
 
+export const LEAGUE_OPTIONS = [
+  { value: '0', label: 'SHL' },
+  { value: '2', label: 'IIHF' },
+  { value: '1', label: 'SMJHL' },
+]
+
 export type RoleGroup = (keyof Readonly<typeof userGroups>)[]
 
 export const CAN_RUN_SCRIPTS: RoleGroup = ['TRADING_CARD_ADMIN']

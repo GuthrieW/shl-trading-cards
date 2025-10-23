@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash'
 export const colorsRaw = {
   primitives: {
     blue600: 'var(--blue600)',
@@ -43,8 +43,9 @@ export const colorsRaw = {
     'site-header': 'var(--color-background-site-header)',
     'boxscore-header': 'var(--color-background-boxscore-header)',
     'scorebar-date': 'var(--color-background-scorebar-date)',
+    red200: 'var(--red200)',
   },
-} satisfies Record<string, Record<string, `var(--${string})`>>;
+} satisfies Record<string, Record<string, `var(--${string})`>>
 export const colors = _.mapValues(colorsRaw, (colorGroup) =>
-  _.mapValues(colorGroup, (color) => `rgb(${color})`),
-) as typeof colorsRaw;
+  _.mapValues(colorGroup, (color) => `rgb(${color})`)
+) as typeof colorsRaw

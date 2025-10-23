@@ -1,4 +1,4 @@
-import { CheckIcon, ChevronDownIcon } from '@chakra-ui/icons'
+import { ChevronDownIcon } from '@chakra-ui/icons'
 import {
   Button,
   FormControl,
@@ -39,15 +39,12 @@ import TablePagination from '@components/table/TablePagination'
 import { GET } from '@constants/http-methods'
 import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated'
 import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
-import { query } from '@pages/api/database/query'
+import { query, indexAxios } from '@pages/api/database/query'
 import { ListResponse, SortDirection } from '@pages/api/v3'
 import axios from 'axios'
 import { useState } from 'react'
 import { cardService } from 'services/cardService'
-import { allTeamsMaps } from '@constants/teams-map'
-import { rarityMap } from '@constants/rarity-map'
 import { useCookie } from '@hooks/useCookie'
-import filterTeamsByLeague from 'utils/filterTeamsByLeague'
 import config from 'lib/config'
 import SubmitImageModal from '@components/admin-cards/SubmitImageModal'
 import ClaimCardDialog from '@components/admin-cards/ClaimCardDialog'
@@ -55,6 +52,10 @@ import ProcessImageDialog from '@components/admin-cards/ProcessImageDialog'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
 import MisprintDialog from '@components/admin-cards/MisprintDialog'
 import { usePermissions } from '@hooks/usePermissions'
+import { Team, Rarities } from '@pages/api/v3'
+import FilterDropdown from '@components/common/FilterDropdown'
+import RadioGroupSelector from '@components/common/RadioGroupSelector'
+import { LEAGUE_OPTIONS } from 'lib/constants'
 
 type ColumnName = keyof Readonly<Card>
 
@@ -89,6 +90,7 @@ const LOADING_TABLE_DATA: { rows: Card[] } = {
     author_paid: 1,
     date_approved: null,
     author_username: 'author_username',
+    leagueID: 0,
   })),
 } as const
 
@@ -103,8 +105,11 @@ export default () => {
 
   const [playerName, setPlayerName] = useState<string>(null)
   const [teams, setTeams] = useState<string[]>([])
+  const [teamLeagueID, setTeamLeagueID] = useState<{ [key: string]: string }>(
+    {}
+  )
   const [rarities, setRarities] = useState<string[]>([])
-  const [leagues, setLeague] = useState<string[]>([])
+  const [leagueID, setLeagueID] = useState<string[]>(['0'])
   const [sortColumn, setSortColumn] = useState<ColumnName>('player_name')
   const [sortDirection, setSortDirection] = useState<SortDirection>('ASC')
   const [tablePage, setTablePage] = useState<number>(1)
@@ -129,6 +134,31 @@ export default () => {
     roles: ['TRADING_CARD_ADMIN', 'TRADING_CARD_TEAM'],
   })
 
+  const clearAllFilters = () => {
+    setTeams([])
+    setRarities([])
+  }
+
+  const { payload: teamData, isLoading: teamDataIsLoading } = query<Team[]>({
+    queryKey: ['teamData', leagueID.join(',')],
+    queryFn: () =>
+      indexAxios({
+        method: 'GET',
+        url: `/api/v2/teams?league=${leagueID}&SeasonID=83`,
+      }),
+  })
+
+  const { payload: rarityData, isLoading: rarityDataisLoading } = query<
+    Rarities[]
+  >({
+    queryKey: ['rarityData', leagueID.join(',')],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/cards/rarity-map?leagueID=${leagueID}`,
+      }),
+  })
+
   const showImage = (image_url: string) => () => {
     if (image_url) {
       setImageUrl(image_url)
@@ -141,7 +171,6 @@ export default () => {
       playerName,
       JSON.stringify(teams),
       JSON.stringify(rarities),
-      JSON.stringify(leagues),
       String(viewSkaters),
       String(viewMyCards),
       String(viewNeedsAuthor),
@@ -153,6 +182,8 @@ export default () => {
       sortDirection,
       String(tablePage),
       cardID,
+      JSON.stringify(leagueID),
+      JSON.stringify(teamLeagueID),
     ],
     queryFn: () =>
       axios({
@@ -165,7 +196,6 @@ export default () => {
           playerName,
           teams: JSON.stringify(teams),
           rarities: JSON.stringify(rarities),
-          leagues: JSON.stringify(leagues),
           viewSkaters,
           viewMyCards,
           viewNeedsAuthor,
@@ -176,6 +206,8 @@ export default () => {
           sortColumn,
           sortDirection,
           cardID: cardID,
+          leagueID: JSON.stringify(leagueID),
+          teamLeagueID: JSON.stringify(teamLeagueID),
         },
       }),
   })
@@ -230,101 +262,48 @@ export default () => {
             />
           </FormControl>
           <div className="m-2 flex flex-col gap-4 md:flex-row md:justify-between">
-            <div className="flex flex-row space-x-2">
-              <FormControl>
-                <Menu closeOnSelect={false}>
-                  <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary hover:!bg-highlighted/40">
-                    Teams&nbsp;{`(${teams.length})`}
-                  </MenuButton>
-                  <MenuList>
-                    <MenuOptionGroup type="checkbox">
-                      <MenuItemOption
-                        className="hover:!bg-highlighted/40"
-                        icon={null}
-                        isChecked={false}
-                        aria-checked={false}
-                        closeOnSelect
-                        onClick={() => setTeams([])}
-                      >
-                        Deselect All
-                      </MenuItemOption>
-                      {filterTeamsByLeague(allTeamsMaps, rarities).map(
-                        ([key, value]) => {
-                          const isChecked: boolean = teams.includes(
-                            String(value.teamID)
-                          )
-                          return (
-                            <MenuItemOption
-                              className="hover:!bg-highlighted/40"
-                              icon={null}
-                              isChecked={isChecked}
-                              aria-checked={isChecked}
-                              key={value.teamID}
-                              value={String(value.teamID)}
-                              onClick={() => toggleTeam(String(value.teamID))}
-                            >
-                              {value.label}
-                              {isChecked && <CheckIcon className="mx-2" />}
-                            </MenuItemOption>
-                          )
-                        }
-                      )}
-                    </MenuOptionGroup>
-                  </MenuList>
-                </Menu>
-              </FormControl>
-              <FormControl>
-                <Menu closeOnSelect={false}>
-                  <MenuButton className="w-full sm:w-auto border-grey800 border-1 rounded p-2 cursor-pointer bg-secondary hover:!bg-highlighted/40">
-                    Rarities&nbsp;{`(${rarities.length})`}
-                  </MenuButton>
-                  <MenuList>
-                    <MenuOptionGroup type="checkbox">
-                      <MenuItemOption
-                        className="hover:!bg-highlighted/40"
-                        icon={null}
-                        isChecked={false}
-                        aria-checked={false}
-                        closeOnSelect
-                        onClick={() => setRarities([])}
-                      >
-                        Deselect All
-                      </MenuItemOption>
-                      {Object.entries(rarityMap).map(([key, value]) => {
-                        const isChecked: boolean = rarities.includes(
-                          value.label
-                        )
+            <RadioGroupSelector
+              value={leagueID}
+              options={LEAGUE_OPTIONS}
+              allValues={['0', '1', '2']}
+              onChange={(value) => {
+                setLeagueID(Array.isArray(value) ? value : [value])
+                clearAllFilters()
+              }}
+            />
+          </div>
 
-                        // Disable selection of any IIHF Awards and another rarity because trying to select different leagues teams at the same time with the same ID is hell
-                        const isDisabled =
-                          (value.label === 'IIHF Awards' &&
-                            rarities.length > 0 &&
-                            !rarities.includes('IIHF Awards')) ||
-                          (rarities.includes('IIHF Awards') &&
-                            value.label !== 'IIHF Awards')
+          <div className="m-2 flex flex-col gap-4 md:flex-row md:justify-between">
+            <div className="flex flex-col gap-4 md:flex-row md:space-x-2 w-full md:w-auto">
+              <div className="flex flex-col gap-4 md:flex-row md:space-x-2 w-full md:w-auto">
+                <FilterDropdown
+                  label="Teams"
+                  selectedValues={teams}
+                  options={teamData || []}
+                  isLoading={teamDataIsLoading}
+                  onToggle={toggleTeam}
+                  onDeselectAll={() => {
+                    setTeams([])
+                    setTeamLeagueID({})
+                  }}
+                  getOptionId={(team) => `${team.league}-${team.id}`}
+                  getOptionValue={(team) => `${team.league}-${team.id}`}
+                  getOptionLabel={(team) => team.name}
+                />
 
-                        return (
-                          <MenuItemOption
-                            className="hover:!bg-highlighted/40"
-                            icon={null}
-                            isChecked={isChecked}
-                            aria-checked={isChecked}
-                            key={value.label}
-                            value={value.label}
-                            onClick={() =>
-                              !isDisabled && toggleRarity(value.label)
-                            }
-                            isDisabled={isDisabled}
-                          >
-                            {value.label}
-                            {isChecked && <CheckIcon className="mx-2" />}
-                          </MenuItemOption>
-                        )
-                      })}
-                    </MenuOptionGroup>
-                  </MenuList>
-                </Menu>
-              </FormControl>
+                <FilterDropdown<Rarities>
+                  label="Rarities"
+                  selectedValues={rarities}
+                  options={rarityData || []}
+                  isLoading={rarityDataisLoading}
+                  onToggle={toggleRarity}
+                  onDeselectAll={() => setRarities([])}
+                  getOptionId={(rarity) => rarity.card_rarity}
+                  getOptionValue={(rarity) => rarity.card_rarity}
+                  getOptionLabel={(rarity) => rarity.card_rarity}
+                />
+              </div>
+
               <FormControl>
                 <Menu closeOnSelect={false}>
                   <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>

@@ -69,6 +69,14 @@ export type UserPacks = {
   string
 }
 
+export type Rarities = {
+  card_rarity: string
+}
+
+export type SubType = {
+  sub_type: string
+}
+
 export type LatestCards = {
   ownedCardID: number
   userID: number
@@ -109,6 +117,16 @@ export type binderCards = {
   image_url: string
   overall: number
   season: number
+}
+
+export type Team = {
+  id: number
+  season: number
+  league: number
+  name: string
+  abbreviation: string
+  location: string
+  colors: { primary: string; secondary: string; text: string }
 }
 
 export type SortDirection = 'ASC' | 'DESC'

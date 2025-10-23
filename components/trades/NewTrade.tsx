@@ -1,4 +1,3 @@
-import { CheckIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import {
   Badge,
   Button,
@@ -11,11 +10,6 @@ import {
   FormControl,
   Image,
   Input,
-  Menu,
-  MenuButton,
-  MenuItemOption,
-  MenuList,
-  MenuOptionGroup,
   Select,
   SimpleGrid,
   useDisclosure,
@@ -33,20 +27,17 @@ import {
 } from '@chakra-ui/react'
 import TablePagination from '@components/table/TablePagination'
 import { GET, POST } from '@constants/http-methods'
-import { rarityMap } from '@constants/rarity-map'
-import { allTeamsMaps } from '@constants/teams-map'
 import { useCookie } from '@hooks/useCookie'
 import { mutation } from '@pages/api/database/mutation'
-import { query } from '@pages/api/database/query'
+import { query, indexAxios } from '@pages/api/database/query'
 import { TradeAsset } from '@pages/api/mutations/use-create-trade'
-import { ListResponse, SortDirection } from '@pages/api/v3'
+import { ListResponse, SortDirection, SubType } from '@pages/api/v3'
 import {
   TradeCard,
   TradeCardSortOption,
   TradeCardSortValue,
 } from '@pages/api/v3/trades/collection/[uid]'
 import { UserData } from '@pages/api/v3/user'
-import filterTeamsByLeague from '@utils/filterTeamsByLeague'
 import {
   errorToastOptions,
   successToastOptions,
@@ -62,6 +53,12 @@ import { useQueryClient } from 'react-query'
 import RemoveButton from './RemoveButton'
 import { useDebounce } from 'use-debounce'
 import ImageWithFallback from '@components/images/ImageWithFallback'
+import { Team, Rarities } from '@pages/api/v3'
+import FilterDropdown from '@components/common/FilterDropdown'
+import RadioGroupSelector from '@components/common/RadioGroupSelector'
+import { LEAGUE_OPTIONS } from 'lib/constants'
+import { useSession } from 'contexts/AuthContext'
+import { toggleOnfilters } from '@utils/toggle-on-filters'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
   {
@@ -97,6 +94,7 @@ export default function NewTrade({
   resetTradeCards: boolean
   setResetTradeCards: (value: boolean) => void
 }) {
+  const { session } = useSession()
   const toast = useToast()
   const queryClient = useQueryClient()
   const router = useRouter()
@@ -104,8 +102,11 @@ export default function NewTrade({
   const [selectedUserId, setSelectedUserId] = useState<string>('')
   const [playerName, setPlayerName] = useState<string>('')
   const [teams, setTeams] = useState<string[]>([])
+  const [teamLeagueID, setTeamLeagueID] = useState<{ [key: string]: string }>(
+    {}
+  )
   const [rarities, setRarities] = useState<string[]>([])
-  const [leagues, setLeague] = useState<string[]>([])
+  const [subType, setSubType] = useState<string[]>([])
   const [sortColumn, setSortColumn] = useState<TradeCardSortValue>(
     SORT_OPTIONS[0].value
   )
@@ -121,17 +122,15 @@ export default function NewTrade({
   const [otherUID, setOtherUID] = useState<string>('')
   const [removeSingles, setRemoveSingles] = useState<boolean>(false)
   const [debouncedPlayerName] = useDebounce(playerName, 500)
+  const [leagueID, setLeagueID] = useState<string[]>(['0'])
 
   const [uid] = useCookie(config.userIDCookieName)
 
-  useEffect(() => {
-    if (resetTradeCards) {
-      setloggedInUserCardsToTrade([])
-      setPartnerUserCardsToTrade([])
-      setResetTradeCards(false)
-      setOtherUID('')
-    }
-  }, [resetTradeCards, setResetTradeCards])
+  const clearAllFilters = () => {
+    setTeams([])
+    setRarities([])
+    setSubType([])
+  }
 
   const ROWS_PER_PAGE =
     useBreakpointValue({
@@ -173,6 +172,39 @@ export default function NewTrade({
       }),
   })
 
+  const { payload: teamData, isLoading: teamDataIsLoading } = query<Team[]>({
+    queryKey: ['teamData', leagueID.join(',')],
+    queryFn: () =>
+      indexAxios({
+        method: 'GET',
+        url: `/api/v2/teams?league=${leagueID}&SeasonID=83`,
+      }),
+  })
+
+  const { payload: rarityData, isLoading: rarityDataisLoading } = query<
+    Rarities[]
+  >({
+    queryKey: ['rarityData', leagueID.join(',')],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/cards/rarity-map?leagueID=${leagueID}`,
+      }),
+  })
+
+  const { payload: subTypeData, isLoading: subTypeDataIsLoading } = query<
+    SubType[]
+  >({
+    queryKey: ['subTypeData', leagueID.join(','), JSON.stringify(rarities)],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/cards/sub-rarity-map?leagueID=${leagueID}&rarities=${JSON.stringify(
+          rarities
+        )}`,
+      }),
+  })
+
   const { payload: selectedUserCards, isLoading: selectedUserCardsIsLoading } =
     query<ListResponse<TradeCard>>({
       queryKey: [
@@ -181,12 +213,14 @@ export default function NewTrade({
         debouncedPlayerName,
         JSON.stringify(teams),
         JSON.stringify(rarities),
-        JSON.stringify(leagues),
+        JSON.stringify(subType),
         String(tablePage),
         sortColumn,
         sortDirection,
         otherUID,
         String(removeSingles),
+        JSON.stringify(leagueID),
+        JSON.stringify(teamLeagueID),
       ],
       queryFn: () =>
         axios({
@@ -197,13 +231,15 @@ export default function NewTrade({
               debouncedPlayerName.length >= 1 ? debouncedPlayerName : '',
             teams: JSON.stringify(teams),
             rarities: JSON.stringify(rarities),
-            leagues: JSON.stringify(leagues),
+            subType: JSON.stringify(subType),
             limit: ROWS_PER_PAGE,
             offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
             sortColumn,
             sortDirection,
             otherUID: otherUID,
             removeSingles: removeSingles,
+            leagueID: JSON.stringify(leagueID),
+            teamLeagueID: JSON.stringify(teamLeagueID),
           },
         }),
       enabled: !!selectedUserId,
@@ -219,6 +255,15 @@ export default function NewTrade({
       enabled: !!tradePartnerUid && !!cardID,
     })
   useEffect(() => {
+    if (subTypeData && subTypeData.length === 0 && subType.length > 0) {
+      setSubType([])
+    }
+    if (resetTradeCards) {
+      setloggedInUserCardsToTrade([])
+      setPartnerUserCardsToTrade([])
+      setResetTradeCards(false)
+      setOtherUID('')
+    }
     if (!showSelectedCardLoading && showSelectedCard && !cardAdded) {
       if (showSelectedCard.rows.length > 0) {
         const cardToAdd = showSelectedCard.rows[0]
@@ -239,6 +284,10 @@ export default function NewTrade({
     loggedInUser.uid,
     tradePartnerUid,
     cardAdded,
+    resetTradeCards,
+    setResetTradeCards,
+    subTypeData,
+    subType,
   ])
 
   const { mutateAsync: submitTrade, isLoading: isSubmittingTrade } = mutation<
@@ -250,22 +299,11 @@ export default function NewTrade({
         method: POST,
         url: '/api/v3/trades',
         data: { initiatorId, recipientId, tradeAssets },
+        headers: {
+          Authorization: `Bearer ${session?.token}`,
+        },
       }),
   })
-
-  const toggleTeam = (team: string) => {
-    setTeams((currentValue) => {
-      const teamIndex: number = currentValue.indexOf(team)
-      if (teamIndex === -1) {
-        return [...currentValue, team]
-      } else {
-        return [
-          ...currentValue.slice(0, teamIndex),
-          ...currentValue.slice(teamIndex + 1),
-        ]
-      }
-    })
-  }
 
   const setFilteredUID = (value: boolean) => {
     if (value) {
@@ -279,18 +317,32 @@ export default function NewTrade({
     }
   }
 
-  const toggleLeague = (league: string) => {
-    setLeague([league])
+  const toggleTeam = (teamKey: string) => {
+    setTeams((currentValue) => toggleOnfilters(currentValue, teamKey))
+
+    setTeamLeagueID((prev) => {
+      const updated = { ...prev }
+      if (updated[teamKey]) {
+        delete updated[teamKey]
+      } else {
+        const [leagueStr, idStr] = teamKey.split('-')
+        const team = teamData?.find(
+          (t) => t.league === Number(leagueStr) && t.id === Number(idStr)
+        )
+        if (team) {
+          updated[teamKey] = String(team.league)
+        }
+      }
+      return updated
+    })
   }
 
   const toggleRarity = (rarity: string) => {
-    setRarities((currentValue) => {
-      const rarityIndex: number = currentValue.indexOf(rarity)
-      rarityIndex === -1
-        ? currentValue.push(rarity)
-        : currentValue.splice(rarityIndex)
-      return [...currentValue]
-    })
+    setRarities((currentValue) => toggleOnfilters(currentValue, rarity))
+  }
+
+  const toggleSubType = (subType: string) => {
+    setSubType((currentValue) => toggleOnfilters(currentValue, subType))
   }
 
   const openDrawer = (newSelecedUser: string) => {
@@ -298,7 +350,6 @@ export default function NewTrade({
     setPlayerName('')
     setTeams([])
     setRarities([])
-    setLeague([])
     setOtherUID('')
     onOpen()
   }
@@ -376,21 +427,9 @@ export default function NewTrade({
   const selectedUser: UserData =
     selectedUserId === uid ? loggedInUser : tradePartnerUser
 
-  const waitForSelectedUserCards = () => {
-    return new Promise<void>((resolve) => {
-      const checkInterval = setInterval(() => {
-        if (selectedUserCards && !selectedUserCardsIsLoading) {
-          clearInterval(checkInterval)
-          resolve()
-        }
-      }, 100)
-    })
-  }
-
   return (
     <>
       <Box>
-        <div className="mb-3"></div>
         <Stack
           direction={['column', 'column', 'row']}
           spacing={[4, 4, 2]}
@@ -570,113 +609,13 @@ export default function NewTrade({
                   className="w-full !bg-secondary"
                 />
               </FormControl>
-              <Flex justifyContent="space-between" alignItems="center">
-                <Box flex={1} mr={2}>
-                  <Menu closeOnSelect={false}>
-                    <MenuButton
-                      as={Button}
-                      rightIcon={<ChevronDownIcon />}
-                      className="w-full !bg-secondary !text-secondary text-center hover:!bg-highlighted/40"
-                    >
-                      Teams ({teams.length})
-                    </MenuButton>
-                    <MenuList>
-                      <MenuOptionGroup type="checkbox">
-                        <MenuItemOption
-                          className="hover:!bg-highlighted/40"
-                          icon={null}
-                          isChecked={false}
-                          aria-checked={false}
-                          closeOnSelect
-                          onClick={() => setTeams([])}
-                        >
-                          Deselect All
-                        </MenuItemOption>
-                        {filterTeamsByLeague(allTeamsMaps, rarities).map(
-                          ([key, value]) => {
-                            const isChecked: boolean = teams.includes(
-                              String(value.teamID)
-                            )
-                            return (
-                              <MenuItemOption
-                                className="hover:!bg-highlighted/40"
-                                icon={null}
-                                isChecked={isChecked}
-                                aria-checked={isChecked}
-                                key={value.teamID}
-                                value={String(value.teamID)}
-                                onClick={() => toggleTeam(String(value.teamID))}
-                              >
-                                {value.label}
-                                {isChecked && <CheckIcon className="mx-2" />}
-                              </MenuItemOption>
-                            )
-                          }
-                        )}
-                      </MenuOptionGroup>
-                    </MenuList>
-                  </Menu>
-                </Box>
-                <Box flex={1} mr={2}>
-                  <Menu closeOnSelect={false}>
-                    <MenuButton
-                      as={Button}
-                      rightIcon={<ChevronDownIcon />}
-                      className="w-full !bg-secondary !text-secondary text-center hover:!bg-highlighted/40"
-                    >
-                      Rarity ({rarities.length})
-                    </MenuButton>
-                    <MenuList>
-                      <MenuOptionGroup type="checkbox">
-                        <MenuItemOption
-                          className="hover:!bg-highlighted/40"
-                          icon={null}
-                          isChecked={false}
-                          aria-checked={false}
-                          closeOnSelect
-                          onClick={() => setRarities([])}
-                        >
-                          Deselect All
-                        </MenuItemOption>
-                        {Object.entries(rarityMap).map(([key, value]) => {
-                          const isChecked: boolean = rarities.includes(
-                            value.label
-                          )
-
-                          // Disable selection of any IIHF Awards and another rarity because trying to select different leagues teams at the same time with the same ID is hell
-                          const isDisabled =
-                            (value.label === 'IIHF Awards' &&
-                              rarities.length > 0 &&
-                              !rarities.includes('IIHF Awards')) ||
-                            (rarities.includes('IIHF Awards') &&
-                              value.label !== 'IIHF Awards')
-
-                          return (
-                            <MenuItemOption
-                              className="hover:!bg-highlighted/40"
-                              icon={null}
-                              isChecked={isChecked}
-                              aria-checked={isChecked}
-                              key={value.label}
-                              value={value.label}
-                              onClick={() =>
-                                !isDisabled && toggleRarity(value.label)
-                              }
-                              isDisabled={isDisabled}
-                            >
-                              {value.label}
-                              {isChecked && <CheckIcon className="mx-2" />}
-                            </MenuItemOption>
-                          )
-                        })}
-                      </MenuOptionGroup>
-                    </MenuList>
-                  </Menu>
-                </Box>
-              </Flex>
-              <Box flex={1} mr={2} className="p-2">
+              <Box
+                flex={1}
+                mr={2}
+                className="p-2 flex flex-col sm:flex-row gap-2 items-start sm:items-center"
+              >
                 <Select
-                  className="w-full !bg-secondary hover:!bg-highlighted/40"
+                  className="w-full sm:flex-1 !bg-secondary hover:!bg-highlighted/40"
                   onChange={(event) => {
                     const [sortColumn, sortDirection] =
                       event.target.value.split(':') as [
@@ -704,27 +643,101 @@ export default function NewTrade({
                     </Fragment>
                   ))}
                 </Select>
+
+                <Box className="w-full sm:flex-1">
+                  <RadioGroupSelector
+                    value={leagueID}
+                    options={LEAGUE_OPTIONS}
+                    allValues={['0', '1', '2']}
+                    onChange={(value) => {
+                      setLeagueID(Array.isArray(value) ? value : [value])
+                      clearAllFilters()
+                    }}
+                  />
+                </Box>
               </Box>
-              <FormControl className="flex flex-row justify-start items-center">
-                <FormLabel className="flex items-center mr-4">
-                  Hide My Cards / Partner's Cards
-                </FormLabel>
-                <Switch
-                  className="flex items-center"
-                  placeholder="User ID"
-                  onChange={(e) => setFilteredUID(e.target.checked)}
-                />
-              </FormControl>
-              <FormControl className="flex flex-row justify-start items-center">
-                <FormLabel className="flex items-center mr-4">
-                  Show only Duplicates
-                </FormLabel>
-                <Switch
-                  className="flex items-center"
-                  onChange={(e) => setRemoveSingles(e.target.checked)}
-                />
-              </FormControl>
+
+              <Flex
+                direction={{ base: 'column', sm: 'row' }}
+                justifyContent="flex-start"
+                alignItems="stretch"
+                mb={4}
+                mt={4}
+                className="gap-4 w-full"
+              >
+                <Box flex={{ base: '1 1 100%', sm: 1 }} className="w-full">
+                  <FilterDropdown
+                    label="Teams"
+                    selectedValues={teams}
+                    options={teamData || []}
+                    isLoading={teamDataIsLoading}
+                    onToggle={toggleTeam}
+                    onDeselectAll={() => {
+                      setTeams([])
+                      setTeamLeagueID({})
+                    }}
+                    getOptionId={(team) => `${team.league}-${team.id}`}
+                    getOptionValue={(team) => `${team.league}-${team.id}`}
+                    getOptionLabel={(team) => team.name}
+                  />
+                </Box>
+
+                <Box flex={{ base: '1 1 100%', sm: 1 }} className="w-full">
+                  <FilterDropdown<Rarities>
+                    label="Rarities"
+                    selectedValues={rarities}
+                    options={rarityData || []}
+                    isLoading={rarityDataisLoading}
+                    onToggle={toggleRarity}
+                    onDeselectAll={() => setRarities([])}
+                    getOptionId={(rarity) => rarity.card_rarity}
+                    getOptionValue={(rarity) => rarity.card_rarity}
+                    getOptionLabel={(rarity) => rarity.card_rarity}
+                  />
+                </Box>
+
+                <Box flex={{ base: '1 1 100%', sm: 1 }} className="w-full">
+                  <FilterDropdown<SubType>
+                    label="Sub Types"
+                    selectedValues={subType}
+                    options={subTypeData || []}
+                    isLoading={subTypeDataIsLoading}
+                    onToggle={toggleSubType}
+                    onDeselectAll={() => setSubType([])}
+                    getOptionId={(subType) => subType.sub_type}
+                    getOptionValue={(subType) => subType.sub_type}
+                    getOptionLabel={(subType) => subType.sub_type}
+                  />
+                </Box>
+              </Flex>
+
+              <Flex
+                direction={{ base: 'column', sm: 'row' }}
+                gap={4}
+                className="w-full"
+              >
+                <FormControl className="flex flex-row justify-between items-center bg-secondary border-2 px-4 py-3.5 rounded-lg flex-1">
+                  <FormLabel className="text-primary flex items-center !mb-0">
+                    Hide My Cards / Partner's Cards
+                  </FormLabel>
+                  <Switch
+                    className="flex items-center"
+                    onChange={(e) => setFilteredUID(e.target.checked)}
+                  />
+                </FormControl>
+
+                <FormControl className="flex flex-row justify-between items-center bg-secondary border-2 px-4 py-3.5 rounded-lg flex-1">
+                  <FormLabel className="text-primary flex items-center !mb-0">
+                    Show Only Duplicates
+                  </FormLabel>
+                  <Switch
+                    className="flex items-center"
+                    onChange={(e) => setRemoveSingles(e.target.checked)}
+                  />
+                </FormControl>
+              </Flex>
             </Flex>
+
             <SimpleGrid
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 bg-primary"
               columns={{ base: 2, lg: 5 }}

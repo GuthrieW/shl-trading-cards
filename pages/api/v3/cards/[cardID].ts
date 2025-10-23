@@ -144,7 +144,9 @@ export default async function cardsEndpoint(
         quickness=${card.quickness},
         control=${card.control},
         conditioning=${card.conditioning},
-        render_name=${card.render_name}
+        render_name=${card.render_name},
+        leagueID=${card.leagueID}
+
       WHERE cardID=${cardID};
     `)
 

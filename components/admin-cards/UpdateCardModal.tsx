@@ -72,6 +72,7 @@ const updateValidationSchema = Yup.object({}).shape({
     .min(0)
     .max(1)
     .required('Author Paid is required'),
+  leagueID: Yup.number().integer().min(0).required('League is required'),
 })
 
 type UpdateFormValues = Yup.InferType<typeof updateValidationSchema>
@@ -144,6 +145,7 @@ export default function UpdateCardModal({
       conditioning: card.conditioning ?? undefined,
       season: card.season ?? undefined,
       author_paid: card.author_paid ?? undefined,
+      leagueID: card.leagueID ?? undefined,
     },
     onSubmit: async (cardUpdates: Card, { setSubmitting }) => {
       try {
@@ -259,6 +261,16 @@ export default function UpdateCardModal({
                 type="number"
                 name="season"
                 isInvalid={!!errors.season && touched.season}
+                onChange={handleChange}
+                onBlur={handleBlur}
+              />
+              <Input
+                label="League"
+                value={values.leagueID}
+                disabled={isSubmitting}
+                type="number"
+                name="leagueID"
+                isInvalid={!!errors.leagueID && touched.leagueID}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
