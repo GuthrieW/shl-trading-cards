@@ -132,7 +132,8 @@ const handler = async (
           card.quickness,
           card.control,
           card.conditioning,
-          card.playerID
+          card.playerID,
+          card.leagueID
         FROM cards card
         LEFT JOIN userCollection ownedCard
           ON card.cardID=ownedCard.cardID
@@ -162,7 +163,8 @@ const handler = async (
           card.quickness,
           card.control,
           card.conditioning,
-          card.playerID
+          card.playerID,
+          card.leagueID
         FROM cards card
         LEFT JOIN ownedCards ownedCard
           ON card.cardID=ownedCard.cardID

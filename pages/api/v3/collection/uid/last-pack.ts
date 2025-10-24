@@ -55,7 +55,8 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
         card.author_userID,
         card.season,
         card.author_paid,
-        collection.packID
+        collection.packID,
+        card.leagueID
       FROM 
         cards as card
       INNER JOIN collection AS collection

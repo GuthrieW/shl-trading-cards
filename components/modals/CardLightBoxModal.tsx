@@ -34,6 +34,7 @@ type CardLightBoxModalProps = {
   owned: number
   rarity: string
   playerID: number
+  leagueID: number
   cardID: number
   userID: string
 }
@@ -47,6 +48,7 @@ const CardLightBoxModal = ({
   owned,
   rarity,
   playerID,
+  leagueID,
   cardID,
   userID,
 }: CardLightBoxModalProps) => {
@@ -268,6 +270,7 @@ const CardLightBoxModal = ({
               playerID={playerID}
               cardID={cardID}
               userID={userID}
+              leagueID={leagueID}
             />
           </DrawerBody>
         </DrawerContent>
