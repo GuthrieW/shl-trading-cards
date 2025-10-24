@@ -562,6 +562,7 @@ export default ({ uid }: { uid: string }) => {
                     owned={selectedCard.quantity}
                     rarity={selectedCard.card_rarity}
                     playerID={selectedCard.playerID}
+                    leagueID={selectedCard.leagueID}
                     cardID={selectedCard.cardID}
                     userID={uid}
                     setShowModal={() => setLightBoxIsOpen(false)}

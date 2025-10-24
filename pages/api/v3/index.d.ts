@@ -84,6 +84,7 @@ export type LatestCards = {
   packID: number
   playerName: string
   playerID: number
+  leagueID: number
   card_rarity: string
   imageURL: string
 }
@@ -117,6 +118,7 @@ export type binderCards = {
   image_url: string
   overall: number
   season: number
+  leagueID: number
 }
 
 export type Team = {

@@ -65,6 +65,7 @@ type CollectionCard = {
   overall: number
   teamID: number
   playerID: number
+  leagueID: number
 }
 
 type NewCard = {
