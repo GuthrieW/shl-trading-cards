@@ -189,7 +189,7 @@ const validateCard = (
     return { status: false, error: `playerID missing on row ${index}` }
   }
 
-  if (!card.leagueID) {
+  if (card.leagueID === null || card.leagueID === undefined) {
     return { status: false, error: `leagueID missing on row ${index}` }
   }
 
