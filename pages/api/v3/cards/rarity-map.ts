@@ -47,12 +47,10 @@ export default async function getRarityMap(
     }
 
     const rarityOrder = Object.values(rarityMap).map((r) => r.label.toString())
-    console.log(rarityOrder)
     const sortedResult = queryResult.sort(
       (a, b) =>
         rarityOrder.indexOf(a.card_rarity) - rarityOrder.indexOf(b.card_rarity)
     )
-    console.log('sortedResult', sortedResult)
 
     res.status(StatusCodes.OK).json({
       status: 'success',
