@@ -3,6 +3,7 @@ import { POST } from '@constants/http-methods'
 import { rarityMap } from '@constants/rarity-map'
 import { allTeamsMaps } from '@constants/teams-map'
 import { mutation } from '@pages/api/database/mutation'
+import { isValidID } from '@utils/isValidID'
 import { successToastOptions } from '@utils/toast'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
@@ -189,7 +190,7 @@ const validateCard = (
     return { status: false, error: `playerID missing on row ${index}` }
   }
 
-  if (card.leagueID === null || card.leagueID === undefined) {
+  if (!isValidID(card.leagueID)) {
     return { status: false, error: `leagueID missing on row ${index}` }
   }
 
