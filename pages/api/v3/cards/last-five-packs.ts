@@ -20,11 +20,6 @@ export default async function userPacksEndpoint(
   await middleware(req, res, cors)
 
   if (req.method === GET) {
-    //const query = SQL`
-    //      SELECT *
-    //FROM collection
-    //WHERE packID >= (SELECT MAX(packID)-10 FROM collection)
-    //      `
     const query = SQL`
   SELECT c.*, cr.image_url as imageURL
 FROM collection c

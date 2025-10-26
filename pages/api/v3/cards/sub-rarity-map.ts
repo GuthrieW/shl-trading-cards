@@ -14,7 +14,7 @@ const cors = Cors({
   methods: allowedMethods,
 })
 
-export default async function rarityMap(
+export default async function getSubRarityMap(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<SubType[]>>
 ): Promise<void> {

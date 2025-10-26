@@ -8,13 +8,14 @@ import SQL from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 import methodNotAllowed from '../lib/methodNotAllowed'
 import { parseQueryArray } from '@utils/parse-query-array'
+import { rarityMap } from '@constants/rarity-map'
 
 const allowedMethods: string[] = [GET]
 const cors = Cors({
   methods: allowedMethods,
 })
 
-export default async function rarityMap(
+export default async function getRarityMap(
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse<Rarities[]>>
 ): Promise<void> {
@@ -45,9 +46,17 @@ export default async function rarityMap(
       return
     }
 
+    const rarityOrder = Object.values(rarityMap).map((r) => r.label.toString())
+    console.log(rarityOrder)
+    const sortedResult = queryResult.sort(
+      (a, b) =>
+        rarityOrder.indexOf(a.card_rarity) - rarityOrder.indexOf(b.card_rarity)
+    )
+    console.log('sortedResult', sortedResult)
+
     res.status(StatusCodes.OK).json({
       status: 'success',
-      payload: queryResult,
+      payload: sortedResult,
     })
     return
   }
