@@ -4,7 +4,7 @@ import { indexAxios, query } from '@pages/api/database/query'
 import { Team } from '@pages/api/v3'
 
 export const generateCardTooltipContent = (card: Card, teamData: Team[]) => {
-  const teamInfo = teamData[card.teamID]
+  const teamInfo = teamData.find((t) => t.id === card.teamID)
   const award_rarity =
     card.card_rarity === 'Awards'
       ? `Awards - ${card.sub_type}`
