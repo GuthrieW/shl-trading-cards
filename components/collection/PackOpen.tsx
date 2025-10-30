@@ -74,6 +74,7 @@ const PackOpen: React.FC<PackOpenProps> = ({ packID }) => {
           owned={1}
           rarity={selectedCard.card_rarity}
           playerID={selectedCard.playerID}
+          leagueID={selectedCard.leagueID}
           cardID={selectedCard.cardID}
           userID={uid}
           setShowModal={() => setLightBoxIsOpen(false)}

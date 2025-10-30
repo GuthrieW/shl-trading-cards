@@ -40,7 +40,8 @@ const handler = async (
     cards.card_rarity,
     cards.image_url,
     cards.overall,
-    cards.season
+    cards.season,
+    cards.leagueID
 FROM 
     binder_cards
 JOIN 

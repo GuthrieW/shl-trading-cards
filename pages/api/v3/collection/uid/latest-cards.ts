@@ -31,7 +31,7 @@ const handler = async (
     }
 
     const queryResult = await cardsQuery<LatestCards>(SQL`
-            SELECT col.ownedCardID, col.userID, col.cardID, col.packID,c.player_name, c.playerID, c.card_rarity, c.image_url as imageURL
+            SELECT col.ownedCardID, col.userID, col.cardID, col.packID,c.player_name, c.playerID, c.leagueID, c.card_rarity, c.image_url as imageURL
 FROM collection col
 JOIN cards c ON col.cardID = c.cardID
 WHERE col.packID =  ${packID}

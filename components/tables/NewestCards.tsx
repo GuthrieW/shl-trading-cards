@@ -126,6 +126,7 @@ const NewestCards = ({
           owned={1} // just making it so that the card isnt grey
           rarity={selectedCard.card_rarity}
           playerID={selectedCard.playerID}
+          leagueID={selectedCard.leagueID}
           cardID={selectedCard.cardID}
           userID={uid}
           setShowModal={() => setLightBoxIsOpen(false)}

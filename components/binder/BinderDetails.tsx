@@ -232,6 +232,7 @@ const BinderDetailPage = ({
           owned={1}
           rarity={selectedCard.card_rarity}
           playerID={selectedCard.playerID}
+          leagueID={selectedCard.leagueID}
           cardID={selectedCard.cardID}
           userID={String(selectedCard.userID)}
           setShowModal={() => setLightBoxIsOpen(false)}
