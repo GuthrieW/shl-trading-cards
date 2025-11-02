@@ -1,16 +1,4 @@
-import {
-  Alert,
-  AlertIcon,
-  Badge,
-  Box,
-  Button,
-  Flex,
-  Link,
-  SimpleGrid,
-  Tooltip,
-  useToast,
-  VStack,
-} from '@chakra-ui/react'
+import { Badge, Button, useToast } from '@chakra-ui/react'
 import { AuthGuard } from '@components/auth/AuthGuard'
 import { PageWrapper } from '@components/common/PageWrapper'
 import { GET, POST } from '@constants/http-methods'
@@ -29,8 +17,8 @@ import { useEffect, useState } from 'react'
 import { IconButton } from '@chakra-ui/react'
 import { ChevronRightIcon, ChevronUpIcon } from '@chakra-ui/icons'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
-import ImageWithFallback from '@components/images/ImageWithFallback'
-import TradeSection from '@components/trades/TradeSection'
+import TradeSection from '@components/trades/PendingTradeSection'
+import PendingTradeSection from '@components/trades/PendingTradeSection'
 
 export default ({ tradeid }: { tradeid: string }) => {
   const toast = useToast()
@@ -318,7 +306,7 @@ export default ({ tradeid }: { tradeid: string }) => {
         </div>
 
         <div className="hidden sm:flex gap-8">
-          <TradeSection
+          <PendingTradeSection
             title={recipientUser?.username}
             cards={initiatorCards}
             cardsInfo={initiatorCardsInfo}
@@ -329,7 +317,7 @@ export default ({ tradeid }: { tradeid: string }) => {
           <div className="flex items-center">
             <div className="h-full w-px bg-gray-200" />
           </div>
-          <TradeSection
+          <PendingTradeSection
             title={initiatorUser?.username}
             cards={recipientCards}
             cardsInfo={recipientCardsInfo}
@@ -341,8 +329,7 @@ export default ({ tradeid }: { tradeid: string }) => {
 
         {/* Mobile View */}
         <div className="flex flex-col gap-6 sm:hidden">
-          <TradeSection
-            id="initiator-cards"
+          <PendingTradeSection
             title={recipientUser?.username}
             cards={initiatorCards}
             cardsInfo={initiatorCardsInfo}
@@ -350,8 +337,7 @@ export default ({ tradeid }: { tradeid: string }) => {
             cardsInTradesLoading={cardsInTradesLoading}
             loggedInID={loggedInUser?.uid}
           />
-          <TradeSection
-            id="recipient-cards"
+          <PendingTradeSection
             title={initiatorUser?.username}
             cards={recipientCards}
             cardsInfo={recipientCardsInfo}
