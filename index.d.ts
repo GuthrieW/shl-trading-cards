@@ -125,8 +125,17 @@ type TradeDetails = {
   fromID: numer
   create_date: string
   update_date: Date
+  card_rarity: string
+  sub_type: string
   initiator_quantity: number
   recipient_quantity: number
+}
+
+type DuplicateCardsIntrades = {
+  tradeID: number
+  initiatorID: number
+  recipientID: number
+  cardID: number
 }
 
 type User = {

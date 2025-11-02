@@ -42,6 +42,8 @@ const handler = async (
         dt.fromID,
         dt.create_date,
         dt.update_date,
+        c.card_rarity,
+        c.sub_type,
         COALESCE(oci.quantity, 0) AS initiator_quantity,
         COALESCE(ocr.quantity, 0) AS recipient_quantity
       FROM trade_details AS dt
@@ -51,6 +53,8 @@ const handler = async (
       LEFT JOIN ownedCards AS ocr
         ON ocr.cardID = dt.cardID
       AND ocr.userID = dt.recipientID
+      LEFT JOIN cards as c 
+        ON c.cardID = dt.cardID
       WHERE dt.tradeID = ${parseInt(tradeID)}
     `
     )
