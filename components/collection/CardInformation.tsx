@@ -31,11 +31,13 @@ export const CardInformation = ({
   playerID,
   cardID,
   userID,
+  leagueID,
 }: {
   owned: boolean
   playerID: number
   cardID: number
   userID: string
+  leagueID: number
 }) => {
   const [indexSrc, setIndexSrc] = useState<string | undefined>(undefined)
   const iFrameRef = useRef<HTMLIFrameElement>(null)
@@ -60,7 +62,7 @@ export const CardInformation = ({
     const fetchPlayerHistory = async () => {
       try {
         const response = await axios.get(
-          `https://portal.simulationhockey.com/api/v1/history/player?fhmID=${playerID}&leagueID=0`
+          `https://portal.simulationhockey.com/api/v1/history/player?fhmID=${playerID}&leagueID=${leagueID}`
         )
         setPlayerHistory(response.data)
       } catch (error) {
@@ -112,7 +114,13 @@ export const CardInformation = ({
                         <Button
                           className="!hover:no-underline mr-2 bg-primary font-mont hover:text-link focus:text-blue700 "
                           onClick={() =>
-                            setIndexSrc(generateIndexLink(playerID, colorMode))
+                            setIndexSrc(
+                              generateIndexLink(
+                                playerID,
+                                String(leagueID),
+                                colorMode
+                              )
+                            )
                           }
                         >
                           View Stats

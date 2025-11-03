@@ -18,10 +18,19 @@ export const userGroups = {
   TRADING_CARD_TEAM: 165,
 } as const
 
-export const generateIndexLink = (playerID: number, withPortalMode?: string) =>
-  `https://index.simulationhockey.com/${LEAGUE_LINK_MAP[0].toLowerCase()}/player/${playerID}${
+export const generateIndexLink = (
+  playerID: number,
+  leagueID: string | number,
+  withPortalMode?: string
+) => {
+  const league = LEAGUE_OPTIONS.find(
+    (l) => l.value === String(leagueID)
+  ).label.toLowerCase()
+
+  return `https://index.simulationhockey.com/${league}/player/${playerID}${
     withPortalMode ? `?portalView=${withPortalMode}` : ''
   }`
+}
 
 export const LEAGUE_OPTIONS = [
   { value: '0', label: 'SHL' },

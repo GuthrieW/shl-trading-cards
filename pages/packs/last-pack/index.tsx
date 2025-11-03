@@ -376,6 +376,7 @@ const LastOpenedPack = () => {
                   owned={selectedCard.quantity}
                   rarity={selectedCard.card_rarity}
                   playerID={selectedCard.playerID}
+                  leagueID={selectedCard.leagueID}
                   cardID={selectedCard.cardID}
                   userID={String(user?.uid)}
                   setShowModal={() => setLightBoxIsOpen(false)}
