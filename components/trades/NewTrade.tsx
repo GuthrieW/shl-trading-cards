@@ -59,6 +59,7 @@ import RadioGroupSelector from '@components/common/RadioGroupSelector'
 import { LEAGUE_OPTIONS } from 'lib/constants'
 import { useSession } from 'contexts/AuthContext'
 import { toggleOnfilters } from '@utils/toggle-on-filters'
+import NewTradeSection from './NewTradeSection'
 
 const SORT_OPTIONS: TradeCardSortOption[] = [
   {
@@ -429,165 +430,20 @@ export default function NewTrade({
 
   return (
     <>
-      <Box>
-        <Stack
-          direction={['column', 'column', 'row']}
-          spacing={[4, 4, 2]}
-          mb={4}
-          alignItems={['stretch', 'stretch', 'center']}
-          justifyContent="space-between"
-        >
-          <Flex
-            direction={['column', 'column', 'row']}
-            width={['100%', '100%', 'auto']}
-          >
-            <Button
-              onClick={() => openDrawer(uid)}
-              mb={[2, 2, 0]}
-              mr={[0, 0, 2]}
-              isDisabled={isSubmittingTrade}
-              width={['100%', '100%', 'auto']}
-            >
-              Open My Cards
-            </Button>
-            <Button
-              onClick={() => openDrawer(tradePartnerUid)}
-              isDisabled={isSubmittingTrade}
-              width={['100%', '100%', 'auto']}
-            >
-              Open {pluralizeName(tradePartnerUser?.username)} Cards
-            </Button>
-          </Flex>
-          <HStack>
-            <Button
-              colorScheme="green"
-              isDisabled={
-                isSubmittingTrade ||
-                loggedInUserCardsToTrade.length === 0 ||
-                partnerUserCardsToTrade.length === 0
-              }
-              onClick={handleSubmitTrade}
-              order={[2, 2, 2]}
-              width={['100%', '100%', 'auto']}
-            >
-              Submit Trade
-            </Button>
-            <Button
-              colorScheme="red"
-              onClick={handleResetTradeCards}
-              width={['100%', '100%', 'auto']}
-            >
-              Reset Trade
-            </Button>
-          </HStack>
-        </Stack>
+      <NewTradeSection
+        isSubmittingTrade={isSubmittingTrade}
+        loggedInUserCardsToTrade={loggedInUserCardsToTrade}
+        partnerUserCardsToTrade={partnerUserCardsToTrade}
+        tradePartnerUser={tradePartnerUser}
+        isMobile={isMobile}
+        openDrawer={openDrawer}
+        uid={uid}
+        tradePartnerUid={tradePartnerUid}
+        handleSubmitTrade={handleSubmitTrade}
+        handleResetTradeCards={handleResetTradeCards}
+        removeCardFromTrade={removeCardFromTrade}
+      />
 
-        <VStack spacing={4} align="stretch">
-          <Box>
-            <Box fontWeight="bold" mb={2}>
-              Your Cards to Trade
-            </Box>
-            <SimpleGrid columns={[2, 3, 4]} spacing={2}>
-              {Object.entries(loggedInUserCardsToTrade).map(
-                ([cardID, card]) => (
-                  <Box key={card.ownedCardID} position="relative">
-                    <Image
-                      src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
-                      fallback={
-                        <Box position="relative">
-                          <Image src="/cardback.png" />
-                          <Box
-                            position="absolute"
-                            top={0}
-                            left={0}
-                            w="100%"
-                            h="100%"
-                            bg="black"
-                            opacity={0.5}
-                            zIndex={2}
-                          />
-                        </Box>
-                      }
-                      onClick={() => !isSubmittingTrade}
-                      cursor={isSubmittingTrade ? 'not-allowed' : 'pointer'}
-                    />
-                    <RemoveButton
-                      onClick={removeCardFromTrade}
-                      isLoggedInUser={true}
-                      card={card}
-                      rightSide={isMobile ? 2 : 10}
-                      size={isMobile ? 'xs' : 'sm'}
-                    />
-                    <Badge
-                      position="absolute"
-                      top={-1}
-                      left={-1}
-                      zIndex={3}
-                      colorScheme="gray"
-                      borderRadius="full"
-                      px={2}
-                    >
-                      {card.card_rarity}
-                    </Badge>
-                  </Box>
-                )
-              )}
-            </SimpleGrid>
-          </Box>
-
-          <Divider />
-
-          <Box>
-            <Box fontWeight="bold" mb={2}>
-              {pluralizeName(tradePartnerUser?.username)} Cards to Trade
-            </Box>
-            <SimpleGrid columns={[2, 3, 4]} spacing={2}>
-              {Object.entries(partnerUserCardsToTrade).map(([key, card]) => (
-                <Box key={card.ownedCardID} position="relative">
-                  <Image
-                    src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
-                    fallback={
-                      <Box position="relative">
-                        <Image src="/cardback.png" />
-                        <Box
-                          position="absolute"
-                          top={0}
-                          left={0}
-                          w="100%"
-                          h="100%"
-                          bg="black"
-                          opacity={0.5}
-                          zIndex={2}
-                        />
-                      </Box>
-                    }
-                    onClick={() => !isSubmittingTrade}
-                    cursor={isSubmittingTrade ? 'not-allowed' : 'pointer'}
-                  />
-                  <RemoveButton
-                    onClick={removeCardFromTrade}
-                    isLoggedInUser={false}
-                    card={card}
-                    rightSide={isMobile ? 2 : 10}
-                    size={isMobile ? 'xs' : 'sm'}
-                  />
-                  <Badge
-                    position="absolute"
-                    top={-1}
-                    left={-1}
-                    zIndex={3}
-                    colorScheme="gray"
-                    borderRadius="full"
-                    px={2}
-                  >
-                    {card.card_rarity}
-                  </Badge>
-                </Box>
-              ))}
-            </SimpleGrid>
-          </Box>
-        </VStack>
-      </Box>
       <Drawer
         placement={isMobile ? 'right' : 'bottom'}
         onClose={onClose}
