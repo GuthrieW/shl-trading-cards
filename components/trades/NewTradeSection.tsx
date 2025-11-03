@@ -72,7 +72,7 @@ export const NewTradeSection: React.FC<NewTradeSectionProps> = ({
 
   return (
     <Box>
-      <VStack spacing={4} mb={6}>
+      <VStack spacing={4} mb={6} className="mt-2">
         <Flex
           direction={['column', 'column', 'row']}
           width="100%"
@@ -83,14 +83,16 @@ export const NewTradeSection: React.FC<NewTradeSectionProps> = ({
             <Button
               onClick={() => openDrawer(uid)}
               isDisabled={isSubmittingTrade}
-              flex={['1', '1', 'initial']}
+              width={['100%', '100%', 'auto']}
+              fontSize={{ base: 'xs', sm: 'sm' }}
             >
               Open My Cards
             </Button>
             <Button
               onClick={() => openDrawer(tradePartnerUid)}
               isDisabled={isSubmittingTrade}
-              flex={['1', '1', 'initial']}
+              width={['100%', '100%', 'auto']}
+              fontSize={{ base: 'xs', sm: 'sm' }}
             >
               Open {pluralizeName(tradePartnerUser?.username)} Cards
             </Button>
@@ -101,7 +103,7 @@ export const NewTradeSection: React.FC<NewTradeSectionProps> = ({
               colorScheme="green"
               isDisabled={!canSubmitTrade}
               onClick={handleSubmitTrade}
-              flex={['1', '1', 'initial']}
+              width={['100%', '100%', 'auto']}
             >
               Submit Trade
             </Button>
@@ -109,7 +111,7 @@ export const NewTradeSection: React.FC<NewTradeSectionProps> = ({
               colorScheme="red"
               onClick={handleResetTradeCards}
               isDisabled={isSubmittingTrade}
-              flex={['1', '1', 'initial']}
+              width={['100%', '100%', 'auto']}
             >
               Reset Trade
             </Button>
