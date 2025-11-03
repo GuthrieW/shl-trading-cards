@@ -83,8 +83,6 @@ export const CardInformation = ({
     enabled: !!cardID && !!userID,
   })
 
-  console.log(leagueID)
-
   if (!playerID) return null
 
   return (
