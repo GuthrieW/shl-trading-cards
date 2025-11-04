@@ -44,11 +44,21 @@ export function getRandomToastDescription(
     'Share this one to the chirper!',
     'Open responsibly. Emotional damage ahead',
     'Tag Downer if you pull a good card',
+    'This is where the fun begins!',
+    'This will make a fine addition to my collection.',
+    'Hope you get a Czechia Card!',
+    'Ask Downer about his Chili Recipe!',
+    'Hey Kahri, YOURE FIRED',
+    'Just wait until they implement SHL HUT',
+    "I'm gonna win the cup",
+    'everyone loves hotdog',
+    'A surprise to be sure, but a welcome one.',
   ]
 
   const onlyBronzeOrSilver = latestPackCards.every((card) =>
     ['bronze', 'silver'].includes(card.card_rarity.toLowerCase())
   )
+
   if (onlyBronzeOrSilver) {
     return 'Surely this won’t be all bronzes and silvers like the last pack...'
   }
