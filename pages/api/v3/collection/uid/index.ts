@@ -290,7 +290,11 @@ const handler = async (
     }
 
     if (sortColumn === 'teamID') {
-      query.append(SQL` team.Name`)
+      if (leagues.length === 0 || leagues[0] === '2') {
+        query.append(SQL` team.Nickname`)
+      } else {
+        query.append(SQL` team.Name`)
+      }
       sortDirection === 'DESC'
         ? query.append(SQL` ASC`)
         : query.append(SQL` DESC`)

@@ -27,7 +27,7 @@ const handler = async (
     const userID = req.query.userID as string
     const cards = cardsString.split(',')
 
-    if (!tradeID || !cards || !userID) {
+    if (tradeID || userID || cards.length === 0) {
       res
         .status(StatusCodes.BAD_REQUEST)
         .end('Please provide a tradeID, userID and cardIDs')

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { TradeSummaryBox } from './TradeSummaryBox'
 import TradeCardSection from './TradeCardsSection'
+import { Skeleton, SkeletonText } from '@chakra-ui/react'
 
 const PendingTradeSection = ({
   title,
@@ -44,6 +45,8 @@ const PendingTradeSection = ({
         if (existing) {
           existing.initiatorTrading += card.initiatorID === card.fromID ? 1 : 0
           existing.recipientTrading += card.recipientID === card.fromID ? 1 : 0
+          existing.initiatorOwned += card.initiator_quantity ?? 0
+          existing.recipientOwned += card.recipient_quantity ?? 0
         } else {
           cardQuantities.set(card.cardID, {
             initiatorTrading: card.initiatorID === card.fromID ? 1 : 0,
@@ -135,25 +138,39 @@ const PendingTradeSection = ({
   const cardQuantities = useMemo(() => {
     const quantities: Record<number, number> = {}
     cardQuantitiesMap.forEach((quantities_data, cardID) => {
-      quantities[cardID] = isViewingMyCards
-        ? quantities_data.initiatorOwned
-        : quantities_data.recipientOwned
-    })
+      const cardsFromInitiator =
+        cards.length > 0 && cards[0].fromID === cards[0].initiatorID
 
+      if (isViewingMyCards) {
+        quantities[cardID] = cardsFromInitiator
+          ? quantities_data.initiatorOwned
+          : quantities_data.recipientOwned
+      } else {
+        quantities[cardID] = cardsFromInitiator
+          ? quantities_data.recipientOwned
+          : quantities_data.initiatorOwned
+      }
+    })
     return quantities
-  }, [cardQuantitiesMap, isViewingMyCards])
+  }, [cardQuantitiesMap, isViewingMyCards, cards])
 
   const totalCards = useMemo(() => {
     if (!cardsInfo) return 0
     return Object.values(cardsInfo).reduce((a, b) => a + b, 0)
   }, [cardsInfo])
 
-  console.log(isViewingMyCards, isViewingPartnerCards)
-  console.log('cardQuantities', cardQuantities)
-  console.log('tradingAwayLastCopy', tradingAwayLastCopy)
-
   return (
     <div className="flex-1">
+      {cardsInTradesLoading ?? (
+        <div className="flex-1">
+          <Skeleton height="100px" borderRadius="md" mb={4} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            {[...Array(6)].map((_, i) => (
+              <Skeleton key={i} height="200px" borderRadius="md" />
+            ))}
+          </div>
+        </div>
+      )}
       <TradeSummaryBox
         title="Total Cards:"
         totalCards={totalCards}
@@ -173,6 +190,7 @@ const PendingTradeSection = ({
         cardsInOtherTradesMap={
           shouldShowCardsInTrades ? cardsInOtherTradesMap : undefined
         }
+        isTradeComplete={cards[0]?.trade_status === 'COMPLETE'}
       />
     </div>
   )

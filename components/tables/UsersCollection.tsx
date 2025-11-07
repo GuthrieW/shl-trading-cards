@@ -134,7 +134,7 @@ const UsersCollection = () => {
 
   return (
     <div className="w-full p-4 min-h-[400px]">
-      <div className="border-b-8 border-b-blue700 bg-secondary p-2 flex items-center justify-between">
+      <div className="border-b-8 border-b-blue700 bg-secondary p-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <h1 className="text-lg font-bold text-secondaryText sm:text-xl">
           Collections By Rarity
         </h1>
@@ -142,7 +142,7 @@ const UsersCollection = () => {
           <MenuButton
             as={Button}
             rightIcon={<ChevronDownIcon />}
-            className="!bg-grey900 !text-white hover:!bg-highlighted/40"
+            className="!bg-grey900 !text-white hover:!bg-highlighted/40 w-full sm:w-auto"
           >
             Rarity: {rarityMap[rarity]?.label || rarity}
           </MenuButton>

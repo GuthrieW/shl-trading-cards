@@ -22,6 +22,7 @@ interface TradeCardSectionProps<T extends BaseCard> {
   alreadyOwnCards?: Set<number>
   isMyCardsSection?: boolean
   cardsInOtherTradesMap?: Map<number, Set<number>>
+  isTradeComplete?: boolean
   renderCardOverlay?: (card: T) => ReactNode
 }
 
@@ -36,6 +37,7 @@ export const TradeCardSection = <T extends BaseCard>({
   alreadyOwnCards,
   isMyCardsSection = false,
   cardsInOtherTradesMap,
+  isTradeComplete = false,
   renderCardOverlay,
 }: TradeCardSectionProps<T>) => {
   const lastCopyCards = useMemo(() => {
@@ -102,27 +104,25 @@ export const TradeCardSection = <T extends BaseCard>({
 
                   {renderCardOverlay && renderCardOverlay(card)}
 
-                  {ownedQuantity > 0 && (
-                    <Tooltip label="# of card(s) you own" placement="top">
-                      <Badge
-                        position="absolute"
-                        top="-2"
-                        right="-2"
-                        zIndex="10"
-                        borderRadius="full"
-                        px="2"
-                        py="1"
-                        fontSize="xs"
-                        fontWeight="bold"
-                        bg="teal.700"
-                        color="white"
-                        border="1px solid white"
-                        boxShadow="0 0 4px rgba(0,0,0,0.4)"
-                      >
-                        {ownedQuantity}
-                      </Badge>
-                    </Tooltip>
-                  )}
+                  <Tooltip label="# of card(s) you own" placement="top">
+                    <Badge
+                      position="absolute"
+                      top="-2"
+                      right="-2"
+                      zIndex="10"
+                      borderRadius="full"
+                      px="2"
+                      py="1"
+                      fontSize="xs"
+                      fontWeight="bold"
+                      bg="teal.700"
+                      color="white"
+                      border="1px solid white"
+                      boxShadow="0 0 4px rgba(0,0,0,0.4)"
+                    >
+                      {ownedQuantity}
+                    </Badge>
+                  </Tooltip>
 
                   <Badge
                     position="absolute"
@@ -143,58 +143,64 @@ export const TradeCardSection = <T extends BaseCard>({
                   </Badge>
                 </div>
 
-                {isInOtherTrade && (
-                  <Alert
-                    status="warning"
-                    variant="subtle"
-                    mt="2"
-                    className="!bg-primary"
-                  >
-                    ⚠
-                    <span className="text-xs">
-                      {Array.from(
-                        cardsInOtherTradesMap.get(card.cardID) ?? []
-                      ).map((tid, idx, arr) => (
-                        <span key={tid}>
-                          <Link
-                            href={`/trade/${tid}`}
-                            className="!hover:no-underline !text-link underline"
-                          >
-                            Also in Trade #{tid}
-                          </Link>
-                          {idx < arr.length - 1 && ', '}
+                {!isTradeComplete && (
+                  <>
+                    {isInOtherTrade && (
+                      <Alert
+                        status="warning"
+                        variant="subtle"
+                        mt="2"
+                        className="!bg-primary"
+                      >
+                        ⚠
+                        <span className="text-xs">
+                          {Array.from(
+                            cardsInOtherTradesMap?.get(card.cardID) ?? []
+                          ).map((tid, idx, arr) => (
+                            <span key={tid}>
+                              <Link
+                                href={`/trade/${tid}`}
+                                className="!hover:no-underline !text-link underline"
+                              >
+                                Also in Trade #{tid}
+                              </Link>
+                              {idx < arr.length - 1 && ', '}
+                            </span>
+                          ))}
                         </span>
-                      ))}
-                    </span>
-                  </Alert>
-                )}
+                      </Alert>
+                    )}
 
-                {isLastCopy && (
-                  <Alert
-                    status="warning"
-                    variant="subtle"
-                    mt="2"
-                    className="!bg-primary"
-                  >
-                    <AlertIcon boxSize="12px" mr="1" />
-                    <span className="text-xs">
-                      {isMyCardsSection
-                        ? 'You are trading away your last copy'
-                        : 'Trade partner is trading away their last copy'}
-                    </span>
-                  </Alert>
-                )}
+                    {isLastCopy && (
+                      <Alert
+                        status="warning"
+                        variant="subtle"
+                        mt="2"
+                        className="!bg-primary"
+                      >
+                        <AlertIcon boxSize="12px" mr="1" />
+                        <span className="text-xs">
+                          {isMyCardsSection
+                            ? 'You are trading away your last copy'
+                            : 'Trade partner is trading away their last copy'}
+                        </span>
+                      </Alert>
+                    )}
 
-                {showAlreadyOwnWarning && alreadyOwn && (
-                  <Alert
-                    status="info"
-                    variant="subtle"
-                    mt="2"
-                    className="!bg-primary"
-                  >
-                    <AlertIcon boxSize="12px" mr="1" />
-                    <span className="text-xs">You already own this card</span>
-                  </Alert>
+                    {showAlreadyOwnWarning && alreadyOwn && (
+                      <Alert
+                        status="info"
+                        variant="subtle"
+                        mt="2"
+                        className="!bg-primary"
+                      >
+                        <AlertIcon boxSize="12px" mr="1" />
+                        <span className="text-xs">
+                          You already own this card
+                        </span>
+                      </Alert>
+                    )}
+                  </>
                 )}
               </div>
             )
