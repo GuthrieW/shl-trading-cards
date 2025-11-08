@@ -27,10 +27,15 @@ const handler = async (
     const userID = req.query.userID as string
     const cards = cardsString.split(',')
 
-    if (tradeID || userID || cards.length === 0) {
+    if (
+      !tradeID ||
+      !userID ||
+      Number.isNaN(Number(userID)) ||
+      cards.length === 0
+    ) {
       res
         .status(StatusCodes.BAD_REQUEST)
-        .end('Please provide a tradeID, userID and cardIDs')
+        .end('Please provide a valid tradeID, userID and cardIDs')
       return
     }
     const query: SQLStatement = SQL`
