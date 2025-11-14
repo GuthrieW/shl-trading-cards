@@ -45,8 +45,8 @@ const PendingTradeSection = ({
         if (existing) {
           existing.initiatorTrading += card.initiatorID === card.fromID ? 1 : 0
           existing.recipientTrading += card.recipientID === card.fromID ? 1 : 0
-          existing.initiatorOwned += card.initiator_quantity ?? 0
-          existing.recipientOwned += card.recipient_quantity ?? 0
+          existing.initiatorOwned = card.initiator_quantity ?? 0
+          existing.recipientOwned = card.recipient_quantity ?? 0
         } else {
           cardQuantities.set(card.cardID, {
             initiatorTrading: card.initiatorID === card.fromID ? 1 : 0,
