@@ -98,8 +98,9 @@ const handler = async (
       )
       if (hasInsufficientFunds) return
 
-      await portalQuery(
-        SQL`
+      if (packService.packs[packType].price !== 0) {
+        await portalQuery(
+          SQL`
           INSERT INTO bankTransactions (uid, status, type, description, amount, submitByID)
           VALUES (
             ${uid}, 
@@ -110,7 +111,8 @@ const handler = async (
             0
           );
         `
-      )
+        )
+      }
 
       await cardsQuery(
         SQL`
