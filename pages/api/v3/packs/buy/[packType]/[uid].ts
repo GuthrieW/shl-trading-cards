@@ -96,8 +96,7 @@ const handler = async (
         'Insufficient Funds',
         StatusCodes.BAD_REQUEST
       )
-      if (hasInsufficientFunds && packService.packs[packType].price !== 0)
-        return
+      if (hasInsufficientFunds) return
 
       if (packService.packs[packType].price !== 0) {
         await portalQuery(
