@@ -20,6 +20,35 @@
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+
+  /* Modern dark scrollbar for player slider */
+  .player-slider::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .player-slider::-webkit-scrollbar-track {
+    background: rgba(45, 55, 72, 0.3);
+    border-radius: 3px;
+  }
+
+  .player-slider::-webkit-scrollbar-thumb {
+    background: rgba(113, 128, 150, 0.6);
+    border-radius: 3px;
+  }
+
+  .player-slider::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 163, 175, 0.8);
+  }
+
+  .player-slider::-webkit-scrollbar-thumb:active {
+    background: rgba(107, 114, 128, 0.9);
+  }
+
+  /* Firefox scrollbar styling */
+  .player-slider {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(113, 128, 150, 0.6) rgba(45, 55, 72, 0.3);
+  }
 }
 
 @layer utilities {
