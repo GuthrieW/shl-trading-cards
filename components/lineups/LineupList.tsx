@@ -32,6 +32,7 @@ import {
   PopoverTrigger,
   PopoverContent,
   PopoverBody,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import { EditIcon, DeleteIcon, AddIcon, DownloadIcon } from '@chakra-ui/icons'
 import {
@@ -41,16 +42,27 @@ import {
   getRarityTextColor,
 } from './utils'
 import { useSession } from 'contexts/AuthContext'
-import { query } from '@pages/api/database/query'
+import { indexAxios, query } from '@pages/api/database/query'
 import { ListResponse } from '@pages/api/v3'
 import { GameLineup } from '@pages/api/v3/lineups/getLineupCollection'
+import { Team } from '@pages/api/v3'
 import axios from 'axios'
 import { DELETE, GET } from '@constants/http-methods'
 import { useDebounce } from 'use-debounce'
 import { LineupCard, Lineup } from './types'
 
-const PlayerCell: React.FC<{ player: LineupCard }> = ({ player }) => {
+const PlayerCell: React.FC<{ player: LineupCard; teams?: Team[] }> = ({
+  player,
+  teams,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  // Get team abbreviation if teams data is available
+  const getTeamDisplay = (teamID: number) => {
+    if (!teams) return teamID.toString()
+    const team = teams.find((t) => t.id === teamID)
+    return team ? team.abbreviation : teamID.toString()
+  }
 
   return (
     <Popover
@@ -77,8 +89,13 @@ const PlayerCell: React.FC<{ player: LineupCard }> = ({ player }) => {
           >
             {player.playerName}
           </Box>
-          <Box fontSize="xs" color="gray.600" noOfLines={1} isTruncated>
-            {player.team}
+          <Box
+            fontSize="xs"
+            color={useColorModeValue('gray.600', 'gray.400')}
+            noOfLines={1}
+            isTruncated
+          >
+            {getTeamDisplay(player.teamID)}
           </Box>
           <Badge
             colorScheme={getOverallColor(player.overall)}
@@ -126,8 +143,19 @@ const LineupList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [tablePage, setTablePage] = useState(1)
   const cancelRef = React.useRef<HTMLButtonElement>(null)
+  const [leagueID, setLeagueID] = useState<string[]>(['0'])
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300)
+
+  // Get teams data for abbreviations
+  const { payload: teamsData } = query<Team[]>({
+    queryKey: ['teams'],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v2/teams?league=1&SeasonID=83`,
+      }),
+  })
 
   // Get user's lineups from API
   const {
@@ -155,57 +183,162 @@ const LineupList: React.FC = () => {
     enabled: !!session?.userId && loggedIn,
   })
 
+  const { payload: teamData, isLoading: teamDataIsLoading } = query<Team[]>({
+    queryKey: ['teamData', leagueID.join(',')],
+    queryFn: () =>
+      indexAxios({
+        method: 'GET',
+        url: `/api/v2/teams?league=${leagueID}&SeasonID=83`,
+      }),
+  })
+
   // Transform API data to component format
   const lineups: Lineup[] = (lineupsResponse?.rows || []).map((gameLineup) => ({
     id: gameLineup.lineupID,
     name: gameLineup.lineupTitle,
     center: {
       playerName: gameLineup.c_playerName,
-      team: gameLineup.c_team,
+      teamID: gameLineup.c_team,
+      playerID: gameLineup.c_playerID,
+      cardID: gameLineup.c_cardID,
       overall: gameLineup.c_overall,
       position: gameLineup.c_position,
       image_url: gameLineup.c_image_url,
       card_rarity: gameLineup.c_card_rarity,
+      sub_type: gameLineup.c_sub_type,
+      render_name: gameLineup.c_render_name,
+      skating: gameLineup.c_skating,
+      shooting: gameLineup.c_shooting,
+      hands: gameLineup.c_hands,
+      checking: gameLineup.c_checking,
+      defense: gameLineup.c_defense,
+      high_shots: gameLineup.c_high_shots,
+      low_shots: gameLineup.c_low_shots,
+      quickness: gameLineup.c_quickness,
+      control: gameLineup.c_control,
+      conditioning: gameLineup.c_conditioning,
+      season: gameLineup.c_season,
+      leagueID: gameLineup.c_leagueID,
     },
     leftWing: {
       playerName: gameLineup.lw_playerName,
-      team: gameLineup.lw_team,
+      teamID: gameLineup.lw_team,
+      playerID: gameLineup.lw_playerID,
+      cardID: gameLineup.lw_cardID,
       overall: gameLineup.lw_overall,
       position: gameLineup.lw_position,
       image_url: gameLineup.lw_image_url,
       card_rarity: gameLineup.lw_card_rarity,
+      sub_type: gameLineup.lw_sub_type,
+      render_name: gameLineup.lw_render_name,
+      skating: gameLineup.lw_skating,
+      shooting: gameLineup.lw_shooting,
+      hands: gameLineup.lw_hands,
+      checking: gameLineup.lw_checking,
+      defense: gameLineup.lw_defense,
+      high_shots: gameLineup.lw_high_shots,
+      low_shots: gameLineup.lw_low_shots,
+      quickness: gameLineup.lw_quickness,
+      control: gameLineup.lw_control,
+      conditioning: gameLineup.lw_conditioning,
+      season: gameLineup.lw_season,
+      leagueID: gameLineup.lw_leagueID,
     },
     rightWing: {
       playerName: gameLineup.rw_playerName,
-      team: gameLineup.rw_team,
+      teamID: gameLineup.rw_team,
+      playerID: gameLineup.rw_playerID,
+      cardID: gameLineup.rw_cardID,
       overall: gameLineup.rw_overall,
       position: gameLineup.rw_position,
       image_url: gameLineup.rw_image_url,
       card_rarity: gameLineup.rw_card_rarity,
+      sub_type: gameLineup.rw_sub_type,
+      render_name: gameLineup.rw_render_name,
+      skating: gameLineup.rw_skating,
+      shooting: gameLineup.rw_shooting,
+      hands: gameLineup.rw_hands,
+      checking: gameLineup.rw_checking,
+      defense: gameLineup.rw_defense,
+      high_shots: gameLineup.rw_high_shots,
+      low_shots: gameLineup.rw_low_shots,
+      quickness: gameLineup.rw_quickness,
+      control: gameLineup.rw_control,
+      conditioning: gameLineup.rw_conditioning,
+      season: gameLineup.rw_season,
+      leagueID: gameLineup.rw_leagueID,
     },
     leftDefense: {
       playerName: gameLineup.ld_playerName,
-      team: gameLineup.ld_team,
+      teamID: gameLineup.ld_team,
+      playerID: gameLineup.ld_playerID,
+      cardID: gameLineup.ld_cardID,
       overall: gameLineup.ld_overall,
       position: gameLineup.ld_position,
       image_url: gameLineup.ld_image_url,
       card_rarity: gameLineup.ld_card_rarity,
+      sub_type: gameLineup.ld_sub_type,
+      render_name: gameLineup.ld_render_name,
+      skating: gameLineup.ld_skating,
+      shooting: gameLineup.ld_shooting,
+      hands: gameLineup.ld_hands,
+      checking: gameLineup.ld_checking,
+      defense: gameLineup.ld_defense,
+      high_shots: gameLineup.ld_high_shots,
+      low_shots: gameLineup.ld_low_shots,
+      quickness: gameLineup.ld_quickness,
+      control: gameLineup.ld_control,
+      conditioning: gameLineup.ld_conditioning,
+      season: gameLineup.ld_season,
+      leagueID: gameLineup.ld_leagueID,
     },
     rightDefense: {
       playerName: gameLineup.rd_playerName,
-      team: gameLineup.rd_team,
+      teamID: gameLineup.rd_team,
+      playerID: gameLineup.rd_playerID,
+      cardID: gameLineup.rd_cardID,
       overall: gameLineup.rd_overall,
       position: gameLineup.rd_position,
       image_url: gameLineup.rd_image_url,
       card_rarity: gameLineup.rd_card_rarity,
+      sub_type: gameLineup.rd_sub_type,
+      render_name: gameLineup.rd_render_name,
+      skating: gameLineup.rd_skating,
+      shooting: gameLineup.rd_shooting,
+      hands: gameLineup.rd_hands,
+      checking: gameLineup.rd_checking,
+      defense: gameLineup.rd_defense,
+      high_shots: gameLineup.rd_high_shots,
+      low_shots: gameLineup.rd_low_shots,
+      quickness: gameLineup.rd_quickness,
+      control: gameLineup.rd_control,
+      conditioning: gameLineup.rd_conditioning,
+      season: gameLineup.rd_season,
+      leagueID: gameLineup.rd_leagueID,
     },
     goalie: {
       playerName: gameLineup.g_playerName,
-      team: gameLineup.g_team,
+      teamID: gameLineup.g_team,
+      playerID: gameLineup.g_playerID,
+      cardID: gameLineup.g_cardID,
       overall: gameLineup.g_overall,
       position: gameLineup.g_position,
       image_url: gameLineup.g_image_url,
       card_rarity: gameLineup.g_card_rarity,
+      sub_type: gameLineup.g_sub_type,
+      render_name: gameLineup.g_render_name,
+      skating: gameLineup.g_skating,
+      shooting: gameLineup.g_shooting,
+      hands: gameLineup.g_hands,
+      checking: gameLineup.g_checking,
+      defense: gameLineup.g_defense,
+      high_shots: gameLineup.g_high_shots,
+      low_shots: gameLineup.g_low_shots,
+      quickness: gameLineup.g_quickness,
+      control: gameLineup.g_control,
+      conditioning: gameLineup.g_conditioning,
+      season: gameLineup.g_season,
+      leagueID: gameLineup.g_leagueID,
     },
   }))
 
@@ -326,7 +459,15 @@ const LineupList: React.FC = () => {
 
       {loggedIn && !isLoading && (
         <TableContainer>
-          <Table variant="simple" size="sm">
+          <Table
+            variant="simple"
+            size="sm"
+            sx={{
+              '& td, & th': {
+                borderColor: useColorModeValue('gray.400', 'gray.600'),
+              },
+            }}
+          >
             <Thead>
               <Tr>
                 <Th fontWeight="bold" fontSize="md">
@@ -375,22 +516,25 @@ const LineupList: React.FC = () => {
                     </Button>
                   </Td>
                   <Td maxW="150px" p={2} overflow="hidden">
-                    <PlayerCell player={lineup.leftWing} />
+                    <PlayerCell player={lineup.leftWing} teams={teamsData} />
                   </Td>
                   <Td maxW="150px" p={2} overflow="hidden">
-                    <PlayerCell player={lineup.center} />
+                    <PlayerCell player={lineup.center} teams={teamsData} />
                   </Td>
                   <Td maxW="150px" p={2} overflow="hidden">
-                    <PlayerCell player={lineup.rightWing} />
+                    <PlayerCell player={lineup.rightWing} teams={teamsData} />
                   </Td>
                   <Td maxW="150px" p={2} overflow="hidden">
-                    <PlayerCell player={lineup.leftDefense} />
+                    <PlayerCell player={lineup.leftDefense} teams={teamsData} />
                   </Td>
                   <Td maxW="150px" p={2} overflow="hidden">
-                    <PlayerCell player={lineup.rightDefense} />
+                    <PlayerCell
+                      player={lineup.rightDefense}
+                      teams={teamsData}
+                    />
                   </Td>
                   <Td maxW="150px" p={2} overflow="hidden">
-                    <PlayerCell player={lineup.goalie} />
+                    <PlayerCell player={lineup.goalie} teams={teamsData} />
                   </Td>
                   <Td>
                     <Box display="flex" gap={2}>
@@ -423,7 +567,11 @@ const LineupList: React.FC = () => {
           </Table>
 
           {lineups.length === 0 && (
-            <Box textAlign="center" py={8} color="gray.500">
+            <Box
+              textAlign="center"
+              py={8}
+              color={useColorModeValue('gray.500', 'gray.400')}
+            >
               {searchTerm
                 ? 'No lineups found matching your search.'
                 : "You haven't created any lineups yet."}
@@ -441,7 +589,7 @@ const LineupList: React.FC = () => {
           >
             Previous
           </Button>
-          <Text color="gray.300" fontSize="sm">
+          <Text color={useColorModeValue('gray.500', 'gray.300')} fontSize="sm">
             Page {tablePage} of {totalPages}
           </Text>
           <Button

@@ -14,6 +14,10 @@ import {
   Alert,
   AlertIcon,
   useToast,
+  useColorModeValue,
+  useBreakpointValue,
+  Flex,
+  Wrap,
 } from '@chakra-ui/react'
 import {
   DragDropContext,
@@ -24,17 +28,26 @@ import {
 import { useSession } from 'contexts/AuthContext'
 import { GET, POST } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
-import { ListResponse } from '@pages/api/v3'
+import { ListResponse, SortDirection } from '@pages/api/v3'
 import {
   OwnedCard,
+  OwnedCardSortOption,
+  OwnedCardSortValue,
 } from '@pages/api/v3/collection/uid'
+import { GameLineup } from '@pages/api/v3/lineups/getLineupCollection'
 import axios from 'axios'
 import PositionBlock from './PositionBlock'
 import PlayerCardComponent from './PlayerCardComponent'
 import { useDebounce } from 'use-debounce'
 import { mutation } from '@pages/api/database/mutation'
 import { useQueryClient } from 'react-query'
-import { PlayerCard, LineupPosition } from './types'
+import { LineupPosition } from './types'
+import FilterDropdown from '@components/common/FilterDropdown'
+import { Team, Rarities, SubType } from '@pages/api/v3'
+import { toggleOnfilters } from '@utils/toggle-on-filters'
+import ActiveFilters from '@components/common/ActiveFilters'
+import RadioGroupSelector from '@components/common/RadioGroupSelector'
+import { LEAGUE_OPTIONS } from 'lib/constants'
 
 const ROWS_PER_PAGE: number = 15 as const
 
@@ -47,12 +60,57 @@ const LineupDetails: React.FC = () => {
   const [lineupName, setLineupName] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedPosition, setSelectedPosition] = useState<string>('all')
-  const [selectedRarity, setSelectedRarity] = useState<string>('all')
-  const [availablePlayers, setAvailablePlayers] = useState<PlayerCard[]>([])
+  const [availablePlayers, setAvailablePlayers] = useState<Card[]>([])
   const [tablePage, setTablePage] = useState(1)
   const [isEditMode, setIsEditMode] = useState(false)
 
-  const debouncedSearchTerm = useDebounce(searchTerm, 300)
+  // New filtering states from collect page
+  const [teams, setTeams] = useState<string[]>([])
+  const [teamLeagueID, setTeamLeagueID] = useState<{ [key: string]: string }>(
+    {}
+  )
+  const [rarities, setRarities] = useState<string[]>([])
+  const [subType, setSubType] = useState<string[]>([])
+  const [leagueID, setLeagueID] = useState<string[]>(['0']) // Default to SHL league
+
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 300)
+
+  // Responsive layout for position blocks
+  const isMobileLayout = useBreakpointValue({ base: true, md: false })
+
+  // Data fetching queries from collect page
+  const { payload: teamData, isLoading: teamDataIsLoading } = query<Team[]>({
+    queryKey: ['teamData', leagueID.join(',')],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v2/teams?league=${leagueID}&SeasonID=83`,
+      }),
+  })
+
+  const { payload: rarityData, isLoading: rarityDataisLoading } = query<
+    Rarities[]
+  >({
+    queryKey: ['rarityData', leagueID.join(',')],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/cards/rarity-map?leagueID=${leagueID}`,
+      }),
+  })
+
+  const { payload: subTypeData, isLoading: subTypeDataIsLoading } = query<
+    SubType[]
+  >({
+    queryKey: ['subTypeData', leagueID.join(','), JSON.stringify(rarities)],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/cards/sub-rarity-map?leagueID=${leagueID}&rarities=${JSON.stringify(
+          rarities
+        )}`,
+      }),
+  })
 
   // Check if we're in edit mode and fetch existing lineup data
   useEffect(() => {
@@ -84,15 +142,38 @@ const LineupDetails: React.FC = () => {
                 positionGroup: 'F',
                 card: lineupData.c_playerName
                   ? {
-                      id: lineupData.c_cardID?.toString() || '',
-                      playerName: lineupData.c_playerName,
-                      team: lineupData.c_team,
-                      overall: lineupData.c_overall,
+                      cardID: lineupData.c_cardID || 0,
+                      teamID: 0, // Default value
+                      playerID: 0, // Default value
+                      author_userID: 0,
+                      card_rarity: lineupData.c_card_rarity,
+                      sub_type: '',
+                      player_name: lineupData.c_playerName,
+                      render_name: undefined,
+                      pullable: 1,
+                      approved: 1,
+                      image_url: lineupData.c_image_url,
                       position: lineupData.c_position,
-                      imageUrl: lineupData.c_image_url,
-                      cardID: lineupData.c_cardID,
-                      rarity: lineupData.c_card_rarity,
+                      overall: lineupData.c_overall,
+                      skating: 0,
+                      shooting: 0,
+                      hands: 0,
+                      checking: 0,
+                      defense: 0,
+                      high_shots: 0,
+                      low_shots: 0,
+                      quickness: 0,
+                      control: 0,
+                      conditioning: 0,
+                      season: 0,
+                      author_paid: 0,
+                      packID: undefined,
                       quantity: 1,
+                      totalCardQuantity: undefined,
+                      date_approved: null,
+                      author_username: undefined,
+                      total: undefined,
+                      leagueID: 0,
                     }
                   : null,
               },
@@ -103,15 +184,38 @@ const LineupDetails: React.FC = () => {
                 positionGroup: 'F',
                 card: lineupData.lw_playerName
                   ? {
-                      id: lineupData.lw_cardID?.toString() || '',
-                      playerName: lineupData.lw_playerName,
-                      team: lineupData.lw_team,
-                      overall: lineupData.lw_overall,
+                      cardID: lineupData.lw_cardID || 0,
+                      teamID: 0, // Default value
+                      playerID: 0, // Default value
+                      author_userID: 0,
+                      card_rarity: lineupData.lw_card_rarity,
+                      sub_type: '',
+                      player_name: lineupData.lw_playerName,
+                      render_name: undefined,
+                      pullable: 1,
+                      approved: 1,
+                      image_url: lineupData.lw_image_url,
                       position: lineupData.lw_position,
-                      imageUrl: lineupData.lw_image_url,
-                      cardID: lineupData.lw_cardID,
-                      rarity: lineupData.lw_card_rarity,
+                      overall: lineupData.lw_overall,
+                      skating: 0,
+                      shooting: 0,
+                      hands: 0,
+                      checking: 0,
+                      defense: 0,
+                      high_shots: 0,
+                      low_shots: 0,
+                      quickness: 0,
+                      control: 0,
+                      conditioning: 0,
+                      season: 0,
+                      author_paid: 0,
+                      packID: undefined,
                       quantity: 1,
+                      totalCardQuantity: undefined,
+                      date_approved: null,
+                      author_username: undefined,
+                      total: undefined,
+                      leagueID: 0,
                     }
                   : null,
               },
@@ -122,15 +226,38 @@ const LineupDetails: React.FC = () => {
                 positionGroup: 'F',
                 card: lineupData.rw_playerName
                   ? {
-                      id: lineupData.rw_cardID?.toString() || '',
-                      playerName: lineupData.rw_playerName,
-                      team: lineupData.rw_team,
-                      overall: lineupData.rw_overall,
+                      cardID: lineupData.rw_cardID || 0,
+                      teamID: 0, // Default value
+                      playerID: 0, // Default value
+                      author_userID: 0,
+                      card_rarity: lineupData.rw_card_rarity,
+                      sub_type: '',
+                      player_name: lineupData.rw_playerName,
+                      render_name: undefined,
+                      pullable: 1,
+                      approved: 1,
+                      image_url: lineupData.rw_image_url,
                       position: lineupData.rw_position,
-                      imageUrl: lineupData.rw_image_url,
-                      cardID: lineupData.rw_cardID,
-                      rarity: lineupData.rw_card_rarity,
+                      overall: lineupData.rw_overall,
+                      skating: 0,
+                      shooting: 0,
+                      hands: 0,
+                      checking: 0,
+                      defense: 0,
+                      high_shots: 0,
+                      low_shots: 0,
+                      quickness: 0,
+                      control: 0,
+                      conditioning: 0,
+                      season: 0,
+                      author_paid: 0,
+                      packID: undefined,
                       quantity: 1,
+                      totalCardQuantity: undefined,
+                      date_approved: null,
+                      author_username: undefined,
+                      total: undefined,
+                      leagueID: 0,
                     }
                   : null,
               },
@@ -141,15 +268,38 @@ const LineupDetails: React.FC = () => {
                 positionGroup: 'D',
                 card: lineupData.ld_playerName
                   ? {
-                      id: lineupData.ld_cardID?.toString() || '',
-                      playerName: lineupData.ld_playerName,
-                      team: lineupData.ld_team,
-                      overall: lineupData.ld_overall,
+                      cardID: lineupData.ld_cardID || 0,
+                      teamID: 0, // Default value
+                      playerID: 0, // Default value
+                      author_userID: 0,
+                      card_rarity: lineupData.ld_card_rarity,
+                      sub_type: '',
+                      player_name: lineupData.ld_playerName,
+                      render_name: undefined,
+                      pullable: 1,
+                      approved: 1,
+                      image_url: lineupData.ld_image_url,
                       position: lineupData.ld_position,
-                      imageUrl: lineupData.ld_image_url,
-                      cardID: lineupData.ld_cardID,
-                      rarity: lineupData.ld_card_rarity,
+                      overall: lineupData.ld_overall,
+                      skating: 0,
+                      shooting: 0,
+                      hands: 0,
+                      checking: 0,
+                      defense: 0,
+                      high_shots: 0,
+                      low_shots: 0,
+                      quickness: 0,
+                      control: 0,
+                      conditioning: 0,
+                      season: 0,
+                      author_paid: 0,
+                      packID: undefined,
                       quantity: 1,
+                      totalCardQuantity: undefined,
+                      date_approved: null,
+                      author_username: undefined,
+                      total: undefined,
+                      leagueID: 0,
                     }
                   : null,
               },
@@ -160,15 +310,38 @@ const LineupDetails: React.FC = () => {
                 positionGroup: 'D',
                 card: lineupData.rd_playerName
                   ? {
-                      id: lineupData.rd_cardID?.toString() || '',
-                      playerName: lineupData.rd_playerName,
-                      team: lineupData.rd_team,
-                      overall: lineupData.rd_overall,
+                      cardID: lineupData.rd_cardID || 0,
+                      teamID: 0, // Default value
+                      playerID: 0, // Default value
+                      author_userID: 0,
+                      card_rarity: lineupData.rd_card_rarity,
+                      sub_type: '',
+                      player_name: lineupData.rd_playerName,
+                      render_name: undefined,
+                      pullable: 1,
+                      approved: 1,
+                      image_url: lineupData.rd_image_url,
                       position: lineupData.rd_position,
-                      imageUrl: lineupData.rd_image_url,
-                      cardID: lineupData.rd_cardID,
-                      rarity: lineupData.rd_card_rarity,
+                      overall: lineupData.rd_overall,
+                      skating: 0,
+                      shooting: 0,
+                      hands: 0,
+                      checking: 0,
+                      defense: 0,
+                      high_shots: 0,
+                      low_shots: 0,
+                      quickness: 0,
+                      control: 0,
+                      conditioning: 0,
+                      season: 0,
+                      author_paid: 0,
+                      packID: undefined,
                       quantity: 1,
+                      totalCardQuantity: undefined,
+                      date_approved: null,
+                      author_username: undefined,
+                      total: undefined,
+                      leagueID: 0,
                     }
                   : null,
               },
@@ -179,15 +352,38 @@ const LineupDetails: React.FC = () => {
                 positionGroup: 'G',
                 card: lineupData.g_playerName
                   ? {
-                      id: lineupData.g_cardID?.toString() || '',
-                      playerName: lineupData.g_playerName,
-                      team: lineupData.g_team,
-                      overall: lineupData.g_overall,
+                      cardID: lineupData.g_cardID || 0,
+                      teamID: 0, // Default value
+                      playerID: 0, // Default value
+                      author_userID: 0,
+                      card_rarity: lineupData.g_card_rarity,
+                      sub_type: '',
+                      player_name: lineupData.g_playerName,
+                      render_name: undefined,
+                      pullable: 1,
+                      approved: 1,
+                      image_url: lineupData.g_image_url,
                       position: lineupData.g_position,
-                      imageUrl: lineupData.g_image_url,
-                      cardID: lineupData.g_cardID,
-                      rarity: lineupData.g_card_rarity,
+                      overall: lineupData.g_overall,
+                      skating: 0,
+                      shooting: 0,
+                      hands: 0,
+                      checking: 0,
+                      defense: 0,
+                      high_shots: 0,
+                      low_shots: 0,
+                      quickness: 0,
+                      control: 0,
+                      conditioning: 0,
+                      season: 0,
+                      author_paid: 0,
+                      packID: undefined,
                       quantity: 1,
+                      totalCardQuantity: undefined,
+                      date_approved: null,
+                      author_username: undefined,
+                      total: undefined,
+                      leagueID: 0,
                     }
                   : null,
               },
@@ -254,7 +450,6 @@ const LineupDetails: React.FC = () => {
   ])
 
   const positionFilters = selectedPosition === 'all' ? '' : selectedPosition
-  const rarityFilters = selectedRarity === 'all' ? [] : [selectedRarity]
 
   // Get user's card collection
   const {
@@ -265,10 +460,18 @@ const LineupDetails: React.FC = () => {
     queryKey: [
       'collection',
       session?.userId,
-      searchTerm,
-      JSON.stringify(rarityFilters),
-      positionFilters,
+      debouncedSearchTerm || '',
+      JSON.stringify(teams),
+      JSON.stringify(rarities),
+      JSON.stringify(subType),
       String(tablePage),
+      'overall', // sortColumn - could be made dynamic
+      'DESC', // sortDirection - could be made dynamic
+      'false', // showNotOwnedCards
+      '', // otherUID
+      JSON.stringify(leagueID),
+      JSON.stringify(teamLeagueID),
+      positionFilters,
     ],
     queryFn: () =>
       axios({
@@ -276,29 +479,58 @@ const LineupDetails: React.FC = () => {
         url: `/api/v3/collection/uid`,
         params: {
           uid: session?.userId,
-          playerName: searchTerm,
-          rarities: JSON.stringify(rarityFilters),
-          position: positionFilters,
+          playerName:
+            debouncedSearchTerm.length >= 1 ? debouncedSearchTerm : '',
+          teams: JSON.stringify(teams),
+          rarities: JSON.stringify(rarities),
+          subType: JSON.stringify(subType),
           limit: ROWS_PER_PAGE,
           offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
           showNotOwnedCards: false,
+          otherUID: '',
+          leagueID: JSON.stringify(leagueID),
+          teamLeagueID: JSON.stringify(teamLeagueID),
+          position: positionFilters,
         },
       }),
   })
 
-  // Transform to PlayerCard format
-  const userCollection: PlayerCard[] = (userCards?.rows || [])
+  // Transform to Card format
+  const userCollection: Card[] = (userCards?.rows || [])
     .filter((card) => card.quantity > 0)
     .map((card) => ({
-      id: card.cardID.toString(),
-      playerName: card.player_name,
-      team: card.teamName,
-      overall: card.overall,
-      position: card.position,
-      imageUrl: card.image_url,
       cardID: card.cardID,
-      rarity: card.card_rarity,
+      teamID: card.teamID,
+      playerID: card.playerID,
+      author_userID: 0, // Default value since not available in OwnedCard
+      card_rarity: card.card_rarity,
+      sub_type: '', // Default value since not available in OwnedCard
+      player_name: card.player_name,
+      render_name: undefined, // Default value since not available in OwnedCard
+      pullable: 1, // Default value since not available in OwnedCard
+      approved: 1, // Default value since not available in OwnedCard
+      image_url: card.image_url,
+      position: card.position,
+      overall: card.overall,
+      skating: card.skating,
+      shooting: card.shooting,
+      hands: card.hands,
+      checking: card.checking,
+      defense: card.defense,
+      high_shots: card.high_shots,
+      low_shots: card.low_shots,
+      quickness: card.quickness,
+      control: card.control,
+      conditioning: card.conditioning,
+      season: card.season,
+      author_paid: 0, // Default value since not available in OwnedCard
+      packID: undefined, // Default value since not available in OwnedCard
       quantity: card.quantity,
+      totalCardQuantity: undefined, // Default value since not available in OwnedCard
+      date_approved: null, // Default value since not available in OwnedCard
+      author_username: undefined, // Default value since not available in OwnedCard
+      total: undefined, // Default value since not available in OwnedCard
+      leagueID: card.leagueID,
     }))
 
   // Update availablePlayers when userCards change
@@ -306,21 +538,81 @@ const LineupDetails: React.FC = () => {
     setAvailablePlayers(userCollection)
   }, [userCards?.rows])
 
+  // Refetch data when filters change (from collect page)
+  useEffect(() => {
+    refetch()
+  }, [
+    debouncedSearchTerm,
+    teams,
+    rarities,
+    subType,
+    tablePage,
+    leagueID,
+    teamLeagueID,
+  ])
+
+  // Toggle functions from collect page
+  const toggleTeam = (teamKey: string) => {
+    setTeams((currentValue) => toggleOnfilters(currentValue, teamKey))
+
+    setTeamLeagueID((prev) => {
+      const updated = { ...prev }
+      if (updated[teamKey]) {
+        delete updated[teamKey]
+      } else {
+        const [leagueStr, idStr] = teamKey.split('-')
+        const team = teamData?.find(
+          (t) => t.league === Number(leagueStr) && t.id === Number(idStr)
+        )
+        if (team) {
+          updated[teamKey] = String(team.league)
+        }
+      }
+      return updated
+    })
+  }
+
+  const toggleRarity = (rarity: string) => {
+    setRarities((currentValue) => toggleOnfilters(currentValue, rarity))
+  }
+
+  const toggleSubType = (subType: string) => {
+    setSubType((currentValue) => toggleOnfilters(currentValue, subType))
+  }
+
   // Save lineup button click
   const handleSaveLineup = async () => {
     if (!lineupName.trim()) {
-      alert('Please enter a lineup name')
+      toast({
+        title: 'Lineup name required',
+        description: 'Please enter a lineup name',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      })
       return
     }
 
     const filledPositions = positions.filter((pos) => pos.card !== null)
     if (filledPositions.length === 0) {
-      alert('Please add at least one player to your lineup')
+      toast({
+        title: 'No players added',
+        description: 'Please add at least one player to your lineup',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      })
       return
     }
 
     if (!session?.userId) {
-      alert('You must be logged in to save a lineup')
+      toast({
+        title: 'Authentication required',
+        description: 'You must be logged in to save a lineup',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
       return
     }
 
@@ -349,14 +641,19 @@ const LineupDetails: React.FC = () => {
 
       // Add lineupId for update mode
       if (isEditMode && lineupId) {
-        (lineupData as any).lineupID = lineupId
+        ;(lineupData as any).lineupID = lineupId
       }
-      
-      await saveLineup(lineupData as any)
 
+      await saveLineup(lineupData as any)
     } catch (error) {
       console.error('Error saving lineup:', error)
-      alert('Failed to save lineup. Please try again.')
+      toast({
+        title: 'Save failed',
+        description: 'Failed to save lineup. Please try again.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
     }
   }
 
@@ -412,11 +709,13 @@ const LineupDetails: React.FC = () => {
     // If dropped back to card slider
     if (destination.droppableId === 'card-slider') {
       // Find the card being moved back
-      const movedCard = availablePlayers.find((c) => c.id === draggableId)
+      const movedCard = availablePlayers.find(
+        (c) => c.cardID.toString() === draggableId
+      )
       if (movedCard) {
         // Add card back to available players if not already there
         setAvailablePlayers((prev) => {
-          const exists = prev.some((p) => p.id === draggableId)
+          const exists = prev.some((p) => p.cardID.toString() === draggableId)
           if (!exists) {
             return [...prev, movedCard]
           }
@@ -427,7 +726,9 @@ const LineupDetails: React.FC = () => {
       // Remove card from any position it might be in
       setPositions((prev) =>
         prev.map((pos) =>
-          pos.card?.id === draggableId ? { ...pos, card: null } : pos
+          pos.card?.cardID.toString() === draggableId
+            ? { ...pos, card: null }
+            : pos
         )
       )
       return
@@ -435,7 +736,9 @@ const LineupDetails: React.FC = () => {
 
     // If dropped into a position
     const positionId = destination.droppableId
-    const card = availablePlayers.find((c) => c.id === draggableId)
+    const card = availablePlayers.find(
+      (c) => c.cardID.toString() === draggableId
+    )
 
     if (!card) return
 
@@ -445,14 +748,20 @@ const LineupDetails: React.FC = () => {
 
     // Check if the player's position group matches the target position group
     if (card.position !== targetPosition.positionGroup) {
-      alert(
-        `${card.playerName} (${card.position}) cannot be placed in ${targetPosition.name}. Position groups don't match.`
-      )
+      toast({
+        title: 'Invalid position',
+        description: `${card.player_name} (${card.position}) cannot be placed in ${targetPosition.name}. Position groups don't match.`,
+        status: 'warning',
+        duration: 4000,
+        isClosable: true,
+      })
       return
     }
 
     // Remove card from available players
-    setAvailablePlayers((prev) => prev.filter((p) => p.id !== draggableId))
+    setAvailablePlayers((prev) =>
+      prev.filter((p) => p.cardID.toString() !== draggableId)
+    )
 
     // Update the position with the card
     setPositions((prev) =>
@@ -468,8 +777,10 @@ const LineupDetails: React.FC = () => {
 
     // Add all placed cards back to available players
     setAvailablePlayers((prev) => {
-      const existingIds = new Set(prev.map((p) => p.id))
-      const newCards = placedCards.filter((card) => !existingIds.has(card.id))
+      const existingIds = new Set(prev.map((p) => p.cardID.toString()))
+      const newCards = placedCards.filter(
+        (card) => !existingIds.has(card.cardID.toString())
+      )
       return [...prev, ...newCards]
     })
 
@@ -487,9 +798,7 @@ const LineupDetails: React.FC = () => {
 
   const isFiltered = () => {
     return (
-      searchTerm.length > 0 ||
-      positionFilters !== '' ||
-      rarityFilters.length > 0
+      searchTerm.length > 0 || positionFilters !== '' || rarities.length > 0
     )
   }
 
@@ -516,7 +825,12 @@ const LineupDetails: React.FC = () => {
 
         {loggedIn && (availablePlayers.length > 0 || isFiltered()) && (
           <>
-            <HStack justify="space-between" align="center">
+            <Flex
+              direction={{ base: 'column', lg: 'row' }}
+              gap={{ base: 4, lg: 0 }}
+              align={{ base: 'stretch', lg: 'center' }}
+              justify="space-between"
+            >
               <Box flex="1">
                 <Heading size="sm" mb={3}>
                   Lineup Name
@@ -526,11 +840,17 @@ const LineupDetails: React.FC = () => {
                   value={lineupName}
                   onChange={(e) => setLineupName(e.target.value)}
                   size="lg"
-                  maxWidth="600px"
+                  maxWidth={{ base: '100%', sm: '600px' }}
+                  maxLength={100}
                 />
               </Box>
 
-              <HStack spacing={3}>
+              <HStack
+                spacing={3}
+                mt={{ base: 4, sm: 0 }}
+                justify={'flex-end'}
+                w={{ base: '100%', sm: 'auto' }}
+              >
                 <Button
                   variant="outline"
                   colorScheme="white"
@@ -553,35 +873,57 @@ const LineupDetails: React.FC = () => {
                   Save Lineup
                 </Button>
               </HStack>
-            </HStack>
+            </Flex>
 
             {/* 2 Column Layout */}
-            <HStack spacing={6} align="stretch">
+            <Flex
+              direction={{ base: 'column', lg: 'row' }}
+              gap={6}
+              align="stretch"
+            >
               {/* Left Column - Position Grid */}
               <Box flex="1">
                 <HStack justify="space-between" align="center" mb={3}>
                   <Heading size="sm">Lineup Positions</Heading>
                 </HStack>
                 <VStack spacing={4} align="center">
-                  {/* Top Row - Forwards (3) */}
-                  <HStack spacing={4} justify="center">
-                    <PositionBlock position={positions[1]} /> {/* Left Wing */}
-                    <PositionBlock position={positions[0]} /> {/* Center */}
-                    <PositionBlock position={positions[2]} /> {/* Right Wing */}
-                  </HStack>
+                  {isMobileLayout ? (
+                    // Mobile layout: 2x2x2
+                    <Grid templateColumns="repeat(2, 1fr)" gap={4} w="100%">
+                      <PositionBlock position={positions[1]} /> {/* Left Wing */}
+                      <PositionBlock position={positions[0]} /> {/* Center */}
+                      <PositionBlock position={positions[2]} /> {/* Right Wing */}
+                      <PositionBlock position={positions[3]} /> {/* Left Defense */}
+                      <PositionBlock position={positions[4]} /> {/* Right Defense */}
+                      <PositionBlock position={positions[5]} /> {/* Goalie */}
+                    </Grid>
+                  ) : (
+                    // Desktop layout: 3x2x1
+                    <>
+                      <HStack 
+                        spacing={{ base: 2, sm: 4 }} 
+                        justify="center"
+                        wrap={{ base: 'wrap', sm: 'nowrap' }}
+                      >
+                        <PositionBlock position={positions[1]} /> {/* Left Wing */}
+                        <PositionBlock position={positions[0]} /> {/* Center */}
+                        <PositionBlock position={positions[2]} /> {/* Right Wing */}
+                      </HStack>
 
-                  {/* Middle Row - Defense (2) */}
-                  <HStack spacing={4} justify="center">
-                    <PositionBlock position={positions[3]} />{' '}
-                    {/* Left Defense */}
-                    <PositionBlock position={positions[4]} />{' '}
-                    {/* Right Defense */}
-                  </HStack>
+                      <HStack 
+                        spacing={{ base: 2, sm: 4 }} 
+                        justify="center"
+                        wrap={{ base: 'wrap', sm: 'nowrap' }}
+                      >
+                        <PositionBlock position={positions[3]} />
+                        <PositionBlock position={positions[4]} />
+                      </HStack>
 
-                  {/* Bottom Row - Goalie (1) */}
-                  <HStack spacing={4} justify="center">
-                    <PositionBlock position={positions[5]} /> {/* Goalie */}
-                  </HStack>
+                      <HStack spacing={{ base: 2, sm: 4 }} justify="center">
+                        <PositionBlock position={positions[5]} /> {/* Goalie */}
+                      </HStack>
+                    </>
+                  )}
                 </VStack>
               </Box>
 
@@ -603,12 +945,13 @@ const LineupDetails: React.FC = () => {
                     size="lg"
                   />
 
-                  <HStack spacing={2} wrap="wrap">
+                  <HStack spacing={2} mb={4}>
                     <Button
                       size="sm"
                       variant={selectedPosition === 'all' ? 'solid' : 'outline'}
                       colorScheme="blue"
                       onClick={() => setSelectedPosition('all')}
+                      minW={{ base: '80px', sm: 'auto' }}
                     >
                       All
                     </Button>
@@ -617,6 +960,7 @@ const LineupDetails: React.FC = () => {
                       variant={selectedPosition === 'F' ? 'solid' : 'outline'}
                       colorScheme="blue"
                       onClick={() => setSelectedPosition('F')}
+                      minW={{ base: '80px', sm: 'auto' }}
                     >
                       Forwards (F)
                     </Button>
@@ -625,6 +969,7 @@ const LineupDetails: React.FC = () => {
                       variant={selectedPosition === 'D' ? 'solid' : 'outline'}
                       colorScheme="blue"
                       onClick={() => setSelectedPosition('D')}
+                      minW={{ base: '80px', sm: 'auto' }}
                     >
                       Defense (D)
                     </Button>
@@ -633,84 +978,53 @@ const LineupDetails: React.FC = () => {
                       variant={selectedPosition === 'G' ? 'solid' : 'outline'}
                       colorScheme="blue"
                       onClick={() => setSelectedPosition('G')}
+                      minW={{ base: '80px', sm: 'auto' }}
                     >
                       Goalie
                     </Button>
                   </HStack>
                 </VStack>
 
-                {/* Rarity Filters */}
-                <VStack spacing={3} mb={4}>
-                  <HStack spacing={2} wrap="wrap">
-                    <Button
-                      size="sm"
-                      variant={selectedRarity === 'all' ? 'solid' : 'outline'}
-                      colorScheme="blue"
-                      onClick={() => setSelectedRarity('all')}
-                    >
-                      All
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={
-                        selectedRarity === 'Bronze' ? 'solid' : 'outline'
-                      }
-                      colorScheme="orange"
-                      onClick={() => setSelectedRarity('Bronze')}
-                    >
-                      Bronze
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={
-                        selectedRarity === 'Silver' ? 'solid' : 'outline'
-                      }
-                      colorScheme="gray"
-                      color={
-                        selectedRarity === 'Silver' ? 'gray.800' : 'silver.400'
-                      }
-                      onClick={() => setSelectedRarity('Silver')}
-                    >
-                      Silver
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={selectedRarity === 'Gold' ? 'solid' : 'outline'}
-                      colorScheme="yellow"
-                      onClick={() => setSelectedRarity('Gold')}
-                    >
-                      Gold
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={selectedRarity === 'Ruby' ? 'solid' : 'outline'}
-                      colorScheme="red"
-                      onClick={() => setSelectedRarity('Ruby')}
-                    >
-                      Ruby
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={
-                        selectedRarity === 'Diamond' ? 'solid' : 'outline'
-                      }
-                      colorScheme="cyan"
-                      onClick={() => setSelectedRarity('Diamond')}
-                    >
-                      Diamond
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={
-                        selectedRarity === 'Special' ? 'solid' : 'outline'
-                      }
-                      colorScheme="purple"
-                      onClick={() => setSelectedRarity('Special')}
-                    >
-                      Special
-                    </Button>
-                  </HStack>
-                </VStack>
+                <HStack spacing={2} mb={4}>
+                  <FilterDropdown
+                    label="Teams"
+                    selectedValues={teams}
+                    options={teamData || []}
+                    isLoading={teamDataIsLoading}
+                    onToggle={toggleTeam}
+                    onDeselectAll={() => {
+                      setTeams([])
+                      setTeamLeagueID({})
+                    }}
+                    getOptionId={(team) => `${team.league}-${team.id}`}
+                    getOptionValue={(team) => `${team.league}-${team.id}`}
+                    getOptionLabel={(team) => team.name}
+                  />
+
+                  <FilterDropdown
+                    label="Rarities"
+                    selectedValues={rarities}
+                    options={rarityData || []}
+                    isLoading={rarityDataisLoading}
+                    onToggle={toggleRarity}
+                    onDeselectAll={() => setRarities([])}
+                    getOptionId={(rarity) => rarity.card_rarity}
+                    getOptionValue={(rarity) => rarity.card_rarity}
+                    getOptionLabel={(rarity) => rarity.card_rarity}
+                  />
+
+                  <FilterDropdown
+                    label="Sub Types"
+                    selectedValues={subType}
+                    options={subTypeData || []}
+                    isLoading={subTypeDataIsLoading}
+                    onToggle={toggleSubType}
+                    onDeselectAll={() => setSubType([])}
+                    getOptionId={(subType) => subType.sub_type}
+                    getOptionValue={(subType) => subType.sub_type}
+                    getOptionLabel={(subType) => subType.sub_type}
+                  />
+                </HStack>
 
                 <Droppable droppableId="card-slider" direction="vertical">
                   {(provided, snapshot) => (
@@ -720,14 +1034,16 @@ const LineupDetails: React.FC = () => {
                       spacing={3}
                       overflowY="auto"
                       p={2}
-                      bg="gray.800"
+                      bg={useColorModeValue('white', 'gray.800')}
                       borderRadius="md"
                       minH="400px"
                       maxH="800px"
                       justifyContent={isLoading ? 'center' : 'flex-start'}
                       border="2px solid"
                       borderColor={
-                        snapshot.isDraggingOver ? 'blue.400' : 'gray.600'
+                        snapshot.isDraggingOver
+                          ? useColorModeValue('blue.400', 'blue.400')
+                          : useColorModeValue('gray.300', 'gray.600')
                       }
                       className="player-slider"
                     >
@@ -741,14 +1057,18 @@ const LineupDetails: React.FC = () => {
                       ) : (
                         <>
                           <Grid
-                            templateColumns="repeat(auto-fit, minmax(170px, 1fr))"
-                            gap={3}
+                            templateColumns={{
+                              base: 'repeat(auto-fit, minmax(140px, 1fr))',
+                              sm: 'repeat(auto-fit, minmax(160px, 1fr))',
+                              md: 'repeat(auto-fit, minmax(170px, 1fr))',
+                            }}
+                            gap={{ base: 2, sm: 3 }}
                             w="100%"
                           >
                             {availablePlayers.map((card, index) => (
                               <Draggable
-                                key={card.id}
-                                draggableId={card.id}
+                                key={card.cardID.toString()}
+                                draggableId={card.cardID.toString()}
                                 index={index}
                               >
                                 {(provided, snapshot) => (
@@ -797,7 +1117,7 @@ const LineupDetails: React.FC = () => {
                   </HStack>
                 )}
               </Box>
-            </HStack>
+            </Flex>
           </>
         )}
       </VStack>

@@ -51,8 +51,26 @@ export const getRarityBoxShadow = (rarity: string): string => {
       return '0 0 15px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 215, 0, 0.3)'
     case 'ruby':
       return '0 0 15px rgba(224, 17, 95, 0.6), 0 0 30px rgba(224, 17, 95, 0.3)'
+    case 'logo':
+      return '0 0 15px rgba(255, 0, 150, 0.6), 0 0 30px rgba(0, 255, 255, 0.3)'
     case 'diamond':
       return '0 0 15px rgba(185, 242, 255, 0.6), 0 0 30px rgba(185, 242, 255, 0.3)'
+    case 'award':
+      return '0 0 15px rgba(255, 0, 100, 0.6), 0 0 30px rgba(255, 200, 0, 0.3)'
+    case 'iihf awards':
+      return '0 0 15px rgba(0, 255, 0, 0.6), 0 0 30px rgba(255, 0, 255, 0.3)'
+    case '2000 tpe club':
+      return '0 0 15px rgba(255, 100, 0, 0.6), 0 0 30px rgba(0, 100, 255, 0.3)'
+    case 'special edition':
+      return '0 0 15px rgba(150, 0, 255, 0.6), 0 0 30px rgba(255, 255, 0, 0.3)'
+    case 'charity':
+      return '0 0 15px rgba(255, 0, 255, 0.6), 0 0 30px rgba(0, 255, 150, 0.3)'
+    case '1st overall':
+      return '0 0 15px rgba(0, 150, 255, 0.6), 0 0 30px rgba(255, 150, 0, 0.3)'
+    case 'hall of fame':
+      return '0 0 15px rgba(255, 215, 0, 0.6), 0 0 30px rgba(255, 0, 150, 0.3)'
+    case 'misprint':
+      return '0 0 15px rgba(255, 0, 0, 0.6), 0 0 30px rgba(0, 255, 255, 0.3)'
     default:
       return '0 0 5px rgba(255, 255, 255, 0.3)'
   }

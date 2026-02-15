@@ -1,10 +1,10 @@
 import React from 'react'
 import { Box, Image } from '@chakra-ui/react'
 import { getOverallColor, getRarityBoxShadow } from './utils'
-import { PlayerCard, POSITION_CONSTANTS } from './types'
+import { POSITION_CONSTANTS } from './types'
 
 interface PlayerCardComponentProps {
-  card: PlayerCard
+  card: Card
   isDragging?: boolean
 }
 
@@ -29,14 +29,14 @@ const PlayerCardComponent: React.FC<PlayerCardComponentProps> = ({
     >
       <Box position="relative" flex="1">
         <Image
-          src={`https://simulationhockey.com/tradingcards/${card.imageUrl}`}
-          alt={card.playerName}
+          src={`https://simulationhockey.com/tradingcards/${card.image_url}`}
+          alt={card.player_name}
           objectFit="contain"
           borderRadius="md"
           draggable={false}
           cursor="grab"
           maxHeight={POSITION_CONSTANTS.CARD_MAX_HEIGHT}
-          boxShadow={getRarityBoxShadow(card.rarity)}
+          boxShadow={getRarityBoxShadow(card.card_rarity)}
         />
         <Box
           bg={`${getOverallColor(card.overall)}.500`}

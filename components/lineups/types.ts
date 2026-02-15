@@ -1,30 +1,34 @@
-export interface PlayerCard {
-  id: string
-  playerName: string
-  team: string
-  overall: number
-  position: string
-  imageUrl?: string
-  cardID: number
-  quantity: number
-  rarity: string
-}
-
 export interface LineupPosition {
   id: string
   name: string
   position: string
   positionGroup: string
-  card: PlayerCard | null
+  card: Card | null
 }
 
 export interface LineupCard {
   playerName: string
-  team: string
+  teamID: number
+  playerID: number
+  cardID: number
   overall: number
   position: string
   image_url?: string
   card_rarity?: string
+  sub_type?: string
+  render_name?: string
+  skating?: number | null
+  shooting?: number | null
+  hands?: number | null
+  checking?: number | null
+  defense?: number | null
+  high_shots?: number | null
+  low_shots?: number | null
+  quickness?: number | null
+  control?: number | null
+  conditioning?: number | null
+  season: number
+  leagueID?: number
 }
 
 export interface Lineup {
