@@ -429,26 +429,16 @@ const LineupList: React.FC = () => {
       )}
 
       {loggedIn && (
-        <VStack spacing={4} align="stretch" mb={6}>
-          <HStack justify="space-between" align="center">
-            <Heading size="lg">Your Lineups</Heading>
-            <Button
-              leftIcon={<AddIcon />}
-              colorScheme="blue"
-              onClick={handleCreateLineup}
-            >
-              Create New Lineup
-            </Button>
-          </HStack>
-
-          <Input
-            placeholder="Search lineups by name..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            size="md"
-            maxWidth="400px"
-          />
-        </VStack>
+        <HStack justify="space-between" align="center" mb={10}>
+          <Heading size="lg">Your Lineups</Heading>
+          <Button
+            leftIcon={<AddIcon />}
+            colorScheme="blue"
+            onClick={handleCreateLineup}
+          >
+            Create New Lineup
+          </Button>
+        </HStack>
       )}
 
       {loggedIn && isLoading && (
