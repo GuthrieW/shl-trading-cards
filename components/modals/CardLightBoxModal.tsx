@@ -270,7 +270,7 @@ const CardLightBoxModal = ({
               playerID={playerID}
               cardID={cardID}
               userID={userID}
-              leagueID={leagueID}
+              leagueID={rarity === 'Draft Night' ? 1 : leagueID}
             />
           </DrawerBody>
         </DrawerContent>
