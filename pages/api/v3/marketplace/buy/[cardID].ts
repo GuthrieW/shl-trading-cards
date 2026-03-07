@@ -6,7 +6,6 @@ import Cors from 'cors'
 import SQL from 'sql-template-strings'
 import assertBoom from '@pages/api/lib/assertBoom'
 import { cardsQuery, portalQuery } from '@pages/api/database/database'
-import { packService } from 'services/packService'
 import { checkUserAuthorization } from '@pages/api/v3/lib/checkUserAuthorization'
 import { rateLimit } from 'lib/rateLimit'
 
@@ -47,9 +46,9 @@ const handler = async (
 
       const cardIDNotInDB = await cardsQuery<{ cardID: number }>(
         SQL`
-    SELECT cardID
-    FROM users_marketplace_cards
-    WHERE userID=${card.userID} AND cardID=${card.cardID};`
+        SELECT cardID
+        FROM users_marketplace_cards
+        WHERE userID=${card.userID} AND cardID=${card.cardID};`
       )
 
       if (!cardIDNotInDB) {
@@ -58,6 +57,25 @@ const handler = async (
           .json({ error: 'CardID not found in users_marketplace_cards' })
         return
       }
+
+      const cardPriceData = await cardsQuery<{ cost: number }>(
+        SQL`
+        SELECT mrp.cost
+        FROM users_marketplace_cards as umc
+        left join cards as c on umc.cardID = c.cardID
+        left join marketplace_rarity_prices as mrp
+          on c.card_rarity = mrp.card_rarity
+        WHERE umc.userID=${card.userID} AND umc.cardID=${card.cardID};`
+      )
+      const cardPrice = Number(cardPriceData[0]?.cost)
+      const sameprice = cardPrice === card.cost
+      const hasPrice: boolean = assertBoom(
+        !!sameprice,
+        res,
+        'Card price not found',
+        StatusCodes.BAD_REQUEST
+      )
+      if (hasPrice) return
 
       const bankData = await portalQuery<{ bankBalance: number }>(
         SQL`

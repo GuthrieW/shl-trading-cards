@@ -99,9 +99,13 @@ export default function Marketplace() {
               ? "You've purchased all available cards!"
               : `${unpurchasedCount} more cards available to purchase`}
           </div>
+          <div className="text-xs tracking-widest uppercase mt-2 text-text-tertiary">
+            Marketplace is a place where you can buy up to 5 random cards every
+            week. Prices are set by Card Management and Head Office
+          </div>
         </div>
         <div className="text-xs tracking-widest uppercase text-text-tertiary sm:text-right">
-          Resets in {TimeUntilMarketplaceReset()}
+          Cards Resets in {TimeUntilMarketplaceReset()}
         </div>
       </div>
 
