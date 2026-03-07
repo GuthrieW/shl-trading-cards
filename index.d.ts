@@ -68,6 +68,19 @@ type CollectionCard = {
   leagueID: number
 }
 
+type MarketplaceCard = {
+  userID: number
+  cardID: number
+  purchased: boolean
+  image_url: string
+  playerID: number
+  leagueID: number
+  player_name: string
+  card_rarity: string
+  cost: number
+  quantity: number
+}
+
 type NewCard = {
   quantity: number
 }

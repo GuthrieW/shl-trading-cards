@@ -13,6 +13,8 @@ import { Footer } from '@components/common/Footer'
 import { Spinner, ToastProvider } from '@chakra-ui/react'
 import '../styles/globals.css'
 import '../styles/style.css'
+import axios from 'axios'
+import { GET, POST } from '@constants/http-methods'
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -29,7 +31,7 @@ const raleway = Raleway({
 })
 
 const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
-  const { loggedIn, handleRefresh, isLoading } = useSession()
+  const { session, loggedIn, handleRefresh, isLoading } = useSession()
 
   const [queryClient] = useState(
     () =>
@@ -60,6 +62,17 @@ const AppWrappers = ({ Component, pageProps }: AppProps): JSX.Element => {
       document.documentElement.classList.add('light')
     }
   }, [])
+
+  useEffect(() => {
+    if (!loggedIn || !session.userId) return
+
+    axios({
+      method: POST,
+      url: `/api/v3/marketplace/${session?.userId}/generate-cards`,
+      headers: { Authorization: `Bearer ${session?.token}` },
+      data: { userID: session?.userId },
+    })
+  }, [loggedIn, session?.userId])
 
   return (
     <QueryClientProvider client={queryClient}>
