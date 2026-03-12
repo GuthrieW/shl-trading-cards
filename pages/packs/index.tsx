@@ -13,6 +13,7 @@ import { Skeleton, SimpleGrid, useToast, Select, Badge } from '@chakra-ui/react'
 import { UserData } from '@pages/api/v3/user'
 import { useSession } from 'contexts/AuthContext'
 import { errorToastOptions, warningToastOptions } from '@utils/toast'
+import { useEffect } from 'react'
 import Image from 'next/image'
 
 export type UserPackWithCover = UserPacks & {
@@ -121,7 +122,7 @@ const OpenPacks = () => {
     Router.push(`/packs/last-pack?type=${modalPack.packType}`)
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (useOpenPackIsError) {
       toast({
         title: 'Pack Opening Error',

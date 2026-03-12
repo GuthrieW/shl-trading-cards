@@ -10,7 +10,6 @@ import {
   useToast,
   ModalBody,
 } from '@chakra-ui/react'
-import { warningToastOptions } from '@utils/toast'
 import ImageWithFallback from '@components/images/ImageWithFallback'
 import { RARITY_CONFIG, DEFAULT_RARITY } from '@utils/marketplace-rarity-maps'
 
@@ -20,6 +19,7 @@ type BuyCardModalProps = {
   onBuy: (card: MarketplaceCard) => void
   card: MarketplaceCard
   alreadyOwned?: number
+  isLoading?: boolean
 }
 
 const BuyCardModal = ({
@@ -28,8 +28,8 @@ const BuyCardModal = ({
   onBuy,
   card,
   alreadyOwned,
+  isLoading,
 }: BuyCardModalProps) => {
-  const toast = useToast()
   const accentColor = RARITY_CONFIG[card.card_rarity] ?? DEFAULT_RARITY
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -87,6 +87,7 @@ const BuyCardModal = ({
             className="font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 select-none"
             mr={3}
             onClick={onClose}
+            isDisabled={isLoading}
           >
             Cancel
           </Button>
@@ -94,16 +95,9 @@ const BuyCardModal = ({
             colorScheme="green"
             disabled={false}
             className="font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 select-none"
-            onClick={
-              false
-                ? () =>
-                    toast({
-                      title: 'Couldnt buy card',
-                      description: 'Please try again.',
-                      ...warningToastOptions,
-                    })
-                : () => onBuy(card)
-            }
+            onClick={() => onBuy(card)}
+            isDisabled={isLoading}
+            isLoading={isLoading}
           >
             Confirm Purchase
           </Button>

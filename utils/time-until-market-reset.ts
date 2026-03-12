@@ -1,13 +1,12 @@
 import { toZonedTime } from 'date-fns-tz'
 
-export const TimeUntilMarketplaceReset = (): string => {
+export const timeUntilMarketplaceReset = (): string => {
   const now = new Date()
   const estTimeZone = 'America/New_York'
   const estNow = toZonedTime(now, estTimeZone)
 
-  // Find next Sunday at midnight EST
   const nextSunday = new Date(estNow)
-  const daysUntilSunday = (7 - estNow.getDay()) % 7 || 7
+  const daysUntilSunday = (8 - estNow.getDay()) % 7 || 7
   nextSunday.setDate(estNow.getDate() + daysUntilSunday)
   nextSunday.setHours(0, 0, 0, 0)
 
@@ -19,7 +18,12 @@ export const TimeUntilMarketplaceReset = (): string => {
   )
   const minutes = Math.floor((msUntilReset % (1000 * 60 * 60)) / (1000 * 60))
 
-  if (days > 0) return `${days}d ${hours}h ${minutes}m`
-  if (hours > 0) return `${hours}h ${minutes}m`
-  return `${minutes}m`
+  const fullDuration = {
+    days: days,
+    hours: hours,
+    minutes: minutes,
+  }
+  const formatter = (style) => new Intl.DurationFormat('en-US', { style })
+
+  return formatter('short').format(fullDuration)
 }

@@ -92,31 +92,65 @@ const handler = async (
       )
       if (hasInsufficientFunds) return
 
-      await portalQuery(
-        SQL`
-          INSERT INTO bankTransactions (uid, status, type, description, amount, submitByID)
+      const insertResult = await portalQuery(
+        SQL`INSERT INTO bankTransactions (uid, status, type, description, amount, submitByID)
+      VALUES (
+        ${card.userID}, 
+        "completed", 
+        "cards", 
+        ${`Purchase of ${card.player_name} - ${card.card_rarity} from marketplace`},
+        ${-card.cost}, 
+        0
+      );`
+      )
+
+      if (!insertResult || insertResult[0]?.affectedRows === 0) {
+        res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ error: 'Failed to insert bank transaction' })
+        await portalQuery(
+          SQL`INSERT INTO bankTransactions (uid, status, type, description, amount, submitByID)
           VALUES (
             ${card.userID}, 
             "completed", 
             "cards", 
-            ${`Purchase of ${card.player_name} - ${card.card_rarity} from marketplace`},
-            ${-card.cost}, 
+            ${`Rollback of failed card purchase`},
+            ${card.cost}, 
             0
-          );
-        `
-      )
+          );`
+        )
+        return
+      }
 
-      await cardsQuery(
+      const insertCollection = await cardsQuery(
         SQL`
           INSERT INTO collection (userID, cardID, packID) VALUES (${card.userID}, ${card.cardID}, -2);`
       )
 
-      await cardsQuery(
+      if (!insertCollection || insertCollection[0]?.affectedRows === 0) {
+        res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ error: 'Failed to add card to collection' })
+
+        // rollback bank transaction if collection insert fails
+        return
+      }
+
+      const updateMarketplaceCard = await cardsQuery(
         SQL`
           UPDATE users_marketplace_cards 
           set purchased = 1
           WHERE userID=${card.userID} AND cardID=${card.cardID};`
       )
+      if (
+        !updateMarketplaceCard ||
+        updateMarketplaceCard[0]?.affectedRows === 0
+      ) {
+        res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ error: 'Failed to update marketplace card' })
+        return
+      }
 
       res.status(StatusCodes.OK).json({ purchaseSuccessful: true })
       return
