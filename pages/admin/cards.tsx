@@ -41,9 +41,9 @@ import { GET } from '@constants/http-methods'
 import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated'
 import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
 import { query, indexAxios } from '@pages/api/database/query'
-import { ListResponse, seasoninfo, SortDirection } from '@pages/api/v3'
+import { ListResponse, seasoninfo, SortDirection, SubType } from '@pages/api/v3'
 import axios, { AxiosResponse } from 'axios'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { cardService } from 'services/cardService'
 import { useCookie } from '@hooks/useCookie'
 import config from 'lib/config'
@@ -57,6 +57,9 @@ import { Team, Rarities } from '@pages/api/v3'
 import FilterDropdown from '@components/common/FilterDropdown'
 import RadioGroupSelector from '@components/common/RadioGroupSelector'
 import { LEAGUE_OPTIONS } from 'lib/constants'
+import Link from 'next/link'
+import { CardInfo } from '@components/common/CardInfo'
+import { useDebounce } from 'use-debounce'
 
 type ColumnName = keyof Readonly<Card>
 
@@ -116,20 +119,28 @@ export default () => {
   const [viewDone, setViewDone] = useState<boolean>(false)
 
   const [playerName, setPlayerName] = useState<string>(null)
+  const [authorName, setAuthorName] = useState<string>(null)
+  const [cardID, setCardID] = useState<string>(null)
+  const [debouncedPlayerName] = useDebounce(playerName, 500)
+  const [debouncedCardID] = useDebounce(cardID, 500)
+  const [debouncedAuthorName] = useDebounce(authorName, 500)
+
   const [teams, setTeams] = useState<string[]>([])
+  const [subType, setSubType] = useState<string[]>([])
+  const [rarities, setRarities] = useState<string[]>([])
+
   const [teamLeagueID, setTeamLeagueID] = useState<{ [key: string]: string }>(
     {}
   )
-  const [rarities, setRarities] = useState<string[]>([])
   const [leagueID, setLeagueID] = useState<string[]>(['0'])
   const [sortColumn, setSortColumn] = useState<ColumnName>('player_name')
   const [sortDirection, setSortDirection] = useState<SortDirection>('ASC')
   const [tablePage, setTablePage] = useState<number>(1)
   const [selectedCard, setSelectedCard] = useState<Card>(null)
   const [imageUrl, setImageUrl] = useState<string>(null)
-  const [cardID, setCardID] = useState<string>(null)
   const [seasons, setSeasons] = useState<string[]>([])
 
+  const viewCardInfo = useDisclosure()
   const claimCardDialog = useDisclosure()
   const updateModal = useDisclosure()
   const removeAuthorDialog = useDisclosure()
@@ -177,6 +188,19 @@ export default () => {
       }),
   })
 
+  const { payload: subTypeData, isLoading: subTypeDataIsLoading } = query<
+    SubType[]
+  >({
+    queryKey: ['subTypeData', leagueID.join(','), JSON.stringify(rarities)],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `/api/v3/cards/sub-rarity-map?leagueID=${leagueID}&rarities=${JSON.stringify(
+          rarities
+        )}`,
+      }),
+  })
+
   const showImage = (image_url: string) => () => {
     if (image_url) {
       setImageUrl(image_url)
@@ -198,9 +222,10 @@ export default () => {
     queryKey: [
       'cards',
       uid,
-      playerName,
+      debouncedPlayerName,
       JSON.stringify(teams),
       JSON.stringify(rarities),
+      JSON.stringify(subType),
       String(viewSkaters),
       String(viewMyCards),
       String(viewNeedsAuthor),
@@ -211,10 +236,11 @@ export default () => {
       sortColumn,
       sortDirection,
       String(tablePage),
-      cardID,
+      debouncedCardID,
       JSON.stringify(leagueID),
       JSON.stringify(teamLeagueID),
       JSON.stringify(seasons),
+      debouncedAuthorName,
     ],
     queryFn: () =>
       axios({
@@ -224,9 +250,10 @@ export default () => {
           limit: ROWS_PER_PAGE,
           offset: Math.max((tablePage - 1) * ROWS_PER_PAGE, 0),
           userID: uid,
-          playerName,
+          playerName: debouncedPlayerName,
           teams: JSON.stringify(teams),
           rarities: JSON.stringify(rarities),
+          subType: JSON.stringify(subType),
           viewSkaters,
           viewMyCards,
           viewNeedsAuthor,
@@ -236,10 +263,11 @@ export default () => {
           viewDone,
           sortColumn,
           sortDirection,
-          cardID: cardID,
+          cardID: debouncedCardID,
           leagueID: JSON.stringify(leagueID),
           teamLeagueID: JSON.stringify(teamLeagueID),
           draftSeason: JSON.stringify(seasons),
+          author_name: debouncedAuthorName,
         },
       }),
   })
@@ -261,21 +289,33 @@ export default () => {
     setRarities((currentValue) => toggleOnfilters(currentValue, rarity))
   }
 
-  const setPlayerOrCardID = (value: string) => {
-    if (/^\d+$/.test(value)) {
-      // if the value is only a number
-      setCardID(value)
-      setPlayerName(null)
-    } else {
-      if (value.length > 0) {
-        setPlayerName(value)
-        setCardID(null)
-      } else {
-        setPlayerName(null)
-        setCardID(null)
-      }
-    }
+  const toggleSubType = (subType: string) => {
+    setSubType((currentValue) => toggleOnfilters(currentValue, subType))
   }
+
+  const parseSearchQuery = (raw: string) => {
+    const tagPattern = /(\w+):("([^"]+)"|(\S+))/g
+    let remaining = raw
+    const extracted: Record<string, string> = {}
+
+    let match: RegExpExecArray | null
+    while ((match = tagPattern.exec(raw)) !== null) {
+      extracted[match[1].toLowerCase()] = match[3] ?? match[4]
+      remaining = remaining.replace(match[0], '').trim()
+    }
+
+    setPlayerName(
+      extracted['name'] ?? (remaining.length > 0 ? remaining : null)
+    )
+    setCardID(extracted['id'] ?? null)
+    setAuthorName(extracted['author'] ?? null)
+  }
+
+  useEffect(() => {
+    if (subTypeData && subTypeData.length === 0 && subType.length > 0) {
+      setSubType([])
+    }
+  }, [subTypeData])
 
   return (
     <>
@@ -347,6 +387,18 @@ export default () => {
                 getOptionLabel={(rarity) => rarity.card_rarity}
               />
 
+              <FilterDropdown<SubType>
+                label="Sub Types"
+                selectedValues={subType}
+                options={subTypeData || []}
+                isLoading={subTypeDataIsLoading}
+                onToggle={toggleSubType}
+                onDeselectAll={() => setSubType([])}
+                getOptionId={(subType) => subType.sub_type}
+                getOptionValue={(subType) => subType.sub_type}
+                getOptionLabel={(subType) => subType.sub_type}
+              />
+
               <FormControl>
                 <Menu closeOnSelect={false}>
                   <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
@@ -396,7 +448,7 @@ export default () => {
                 </Menu>
               </FormControl>
               <FormControl>
-                <Menu>
+                <Menu closeOnSelect={false}>
                   <MenuButton
                     as={Button}
                     rightIcon={<ChevronDownIcon />}
@@ -446,8 +498,14 @@ export default () => {
               className="w-full bg-secondary border-grey100"
               placeholder="Search By Player Name or Card ID"
               size="lg"
-              onChange={(event) => setPlayerOrCardID(event.target.value)}
+              onChange={(event) => parseSearchQuery(event.target.value)}
             />
+            <p className="mt-1 text-xs text-gray-400">
+              Search by player name, or use tags:{' '}
+              <span className="font-mono">name:Andrei</span>{' '}
+              <span className="font-mono">author:Enigmatic</span>{' '}
+              <span className="font-mono">id:2528</span>
+            </p>
           </FormControl>
 
           <TableContainer>
@@ -470,16 +528,8 @@ export default () => {
                       )}
                     </span>
                   </Th>
-                  <Th
-                    className="cursor-pointer"
-                    onClick={() => handleSortChange('render_name')}
-                  >
-                    <span className="flex items-center">
-                      Render&nbsp;
-                      {sortColumn === 'render_name' && (
-                        <SortIcon sortDirection={sortDirection} />
-                      )}
-                    </span>
+                  <Th className="cursor-pointer">
+                    <span className="flex items-center">Card Info&nbsp;</span>
                   </Th>
                   <Th
                     className="cursor-pointer"
@@ -505,10 +555,21 @@ export default () => {
                   </Th>
                   <Th
                     className="cursor-pointer"
+                    onClick={() => handleSortChange('render_name')}
+                  >
+                    <span className="flex items-center">
+                      Render&nbsp;
+                      {sortColumn === 'render_name' && (
+                        <SortIcon sortDirection={sortDirection} />
+                      )}
+                    </span>
+                  </Th>
+                  <Th
+                    className="cursor-pointer"
                     onClick={() => handleSortChange('teamID')}
                   >
                     <span className="flex items-center">
-                      Team ID&nbsp;
+                      Team&nbsp;
                       {sortColumn === 'teamID' && (
                         <SortIcon sortDirection={sortDirection} />
                       )}
@@ -827,10 +888,40 @@ export default () => {
                           {cardService.calculateStatus(card)}
                         </Td>
                         <Td isLoading={isLoading}>{card.player_name}</Td>
-                        <Td isLoading={isLoading}>{card.render_name}</Td>
+                        <Td isLoading={isLoading}>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              setSelectedCard(card)
+                              viewCardInfo.onOpen()
+                            }}
+                          >
+                            Show Info
+                          </Button>
+                        </Td>
                         <Td isLoading={isLoading}>{card.cardID}</Td>
-                        <Td isLoading={isLoading}>{card.playerID}</Td>
-                        <Td isLoading={isLoading}>{card.teamID}</Td>
+                        <Td isLoading={isLoading}>
+                          <Link
+                            href={`https://index.simulationhockey.com/${LEAGUE_OPTIONS.find(
+                              (l) => l.value === String(card.leagueID)
+                            ).label.toLowerCase()}/player/${card.playerID}`}
+                            className="!hover:no-underline ml-2 block pb-2 text-left text-link"
+                            target="_blank"
+                          >
+                            {' '}
+                            {card.playerID}
+                          </Link>
+                        </Td>
+                        <Td isLoading={isLoading}>{card.render_name}</Td>
+                        <Td isLoading={isLoading}>
+                          {
+                            teamData?.find(
+                              (t) =>
+                                t.id === card.teamID &&
+                                t.league === card.leagueID
+                            )?.name
+                          }
+                        </Td>
                         <Td isLoading={isLoading}>{card.author_username}</Td>
                         <Td isLoading={isLoading}>{card.pullable}</Td>
                         <Td isLoading={isLoading}>{card.approved}</Td>
@@ -875,6 +966,27 @@ export default () => {
           />
         </div>
       </PageWrapper>
+
+      {selectedCard && viewCardInfo.isOpen && (
+        <Modal
+          isOpen={viewCardInfo.isOpen}
+          onClose={() => {
+            viewCardInfo.onClose()
+            setSelectedCard(null)
+          }}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader className="bg-primary text-secondary">
+              Card Info
+            </ModalHeader>
+            <ModalCloseButton />
+            <ModalBody className="bg-primary text-secondary">
+              <CardInfo card={selectedCard} />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      )}
       {selectedCard && (
         <>
           <ClaimCardDialog

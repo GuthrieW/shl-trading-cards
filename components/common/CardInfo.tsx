@@ -14,7 +14,7 @@ export const generateCardTooltipContent = (
 
   const portalGenInfo = portalPlayer
     ? `Jersey Num: ${portalPlayer.jerseyNumber}\n    Render: ${portalPlayer.render}`
-    : `no portal info found`
+    : `No Jersey Found | ${card.render_name}`
   const award_rarity =
     card.card_rarity === 'Awards'
       ? `Awards - ${card.sub_type}`
@@ -23,7 +23,8 @@ export const generateCardTooltipContent = (
   const basicInfo = `
     ${card.player_name}
     ${portalGenInfo}
-    Rarity: ${award_rarity} | Pos: ${card.position}
+    Rarity: ${award_rarity} 
+    Pos: ${card.position}
     Season: ${card.season} | Overall: ${card.overall}
     Team: ${teamInfo.name} (${teamInfo.abbreviation})
       `.trim()
