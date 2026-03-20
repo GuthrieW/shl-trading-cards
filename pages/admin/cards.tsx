@@ -2,7 +2,6 @@ import { ChevronDownIcon } from '@chakra-ui/icons'
 import {
   Button,
   FormControl,
-  FormLabel,
   Input,
   Menu,
   MenuButton,
@@ -10,13 +9,15 @@ import {
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
-  Switch,
   Table,
   TableContainer,
   Tbody,
   Th,
   Thead,
   Tr,
+  Tabs,
+  TabList,
+  Tab,
   useDisclosure,
   Image,
   ModalOverlay,
@@ -40,8 +41,8 @@ import { GET } from '@constants/http-methods'
 import { useRedirectIfNotAuthenticated } from '@hooks/useRedirectIfNotAuthenticated'
 import { useRedirectIfNotAuthorized } from '@hooks/useRedirectIfNotAuthorized'
 import { query, indexAxios } from '@pages/api/database/query'
-import { ListResponse, SortDirection } from '@pages/api/v3'
-import axios from 'axios'
+import { ListResponse, seasoninfo, SortDirection } from '@pages/api/v3'
+import axios, { AxiosResponse } from 'axios'
 import { useState } from 'react'
 import { cardService } from 'services/cardService'
 import { useCookie } from '@hooks/useCookie'
@@ -58,6 +59,8 @@ import RadioGroupSelector from '@components/common/RadioGroupSelector'
 import { LEAGUE_OPTIONS } from 'lib/constants'
 
 type ColumnName = keyof Readonly<Card>
+
+type CardTab = 'skaters' | 'goaltenders' | 'my-cards'
 
 const ROWS_PER_PAGE: number = 10 as const
 
@@ -94,9 +97,18 @@ const LOADING_TABLE_DATA: { rows: Card[] } = {
   })),
 } as const
 
+const TAB_CONFIG: { key: CardTab; label: string }[] = [
+  { key: 'skaters', label: 'Skaters' },
+  { key: 'goaltenders', label: 'Goaltenders' },
+  { key: 'my-cards', label: 'My Claimed Cards' },
+]
+
 export default () => {
-  const [viewSkaters, setViewSkaters] = useState<boolean>(true)
-  const [viewMyCards, setViewMyCards] = useState<boolean>(false)
+  const [activeTab, setActiveTab] = useState<CardTab>('skaters')
+
+  const viewSkaters = activeTab !== 'goaltenders'
+  const viewMyCards = activeTab === 'my-cards'
+
   const [viewNeedsAuthor, setViewNeedsAuthor] = useState<boolean>(false)
   const [viewNeedsImage, setviewNeedsImage] = useState<boolean>(false)
   const [viewNeedsApproval, setviewNeedsApproval] = useState<boolean>(false)
@@ -116,6 +128,7 @@ export default () => {
   const [selectedCard, setSelectedCard] = useState<Card>(null)
   const [imageUrl, setImageUrl] = useState<string>(null)
   const [cardID, setCardID] = useState<string>(null)
+  const [seasons, setSeasons] = useState<string[]>([])
 
   const claimCardDialog = useDisclosure()
   const updateModal = useDisclosure()
@@ -137,6 +150,11 @@ export default () => {
   const clearAllFilters = () => {
     setTeams([])
     setRarities([])
+  }
+
+  const handleTabChange = (index: number) => {
+    setActiveTab(TAB_CONFIG[index].key)
+    setTablePage(1)
   }
 
   const { payload: teamData, isLoading: teamDataIsLoading } = query<Team[]>({
@@ -164,6 +182,18 @@ export default () => {
       setImageUrl(image_url)
     }
   }
+
+  const { payload: draftSeasons, isLoading: draftSeasonsIsLoading } = query<
+    seasoninfo[]
+  >({
+    queryKey: ['draftSeasons'],
+    queryFn: () =>
+      axios({
+        method: GET,
+        url: `https://index.simulationhockey.com/api/v1/leagues/seasons?league=0`,
+      }),
+  })
+
   const { payload, isLoading } = query<ListResponse<Card>>({
     queryKey: [
       'cards',
@@ -184,6 +214,7 @@ export default () => {
       cardID,
       JSON.stringify(leagueID),
       JSON.stringify(teamLeagueID),
+      JSON.stringify(seasons),
     ],
     queryFn: () =>
       axios({
@@ -208,6 +239,7 @@ export default () => {
           cardID: cardID,
           leagueID: JSON.stringify(leagueID),
           teamLeagueID: JSON.stringify(teamLeagueID),
+          draftSeason: JSON.stringify(seasons),
         },
       }),
   })
@@ -252,15 +284,28 @@ export default () => {
         className="h-full flex flex-col justify-center items-center w-11/12 md:w-3/4"
       >
         <p>Card Management</p>
+        <Tabs
+          onChange={handleTabChange}
+          index={TAB_CONFIG.findIndex((t) => t.key === activeTab)}
+          isFitted
+          variant="enclosed-colored"
+          isLazy
+        >
+          <TabList>
+            {TAB_CONFIG.map((tab) => (
+              <Tab
+                _selected={{
+                  borderBottomColor: 'blue.600',
+                }}
+                className="!bg-primary !text-secondary !border-b-4"
+                key={tab.key}
+              >
+                {tab.label}
+              </Tab>
+            ))}
+          </TabList>
+        </Tabs>
         <div className="rounded border border-1 border-inherit mt-4">
-          <FormControl>
-            <Input
-              className="w-full bg-secondary border-grey100"
-              placeholder="Search By Player Name or Card ID"
-              size="lg"
-              onChange={(event) => setPlayerOrCardID(event.target.value)}
-            />
-          </FormControl>
           <div className="m-2 flex flex-col gap-4 md:flex-row md:justify-between">
             <RadioGroupSelector
               value={leagueID}
@@ -275,34 +320,32 @@ export default () => {
 
           <div className="m-2 flex flex-col gap-4 md:flex-row md:justify-between">
             <div className="flex flex-col gap-4 md:flex-row md:space-x-2 w-full md:w-auto">
-              <div className="flex flex-col gap-4 md:flex-row md:space-x-2 w-full md:w-auto">
-                <FilterDropdown
-                  label="Teams"
-                  selectedValues={teams}
-                  options={teamData || []}
-                  isLoading={teamDataIsLoading}
-                  onToggle={toggleTeam}
-                  onDeselectAll={() => {
-                    setTeams([])
-                    setTeamLeagueID({})
-                  }}
-                  getOptionId={(team) => `${team.league}-${team.id}`}
-                  getOptionValue={(team) => `${team.league}-${team.id}`}
-                  getOptionLabel={(team) => team.name}
-                />
+              <FilterDropdown
+                label="Teams"
+                selectedValues={teams}
+                options={teamData || []}
+                isLoading={teamDataIsLoading}
+                onToggle={toggleTeam}
+                onDeselectAll={() => {
+                  setTeams([])
+                  setTeamLeagueID({})
+                }}
+                getOptionId={(team) => `${team.league}-${team.id}`}
+                getOptionValue={(team) => `${team.league}-${team.id}`}
+                getOptionLabel={(team) => team.name}
+              />
 
-                <FilterDropdown<Rarities>
-                  label="Rarities"
-                  selectedValues={rarities}
-                  options={rarityData || []}
-                  isLoading={rarityDataisLoading}
-                  onToggle={toggleRarity}
-                  onDeselectAll={() => setRarities([])}
-                  getOptionId={(rarity) => rarity.card_rarity}
-                  getOptionValue={(rarity) => rarity.card_rarity}
-                  getOptionLabel={(rarity) => rarity.card_rarity}
-                />
-              </div>
+              <FilterDropdown<Rarities>
+                label="Rarities"
+                selectedValues={rarities}
+                options={rarityData || []}
+                isLoading={rarityDataisLoading}
+                onToggle={toggleRarity}
+                onDeselectAll={() => setRarities([])}
+                getOptionId={(rarity) => rarity.card_rarity}
+                getOptionValue={(rarity) => rarity.card_rarity}
+                getOptionLabel={(rarity) => rarity.card_rarity}
+              />
 
               <FormControl>
                 <Menu closeOnSelect={false}>
@@ -352,18 +395,61 @@ export default () => {
                   </MenuList>
                 </Menu>
               </FormControl>
-            </div>
-            <div className="flex justify-end">
-              <FormControl className="flex items-center m-2">
-                <FormLabel className="mb-0">My Cards</FormLabel>
-                <Switch onChange={() => setViewMyCards(!viewMyCards)} />
-              </FormControl>
-              <FormControl className="flex items-center m-2">
-                <FormLabel className="mb-0">Toggle Goaltenders:</FormLabel>
-                <Switch onChange={() => setViewSkaters(!viewSkaters)} />
+              <FormControl>
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    rightIcon={<ChevronDownIcon />}
+                    className="text-primary"
+                  >
+                    Draft Season
+                  </MenuButton>
+
+                  <MenuList>
+                    <span className="text-primary">
+                      <MenuOptionGroup
+                        type="checkbox"
+                        value={seasons}
+                        onChange={(value) =>
+                          setSeasons(Array.isArray(value) ? value : [value])
+                        }
+                      >
+                        <MenuItemOption
+                          key="all"
+                          value="all"
+                          className="hover:bg-highlighted/40"
+                        >
+                          All
+                        </MenuItemOption>
+                        {(draftSeasons ?? [])
+                          .slice()
+                          .reverse()
+                          .map((season) => (
+                            <MenuItemOption
+                              key={season.season}
+                              value={String(season.season)}
+                              className="hover:bg-highlighted/40"
+                            >
+                              S{season.season}
+                            </MenuItemOption>
+                          ))}
+                      </MenuOptionGroup>
+                    </span>
+                  </MenuList>
+                </Menu>
               </FormControl>
             </div>
           </div>
+
+          <FormControl className="m-2 mt-4 !w-4/5">
+            <Input
+              className="w-full bg-secondary border-grey100"
+              placeholder="Search By Player Name or Card ID"
+              size="lg"
+              onChange={(event) => setPlayerOrCardID(event.target.value)}
+            />
+          </FormControl>
+
           <TableContainer>
             <Table variant="cardtable" className="mt-4" size="md">
               <Thead>

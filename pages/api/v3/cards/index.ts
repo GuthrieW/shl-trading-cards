@@ -47,6 +47,7 @@ export default async function cardsEndpoint(
     const leagues = parseQueryArray(req.query.leagueID)
     const teams = parseQueryArray(req.query.teams)
     const rarities = parseQueryArray(req.query.rarities)
+    const draftSeason = parseQueryArray(req.query.draftSeason)
 
     const hasSortStatus: boolean = [
       viewNeedsAuthor,
@@ -182,6 +183,20 @@ export default async function cardsEndpoint(
           )
         }
       })
+      query.append(SQL`)`)
+    }
+
+    if (draftSeason.length !== 0) {
+      query.append(SQL` AND season IN (`)
+
+      draftSeason.forEach((season, index) => {
+        if (index === 0) {
+          query.append(SQL`${parseInt(season)}`)
+        } else {
+          query.append(SQL`, ${parseInt(season)}`)
+        }
+      })
+
       query.append(SQL`)`)
     }
 

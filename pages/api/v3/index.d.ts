@@ -131,4 +131,16 @@ export type Team = {
   colors: { primary: string; secondary: string; text: string }
 }
 
+export type PortalInfo = {
+  jerseyNumber: number
+  render: string
+}
+
+export type seasoninfo = {
+  id: number
+  name: string
+  abbreviation: string
+  season: number
+}
+
 export type SortDirection = 'ASC' | 'DESC'
