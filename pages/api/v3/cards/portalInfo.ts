@@ -23,8 +23,6 @@ export default async function cardInfo(
     const playerID = req.query.playerID as string
     const leagueID = req.query.leagueID as string
 
-    console.log(playerID)
-
     if (!playerID || !leagueID || playerID === '1') {
       res.status(StatusCodes.BAD_REQUEST).json({
         status: 'error',
