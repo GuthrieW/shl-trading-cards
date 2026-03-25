@@ -47,6 +47,7 @@ export default async function cardsEndpoint(
     const leagues = parseQueryArray(req.query.leagueID)
     const teams = parseQueryArray(req.query.teams)
     const rarities = parseQueryArray(req.query.rarities)
+    const draftSeason = parseQueryArray(req.query.draftSeason)
 
     const hasSortStatus: boolean = [
       viewNeedsAuthor,
@@ -57,6 +58,7 @@ export default async function cardsEndpoint(
     ].some((viewStatus) => viewStatus === 'true')
 
     const cardID = req.query.cardID as string
+    const author_name = req.query.author_name as string
     const date_approved = req.query.date_approved as string
 
     const query: SQLStatement = SQL`
@@ -164,6 +166,10 @@ export default async function cardsEndpoint(
       query.append(SQL` AND player_name LIKE ${`%${playerName}%`}`)
     }
 
+    if (author_name) {
+      query.append(SQL` AND user_info.username LIKE ${`%${author_name}%`}`)
+    }
+
     if (teams.length !== 0) {
       query.append(SQL` AND (`)
       teams.forEach((team, index) => {
@@ -182,6 +188,20 @@ export default async function cardsEndpoint(
           )
         }
       })
+      query.append(SQL`)`)
+    }
+
+    if (draftSeason.length !== 0) {
+      query.append(SQL` AND season IN (`)
+
+      draftSeason.forEach((season, index) => {
+        if (index === 0) {
+          query.append(SQL`${parseInt(season)}`)
+        } else {
+          query.append(SQL`, ${parseInt(season)}`)
+        }
+      })
+
       query.append(SQL`)`)
     }
 
@@ -218,7 +238,8 @@ export default async function cardsEndpoint(
     if (sortColumn === 'conditioning') query.append(SQL` conditioning`)
     if (sortColumn === 'card_rarity') query.append(SQL` card_rarity`)
     if (sortColumn === 'date_approved') query.append(SQL` date_approved`)
-    if (sortColumn === 'render_name') query.append(SQL` render_name`)
+    if (sortColumn === 'render_name')
+      query.append(SQL` (render_name = '' OR render_name IS NULL), render_name`)
     sortDirection === 'ASC' ? query.append(SQL` ASC`) : query.append(` DESC`)
 
     if (limit) {

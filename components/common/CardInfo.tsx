@@ -1,21 +1,33 @@
 import React, { useState } from 'react'
 import { Button } from '@chakra-ui/react'
 import { indexAxios, query } from '@pages/api/database/query'
-import { Team } from '@pages/api/v3'
+import { PortalInfo, Team } from '@pages/api/v3'
+import axios from 'axios'
 
-export const generateCardTooltipContent = (card: Card, teamData: Team[]) => {
+export const generateCardTooltipContent = (
+  card: Card,
+  teamData: Team[],
+  portalInfo: PortalInfo
+) => {
   const teamInfo = teamData.find((t) => t.id === card.teamID)
+  const portalPlayer = portalInfo?.[0]
+
+  const portalGenInfo = portalPlayer
+    ? `Jersey Num: ${portalPlayer.jerseyNumber}\n    Render: ${portalPlayer.render}`
+    : `No Jersey Found | ${card.render_name}`
   const award_rarity =
     card.card_rarity === 'Awards'
       ? `Awards - ${card.sub_type}`
       : card.card_rarity
 
   const basicInfo = `
-${card.player_name}
-Rarity: ${award_rarity} | Pos: ${card.position}
-Season: ${card.season} | Overall: ${card.overall}
-Team: ${teamInfo.name} (${teamInfo.abbreviation})
-  `.trim()
+    ${card.player_name}
+    ${portalGenInfo}
+    Rarity: ${award_rarity} 
+    Pos: ${card.position}
+    Season: ${card.season} | Overall: ${card.overall}
+    Team: ${teamInfo.name} (${teamInfo.abbreviation})
+      `.trim()
 
   let positionSkills = ``
 
@@ -40,6 +52,16 @@ export const CardInfo = ({ card }: { card: Card }) => {
       }),
   })
 
+  const { payload: portalInfo, isLoading: portalInfoIsLoading } =
+    query<PortalInfo>({
+      queryKey: ['portalInfo', String(card.leagueID), String(card.playerID)],
+      queryFn: () =>
+        axios({
+          method: 'GET',
+          url: `/api/v3/cards/portalInfo?leagueID=${card.leagueID}&playerID=${card.playerID}`,
+        }),
+    })
+
   return (
     <div className="pt-2">
       <Button
@@ -48,9 +70,9 @@ export const CardInfo = ({ card }: { card: Card }) => {
       >
         Show Card Info
       </Button>
-      {isVisible && !teamDataIsLoading && (
+      {isVisible && !teamDataIsLoading && !portalInfoIsLoading && (
         <pre className="whitespace-pre-wrap break-words font-mono mt-2 sm:mt-4 lg:mt-6">
-          {generateCardTooltipContent(card, teamData)}
+          {generateCardTooltipContent(card, teamData, portalInfo)}
         </pre>
       )}
     </div>
