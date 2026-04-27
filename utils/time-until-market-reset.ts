@@ -5,6 +5,7 @@ export const timeUntilMarketplaceReset = (): string => {
   const estTimeZone = 'America/New_York'
   const estNow = toZonedTime(now, estTimeZone)
 
+  // Find next Sunday at midnight EST
   const nextSunday = new Date(estNow)
   const daysUntilSunday = (8 - estNow.getDay()) % 7 || 7
   nextSunday.setDate(estNow.getDate() + daysUntilSunday)
@@ -18,12 +19,7 @@ export const timeUntilMarketplaceReset = (): string => {
   )
   const minutes = Math.floor((msUntilReset % (1000 * 60 * 60)) / (1000 * 60))
 
-  const fullDuration = {
-    days: days,
-    hours: hours,
-    minutes: minutes,
-  }
-  const formatter = (style) => new Intl.DurationFormat('en-US', { style })
-
-  return formatter('short').format(fullDuration)
+  if (days > 0) return `${days}d ${hours}h ${minutes}m`
+  if (hours > 0) return `${hours}h ${minutes}m`
+  return `${minutes}m`
 }
