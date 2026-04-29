@@ -41,7 +41,7 @@ const handler = async (
       LEFT JOIN (
           SELECT cardID, COUNT(*) AS card_count
           FROM collection
-          WHERE userID = 3103
+          WHERE userID = ${uid}
           GROUP BY cardID
       ) AS col ON umc.cardID = col.cardID
       WHERE userID=${uid}`
