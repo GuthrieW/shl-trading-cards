@@ -43,6 +43,8 @@ export const generateCardTooltipContent = (
 export const CardInfo = ({ card }: { card: Card }) => {
   const [isVisible, setIsVisible] = useState(true)
 
+  const leagueID = card.card_rarity === 'Draft Night' ? 1 : card.leagueID
+
   const { payload: teamData, isLoading: teamDataIsLoading } = query<Team[]>({
     queryKey: ['teamData', String(card.leagueID)],
     queryFn: () =>
@@ -54,11 +56,11 @@ export const CardInfo = ({ card }: { card: Card }) => {
 
   const { payload: portalInfo, isLoading: portalInfoIsLoading } =
     query<PortalInfo>({
-      queryKey: ['portalInfo', String(card.leagueID), String(card.playerID)],
+      queryKey: ['portalInfo', String(leagueID), String(card.playerID)],
       queryFn: () =>
         axios({
           method: 'GET',
-          url: `/api/v3/cards/portalInfo?leagueID=${card.leagueID}&playerID=${card.playerID}`,
+          url: `/api/v3/cards/portalInfo?leagueID=${leagueID}&playerID=${card.playerID}`,
         }),
     })
 
