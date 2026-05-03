@@ -26,6 +26,7 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalHeader,
+  ButtonGroup,
 } from '@chakra-ui/react'
 import DeleteCardDialog from '@components/admin-cards/DeleteCardDialog'
 import RemoveCardAuthorDialog from '@components/admin-cards/RemoveCardAuthorDialog'
@@ -63,7 +64,7 @@ import { useDebounce } from 'use-debounce'
 
 type ColumnName = keyof Readonly<Card>
 
-type CardTab = 'skaters' | 'goaltenders' | 'my-cards'
+type CardTab = 'cards' | 'my-cards'
 
 const ROWS_PER_PAGE: number = 10 as const
 
@@ -101,22 +102,20 @@ const LOADING_TABLE_DATA: { rows: Card[] } = {
 } as const
 
 const TAB_CONFIG: { key: CardTab; label: string }[] = [
-  { key: 'skaters', label: 'Skaters' },
-  { key: 'goaltenders', label: 'Goaltenders' },
+  { key: 'cards', label: 'Cards' },
   { key: 'my-cards', label: 'My Claimed Cards' },
 ]
 
 export default () => {
-  const [activeTab, setActiveTab] = useState<CardTab>('skaters')
-
-  const viewSkaters = activeTab !== 'goaltenders'
-  const viewMyCards = activeTab === 'my-cards'
-
+  const [activeTab, setActiveTab] = useState<CardTab>('cards')
   const [viewNeedsAuthor, setViewNeedsAuthor] = useState<boolean>(false)
   const [viewNeedsImage, setviewNeedsImage] = useState<boolean>(false)
   const [viewNeedsApproval, setviewNeedsApproval] = useState<boolean>(false)
   const [viewNeedsAuthorPaid, setviewNeedsAuthorPaid] = useState<boolean>(false)
   const [viewDone, setViewDone] = useState<boolean>(false)
+  const [playerType, setPlayerType] = useState<'skaters' | 'goaltenders'>(
+    'skaters'
+  )
 
   const [playerName, setPlayerName] = useState<string>(null)
   const [authorName, setAuthorName] = useState<string>(null)
@@ -157,6 +156,9 @@ export default () => {
   const { isCheckingAuthorization } = useRedirectIfNotAuthorized({
     roles: ['TRADING_CARD_ADMIN', 'TRADING_CARD_TEAM'],
   })
+
+  const viewSkaters = playerType !== 'goaltenders'
+  const viewMyCards = activeTab === 'my-cards'
 
   const clearAllFilters = () => {
     setTeams([])
@@ -356,6 +358,26 @@ export default () => {
                 clearAllFilters()
               }}
             />
+            <ButtonGroup size="md" className="mt-2">
+              <Button
+                borderRadius="full"
+                px={4}
+                variant={playerType === 'skaters' ? 'solid' : 'outline'}
+                colorScheme="blue"
+                onClick={() => setPlayerType('skaters')}
+              >
+                Skaters
+              </Button>
+              <Button
+                borderRadius="full"
+                px={4}
+                variant={playerType === 'goaltenders' ? 'solid' : 'outline'}
+                colorScheme="blue"
+                onClick={() => setPlayerType('goaltenders')}
+              >
+                Goalies
+              </Button>
+            </ButtonGroup>
           </div>
 
           <div className="m-2 flex flex-col gap-4 md:flex-row md:justify-between">
@@ -501,7 +523,7 @@ export default () => {
               onChange={(event) => parseSearchQuery(event.target.value)}
             />
             <p className="mt-1 text-xs text-gray-400">
-              Search by player name, or use tags:{' '}
+              Search by player name, or user tags:{' '}
               <span className="font-mono">name:Andrei</span>{' '}
               <span className="font-mono">author:Enigmatic</span>{' '}
               <span className="font-mono">id:2528</span>

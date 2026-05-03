@@ -145,7 +145,7 @@ const LastOpenedPack = () => {
     { id: rarityMap.ruby.label, color: HexCodes.Ruby, emoji: '🔴' },
     { id: rarityMap.diamond.label, color: HexCodes.Diamond, emoji: '💎' },
     { id: rarityMap.hallOfFame.label, color: HexCodes.Gold, emoji: '🐐' },
-    { id: rarityMap.draftNight.label, color: HexCodes.Gold, emoji: '🎯' },
+    { id: rarityMap.draftNight.label, emoji: '🎯' },
     { id: rarityMap.twoThousandClub.label, color: HexCodes.Gold, emoji: '🎉' },
     { id: rarityMap.award.label, color: HexCodes.Award, emoji: '🏆' },
     { id: rarityMap.firstOverall.label, color: HexCodes.Gold, emoji: '☝️' },
