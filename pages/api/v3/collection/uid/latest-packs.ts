@@ -23,6 +23,7 @@ const handler = async (
   if (req.method === GET) {
     const userID = req.query.userID as string
     const packID = req.query.packID as string
+    const limit = req.query.limit as string
 
     if (!userID && !packID) {
       res
@@ -48,7 +49,7 @@ const handler = async (
     query.append(SQL` ORDER BY openDate DESC`)
 
     if (userID && !packID) {
-      query.append(SQL` LIMIT 3`)
+      query.append(SQL` LIMIT ${limit ? parseInt(limit) : 3}`)
     }
 
     const queryResult = await cardsQuery<UserPacks>(query)
@@ -62,12 +63,10 @@ const handler = async (
     }
 
     if (queryResult.length === 0) {
-      res
-        .status(StatusCodes.NOT_FOUND)
-        .json({
-          status: 'error',
-          message: 'No opened packs found for this user',
-        })
+      res.status(StatusCodes.NOT_FOUND).json({
+        status: 'error',
+        message: 'No opened packs found for this user',
+      })
       return
     }
 

@@ -287,7 +287,10 @@ export default ({ uid }: { uid: string }) => {
         {userIsLoading ? (
           <Spinner />
         ) : (
-          <div>{pluralizeName(user?.username)}&nbsp;Collection</div>
+          <div>
+            {pluralizeName(user?.username)}&nbsp;Collection: {totalOwnedCards}{' '}
+            Cards Owned
+          </div>
         )}
       </div>
       <div className="mb-3" />

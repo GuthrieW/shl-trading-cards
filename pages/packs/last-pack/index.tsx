@@ -16,6 +16,13 @@ import {
   BreadcrumbLink,
   Breadcrumb,
   Spinner,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
 } from '@chakra-ui/react'
 import { PageWrapper } from '@components/common/PageWrapper'
 import { GET } from '@constants/http-methods'
@@ -56,6 +63,7 @@ const LastOpenedPack = () => {
   const [loggedInUID] = useCookie(config.userIDCookieName)
   const queryClient = useQueryClient()
   const { type } = router.query as { type: string }
+  const [showUnflippedModal, setShowUnflippedModal] = useState(false)
 
   useEffect(() => {
     if (!loggedIn) {
@@ -93,26 +101,6 @@ const LastOpenedPack = () => {
     isError: useOpenPackIsError,
   } = useOpenPack()
 
-  const OpenNextPack = (pack: UserPacks) => {
-    if (useOpenPackIsLoading) {
-      toast({
-        title: 'Already opening a pack',
-        description: `Bro chill we're still opening that pack`,
-        ...warningToastOptions,
-      })
-      return
-    }
-    if (!pack) {
-      toast({
-        title: 'No Packs Available',
-        description: `You don't have any ${type} packs to open.`,
-        ...errorToastOptions,
-      })
-      return
-    }
-    openPack({ packID: pack.packID })
-  }
-
   const { payload: user } = query<UserData>({
     queryKey: ['baseUser', session?.token],
     queryFn: () =>
@@ -135,6 +123,38 @@ const LastOpenedPack = () => {
     } else {
       updateRevealedCards(index)
     }
+  }
+  const OpenNextPack = (pack: UserPacks) => {
+    if (useOpenPackIsLoading) {
+      toast({
+        title: 'Already opening a pack',
+        description: `Bro chill we're still opening that pack`,
+        ...warningToastOptions,
+      })
+      return
+    }
+
+    if (revealedCards.length < latestPackCards.length) {
+      setShowUnflippedModal(true)
+      return
+    }
+
+    if (!pack) {
+      toast({
+        title: 'No Packs Available',
+        description: `You don't have any ${type} packs to open.`,
+        ...errorToastOptions,
+      })
+      return
+    }
+    openPack({ packID: pack.packID })
+  }
+
+  const confirmOpenNextPack = () => {
+    if (!firstPack) return
+
+    setShowUnflippedModal(false)
+    openPack({ packID: firstPack.packID })
   }
 
   const cardRarityShadows = [
@@ -387,6 +407,37 @@ const LastOpenedPack = () => {
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={showUnflippedModal}
+        onClose={() => setShowUnflippedModal(false)}
+        isCentered
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader className="text-primary bg-primary">
+            Unflipped Cards Remaining
+          </ModalHeader>
+          <ModalCloseButton />
+
+          <ModalBody className="text-primary bg-primary">
+            You still have cards in this pack that have not been revealed. Are
+            you sure you want to open the next pack?
+          </ModalBody>
+
+          <ModalFooter className="text-primary bg-primary">
+            <Button
+              onClick={() => setShowUnflippedModal(false)}
+              mr={3}
+              colorScheme="red"
+            >
+              Cancel
+            </Button>
+            <Button colorScheme="green" onClick={confirmOpenNextPack}>
+              Open Next Pack
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </PageWrapper>
   )
 }

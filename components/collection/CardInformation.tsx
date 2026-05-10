@@ -209,6 +209,11 @@ export const CardInformation = ({
                     borderWidth="1px"
                     rounded="md"
                     mb={2}
+                    className={
+                      session?.userId == String(pack.userID)
+                        ? 'shadow-[0_0_25px_rgba(59,130,246,1)]'
+                        : ''
+                    }
                   >
                     <div>
                       {pack.username} : {pack.total}
