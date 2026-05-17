@@ -12,16 +12,13 @@ import { useState } from 'react'
 
 interface PackOpenProps {
   packID: string
+  viewCard?: boolean
 }
 
-const PackOpen: React.FC<PackOpenProps> = ({ packID }) => {
+const PackOpen: React.FC<PackOpenProps> = ({ packID, viewCard = true }) => {
   const [uid] = useCookie(config.userIDCookieName)
   const [lightBoxIsOpen, setLightBoxIsOpen] = useState<boolean>(false)
   const [selectedCard, setSelectedCard] = useState<LatestCards | null>(null)
-
-  const customLoader = (src: string) => {
-    return `https://simulationhockey.com/tradingcards/${src}.png`
-  }
 
   const { payload: cards, isLoading: isLoading } = query<LatestCards[]>({
     queryKey: ['latest-cards', packID],
@@ -67,7 +64,7 @@ const PackOpen: React.FC<PackOpenProps> = ({ packID }) => {
           </Box>
         ))}
       </SimpleGrid>
-      {lightBoxIsOpen && selectedCard && (
+      {lightBoxIsOpen && selectedCard && viewCard && (
         <CardLightBoxModal
           cardName={selectedCard.playerName}
           cardImage={selectedCard.imageURL}

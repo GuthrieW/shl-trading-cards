@@ -129,7 +129,7 @@ export default ({ uid }: { uid: string }) => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('DESC')
   const [tablePage, setTablePage] = useState<number>(1)
   const [otherUID, setOtherUID] = useState<string>('')
-  const [leagueID, setLeagueID] = useState<string[]>(['0'])
+  const [leagueID, setLeagueID] = useState<string[]>(['0', '1', '2'])
   const [debouncedPlayerName] = useDebounce(playerName, 500)
 
   const [loggedInUID] = useCookie(config.userIDCookieName)
@@ -284,21 +284,31 @@ export default ({ uid }: { uid: string }) => {
   return (
     <PageWrapper>
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
-        {userIsLoading ? (
-          <Spinner />
-        ) : (
-          <div>
-            {pluralizeName(user?.username)}&nbsp;Collection: {totalOwnedCards}{' '}
-            Cards Owned
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            {userIsLoading ? (
+              <Spinner />
+            ) : (
+              <div className="truncate">
+                {pluralizeName(user?.username)}&nbsp;Collection:{' '}
+                {totalOwnedCards > 0 ? totalOwnedCards : 0} Cards Owned
+              </div>
+            )}
           </div>
-        )}
+
+          <div className="flex-shrink-0">
+            {payload && payload.totalOwned !== null && (
+              <div className="w-full sm:w-auto">
+                <DisplayPacks userID={uid} />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
       <div className="mb-3" />
       {payload && payload.totalOwned !== null && (
         <DisplayCollection uid={uid} />
       )}
-      <div className="mb-3" />
-      {payload && payload.totalOwned !== null && <DisplayPacks userID={uid} />}
       <div className="mb-3" />
 
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl mb-6">

@@ -48,8 +48,8 @@ const handler = async (
 
     query.append(SQL` ORDER BY openDate DESC`)
 
-    if (userID && !packID) {
-      query.append(SQL` LIMIT ${limit ? parseInt(limit) : 3}`)
+    if (userID && !packID && limit) {
+      query.append(SQL` LIMIT ${parseInt(limit)}`)
     }
 
     const queryResult = await cardsQuery<UserPacks>(query)

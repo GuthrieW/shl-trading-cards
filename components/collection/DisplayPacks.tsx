@@ -1,14 +1,17 @@
 import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
   Image,
-  Box,
   SimpleGrid,
   Spinner,
   Button,
+  Drawer,
+  DrawerBody,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  DrawerHeader,
+  useDisclosure,
+  IconButton,
+  Flex,
 } from '@chakra-ui/react'
 import React, { useState, useMemo, useCallback } from 'react'
 import axios from 'axios'
@@ -18,6 +21,7 @@ import PackOpen from '@components/collection/PackOpen'
 import { UserPacks } from '@pages/api/v3'
 import { useRouter } from 'next/router'
 import { packService } from 'services/packService'
+import { ArrowBackIcon } from '@chakra-ui/icons'
 
 interface DisplayPacksProps {
   userID: string
@@ -25,25 +29,31 @@ interface DisplayPacksProps {
 
 const DisplayPacks: React.FC<DisplayPacksProps> = React.memo(({ userID }) => {
   const router = useRouter()
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const [selectedPackID, setSelectedPackID] = useState<string | null>(null)
-  const [isPanelOpen, setIsPanelOpen] = useState(false)
 
   const { payload: packs, isLoading: packsLoading } = query<UserPacks[]>({
     queryKey: ['latest-cards', userID],
     queryFn: () =>
       axios({
         method: GET,
-        url: `/api/v3/collection/uid/latest-packs?userID=${userID}`,
+        url: `/api/v3/collection/uid/latest-packs?userID=${userID}&limit=20`,
       }),
-    enabled: !!userID && isPanelOpen,
+    enabled: !!userID && isOpen,
   })
 
-  const handlePackClick = useCallback(
-    (packID: string) => {
-      setSelectedPackID(packID === selectedPackID ? null : packID)
-    },
-    [selectedPackID]
-  )
+  const openPackView = useCallback((packID: string) => {
+    setSelectedPackID(packID)
+  }, [])
+
+  const handleClose = useCallback(() => {
+    onClose()
+    setSelectedPackID(null)
+  }, [onClose])
+
+  const handleBack = useCallback(() => {
+    setSelectedPackID(null)
+  }, [])
 
   const packImages = useMemo(
     () =>
@@ -56,64 +66,91 @@ const DisplayPacks: React.FC<DisplayPacksProps> = React.memo(({ userID }) => {
   )
 
   return (
-    <Accordion allowToggle>
-      <AccordionItem>
-        <h2>
-          <AccordionButton onClick={() => setIsPanelOpen((prev) => !prev)}>
-            <Box flex="1" textAlign="left" fontWeight="bold" fontSize="lg">
-              Latest Packs Opened
-            </Box>
-            <AccordionIcon />
-          </AccordionButton>
-        </h2>
-        <AccordionPanel pb={4}>
-          {isPanelOpen && (
-            <>
-              {packsLoading ? (
-                <Spinner />
-              ) : packs && packs.length > 0 ? (
-                <SimpleGrid columns={3} spacing={4}>
-                  {packImages.map((imageSrc, index) => (
-                    <Box key={packs[index].packID} textAlign="center">
-                      <Image
-                        src={imageSrc}
-                        alt={`Pack Cover ${index + 1}`}
-                        onClick={() => handlePackClick(packs[index].packID)}
-                        className="cursor-pointer"
-                        width={100}
-                        height={175}
-                        style={{
-                          border:
-                            selectedPackID === packs[index].packID
-                              ? '2px solid yellow'
-                              : 'none',
-                        }}
-                      />
-                    </Box>
-                  ))}
-                </SimpleGrid>
-              ) : (
-                <div>No packs available.</div>
-              )}
+    <>
+      <Button
+        onClick={onOpen}
+        colorScheme="teal"
+        className="w-full !text-sm sm:!text-lg  sm:w-auto"
+      >
+        View Latest Packs
+      </Button>
+
+      <Drawer isOpen={isOpen} placement="right" onClose={handleClose} size="lg">
+        <DrawerOverlay />
+        <DrawerContent className="!bg-primary !text-primary">
+          <DrawerCloseButton />
+          <DrawerHeader className="border-b border-gray-600">
+            <Flex align="center" gap={2}>
               {selectedPackID && (
-                <>
-                  <Button
-                    mt={4}
-                    colorScheme="green"
-                    onClick={() => router.push(`/packs/${selectedPackID}`)}
-                  >
-                    Go to pack
-                  </Button>
-                  <Box mt={4}>
-                    <PackOpen packID={selectedPackID} />
-                  </Box>
-                </>
+                <IconButton
+                  aria-label="Back to packs"
+                  icon={<ArrowBackIcon />}
+                  size="sm"
+                  className="!bg-primary !text-primary hover:!bg-secondary"
+                  onClick={handleBack}
+                />
               )}
-            </>
-          )}
-        </AccordionPanel>
-      </AccordionItem>
-    </Accordion>
+              {selectedPackID ? 'Pack Details' : 'Your 20 Latest Packs'}
+            </Flex>
+          </DrawerHeader>
+          <DrawerBody>
+            {selectedPackID ? (
+              <>
+                <div className="mb-3">
+                  <Button
+                    size="sm"
+                    colorScheme="blue"
+                    onClick={() => router.push(`/packs/${selectedPackID}`)}
+                    width="full"
+                  >
+                    View Full Page
+                  </Button>
+                </div>
+                <PackOpen packID={selectedPackID} viewCard={false} />
+              </>
+            ) : (
+              <>
+                {packsLoading ? (
+                  <Spinner />
+                ) : packs && packs.length > 0 ? (
+                  <SimpleGrid columns={2} spacing={4}>
+                    {packs.map((pack, index) => (
+                      <div
+                        key={pack.packID}
+                        onClick={() => openPackView(pack.packID)}
+                        className="
+                          cursor-pointer
+                          border border-white
+                          rounded-md p-3
+                          transition-all duration-200 ease-in-out
+                          hover:scale-105 hover:border-blue700 hover:shadow-lg
+                          active:scale-100
+                        "
+                      >
+                        <Image src={packImages[index]} alt="Pack" mb={2} />
+
+                        <div className="space-y-1">
+                          <p className="text-sm">
+                            Opened:{' '}
+                            {new Date(pack.openDate).toLocaleDateString()}
+                          </p>
+                          <p className="text-sm">
+                            Purchased:{' '}
+                            {new Date(pack.purchaseDate).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </SimpleGrid>
+                ) : (
+                  <div>No packs available.</div>
+                )}
+              </>
+            )}
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+    </>
   )
 })
 

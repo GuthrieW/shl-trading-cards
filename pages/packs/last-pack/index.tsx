@@ -44,6 +44,7 @@ import useOpenPack from '@pages/api/mutations/use-open-pack'
 import { ChevronLeftIcon } from '@chakra-ui/icons'
 import Image from 'next/image'
 import { useQueryClient } from 'react-query'
+import DisplayPacks from '@components/collection/DisplayPacks'
 
 const HexCodes = {
   Ruby: '#E0115F',
@@ -251,9 +252,14 @@ const LastOpenedPack = () => {
         <NextSeo title="Last Pack" />
         <div className="flex items-center space-x-2">
           <Breadcrumb>
-            <ChevronLeftIcon color="gray.500" />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/packs">Return to Packs</BreadcrumbLink>
+              <BreadcrumbLink
+                href="/packs"
+                className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm hover:bg-white/10"
+              >
+                <ChevronLeftIcon />
+                Return to Packs
+              </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
 
@@ -267,14 +273,14 @@ const LastOpenedPack = () => {
             </Badge>
           )}
         </div>
-        <div className="flex flex-row items-center justify-start space-x-2 pt-3">
+        <div className="w-full pt-3 grid grid-cols-2 gap-2 sm:flex sm:flex-row sm:flex-wrap sm:items-center sm:justify-start sm:gap-2">
           {firstPack ? (
             <Tooltip label="Open a new pack">
               <Button
                 isDisabled={useOpenPackIsLoading || packsLoading}
                 onClick={() => OpenNextPack(firstPack)}
                 position="relative"
-                className="!text-xs sm:!text-lg"
+                className="w-full sm:w-auto !text-sm sm:!text-lg !px-3 sm:!px-6 !py-2 sm:!py-4"
               >
                 {(useOpenPackIsLoading || packsLoading) && (
                   <Spinner size="sm" mr={2} />
@@ -283,24 +289,32 @@ const LastOpenedPack = () => {
               </Button>
             </Tooltip>
           ) : (
-            <Button className="!text-xs sm:!text-lg" isDisabled>
+            <Button
+              isDisabled
+              className="w-full sm:w-auto !text-sm sm:!text-lg !px-3 sm:!px-6 !py-2 sm:!py-4"
+            >
               No More {type} Packs to Open
             </Button>
           )}
+
           <Button
-            className="!text-xs sm:!text-base"
-            disabled={false}
             onClick={flipAllCards}
+            className="w-full sm:w-auto !text-sm sm:!text-lg !px-3 sm:!px-6 !py-2 sm:!py-4"
           >
             Flip All Cards
           </Button>
+
           <Button
-            className="!text-lg"
             onClick={shareMessage}
             colorScheme="teal"
+            className="w-full sm:w-auto !text-sm sm:!text-lg !px-3 sm:!px-5 !py-2 sm:!py-4"
           >
             Share
           </Button>
+
+          <div className="w-full sm:w-auto">
+            <DisplayPacks userID={session.userId} />
+          </div>
         </div>
 
         <div className="m-2" style={{ height: 'calc(100vh-64px)' }}>
