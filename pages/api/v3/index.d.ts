@@ -65,8 +65,7 @@ export type UserPacks = {
   opened: number
   purchaseDate: string
   openDate: string
-  source
-  string
+  source: string
 }
 
 export type Rarities = {

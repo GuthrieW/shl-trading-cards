@@ -16,6 +16,13 @@ import {
   BreadcrumbLink,
   Breadcrumb,
   Spinner,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
 } from '@chakra-ui/react'
 import { PageWrapper } from '@components/common/PageWrapper'
 import { GET } from '@constants/http-methods'
@@ -37,6 +44,7 @@ import useOpenPack from '@pages/api/mutations/use-open-pack'
 import { ChevronLeftIcon } from '@chakra-ui/icons'
 import Image from 'next/image'
 import { useQueryClient } from 'react-query'
+import DisplayPacks from '@components/collection/DisplayPacks'
 
 const HexCodes = {
   Ruby: '#E0115F',
@@ -56,6 +64,7 @@ const LastOpenedPack = () => {
   const [loggedInUID] = useCookie(config.userIDCookieName)
   const queryClient = useQueryClient()
   const { type } = router.query as { type: string }
+  const [showUnflippedModal, setShowUnflippedModal] = useState(false)
 
   useEffect(() => {
     if (!loggedIn) {
@@ -93,26 +102,6 @@ const LastOpenedPack = () => {
     isError: useOpenPackIsError,
   } = useOpenPack()
 
-  const OpenNextPack = (pack: UserPacks) => {
-    if (useOpenPackIsLoading) {
-      toast({
-        title: 'Already opening a pack',
-        description: `Bro chill we're still opening that pack`,
-        ...warningToastOptions,
-      })
-      return
-    }
-    if (!pack) {
-      toast({
-        title: 'No Packs Available',
-        description: `You don't have any ${type} packs to open.`,
-        ...errorToastOptions,
-      })
-      return
-    }
-    openPack({ packID: pack.packID })
-  }
-
   const { payload: user } = query<UserData>({
     queryKey: ['baseUser', session?.token],
     queryFn: () =>
@@ -135,6 +124,38 @@ const LastOpenedPack = () => {
     } else {
       updateRevealedCards(index)
     }
+  }
+  const OpenNextPack = (pack: UserPacks) => {
+    if (useOpenPackIsLoading) {
+      toast({
+        title: 'Already opening a pack',
+        description: `Bro chill we're still opening that pack`,
+        ...warningToastOptions,
+      })
+      return
+    }
+
+    if (revealedCards.length < latestPackCards.length) {
+      setShowUnflippedModal(true)
+      return
+    }
+
+    if (!pack) {
+      toast({
+        title: 'No Packs Available',
+        description: `You don't have any ${type} packs to open.`,
+        ...errorToastOptions,
+      })
+      return
+    }
+    openPack({ packID: pack.packID })
+  }
+
+  const confirmOpenNextPack = () => {
+    if (!firstPack) return
+
+    setShowUnflippedModal(false)
+    openPack({ packID: firstPack.packID })
   }
 
   const cardRarityShadows = [
@@ -231,9 +252,14 @@ const LastOpenedPack = () => {
         <NextSeo title="Last Pack" />
         <div className="flex items-center space-x-2">
           <Breadcrumb>
-            <ChevronLeftIcon color="gray.500" />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/packs">Return to Packs</BreadcrumbLink>
+              <BreadcrumbLink
+                href="/packs"
+                className="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm hover:bg-white/10"
+              >
+                <ChevronLeftIcon />
+                Return to Packs
+              </BreadcrumbLink>
             </BreadcrumbItem>
           </Breadcrumb>
 
@@ -247,14 +273,14 @@ const LastOpenedPack = () => {
             </Badge>
           )}
         </div>
-        <div className="flex flex-row items-center justify-start space-x-2 pt-3">
+        <div className="w-full pt-3 grid grid-cols-2 gap-2 sm:flex sm:flex-row sm:flex-wrap sm:items-center sm:justify-start sm:gap-2">
           {firstPack ? (
             <Tooltip label="Open a new pack">
               <Button
                 isDisabled={useOpenPackIsLoading || packsLoading}
                 onClick={() => OpenNextPack(firstPack)}
                 position="relative"
-                className="!text-xs sm:!text-lg"
+                className="w-full sm:w-auto !text-sm sm:!text-lg !px-3 sm:!px-6 !py-2 sm:!py-4"
               >
                 {(useOpenPackIsLoading || packsLoading) && (
                   <Spinner size="sm" mr={2} />
@@ -263,24 +289,32 @@ const LastOpenedPack = () => {
               </Button>
             </Tooltip>
           ) : (
-            <Button className="!text-xs sm:!text-lg" isDisabled>
+            <Button
+              isDisabled
+              className="w-full sm:w-auto !text-sm sm:!text-lg !px-3 sm:!px-6 !py-2 sm:!py-4"
+            >
               No More {type} Packs to Open
             </Button>
           )}
+
           <Button
-            className="!text-xs sm:!text-base"
-            disabled={false}
             onClick={flipAllCards}
+            className="w-full sm:w-auto !text-sm sm:!text-lg !px-3 sm:!px-6 !py-2 sm:!py-4"
           >
             Flip All Cards
           </Button>
+
           <Button
-            className="!text-lg"
             onClick={shareMessage}
             colorScheme="teal"
+            className="w-full sm:w-auto !text-sm sm:!text-lg !px-3 sm:!px-5 !py-2 sm:!py-4"
           >
             Share
           </Button>
+
+          <div className="w-full sm:w-auto">
+            <DisplayPacks userID={session.userId} />
+          </div>
         </div>
 
         <div className="m-2" style={{ height: 'calc(100vh-64px)' }}>
@@ -387,6 +421,37 @@ const LastOpenedPack = () => {
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={showUnflippedModal}
+        onClose={() => setShowUnflippedModal(false)}
+        isCentered
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader className="text-primary bg-primary">
+            Unflipped Cards Remaining
+          </ModalHeader>
+          <ModalCloseButton />
+
+          <ModalBody className="text-primary bg-primary">
+            You still have cards in this pack that have not been revealed. Are
+            you sure you want to open the next pack?
+          </ModalBody>
+
+          <ModalFooter className="text-primary bg-primary">
+            <Button
+              onClick={() => setShowUnflippedModal(false)}
+              mr={3}
+              colorScheme="red"
+            >
+              Cancel
+            </Button>
+            <Button colorScheme="green" onClick={confirmOpenNextPack}>
+              Open Next Pack
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </PageWrapper>
   )
 }
