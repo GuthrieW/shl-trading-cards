@@ -169,6 +169,7 @@ const LastOpenedPack = () => {
     { id: rarityMap.draftNight.label, emoji: '🎯' },
     { id: rarityMap.twoThousandClub.label, color: HexCodes.Gold, emoji: '🎉' },
     { id: rarityMap.award.label, color: HexCodes.Award, emoji: '🏆' },
+    { id: rarityMap.captains.label, color: HexCodes.Gold, emoji: 'C' },
     { id: rarityMap.firstOverall.label, color: HexCodes.Gold, emoji: '☝️' },
     { id: rarityMap.iihfAwards.label, color: HexCodes.Gold, emoji: '🌍' },
     { id: rarityMap.charity.label, color: HexCodes.Charity, emoji: '🎗️' },
