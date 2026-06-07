@@ -5,7 +5,7 @@ import { GET } from '@constants/http-methods'
 import SQL, { SQLStatement } from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
 import methodNotAllowed from '../lib/methodNotAllowed'
-import { ApiResponse, UserUniqueCollection } from '..'
+import { ApiResponse, UserCollection, UserUniqueCollection } from '..'
 import { cardsQuery } from '@pages/api/database/database'
 import { rateLimit } from 'lib/rateLimit'
 
@@ -21,25 +21,32 @@ const handler = async (
   await middleware(req, res, cors)
   const card_rarity = req.query.card_rarity as string
   const userID = req.query.userID as string
+  const sub_type = req.query.sub_type as string
+  const base_sets = req.query.base_sets as string
   if (req.method === GET) {
     const queryString: SQLStatement = SQL`
       SELECT 
-    uuc.userID,
+    uc.userID,
     ui.username,
-    uuc.card_rarity,
-    uuc.owned_count,
-    uuc.rarity_rank
+    uc.card_rarity,
+    uc.sub_type,
+    uc.owned_count,
+    uc.rarity_rank
 FROM
-    user_unique_cards uuc JOIN user_info ui ON uuc.userID = ui.uid WHERE 1 `
+    user_collections uc JOIN user_info ui ON uc.userID = ui.uid WHERE 1 `
     if (card_rarity) {
-      queryString.append(SQL` and uuc.card_rarity = ${card_rarity}`)
+      queryString.append(SQL` and uc.card_rarity = ${card_rarity}`)
     }
     if (userID) {
-      queryString.append(SQL` AND uuc.userID = ${userID}`)
+      queryString.append(SQL` AND uc.userID = ${userID}`)
     }
-    queryString.append(SQL`
-    
-    GROUP BY uuc.userID, ui.username, uuc.card_rarity `)
+    if (sub_type) {
+      queryString.append(SQL` AND uc.sub_type = ${sub_type}`)
+    }
+    if (base_sets) {
+      queryString.append(SQL` and sub_type = '' `)
+    }
+    queryString.append(SQL`order by uc.owned_count DESC`)
 
     const queryResult = await cardsQuery<UserUniqueCollection>(queryString)
     if ('error' in queryResult) {
@@ -57,9 +64,45 @@ FROM
       return
     }
 
+    const grouped = new Map<string, UserCollection>()
+
+    for (const row of queryResult) {
+      const key = `${row.userID}:${row.card_rarity}`
+
+      if (!grouped.has(key)) {
+        grouped.set(key, {
+          card_rarity: row.card_rarity,
+          userID: row.userID,
+          username: row.username,
+          owned_count: 0,
+          rarity_rank: 0,
+          subTypes: [],
+        })
+      }
+
+      const entry = grouped.get(key)!
+      const isBase =
+        !row.sub_type || row.sub_type === '' || row.sub_type === 'null'
+
+      if (isBase) {
+        entry.owned_count = row.owned_count
+        entry.rarity_rank = row.rarity_rank
+      } else {
+        entry.subTypes.push({
+          sub_type: row.sub_type,
+          owned_count: row.owned_count,
+          rarity_rank: row.rarity_rank,
+        })
+      }
+    }
+
+    const result = Array.from(grouped.values()).sort(
+      (a, b) => b.owned_count - a.owned_count
+    )
+
     res.status(StatusCodes.OK).json({
       status: 'success',
-      payload: queryResult,
+      payload: Array.from(result.values()),
     })
     return
   }

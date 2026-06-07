@@ -39,23 +39,39 @@ export type UserUniqueCollection = {
   userID: number
   username: string
   card_rarity: string
+  sub_type: string
   owned_count: number
   rarity_rank: number
 }
 
 export type SiteUniqueCards = {
   card_rarity: string
+  sub_type: string
   total_count: number
 }
 
+export type SiteGroupedUniqueCards = {
+  card_rarity: string
+  total_count: number
+  subTypes: {
+    sub_type: string | null
+    total_count: number
+  }[]
+}
+
 export type UserCollection = {
-  ownedCardID: number
+  card_rarity: string
+  owned_count: number
   userID: number
-  username?: string
-  cardID: number
-  packID: number
-  imageURL?: number
-  total?: number
+  username: string
+  rarity_rank: number
+  total_count?: number
+  subTypes: {
+    sub_type: string
+    owned_count: number
+    rarity_rank: number
+    total_count?: number
+  }[]
 }
 
 export type UserPacks = {
