@@ -28,6 +28,11 @@ export const RARITY_CONFIG: Record<
     glow: 'rgba(160,64,255,0.35)',
     label: '2000 TPE Club',
   },
+  Captains: {
+    accent: '#7A3FF2',
+    glow: 'rgba(122,63,242,0.35)',
+    label: 'Captains',
+  },
   'Special Edition': {
     accent: '#ff8c00',
     glow: 'rgba(255,140,0,0.35)',
