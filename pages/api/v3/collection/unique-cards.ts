@@ -29,7 +29,7 @@ const handler = async (
 
   const query = SQL`
     SELECT card_rarity, sub_type, total_count
-    FROM unique_cards_2
+    FROM unique_cards
   `
 
   if (card_rarity) {
