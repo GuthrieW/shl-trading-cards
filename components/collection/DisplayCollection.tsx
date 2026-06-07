@@ -133,7 +133,7 @@ const DisplayCollection = ({ uid, onShowMissing }: DisplayCollectionProps) => {
       <div className="p-4 bg-secondary">
         <div className="mb-5">
           <div className="font-bold text-3xl">Collection overview</div>
-          <div className="text-sm">Updates every 12 hours</div>
+          <div className="text-sm">Updated at 12PM, 6PM, 12AM, 6AM EST</div>
         </div>
 
         {selected ? (
