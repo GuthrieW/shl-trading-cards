@@ -1,5 +1,6 @@
 import { Badge, Progress } from '@chakra-ui/react'
 import { UserCollection } from '@pages/api/v3'
+import { formatSubType } from '@utils/helpers'
 import { DEFAULT_RARITY, RARITY_CONFIG } from '@utils/marketplace-rarity-maps'
 
 type Props = {
@@ -83,7 +84,7 @@ const SubRarityCollection = ({ rarity, onBack, onShowMissing }: Props) => {
             >
               <div className="flex justify-between mb-2">
                 <span className="text-sm font-bold truncate">
-                  {sub.sub_type}
+                  {formatSubType(sub.sub_type)}
                   {subComplete && (
                     <span className="ml-1 text-green-400">✓</span>
                   )}

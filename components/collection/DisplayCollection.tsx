@@ -216,7 +216,11 @@ const DisplayCollection = ({ uid, onShowMissing }: DisplayCollectionProps) => {
                         {rarity.card_rarity}
                       </span>
 
-                      <Badge>#{rarity.rarity_rank} Global</Badge>
+                      <Badge>
+                        {rarity.rarity_rank > 0
+                          ? `#${rarity.rarity_rank} Global`
+                          : 'Unranked'}
+                      </Badge>
                     </div>
 
                     <div className="text-3xl font-bold">
@@ -246,7 +250,7 @@ const DisplayCollection = ({ uid, onShowMissing }: DisplayCollectionProps) => {
                       </div>
                     )}
 
-                    {hasSubTypes && (
+                    {hasSubTypes && rarity.card_rarity != 'Misprint' && (
                       <div className="text-xs mt-2 text-secondaryText">
                         {rarity.subTypes.length} sub-types ›
                       </div>
