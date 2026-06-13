@@ -281,6 +281,18 @@ export default ({ uid }: { uid: string }) => {
     setSubType((currentValue) => toggleOnfilters(currentValue, subType))
   }
 
+  const handleShowMissing = (rarity: string, subType?: string) => {
+    setRarities([rarity])
+    if (subType) setSubType([subType])
+    setShowNotOwnedCards(true)
+    setSortColumn('quantity')
+    setSortDirection('ASC')
+    document
+      .querySelector('.accordion-toggle-icon')
+      ?.closest('button')
+      ?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <PageWrapper>
       <div className="border-b-8 border-b-blue700 bg-secondary p-4 text-lg font-bold text-secondaryText sm:text-xl">
@@ -290,8 +302,7 @@ export default ({ uid }: { uid: string }) => {
               <Spinner />
             ) : (
               <div className="truncate">
-                {pluralizeName(user?.username)}&nbsp;Collection:{' '}
-                {totalOwnedCards > 0 ? totalOwnedCards : 0} Cards Owned
+                {pluralizeName(user?.username)}&nbsp;Collection
               </div>
             )}
           </div>
@@ -307,7 +318,7 @@ export default ({ uid }: { uid: string }) => {
       </div>
       <div className="mb-3" />
       {payload && payload.totalOwned !== null && (
-        <DisplayCollection uid={uid} />
+        <DisplayCollection uid={uid} onShowMissing={handleShowMissing} />
       )}
       <div className="mb-3" />
 
