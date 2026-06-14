@@ -4,7 +4,7 @@ import Cors from 'cors'
 import { GET } from '@constants/http-methods'
 import SQL from 'sql-template-strings'
 import { StatusCodes } from 'http-status-codes'
-import { ApiResponse, UserCollection } from '..'
+import { ApiResponse } from '..'
 import { cardsQuery } from '@pages/api/database/database'
 import methodNotAllowed from '../lib/methodNotAllowed'
 
@@ -15,7 +15,7 @@ const cors = Cors({
 
 export default async function userPacksEndpoint(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<UserCollection[]>>
+  res: NextApiResponse<ApiResponse<UserPackCollection[]>>
 ): Promise<void> {
   await middleware(req, res, cors)
 
@@ -38,7 +38,7 @@ ORDER BY (
     AND po.opened = 1
 ) DESC`
 
-    const queryResult = await cardsQuery<UserCollection>(query)
+    const queryResult = await cardsQuery<UserPackCollection>(query)
 
     if ('error' in queryResult) {
       console.error(queryResult.error)

@@ -22,7 +22,7 @@ import { generateIndexLink } from 'lib/constants'
 import axios from 'axios'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
-import { UserCollection } from '@pages/api/v3'
+import { UserPackCollection } from '@pages/api/v3'
 import Router from 'next/router'
 import { useSession } from 'contexts/AuthContext'
 
@@ -73,7 +73,7 @@ export const CardInformation = ({
     fetchPlayerHistory()
   }, [playerID])
 
-  const { payload: packs, isLoading } = query<UserCollection[]>({
+  const { payload: packs, isLoading } = query<UserPackCollection[]>({
     queryKey: ['packs-from-cards', String(cardID), String(userID), 'false'],
     queryFn: () =>
       axios({

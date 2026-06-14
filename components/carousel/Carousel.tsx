@@ -3,7 +3,6 @@ import React from 'react'
 import Slider, { type Settings } from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
-import { UserCollection } from '@pages/api/v3'
 import pathToCards from '@constants/path-to-cards'
 import Image from 'next/image'
 import GetUsername from '@components/common/GetUsername'
@@ -14,7 +13,7 @@ export const Carousel = React.memo(
     cards,
     isLoading,
   }: {
-    cards: UserCollection[]
+    cards: UserPackCollection[]
     isLoading?: boolean
     noBottomBorder?: boolean
   }) => {
@@ -65,7 +64,7 @@ export const Carousel = React.memo(
                     </Stack>
                   </div>
                 ))
-              : cards.map((card: UserCollection, index: number) => (
+              : cards.map((card: UserPackCollection, index: number) => (
                   <div key={card.cardID} className="px-2 card-slide">
                     <div className="card-wrapper">
                       <Image
