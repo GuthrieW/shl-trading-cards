@@ -181,6 +181,8 @@ type UserPackCollection = {
   cardID: number
   packID: number
   imageURL: string
+  username?: string
+  total?: number
 }
 
 type UserPack = {

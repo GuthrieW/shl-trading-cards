@@ -22,7 +22,6 @@ import { generateIndexLink } from 'lib/constants'
 import axios from 'axios'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
-import { UserPackCollection } from '@pages/api/v3'
 import Router from 'next/router'
 import { useSession } from 'contexts/AuthContext'
 
