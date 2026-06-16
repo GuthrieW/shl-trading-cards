@@ -2,7 +2,6 @@ import React from 'react'
 import { Link } from 'components/common/Link'
 import { GET } from '@constants/http-methods'
 import { query } from '@pages/api/database/query'
-import { UserCollection } from '@pages/api/v3'
 import axios from 'axios'
 import { Box, Stack, Skeleton, SkeletonText, Image } from '@chakra-ui/react'
 
@@ -17,7 +16,7 @@ export const BackOfCard: React.FC<BackOfCardProps> = ({
   userID,
   isOwned,
 }) => {
-  const { payload: packs, isLoading } = query<UserCollection[]>({
+  const { payload: packs, isLoading } = query<UserPackCollection[]>({
     queryKey: ['packs-from-cards', cardID, userID, String(isOwned)],
     queryFn: () =>
       axios({

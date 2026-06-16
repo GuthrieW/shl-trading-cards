@@ -4,7 +4,7 @@ import axios from 'axios'
 import config from 'lib/config'
 import { NextPageContext } from 'next'
 import { dehydrate, QueryClient } from 'react-query'
-import { UserCollection, UserMostCards, ListResponse } from './api/v3'
+import { UserMostCards, ListResponse } from './api/v3'
 import { query } from './api/database/query'
 import { GET } from '@constants/http-methods'
 import MostCardsTable from '@components/tables/MostCardsTable'
@@ -30,7 +30,9 @@ export default () => {
       }),
   })
 
-  const { payload: packs, isLoading: packsLoading } = query<UserCollection[]>({
+  const { payload: packs, isLoading: packsLoading } = query<
+    UserPackCollection[]
+  >({
     queryKey: ['last-five-packs'],
     queryFn: () =>
       axios({

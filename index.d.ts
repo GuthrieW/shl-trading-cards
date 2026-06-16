@@ -175,6 +175,14 @@ type PackType = {
   imageUrl: string
 }
 
+type UserPackCollection = {
+  ownedCardID: number
+  userID: number
+  cardID: number
+  packID: number
+  imageURL: string
+}
+
 type UserPack = {
   packID: number
   userID: number

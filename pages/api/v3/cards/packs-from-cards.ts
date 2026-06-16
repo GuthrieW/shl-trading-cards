@@ -15,7 +15,7 @@ const cors = Cors({
 
 export default async function userUniqueCardsEndpoint(
   req: NextApiRequest,
-  res: NextApiResponse<ApiResponse<UserCollection[] | null>>
+  res: NextApiResponse<ApiResponse<UserPackCollection[] | null>>
 ): Promise<void> {
   await middleware(req, res, cors)
 
@@ -47,7 +47,7 @@ ORDER BY total DESC
         `
     }
 
-    const queryResult = await cardsQuery<UserCollection>(query)
+    const queryResult = await cardsQuery<UserPackCollection>(query)
 
     if ('error' in queryResult) {
       console.error(queryResult.error)
