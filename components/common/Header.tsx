@@ -188,6 +188,12 @@ export const Header = ({ showAuthButtons = true }) => {
                 </MenuItem>
                 <MenuItem
                   className="hover:!bg-highlighted/40 hover:!text-primary"
+                  onClick={() => router.push('/lineups')}
+                >
+                  Lineups
+                </MenuItem>
+                <MenuItem
+                  className="hover:!bg-highlighted/40 hover:!text-primary"
                   onClick={() => router.push('/community/new-cards')}
                 >
                   Newest Cards
