@@ -39,7 +39,7 @@
     "imagemin-svgo": "^10.0.1",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "next": "^14.2.21",
     "next-compose-plugins": "^2.2.1",
     "next-optimized-images": "^2.6.2",
