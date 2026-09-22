@@ -53,6 +53,11 @@ export const RARITY_CONFIG: Record<
     glow: 'rgba(255,215,0,0.5)',
     label: 'Hall of Fame',
   },
+  'IIHF Hall of Fame': {
+    accent: '#a97f00',
+    glow: 'rgba(255,215,0,0.5)',
+    label: 'IIHF Hall of Fame',
+  },
 }
 
 export const DEFAULT_RARITY = {
