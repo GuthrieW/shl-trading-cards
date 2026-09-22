@@ -169,12 +169,13 @@ const LastOpenedPack = () => {
     { id: rarityMap.draftNight.label, emoji: '🎯' },
     { id: rarityMap.twoThousandClub.label, color: HexCodes.Gold, emoji: '🎉' },
     { id: rarityMap.award.label, color: HexCodes.Award, emoji: '🏆' },
-    { id: rarityMap.captains.label, color: HexCodes.Gold, emoji: 'C' },
+    { id: rarityMap.captains.label, color: HexCodes.Gold, emoji: '👨🏼‍✈️' },
     { id: rarityMap.firstOverall.label, color: HexCodes.Gold, emoji: '☝️' },
     { id: rarityMap.iihfAwards.label, color: HexCodes.Gold, emoji: '🌍' },
     { id: rarityMap.charity.label, color: HexCodes.Charity, emoji: '🎗️' },
     { id: rarityMap.charity.label, color: HexCodes.Gold, emoji: '🎊' },
     { id: rarityMap.specialEdition.label, color: HexCodes.Gold, emoji: '⭐' },
+    { id: rarityMap.iihfHallOfFame.label, color: HexCodes.Gold, emoji: '🛡️' },
   ] as { id: string; color: typeof HexCodes; emoji: string }[]
 
   const updateRevealedCards = (index: number): void => {

@@ -20,6 +20,7 @@ const rarityMap = {
   firstOverall: { label: '1st Overall', rarity: 35 },
   hallOfFame: { label: 'Hall of Fame', rarity: 15 },
   misprint: { label: 'Misprint', rarity: 0 },
+  iihfHallOfFame: { label: 'IIHF Hall of Fame', rarity: 0 },
 } as const satisfies Record<string, Rarity>
 
 const rarityMapRuby = {
@@ -39,6 +40,7 @@ const rarityMapRuby = {
   firstOverall: { label: '1st Overall', rarity: 50 },
   hallOfFame: { label: 'Hall of Fame', rarity: 30 },
   misprint: { label: 'Misprint', rarity: 0 },
+  iihfHallOfFame: { label: 'IIHF Hall of Fame', rarity: 0 },
 } as const satisfies Record<string, Rarity>
 
 export { rarityMap, rarityMapRuby }
