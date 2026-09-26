@@ -71,6 +71,7 @@ const handler = async (
     const teams = parseQueryArray(req.query.teams)
     const rarities = parseQueryArray(req.query.rarities)
     const subType = parseQueryArray(req.query.subType)
+    const position = req.query.position as string
 
     if (!uid) {
       res.status(StatusCodes.BAD_REQUEST).json({
@@ -180,6 +181,11 @@ const handler = async (
     if (playerName.length !== 0) {
       countQuery.append(SQL` AND card.player_name LIKE ${`%${playerName}%`}`)
       query.append(SQL` AND card.player_name LIKE ${`%${playerName}%`}`)
+    }
+
+    if (position) {
+      countQuery.append(SQL` AND card.position = ${position}`)
+      query.append(SQL` AND card.position = ${position}`)
     }
 
     if (teams.length !== 0) {
