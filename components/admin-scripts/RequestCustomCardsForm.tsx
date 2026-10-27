@@ -1,12 +1,13 @@
 import { Button, Spinner, useToast } from '@chakra-ui/react'
+import CustomCardsPreviewTable from '@components/tables/CustomCardPreviewTable'
 import { POST } from '@constants/http-methods'
 import { rarityMap } from '@constants/rarity-map'
-import { allTeamsMaps } from '@constants/teams-map'
+import { useGetLeagueInfo } from '@hooks/useGetLeagueInfo'
 import { mutation } from '@pages/api/database/mutation'
 import { isValidID } from '@utils/isValidID'
 import { successToastOptions } from '@utils/toast'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import CSVReader from 'react-csv-reader'
 
 const DATA_COLUMNS = {
@@ -32,16 +33,45 @@ const DATA_COLUMNS = {
   leagueID: 19,
 }
 
+const rowToCard = (row: string[]): Partial<Card> => {
+  const isGoalie = row[DATA_COLUMNS.position] === 'G'
+  return {
+    teamID: parseInt(row[DATA_COLUMNS.teamID]),
+    playerID: parseInt(row[DATA_COLUMNS.playerID]),
+    player_name: row[DATA_COLUMNS.player_name],
+    render_name: row[DATA_COLUMNS.render_name],
+    season: parseInt(row[DATA_COLUMNS.season]),
+    card_rarity: row[DATA_COLUMNS.card_rarity],
+    sub_type:
+      row[DATA_COLUMNS.sub_type].length === 0
+        ? null
+        : row[DATA_COLUMNS.sub_type],
+    position: row[DATA_COLUMNS.position],
+    overall: parseInt(row[DATA_COLUMNS.overall]),
+    skating: isGoalie ? null : parseInt(row[DATA_COLUMNS.skating]),
+    shooting: isGoalie ? null : parseInt(row[DATA_COLUMNS.shooting]),
+    hands: isGoalie ? null : parseInt(row[DATA_COLUMNS.hands]),
+    checking: isGoalie ? null : parseInt(row[DATA_COLUMNS.checking]),
+    defense: isGoalie ? null : parseInt(row[DATA_COLUMNS.defense]),
+    high_shots: isGoalie ? parseInt(row[DATA_COLUMNS.high_shots]) : null,
+    low_shots: isGoalie ? parseInt(row[DATA_COLUMNS.low_shots]) : null,
+    quickness: isGoalie ? parseInt(row[DATA_COLUMNS.quickness]) : null,
+    control: isGoalie ? parseInt(row[DATA_COLUMNS.control]) : null,
+    conditioning: isGoalie ? parseInt(row[DATA_COLUMNS.conditioning]) : null,
+    leagueID: parseInt(row[DATA_COLUMNS.leagueID]),
+  }
+}
+
 export default function RequestCustomCardsForm({
   onError,
 }: {
   onError: (errorMessage) => void
 }) {
   const toast = useToast()
-  const [csvToUpload, setCsvToUpload] = useState(null)
+  const [csvToUpload, setCsvToUpload] = useState<string[][] | null>(null)
   const [canSubmitCsv, setCanSubmitCsv] = useState<boolean>(false)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-  const [numberOfCardsToUpload, setNumberOfCardsToUpload] = useState<number>(0)
+  const { teams, isLoading: teamsLoading } = useGetLeagueInfo()
 
   const { mutateAsync: requestCustomCards, isLoading } = mutation<
     void,
@@ -61,91 +91,40 @@ export default function RequestCustomCardsForm({
     },
   })
 
-  useEffect(() => {
-    setCanSubmitCsv(csvToUpload !== null)
-  }, [csvToUpload])
+  // skip the header row and any blank trailing rows
+  const previewCards = useMemo(
+    () =>
+      csvToUpload
+        ? csvToUpload
+            .slice(1)
+            .filter((row) => row.length > 1)
+            .map(rowToCard)
+        : [],
+    [csvToUpload]
+  )
 
-  const handleSelectCsv = (data, fileInfo) => {
-    setNumberOfCardsToUpload(data.length - 1)
+  useEffect(() => {
+    setCanSubmitCsv(previewCards.length > 0)
+  }, [previewCards])
+
+  const handleSelectCsv = (data: string[][], fileInfo) => {
     setCsvToUpload(data)
   }
 
   const handleUploadCsv = async () => {
     setIsSubmitting(true)
     const errors: string[] = []
-    const cards: Card[] = csvToUpload.map((row, index) => {
-      if (index === 0) return
 
-      const newCard: Partial<Card> = {
-        teamID: parseInt(row[DATA_COLUMNS.teamID]),
-        playerID: parseInt(row[DATA_COLUMNS.playerID]),
-        player_name: row[DATA_COLUMNS.player_name],
-        render_name: row[DATA_COLUMNS.render_name],
-        season: parseInt(row[DATA_COLUMNS.season]),
-        card_rarity: row[DATA_COLUMNS.card_rarity],
-        sub_type:
-          row[DATA_COLUMNS.sub_type].length === 0
-            ? null
-            : row[DATA_COLUMNS.sub_type],
-        position: row[DATA_COLUMNS.position],
-        overall: parseInt(row[DATA_COLUMNS.overall]),
-        skating:
-          row[DATA_COLUMNS.position] !== 'G'
-            ? parseInt(row[DATA_COLUMNS.skating])
-            : null,
-        shooting:
-          row[DATA_COLUMNS.position] !== 'G'
-            ? parseInt(row[DATA_COLUMNS.shooting])
-            : null,
-        hands:
-          row[DATA_COLUMNS.position] !== 'G'
-            ? parseInt(row[DATA_COLUMNS.hands])
-            : null,
-        checking:
-          row[DATA_COLUMNS.position] !== 'G'
-            ? parseInt(row[DATA_COLUMNS.checking])
-            : null,
-        defense:
-          row[DATA_COLUMNS.position] !== 'G'
-            ? parseInt(row[DATA_COLUMNS.defense])
-            : null,
-        high_shots:
-          row[DATA_COLUMNS.position] !== 'G'
-            ? null
-            : parseInt(row[DATA_COLUMNS.high_shots]),
-        low_shots:
-          row[DATA_COLUMNS.position] !== 'G'
-            ? null
-            : parseInt(row[DATA_COLUMNS.low_shots]),
-        quickness:
-          row[DATA_COLUMNS.position] !== 'G'
-            ? null
-            : parseInt(row[DATA_COLUMNS.quickness]),
-        control:
-          row[DATA_COLUMNS.position] !== 'G'
-            ? null
-            : parseInt(row[DATA_COLUMNS.control]),
-        conditioning:
-          row[DATA_COLUMNS.position] !== 'G'
-            ? null
-            : parseInt(row[DATA_COLUMNS.conditioning]),
-        leagueID: parseInt(row[DATA_COLUMNS.leagueID]),
-      }
-
-      const validation = validateCard(newCard, index)
+    previewCards.forEach((card, i) => {
+      // i + 1 = CSV row number (header is row 0)
+      const validation = validateCard(card, i + 1, teams)
       if (validation.status === false) {
         errors.push(validation.error)
-        return null
       }
-
-      return newCard
     })
 
-    // remove header row
-    cards.shift()
-
     if (errors.length === 0) {
-      await requestCustomCards({ cards })
+      await requestCustomCards({ cards: previewCards as Card[] })
     } else {
       onError(errors.join('. '))
     }
@@ -161,12 +140,18 @@ export default function RequestCustomCardsForm({
         onFileLoaded={handleSelectCsv}
       />
       <div className="mb-5 flex justify-start items-center">
-        Cards Awaiting Submission: {numberOfCardsToUpload}
+        Cards Awaiting Submission: {previewCards.length}
       </div>
+
+      {previewCards.length > 0 && (
+        <div className="mb-5">
+          <CustomCardsPreviewTable cards={previewCards} />
+        </div>
+      )}
 
       <div className="flex justify-end items-center">
         <Button
-          disabled={!canSubmitCsv || isSubmitting || isLoading}
+          disabled={!canSubmitCsv || isSubmitting || isLoading || teamsLoading}
           onClick={handleUploadCsv}
         >
           {isLoading || isSubmitting ? <Spinner /> : 'Submit Cards'}
@@ -178,10 +163,13 @@ export default function RequestCustomCardsForm({
 
 const validateCard = (
   card: Partial<Card>,
-  index: number
+  index: number,
+  teams: ReturnType<typeof useGetLeagueInfo>['teams']
 ): { status: true } | { status: false; error: string } => {
   if (
-    !Object.keys(allTeamsMaps).some((teamId) => teamId === String(card.teamID))
+    !teams.some(
+      (team) => team.id === card.teamID && team.leagueID === card.leagueID
+    )
   ) {
     return { status: false, error: `teamID missing on row ${index}` }
   }

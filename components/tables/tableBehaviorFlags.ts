@@ -48,6 +48,14 @@ export const HOME_CARDS_TABLE_NO_FILTER: TableBehavioralFlags = {
   showTableFilterOptions: false,
 }
 
+export const CUSTOM_CARD_TABLE: TableBehavioralFlags = {
+  stickyFirstColumn: false,
+  showTableFooter: false,
+  enablePagination: true,
+  enableFiltering: false,
+  showTableFilterOptions: false,
+}
+
 export interface TableBehavioralFlags {
   stickyFirstColumn: boolean
   showTableFooter: boolean
